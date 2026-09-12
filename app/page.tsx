@@ -164,7 +164,7 @@ const PRICING = [
     price: "¥980",
     period: "/月",
     description: "受験・就活シーズンの本格対策に",
-    features: ["テンサクン・メンサツ 使い放題", "回数制限なし", "いつでも解約可能"],
+    features: ["テンサクン・メンサツ・しぼりゆ 使い放題", "回数制限なし", "いつでも解約可能"],
     highlight: true,
   },
   {
