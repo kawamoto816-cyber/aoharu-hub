@@ -25,4 +25,11 @@ export const APPS: AppInfo[] = [
     url: "https://interview.bluespring.co.jp",
     icon: "🎤",
   },
+  {
+    key: APP_KEYS.SHIBORIYU,
+    name: "しぼりゆ",
+    description: "対話を通じて志望理由書・エントリーシートの核となる想いを言語化し、初稿まで作成。",
+    url: "https://reason.bluespring.co.jp",
+    icon: "🖋️",
+  },
 ];
