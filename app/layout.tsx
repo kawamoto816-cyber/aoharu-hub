@@ -24,7 +24,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "アオハルOS",
   description:
-    "アオハルOS — 高校生・受験生向けAI学習支援サービス群(テンサクン・メンサツ 等)の統合ハブ",
+    "アオハルOS — 高校生・大学生・就活生・転職を目指す社会人まで、進路とキャリアづくりを支えるAI学習支援サービス群(テンサクン・しぼりゆ・メンサツ)の統合ハブ",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

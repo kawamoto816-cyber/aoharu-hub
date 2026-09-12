@@ -4,6 +4,8 @@ import { SignInButton } from "@clerk/nextjs";
 import { getEntitlement } from "@bluespring/aoharu-entitlements";
 import { APPS } from "@/lib/apps-config";
 import { PlanActions } from "@/components/PlanActions";
+import { PricingTable } from "@/components/PricingTable";
+import { CheckoutIntentHandler } from "@/components/CheckoutIntentHandler";
 
 const PLAN_LABEL: Record<"free" | "pro" | "max", string> = {
   free: "Free",
@@ -54,6 +56,7 @@ function Hub({
 
   return (
     <main className="mx-auto w-full max-w-4xl flex-1 px-6 py-16 sm:py-20">
+      <CheckoutIntentHandler />
       <p className="text-xs font-bold uppercase tracking-wide text-indigo-600">
         アオハルOS
       </p>
@@ -148,36 +151,6 @@ function Hub({
 // ログイン前LP
 // ------------------------------------------------------------------
 
-const PRICING = [
-  {
-    key: "free",
-    name: "Free",
-    price: "¥0",
-    period: "",
-    description: "まずは無料でお試し",
-    features: ["各アプリ 月3回まで無料", "会員登録のみでOK"],
-    highlight: false,
-  },
-  {
-    key: "pro",
-    name: "Pro",
-    price: "¥980",
-    period: "/月",
-    description: "受験・就活シーズンの本格対策に",
-    features: ["テンサクン・メンサツ・しぼりゆ 使い放題", "回数制限なし", "いつでも解約可能"],
-    highlight: true,
-  },
-  {
-    key: "max",
-    name: "Max",
-    price: "¥2,980",
-    period: "/月",
-    description: "アオハルOSの全アプリを使い倒す",
-    features: ["今後追加されるアプリも含め全アプリ使い放題", "回数制限なし", "いつでも解約可能"],
-    highlight: false,
-  },
-] as const;
-
 function LandingPage() {
   return (
     <main className="flex-1">
@@ -186,12 +159,12 @@ function LandingPage() {
           アオハルOS
         </p>
         <h1 className="mt-4 text-3xl font-bold leading-tight text-slate-900 sm:text-4xl">
-          高校生・受験生のための
+          受験も、就活も、転職も。
           <br />
-          AI学習支援サービス群
+          進路とキャリアを切り拓くAIアプリ群
         </h1>
         <p className="mx-auto mt-5 max-w-xl text-sm leading-relaxed text-slate-500 sm:text-base">
-          小論文添削の「テンサクン」、面接対策の「メンサツ」など、進路・キャリアづくりを支えるAIアプリをひとつのアカウントでまとめて利用できます。
+          小論文添削の「テンサクン」、志望理由書・ESづくりの「しぼりゆ」、面接対策の「メンサツ」など、高校生・受験生から大学生の就職活動、社会人の転職活動まで、進路・キャリアづくりを支えるAIアプリをひとつのアカウントでまとめて利用できます。
         </p>
         <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
           <SignInButton mode="modal">
@@ -240,40 +213,10 @@ function LandingPage() {
           <h2 className="text-center text-xl font-bold text-slate-900">
             料金プラン
           </h2>
-          <div className="mt-8 grid gap-5 sm:grid-cols-3">
-            {PRICING.map((tier) => (
-              <div
-                key={tier.key}
-                className={`flex flex-col rounded-2xl border p-6 ${
-                  tier.highlight
-                    ? "border-indigo-600 bg-white shadow-md shadow-indigo-600/10"
-                    : "border-slate-200 bg-white"
-                }`}
-              >
-                {tier.highlight && (
-                  <span className="mb-3 w-fit rounded-full bg-indigo-600 px-2.5 py-1 text-[10px] font-bold text-white">
-                    人気プラン
-                  </span>
-                )}
-                <p className="text-sm font-bold text-slate-900">{tier.name}</p>
-                <p className="mt-2 text-2xl font-bold text-slate-900">
-                  {tier.price}
-                  <span className="text-sm font-bold text-slate-400">
-                    {tier.period}
-                  </span>
-                </p>
-                <p className="mt-1 text-xs text-slate-500">{tier.description}</p>
-                <ul className="mt-4 flex-1 space-y-2 text-xs text-slate-600">
-                  {tier.features.map((f) => (
-                    <li key={f} className="flex items-start gap-1.5">
-                      <span className="mt-0.5 text-indigo-600">✓</span>
-                      <span>{f}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
+          <p className="mx-auto mt-2 max-w-xl text-center text-xs leading-relaxed text-slate-500">
+            高校生・受験生の総合型選抜/推薦対策から、大学生の就職活動、社会人の転職活動まで。プランを選んでそのままお申し込みいただけます。
+          </p>
+          <PricingTable />
           <p className="mt-4 text-center text-[11px] text-slate-400">
             表示価格は全て税込です。プランはいつでも変更・解約できます。
           </p>
