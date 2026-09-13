@@ -14,7 +14,8 @@ export const APPS: AppInfo[] = [
   {
     key: APP_KEYS.TENSAKUN,
     name: "テンサクン",
-    description: "小論文・志望理由書をAIが添削。総合型選抜/推薦入試の書類対策に。",
+    description:
+      "小論文・エントリーシートをAIが添削。総合型選抜/推薦入試の書類対策から、就活・転職の文章力アップまで。",
     url: "https://essay.bluespring.co.jp",
     icon: "📝",
   },
