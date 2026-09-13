@@ -3,6 +3,9 @@
  *
  * 新しいアプリを追加するときはここに1行足すだけでよいように設計している。
  * Stripeの価格ID⇔プランの対応もここで一元管理する。
+ *
+ * ★このファイルは全アプリ(ハブ+各アプリ)に同じ内容を配置する運用にしている。
+ *   新アプリを追加/公開したら、このファイルを他のアプリにもコピーして同期すること。
  */
 
 export const PLANS = ["free", "pro", "max"] as const;
@@ -21,18 +24,22 @@ export type SubscriptionStatus = (typeof SUBSCRIPTION_STATUSES)[number];
 
 /**
  * アプリ識別子。Supabaseの usage_log.app_key / エンタイトルメント判定に使う。
- * 実装済み(MVP)の2本 + 今後追加予定の9本。
+ * 実装済み(MVP)の10本。キャリキャラ(career-app)は完全無料公開のため対象外。
  * 新アプリをリリースしたらここに追記し、PLAN_APPS の max 側は 'all' なので
  * 追記するだけで自動的にMaxプランで解放される。Proの対象に含める場合は
  * PLAN_APPS.pro にも追加する。
  */
 export const APP_KEYS = {
-  TENSAKUN: "tensakun", // 添削くん (書類添削)
-  SHIBORIYU: "shiboriyu", // しぼりゆ (書類作成/絞り込み)
+  TENSAKUN: "tensakun", // テンサクン (小論文・ES添削)
+  SHIBORIYU: "shiboriyu", // しぼりゆ (志望理由書 生成/絞り込み)
   MENSATSU: "mensatsu", // メンサツ (面接対策: 推薦・AO・就活 全モード)
-  // --- 以下、今後追加予定 (Maxプランで解放) ---
-  // JIKOBUNSEKI: "jikobunseki",   // 自己分析
-  // CAREER_DESIGN: "career-design", // キャリア設計
+  JIKO_KOTEI: "jiko-kotei", // ジココーテー (自己探究＆自己肯定AI)
+  COLOR16: "16color", // 16カラー診断
+  JIKOAPI: "jikoapi", // ジコアピ (自己PR文 自動生成)
+  CAREER_DESIGN: "career-design", // キャリデザ (キャリア設計)
+  EDUFIT: "edufit", // edufit (大学マッチング)
+  CAMPUSCOPE: "campuscope", // キャンパスコープ (大学リサーチ)
+  CORPORATE_SCOPE: "corporate-scope", // コーポレートスコープ (企業研究)
 } as const;
 
 export type AppKey = (typeof APP_KEYS)[keyof typeof APP_KEYS];
