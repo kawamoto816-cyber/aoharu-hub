@@ -20,7 +20,7 @@ export function IntroVideo() {
       </p>
       <div className={styles.videoWrapper}>
         {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
-        <video controls playsInline preload="none">
+        <video controls playsInline preload="metadata">
           <source src={`${ASSET_BASE}/ai-video.mp4`} type="video/mp4" />
           お使いのブラウザは動画タグをサポートしていません。
         </video>
