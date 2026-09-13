@@ -14,7 +14,7 @@ export {
 } from "./config/plans";
 export type { Plan, SubscriptionStatus, AppKey } from "./config/plans";
 
-export { getCurrentUserId, requireUserId } from "./auth/session";
+export { getCurrentUserId, requireUserId, getUserEmail } from "./auth/session";
 
 export {
   getEntitlement,
@@ -25,6 +25,7 @@ export {
 export type { Entitlement } from "./entitlements";
 
 export { logUsage } from "./supabase/usage";
+export { getFreeAccessApps } from "./supabase/free-access";
 export {
   getOrCreateSubscription,
   upsertSubscriptionFromStripe,

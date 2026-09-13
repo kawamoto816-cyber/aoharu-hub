@@ -1,6 +1,8 @@
 import { getOrCreateSubscription, type SubscriptionRow } from "./supabase/subscriptions";
 import { getMonthlyUsageCount, logUsage } from "./supabase/usage";
 import { planHasAppAccess, getFreeMonthlyQuota, type AppKey, type Plan } from "./config/plans";
+import { getUserEmail } from "./auth/session";
+import { getFreeAccessApps } from "./supabase/free-access";
 
 export interface Entitlement {
   plan: Plan;
@@ -73,6 +75,13 @@ export async function checkAppAccess(
 
   // Pro/Maxなど、契約プランでそのアプリの無制限アクセスが含まれる場合はそのまま許可
   if (entitlement.hasAccess(appKey)) return { allowed: true };
+
+  // 組織向け無料アクセス枠 (Stripe課金なしで特定アプリを無制限に使える生徒など)。
+  // 既存の有料プラン判定を通らなかった場合のみメールアドレスを引くので、
+  // Pro/Max契約者への追加コストはゼロ。
+  const freeAccessEmail = await getUserEmail(userId);
+  const freeAccessApps = await getFreeAccessApps(freeAccessEmail);
+  if (freeAccessApps.has(appKey)) return { allowed: true };
 
   // Freeプラン (または契約プランの対象外アプリ) は、月間お試し枠の消費状況で判定する
   if (entitlement.plan === "free") {
