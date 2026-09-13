@@ -37,7 +37,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <body className="min-h-full flex flex-col bg-white text-slate-900">
           <div className="fixed top-4 right-4 z-[9999] flex flex-col items-end gap-1.5">
             <SignedOut>
-              <SmartSignUpButton className="rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-bold text-white shadow-sm shadow-indigo-600/20 transition-colors hover:bg-indigo-500">
+              {/* モバイルでは固定表示のCTAを非表示にする:
+                  ヒーロー・キャリキャラ導線・各料金プランのボタン等、
+                  ページ内に既にCTAが多数あるため、狭い画面幅では
+                  この固定ボタンが料金プランの申し込みボタン等と
+                  重なってしまう不具合があった(sm未満のみ非表示)。 */}
+              <SmartSignUpButton className="hidden rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-bold text-white shadow-sm shadow-indigo-600/20 transition-colors hover:bg-indigo-500 sm:inline-flex">
                 無料登録してはじめる
               </SmartSignUpButton>
             </SignedOut>
