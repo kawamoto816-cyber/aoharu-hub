@@ -23,10 +23,40 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const SITE_TITLE = "アオハルOS";
+const SITE_DESCRIPTION =
+  "アオハルOS — 高校生・大学生・就活生・転職を目指す社会人まで、進路とキャリアづくりを支えるAI学習支援サービス群(テンサクン・しぼりゆ・メンサツ)の統合ハブ";
+const SITE_URL = "https://app.bluespring.co.jp";
+
 export const metadata: Metadata = {
-  title: "アオハルOS",
-  description:
-    "アオハルOS — 高校生・大学生・就活生・転職を目指す社会人まで、進路とキャリアづくりを支えるAI学習支援サービス群(テンサクン・しぼりゆ・メンサツ)の統合ハブ",
+  metadataBase: new URL(SITE_URL),
+  title: SITE_TITLE,
+  description: SITE_DESCRIPTION,
+  // OGP / Twitter Card: X・LINE・Facebook・Slack等でURLをシェアした際に
+  // リンクプレビューカードとして表示される情報。画像は public/og-image.png
+  // (公式ロゴ=サイトファビコンと同じ水色のしずくを使用)。
+  openGraph: {
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+    url: SITE_URL,
+    siteName: SITE_TITLE,
+    locale: "ja_JP",
+    type: "website",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "アオハルOS — 受験も、就活も、転職も。進路とキャリアを切り拓くAIアプリ群",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+    images: ["/og-image.png"],
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
