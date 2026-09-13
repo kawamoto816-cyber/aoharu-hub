@@ -4,7 +4,7 @@ import {
   ClerkProvider,
   SignedIn,
   SignedOut,
-  SignInButton,
+  SignUpButton,
   UserButton,
 } from "@clerk/nextjs";
 import { UpgradeModalProvider } from "@/components/UpgradeModal";
@@ -37,11 +37,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <body className="min-h-full flex flex-col bg-white text-slate-900">
           <div className="fixed top-4 right-4 z-[9999] flex flex-col items-end gap-1.5">
             <SignedOut>
-              <SignInButton mode="modal">
+              <SignUpButton mode="modal">
                 <button className="rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-bold text-white shadow-sm shadow-indigo-600/20 transition-colors hover:bg-indigo-500">
                   無料登録してはじめる
                 </button>
-              </SignInButton>
+              </SignUpButton>
             </SignedOut>
             <SignedIn>
               <div className="flex items-center gap-2 rounded-xl border border-slate-100 bg-white/90 px-2 py-1.5 shadow-sm backdrop-blur-sm">
