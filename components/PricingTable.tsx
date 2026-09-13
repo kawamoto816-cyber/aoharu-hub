@@ -59,24 +59,45 @@ export function PricingTable() {
   const clerk = useClerk();
   const [loading, setLoading] = useState<TierKey | null>(null);
 
-  const startCheckout = useCallback(async (plan: "pro" | "max") => {
-    setLoading(plan);
-    try {
-      const res = await fetch("/api/billing/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ plan }),
-      });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok || !data?.url) {
-        throw new Error(data?.error || `リクエストに失敗しました (HTTP ${res.status})`);
+  const startCheckout = useCallback(
+    async (plan: "pro" | "max") => {
+      setLoading(plan);
+      try {
+        const res = await fetch("/api/billing/checkout", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ plan }),
+        });
+        const data = await res.json().catch(() => ({}));
+
+        // クライアント側では"ログイン済み"に見えても、Clerkのセッション同期のタイミング等により
+        // サーバー側でセッションが確認できず401が返ることがある。その場合はエラーにせず、
+        // 通常の未ログイン導線(新規登録モーダル→登録後に自動でCheckoutへ)にフォールバックする。
+        if (res.status === 401 || data?.reason === "auth_required") {
+          try {
+            sessionStorage.setItem(
+              PENDING_PLAN_STORAGE_KEY,
+              JSON.stringify({ plan, ts: Date.now() })
+            );
+          } catch {
+            // sessionStorageが使えない環境でも、登録自体は続行できるようにする
+          }
+          clerk.openSignUp();
+          return;
+        }
+
+        if (!res.ok || !data?.url) {
+          throw new Error(data?.error || `リクエストに失敗しました (HTTP ${res.status})`);
+        }
+        window.location.href = data.url;
+      } catch (err: any) {
+        alert(`お申し込み手続きの開始に失敗しました。\n詳細: ${err.message}`);
+      } finally {
+        setLoading(null);
       }
-      window.location.href = data.url;
-    } catch (err: any) {
-      alert(`お申し込み手続きの開始に失敗しました。\n詳細: ${err.message}`);
-      setLoading(null);
-    }
-  }, []);
+    },
+    [clerk]
+  );
 
   const handleUpgradeClick = useCallback(
     (plan: "pro" | "max") => {
@@ -119,7 +140,7 @@ export function PricingTable() {
         >
           {tier.highlight && (
             <span className="mb-3 w-fit rounded-full bg-indigo-600 px-2.5 py-1 text-[10px] font-bold text-white">
-              人気プラン
+             人気プラン
             </span>
           )}
           <p className="text-sm font-bold text-slate-900">{tier.name}</p>
