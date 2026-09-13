@@ -1,0 +1,45 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.title {
+  font-size: clamp(1.3rem, 2.6vw, 1.7rem);
+  font-weight: 500;
+  margin-bottom: 1.25rem;
+  color: #111;
+  letter-spacing: 0.05em;
+}
+.title span {
+  color: #007aff;
+}
+.desc {
+  font-size: 0.85rem;
+  color: #666;
+  line-height: 1.9;
+  margin-bottom: 2.5rem;
+  max-width: 640px;
+}
+.videoWrapper {
+  position: relative;
+  width: 100%;
+  max-width: 900px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
+  background-color: #000;
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s ease;
+}
+.videoWrapper:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 30px 60px rgba(0, 122, 255, 0.12);
+}
+.videoWrapper video {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  display: block;
+  border: none;
+  outline: none;
+}

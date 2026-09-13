@@ -7,6 +7,7 @@ import { PlanActions } from "@/components/PlanActions";
 import { PricingTable } from "@/components/PricingTable";
 import { CheckoutIntentHandler } from "@/components/CheckoutIntentHandler";
 import { DemoVideoGallery } from "@/components/DemoVideoGallery";
+import { IntroVideo } from "@/components/IntroVideo";
 
 const PLAN_LABEL: Record<"free" | "pro" | "max", string> = {
   free: "Free",
@@ -210,7 +211,10 @@ function LandingPage() {
       </section>
 
       <section className="mx-auto max-w-4xl px-6 py-16">
-        <DemoVideoGallery />
+        <IntroVideo />
+        <div className="mt-16">
+          <DemoVideoGallery />
+        </div>
       </section>
 
       <section className="bg-slate-50/60 py-16">
