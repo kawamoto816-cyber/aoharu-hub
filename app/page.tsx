@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { auth } from "@clerk/nextjs/server";
-import { SignUpButton } from "@clerk/nextjs";
+import { SmartSignUpButton } from "@/components/SmartSignUpButton";
 import { getEntitlement } from "@bluespring/aoharu-entitlements";
 import { APPS } from "@/lib/apps-config";
 import { PlanActions } from "@/components/PlanActions";
@@ -169,11 +169,9 @@ function LandingPage() {
           小論文添削の「テンサクン」、志望理由書・ESづくりの「しぼりゆ」、面接対策の「メンサツ」など、高校生・受験生から大学生の就職活動、社会人の転職活動まで、進路・キャリアづくりを支えるAIアプリをひとつのアカウントでまとめて利用できます。
         </p>
         <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
-          <SignUpButton mode="modal">
-            <button className="rounded-xl bg-indigo-600 px-6 py-3 text-sm font-bold text-white shadow-sm shadow-indigo-600/20 transition-colors hover:bg-indigo-500">
-              無料ではじめる
-            </button>
-          </SignUpButton>
+          <SmartSignUpButton className="rounded-xl bg-indigo-600 px-6 py-3 text-sm font-bold text-white shadow-sm shadow-indigo-600/20 transition-colors hover:bg-indigo-500">
+            無料ではじめる
+          </SmartSignUpButton>
           <a
             href="#apps"
             className="rounded-xl border border-slate-200 px-6 py-3 text-sm font-bold text-slate-600 transition-colors hover:bg-slate-50"
@@ -240,11 +238,9 @@ function LandingPage() {
           クレジットカード登録なしで、今すぐ各アプリをお試しいただけます。
         </p>
         <div className="mt-6">
-          <SignUpButton mode="modal">
-            <button className="rounded-xl bg-indigo-600 px-6 py-3 text-sm font-bold text-white shadow-sm shadow-indigo-600/20 transition-colors hover:bg-indigo-500">
-              無料ではじめる
-            </button>
-          </SignUpButton>
+          <SmartSignUpButton className="rounded-xl bg-indigo-600 px-6 py-3 text-sm font-bold text-white shadow-sm shadow-indigo-600/20 transition-colors hover:bg-indigo-500">
+            無料ではじめる
+          </SmartSignUpButton>
         </div>
       </section>
 

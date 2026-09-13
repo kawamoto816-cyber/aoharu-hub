@@ -13,6 +13,7 @@
 import { useCallback, useState } from "react";
 import { useClerk, useUser } from "@clerk/nextjs";
 import { PENDING_PLAN_STORAGE_KEY } from "@/lib/checkout-intent";
+import { openSignUpWithRecovery } from "@/lib/authReloadGuard";
 
 type TierKey = "free" | "pro" | "max";
 
@@ -82,7 +83,7 @@ export function PricingTable() {
           } catch {
             // sessionStorageが使えない環境でも、登録自体は続行できるようにする
           }
-          clerk.openSignUp();
+          openSignUpWithRecovery(clerk);
           return;
         }
 
@@ -119,7 +120,7 @@ export function PricingTable() {
         // sessionStorageが使えない環境でも、登録自体は続行できるようにする
       }
       setLoading(plan);
-      clerk.openSignUp();
+      openSignUpWithRecovery(clerk);
       // モーダルが閉じられてチェックアウトに進まなかった場合に備え、
       // ボタンが操作不能なままにならないよう少し待ってから解除する。
       setTimeout(() => setLoading(null), 1500);
@@ -160,7 +161,7 @@ export function PricingTable() {
 
           {tier.key === "free" ? (
             <button
-              onClick={() => clerk.openSignUp()}
+              onClick={() => openSignUpWithRecovery(clerk)}
               className="mt-5 rounded-xl border border-slate-200 px-4 py-2.5 text-xs font-bold text-slate-600 transition-colors hover:bg-slate-50"
             >
               無料ではじめる
