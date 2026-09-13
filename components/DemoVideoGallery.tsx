@@ -54,7 +54,7 @@ const APP_URL: Record<string, string> = {
 };
 
 function tryLabelFor(slug: string): string {
-  return slug === "career-app" ? "何度でも無料で試す" : "無料で試す（月3回まで）";
+  return slug === "career-app" ? "何度でも無料で試す" : "無料で試す";
 }
 
 function HoverVideoMedia({
