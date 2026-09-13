@@ -6,6 +6,7 @@ import { APPS } from "@/lib/apps-config";
 import { PlanActions } from "@/components/PlanActions";
 import { PricingTable } from "@/components/PricingTable";
 import { CheckoutIntentHandler } from "@/components/CheckoutIntentHandler";
+import { DemoVideoGallery } from "@/components/DemoVideoGallery";
 
 const PLAN_LABEL: Record<"free" | "pro" | "max", string> = {
   free: "Free",
@@ -206,6 +207,10 @@ function LandingPage() {
             今後もアオハルOSのアプリは順次追加予定です
           </div>
         </div>
+      </section>
+
+      <section className="mx-auto max-w-4xl px-6 py-16">
+        <DemoVideoGallery />
       </section>
 
       <section className="bg-slate-50/60 py-16">

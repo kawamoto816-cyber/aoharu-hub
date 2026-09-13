@@ -1,0 +1,172 @@
+.flyer-gallery { margin-top: 2rem; }
+.flyer-gallery-label {
+  font-family: 'Montserrat', sans-serif; font-size: 0.7rem; letter-spacing: 0.25em;
+  color: #999; text-align: center; margin-bottom: 1rem;
+}
+.flyer-gallery-title {
+  font-size: clamp(1.3rem, 2.6vw, 1.7rem); font-weight: 500; text-align: center;
+  color: #111; margin: 0 0 1rem; letter-spacing: 0.05em;
+}
+.flyer-gallery-sub {
+  text-align: center; font-size: 0.82rem; color: #999; margin: 0 0 3.5rem;
+  letter-spacing: 0.03em;
+}
+
+/* --- 全体像ヒーローカード --- */
+.flyer-hero {
+  display: flex; align-items: stretch; gap: 0;
+  background-color: #0d1a3a; border-radius: 6px; overflow: hidden;
+  margin-bottom: 4rem; cursor: pointer;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
+  transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.5s ease;
+}
+.flyer-hero:hover { transform: translateY(-6px); box-shadow: 0 30px 60px rgba(0, 122, 255, 0.15); }
+.flyer-hero-media { flex: 0 0 42%; overflow: hidden; position: relative; min-height: 220px; }
+.flyer-hero-media img {
+  width: 100%; height: 100%; object-fit: cover; object-position: top;
+  display: block; transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.flyer-hero:hover .flyer-hero-media img { transform: scale(1.05); }
+.flyer-hero-info {
+  flex: 1; padding: 3rem 3.2rem; color: #fff; display: flex; flex-direction: column; justify-content: center;
+}
+.flyer-hero-eyebrow {
+  font-family: 'Montserrat', sans-serif; font-size: 0.7rem; letter-spacing: 0.2em;
+  color: #ffb15e; margin-bottom: 1rem;
+}
+.flyer-hero-name { font-size: clamp(1.6rem, 3vw, 2.1rem); font-weight: 600; margin-bottom: 1rem; letter-spacing: 0.03em; }
+.flyer-hero-desc { font-size: 0.9rem; line-height: 1.9; color: #c7d2e8; max-width: 30em; }
+.flyer-view-btn {
+  display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 2rem;
+  font-family: 'Montserrat', sans-serif; font-size: 0.75rem; letter-spacing: 0.1em;
+  color: #ffb15e; background: none; border: 1px solid rgba(255, 177, 94, 0.4);
+  padding: 0.8rem 1.6rem; border-radius: 999px; cursor: pointer;
+  transition: all 0.3s ease; width: fit-content;
+}
+.flyer-view-btn:hover { background-color: #ffb15e; color: #0d1a3a; border-color: #ffb15e; }
+.flyer-hero-actions { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 2rem; }
+.flyer-hero-actions .flyer-view-btn { margin-top: 0; }
+.flyer-cta-btn { background-color: #ffb15e; color: #0d1a3a; border-color: #ffb15e; }
+.flyer-cta-btn:hover { background-color: #fff; color: #0d1a3a; border-color: #fff; }
+
+/* --- フェーズ別グループ --- */
+.flyer-phase { margin-bottom: 3.5rem; }
+.flyer-phase-label {
+  display: flex; align-items: baseline; gap: 1rem; margin-bottom: 1.6rem;
+  font-size: 1rem; font-weight: 600; color: #111;
+}
+.flyer-phase-num { font-family: 'Montserrat', sans-serif; font-size: 0.75rem; color: #007aff; letter-spacing: 0.1em; }
+.flyer-phase-label .en { font-family: 'Montserrat', sans-serif; font-size: 0.7rem; font-weight: 400; color: #999; letter-spacing: 0.12em; }
+
+.flyer-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 1.4rem; }
+
+.flyer-card {
+  cursor: pointer; border-radius: 5px; overflow: hidden; background-color: #fafafa;
+  border: 1px solid #f0f0f0; transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s ease, border-color 0.4s ease;
+}
+.flyer-card:hover { transform: translateY(-6px); box-shadow: 0 16px 34px rgba(0, 0, 0, 0.08); border-color: transparent; }
+.flyer-card-media { aspect-ratio: 3 / 2; overflow: hidden; position: relative; background-color: #111; }
+.flyer-card-media img {
+  width: 100%; height: 100%; object-fit: cover; object-position: top;
+  display: block; transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.flyer-card:hover .flyer-card-media img { transform: scale(1.08); }
+.flyer-card-info { padding: 1.1rem 1.2rem 1.3rem; }
+.flyer-card-name { font-size: 0.95rem; font-weight: 600; color: #111; margin-bottom: 0.4rem; transition: color 0.3s ease; }
+.flyer-card:hover .flyer-card-name { color: #007aff; }
+.flyer-card-desc { font-size: 0.75rem; color: #888; line-height: 1.6; }
+
+.flyer-card.is-final { background-color: #0d1a3a; border-color: #0d1a3a; }
+.flyer-card.is-final .flyer-card-name { color: #fff; }
+.flyer-card.is-final:hover .flyer-card-name { color: #ffb15e; }
+.flyer-card.is-final .flyer-card-desc { color: #a9b6d6; }
+.flyer-card.is-final .flyer-card-tag {
+  display: inline-block; font-family: 'Montserrat', sans-serif; font-size: 0.6rem; letter-spacing: 0.15em;
+  color: #0d1a3a; background-color: #ffb15e; padding: 0.25rem 0.7rem; border-radius: 999px; margin-bottom: 0.7rem;
+}
+
+/* --- 動画プレビュー（ホバーで自動再生）＆再生バッジ --- */
+.media-video {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; object-position: top;
+  opacity: 0; transition: opacity 0.45s ease; pointer-events: none;
+}
+.media-video.is-active { opacity: 1; }
+.play-badge {
+  position: absolute; top: 50%; left: 50%; z-index: 3;
+  width: 42px; height: 42px; border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0.92);
+  background: rgba(13, 26, 58, 0.55);
+  display: flex; align-items: center; justify-content: center;
+  pointer-events: none;
+  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), background 0.3s ease, opacity 0.3s ease;
+}
+.play-badge::after {
+  content: ''; margin-left: 4px;
+  border-style: solid; border-width: 7px 0 7px 12px;
+  border-color: transparent transparent transparent #fff;
+}
+.flyer-card:hover .play-badge { transform: translate(-50%, -50%) scale(1.12); background: #007aff; }
+.flyer-hero-media .play-badge { width: 62px; height: 62px; background: rgba(13, 26, 58, 0.5); }
+.flyer-hero-media .play-badge::after { border-width: 11px 0 11px 18px; }
+.flyer-hero:hover .flyer-hero-media .play-badge { transform: translate(-50%, -50%) scale(1.1); background: #007aff; }
+.flyer-card-media:not(.has-video) .play-badge,
+.flyer-hero-media:not(.has-video) .play-badge { display: none; }
+
+.flyer-card-variant-badge {
+  position: absolute; top: 0.6rem; right: 0.6rem; z-index: 4;
+  font-family: 'Montserrat', sans-serif; font-size: 0.58rem; letter-spacing: 0.08em;
+  color: #fff; background: rgba(13, 26, 58, 0.72); backdrop-filter: blur(2px);
+  padding: 0.3rem 0.6rem; border-radius: 999px; pointer-events: none;
+}
+
+/* --- ライトボックス --- */
+.flyer-lightbox {
+  position: fixed; inset: 0; z-index: 1000; background-color: rgba(10, 12, 20, 0.92);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; visibility: hidden; transition: opacity 0.35s ease;
+  padding: 2rem;
+}
+.flyer-lightbox.is-open { opacity: 1; visibility: visible; }
+.flyer-lb-content {
+  display: flex; flex-direction: column; align-items: center; gap: 1.4rem;
+  max-height: 100%; max-width: 720px;
+  transform: translateY(16px); opacity: 0; transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.flyer-lightbox.is-open .flyer-lb-content { transform: translateY(0); opacity: 1; }
+.flyer-lb-img, .flyer-lb-video { max-width: 100%; max-height: 72vh; border-radius: 4px; box-shadow: 0 30px 70px rgba(0, 0, 0, 0.5); background: #000; }
+.flyer-lb-video-tabs { display: flex; gap: 0.6rem; justify-content: center; flex-wrap: wrap; }
+.flyer-lb-video-tab {
+  font-family: 'Montserrat', sans-serif; font-size: 0.68rem; letter-spacing: 0.08em; cursor: pointer;
+  color: #cdd6f0; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 999px; padding: 0.5rem 1.1rem; transition: all 0.25s ease;
+}
+.flyer-lb-video-tab:hover { color: #fff; border-color: rgba(255, 177, 94, 0.6); }
+.flyer-lb-video-tab.is-active { color: #0d1a3a; background-color: #ffb15e; border-color: #ffb15e; }
+.flyer-lb-caption { display: flex; align-items: center; gap: 1.6rem; flex-wrap: wrap; justify-content: center; }
+.flyer-lb-name { font-size: 0.95rem; color: #fff; letter-spacing: 0.05em; }
+.flyer-lb-download {
+  font-family: 'Montserrat', sans-serif; font-size: 0.7rem; letter-spacing: 0.1em; color: #ffb15e;
+  border: 1px solid rgba(255, 177, 94, 0.5); border-radius: 999px; padding: 0.6rem 1.3rem;
+  text-decoration: none; transition: all 0.3s ease;
+}
+.flyer-lb-download:hover { background-color: #ffb15e; color: #0d1a3a; }
+.flyer-lb-close, .flyer-lb-prev, .flyer-lb-next {
+  position: fixed; background: none; border: none; color: #fff; cursor: pointer;
+  opacity: 0.6; transition: opacity 0.3s ease; font-family: 'Montserrat', sans-serif;
+}
+.flyer-lb-close:hover, .flyer-lb-prev:hover, .flyer-lb-next:hover { opacity: 1; }
+.flyer-lb-close { top: 2rem; right: 2rem; font-size: 1.4rem; }
+.flyer-lb-prev, .flyer-lb-next { top: 50%; transform: translateY(-50%); font-size: 2.4rem; font-weight: 200; }
+.flyer-lb-prev { left: 1.5rem; }
+.flyer-lb-next { right: 1.5rem; }
+
+@media (max-width: 768px) {
+  .flyer-hero { flex-direction: column; }
+  .flyer-hero-media { min-height: 200px; }
+  .flyer-hero-info { padding: 2.2rem 1.8rem; }
+  .flyer-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 1rem; }
+  .flyer-lb-prev { left: 0.4rem; }
+  .flyer-lb-next { right: 0.4rem; }
+  .flyer-lb-prev, .flyer-lb-next { font-size: 1.8rem; }
+}
