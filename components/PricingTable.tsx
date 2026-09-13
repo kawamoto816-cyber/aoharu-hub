@@ -14,6 +14,7 @@ import { useCallback, useState } from "react";
 import { useClerk, useUser } from "@clerk/nextjs";
 import { PENDING_PLAN_STORAGE_KEY } from "@/lib/checkout-intent";
 import { openSignUpWithRecovery } from "@/lib/authReloadGuard";
+import { trackEvent } from "@/lib/analytics";
 
 type TierKey = "free" | "pro" | "max";
 
@@ -55,6 +56,11 @@ const PRICING: {
   },
 ];
 
+const PLAN_VALUE_JPY: Record<"pro" | "max", number> = {
+  pro: 980,
+  max: 2980,
+};
+
 export function PricingTable() {
   const { isLoaded, isSignedIn } = useUser();
   const clerk = useClerk();
@@ -90,6 +96,11 @@ export function PricingTable() {
         if (!res.ok || !data?.url) {
           throw new Error(data?.error || `リクエストに失敗しました (HTTP ${res.status})`);
         }
+        trackEvent("begin_checkout", {
+          currency: "JPY",
+          value: PLAN_VALUE_JPY[plan],
+          plan,
+        });
         window.location.href = data.url;
       } catch (err: any) {
         alert(`お申し込み手続きの開始に失敗しました。\n詳細: ${err.message}`);
@@ -111,6 +122,7 @@ export function PricingTable() {
 
       // 未ログイン: 選択したプランを一時保存してから新規登録モーダルを開く。
       // 登録完了後にハブ側(CheckoutIntentHandler)がこれを読み取って自動でCheckoutへ進む。
+      trackEvent("sign_up_click", { location: `pricing_${plan}` });
       try {
         sessionStorage.setItem(
           PENDING_PLAN_STORAGE_KEY,
@@ -161,7 +173,10 @@ export function PricingTable() {
 
           {tier.key === "free" ? (
             <button
-              onClick={() => openSignUpWithRecovery(clerk)}
+              onClick={() => {
+                trackEvent("sign_up_click", { location: "pricing_free" });
+                openSignUpWithRecovery(clerk);
+              }}
               className="mt-5 rounded-xl border border-slate-200 px-4 py-2.5 text-xs font-bold text-slate-600 transition-colors hover:bg-slate-50"
             >
               無料ではじめる

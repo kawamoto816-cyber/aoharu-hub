@@ -6,7 +6,9 @@ import {
   SignedOut,
   UserButton,
 } from "@clerk/nextjs";
+import Script from "next/script";
 import { SmartSignUpButton } from "@/components/SmartSignUpButton";
+import { GA_MEASUREMENT_ID } from "@/lib/analytics";
 import { UpgradeModalProvider } from "@/components/UpgradeModal";
 import { BillingPortalLink } from "@/components/BillingPortalLink";
 import "./globals.css";
@@ -35,6 +37,20 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
       >
         <body className="min-h-full flex flex-col bg-white text-slate-900">
+          {/* GA4計測タグ(gtag.js): コンバージョン計測(sign_up_click / begin_checkout /
+              purchase)の土台。ページの見た目には一切影響しない。 */}
+          <Script
+            src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
+            strategy="afterInteractive"
+          />
+          <Script id="ga4-init" strategy="afterInteractive">
+            {`
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){window.dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', '${GA_MEASUREMENT_ID}');
+            `}
+          </Script>
           <div className="fixed top-4 right-4 z-[9999] flex flex-col items-end gap-1.5">
             <SignedOut>
               {/* モバイルでは固定表示のCTAを非表示にする:
@@ -42,7 +58,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
                   ページ内に既にCTAが多数あるため、狭い画面幅では
                   この固定ボタンが料金プランの申し込みボタン等と
                   重なってしまう不具合があった(sm未満のみ非表示)。 */}
-              <SmartSignUpButton className="hidden rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-bold text-white shadow-sm shadow-indigo-600/20 transition-colors hover:bg-indigo-500 sm:inline-flex">
+              <SmartSignUpButton analyticsLocation="header" className="hidden rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-bold text-white shadow-sm shadow-indigo-600/20 transition-colors hover:bg-indigo-500 sm:inline-flex">
                 無料登録してはじめる
               </SmartSignUpButton>
             </SignedOut>
