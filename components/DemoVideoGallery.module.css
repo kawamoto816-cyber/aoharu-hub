@@ -75,6 +75,12 @@
 .flyer-card-name { font-size: 0.95rem; font-weight: 600; color: #111; margin-bottom: 0.4rem; transition: color 0.3s ease; }
 .flyer-card:hover .flyer-card-name { color: #007aff; }
 .flyer-card-desc { font-size: 0.75rem; color: #888; line-height: 1.6; }
+.flyer-card-try-link {
+  display: inline-block; margin-top: 0.7rem; font-size: 0.7rem; font-weight: 700;
+  color: #007aff; text-decoration: none;
+}
+.flyer-card-try-link:hover { text-decoration: underline; }
+.flyer-card.is-final .flyer-card-try-link { color: #ffb15e; }
 
 .flyer-card.is-final { background-color: #0d1a3a; border-color: #0d1a3a; }
 .flyer-card.is-final .flyer-card-name { color: #fff; }
@@ -151,6 +157,12 @@
   text-decoration: none; transition: all 0.3s ease;
 }
 .flyer-lb-download:hover { background-color: #ffb15e; color: #0d1a3a; }
+.flyer-lb-try {
+  font-family: 'Montserrat', sans-serif; font-size: 0.7rem; letter-spacing: 0.1em; color: #0d1a3a;
+  background-color: #ffb15e; border: 1px solid #ffb15e; border-radius: 999px; padding: 0.6rem 1.3rem;
+  text-decoration: none; transition: all 0.3s ease;
+}
+.flyer-lb-try:hover { background-color: #fff; color: #0d1a3a; }
 .flyer-lb-close, .flyer-lb-prev, .flyer-lb-next {
   position: fixed; background: none; border: none; color: #fff; cursor: pointer;
   opacity: 0.6; transition: opacity 0.3s ease; font-family: 'Montserrat', sans-serif;

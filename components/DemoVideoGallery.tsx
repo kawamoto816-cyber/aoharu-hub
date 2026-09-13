@@ -36,6 +36,27 @@ const FLYERS: Flyer[] = [
   },
 ];
 
+// 各アプリ本体への直接リンク。マスター(全体像)フライヤーには対応アプリが
+// 存在しないため含めない。キャリキャラ(career-app)だけ、他アプリと違い
+// アカウント登録不要・回数無制限のアフィリエイト仕様なので、CTA文言も変える。
+const APP_URL: Record<string, string> = {
+  "jiko-kotei": "https://kotei.bluespring.co.jp",
+  "16color": "https://color.bluespring.co.jp",
+  jikoapi: "https://jkap.bluespring.co.jp",
+  "career-design": "https://cd.bluespring.co.jp",
+  "career-app": "https://career.bluespring.co.jp",
+  edufit: "https://edufit.bluespring.co.jp",
+  campuscope: "https://campus.bluespring.co.jp",
+  "corporate-scope": "https://corporate-scope.bluespring.co.jp",
+  "narrative-app2": "https://reason.bluespring.co.jp",
+  tensakun: "https://essay.bluespring.co.jp",
+  mensatsu: "https://interview.bluespring.co.jp",
+};
+
+function tryLabelFor(slug: string): string {
+  return slug === "career-app" ? "何度でも無料で試す" : "無料で試す（月3回まで）";
+}
+
 function HoverVideoMedia({
   thumbSrc,
   alt,
@@ -232,6 +253,16 @@ export function DemoVideoGallery() {
                     {isFinal && <span className={styles["flyer-card-tag"]}>FINAL STAGE</span>}
                     <div className={styles["flyer-card-name"]}>{f.name}</div>
                     <div className={styles["flyer-card-desc"]}>{cardDesc[slug]}</div>
+                    {APP_URL[slug] && (
+                      <a
+                        href={APP_URL[slug]}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={styles["flyer-card-try-link"]}
+                      >
+                        {tryLabelFor(slug)} →
+                      </a>
+                    )}
                   </div>
                 </div>
               );
@@ -286,6 +317,16 @@ export function DemoVideoGallery() {
             )}
             <div className={styles["flyer-lb-caption"]}>
               <div className={styles["flyer-lb-name"]}>{current.name}</div>
+              {APP_URL[current.slug] && (
+                <a
+                  className={styles["flyer-lb-try"]}
+                  href={APP_URL[current.slug]}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {tryLabelFor(current.slug)} →
+                </a>
+              )}
               <a
                 className={styles["flyer-lb-download"]}
                 href={`${ASSET_BASE}/flyers/pdf/${current.slug}.pdf`}

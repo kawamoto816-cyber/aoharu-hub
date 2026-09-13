@@ -181,6 +181,35 @@ function LandingPage() {
         </div>
       </section>
 
+      {/* キャリキャラ導線: 完全無料・登録不要・回数無制限のミニ診断アプリを、
+          アカウント登録を求める前の「最初の一歩」として案内する。
+          有料プランの対象アプリ(APPSのグリッド)とは性質が異なる(サブスク対象外・
+          アフィリエイト収益で成立)ため、あえて提供アプリ一覧には含めず、
+          このセクションで単独案内する。 */}
+      <section className="mx-auto max-w-4xl px-6 pb-4">
+        <a
+          href="https://career.bluespring.co.jp"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex flex-col items-center gap-3 rounded-2xl border border-indigo-100 bg-indigo-50/60 px-6 py-5 text-center transition-colors hover:bg-indigo-50 sm:flex-row sm:justify-between sm:text-left"
+        >
+          <div>
+            <p className="text-[11px] font-bold text-indigo-600">
+              🎮 完全無料・登録不要・何度でも
+            </p>
+            <p className="mt-1 text-sm font-bold text-slate-900">
+              まずは3分、キャラ診断で「推し学部」を見つけてみませんか？
+            </p>
+            <p className="mt-1 text-xs text-slate-500">
+              12問に答えるだけ。アオハルOSと同じ設計思想で作られた進路診断AI「キャリキャラ」。
+            </p>
+          </div>
+          <span className="inline-flex shrink-0 items-center gap-1 rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-bold text-white transition-colors hover:bg-indigo-500">
+            無料で診断する ↗︎
+          </span>
+        </a>
+      </section>
+
       <section id="apps" className="mx-auto max-w-4xl px-6 py-16">
         <h2 className="text-center text-xl font-bold text-slate-900">
           提供アプリ
