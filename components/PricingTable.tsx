@@ -33,7 +33,7 @@ const PRICING: {
     price: "¥0",
     period: "",
     description: "まずは無料でお試し",
-    features: ["各アプリ 月3回まで無料", "会員登録のみでOK"],
+    features: ["添削レポート 月2本", "面接の評価レポート・志望理由書の構成案 各月1回", "クレジットカード不要"],
     highlight: false,
   },
   {

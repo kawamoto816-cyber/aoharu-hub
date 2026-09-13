@@ -111,3 +111,61 @@ export function getFreeMonthlyQuota(): number {
   const parsed = envValue ? Number(envValue) : NaN;
   return Number.isFinite(parsed) && parsed >= 0 ? parsed : 3;
 }
+
+/**
+ * 無料枠の「完了単位」ポリシー (アプリごと)。
+ *
+ * 従来は「APIを呼ぶたびに1回消費 / 月3回」だったため、対話型のアプリ
+ * (メンサツ・しぼりゆ) では無料ユーザーが結果画面に一度も辿り着けなかった。
+ * このポリシーでは、無料ユーザーが必ず結果ページまで完走できるように
+ *   - meteredActions : 「結果を出す」アクションだけを回数枠として数える
+ *   - supportActions : 対話ターン・ヒント・スキャン等は回数枠に数えず、
+ *                      乱用防止の月間上限 (supportMonthlyCap) だけ設ける
+ *   - proOnlyActions : 無料枠では使えない (Pro以上) アクション
+ * を分けて判定する。ポリシー未定義のアプリは従来どおり
+ * 「全アクション共通で月 getFreeMonthlyQuota() 回」として扱う。
+ *
+ * 各アプリのAPIルートは checkAccessAndLogUsage({ action }) に
+ * ここで定義したアクション名をそのまま渡すこと。
+ */
+export interface FreeTierPolicy {
+  /** 回数枠として数える「完了単位」のアクション名 */
+  meteredActions: readonly string[];
+  /** 完了単位の月間回数 */
+  monthlyQuota: number;
+  /** 補助アクション (対話ターン等) の月間上限。乱用防止用 */
+  supportMonthlyCap: number;
+  /** 無料枠では使えないアクション (reason: "no_plan" を返す) */
+  proOnlyActions: readonly string[];
+}
+
+export const FREE_TIER_POLICY: Partial<Record<AppKey, FreeTierPolicy>> = {
+  // テンサクン: 「提出して採点」= 添削レポート完走を月2本まで。
+  // ヒント・推敲・スキャン・類題生成・チャットは回数に数えない。
+  // 100点の模範解答はProの決め手として温存する。
+  [APP_KEYS.TENSAKUN]: {
+    meteredActions: ["score"],
+    monthlyQuota: 2,
+    supportMonthlyCap: 20,
+    proOnlyActions: ["generate_model_answer"],
+  },
+  // メンサツ: 「質問1つに答える → 評価レポート」の1問体験を月1回。
+  // 面接ターン (turn) と募集要項/企業情報の読み込みは補助扱い (3モード共通)。
+  [APP_KEYS.MENSATSU]: {
+    meteredActions: ["report"],
+    monthlyQuota: 1,
+    supportMonthlyCap: 6,
+    proOnlyActions: [],
+  },
+  // しぼりゆ: 対話 → 構成案 (骨子) までを月1回。初稿生成と審査レビューはPro。
+  [APP_KEYS.SHIBORIYU]: {
+    meteredActions: ["outline"],
+    monthlyQuota: 1,
+    supportMonthlyCap: 8,
+    proOnlyActions: ["draft", "review"],
+  },
+};
+
+export function getFreeTierPolicy(appKey: AppKey | string): FreeTierPolicy | null {
+  return (FREE_TIER_POLICY as Record<string, FreeTierPolicy | undefined>)[appKey] ?? null;
+}
