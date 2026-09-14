@@ -58,6 +58,10 @@ export const metadata: Metadata = {
     description: SITE_DESCRIPTION,
     images: ["/og-image.png"],
   },
+  // Google Search Console の所有権確認用メタタグ (削除すると確認が外れる)
+  verification: {
+    google: "SOkaKAbKZHbpq9vaoC0sWxBSAOoS-VommIZtaKD8qt8",
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
