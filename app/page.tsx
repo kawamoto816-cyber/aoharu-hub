@@ -117,7 +117,7 @@ function Hub({
                       </span>
                     ) : (
                       <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-500">
-                        {plan === "free" ? "お試し利用可" : "プラン対象外"}
+                        お試し利用可
                       </span>
                     )}
                   </div>
@@ -138,6 +138,11 @@ function Hub({
         {plan === "free" && (
           <p className="mt-4 text-xs text-slate-500">
             Freeプランでは、テンサクンの添削レポート(月2本)、メンサツの評価レポート(月1回)、しぼりゆの構成案(月1回)など、各アプリの「結果」まで無料でお試しいただけます。その他のアプリは月3回まで。上限に達した場合はProプランへのアップグレードをご案内します。
+          </p>
+        )}
+        {plan === "pro" && (
+          <p className="mt-4 text-xs text-slate-500">
+            Proプランの対象外アプリも、各アプリ月3回まで無料でお試しいただけます。全アプリを回数制限なく使うにはMaxプランへのアップグレードをご案内します。
           </p>
         )}
       </section>
