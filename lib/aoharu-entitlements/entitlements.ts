@@ -102,7 +102,8 @@ async function hasUnlimitedAccess(
  * アプリ側のガード用ヘルパー。アクセス不可なら理由を返す (呼び出し側でredirect等する)。
  * Next.jsのredirect()はここでは呼ばない (ライブラリをNext.js非依存に保つため)。
  *
- * Freeプランのユーザーは PLAN_APPS.free の対象外でも「お試し枠」として使える。
+ * 契約プランでそのアプリの無制限アクセスが無いユーザー (Freeプラン、および
+ * Pro/Maxの対象外アプリ) は「お試し枠」として使える。
  * 枠の数え方はアプリごとの FREE_TIER_POLICY (config/plans.ts) に従う:
  *   - meteredActions (採点・レポート・骨子など「結果を出す」処理) は月 monthlyQuota 回
  *   - それ以外の補助アクション (対話ターン・ヒント等) は月 supportMonthlyCap 回まで
@@ -123,8 +124,12 @@ export async function checkAppAccess(
 
   if (await hasUnlimitedAccess(userId, appKey, entitlement)) return { allowed: true };
 
-  // Freeプラン (または契約プランの対象外アプリ) は、月間お試し枠の消費状況で判定する
-  if (entitlement.plan === "free") {
+  // ここまで来たのは「無制限アクセスの契約が無い」ユーザー:
+  //   - Freeプラン
+  //   - Pro/Maxなど有料プランだが、そのアプリがプラン対象外 (例: Proでジココーテー)
+  // どちらも同じ月間お試し枠で判定する。有料契約者が対象外アプリを一切試せない
+  // (無料プランより不利になる) 状態を避けるため、プランで分岐しない。
+  {
     const policy = getFreeTierPolicy(appKey);
 
     // ポリシー未定義: 従来どおり全アクション共通の回数枠
@@ -159,8 +164,6 @@ export async function checkAppAccess(
     }
     return { allowed: true, remaining: policy.supportMonthlyCap - supportOnly - 1 };
   }
-
-  return { allowed: false, reason: "no_plan" };
 }
 
 /**
@@ -209,7 +212,9 @@ export async function getFreeTierStatus(
   const unlimited =
     !entitlement.isBlocked && (await hasUnlimitedAccess(userId, appKey, entitlement));
 
-  if (unlimited || entitlement.plan !== "free") {
+  // 無制限アクセス (契約プラン対象 or 組織向け無料枠) は残回数の概念がない。
+  // 支払いトラブル中 (isBlocked) は何も使えないので残り0で返す。
+  if (unlimited || entitlement.isBlocked) {
     return {
       plan: entitlement.plan,
       unlimited,
@@ -222,6 +227,8 @@ export async function getFreeTierStatus(
       proOnlyActions: unlimited ? [] : proOnlyActions,
     };
   }
+
+  // Freeプラン、または有料プランの対象外アプリ: お試し枠の消費状況を返す
 
   const total = await getMonthlyUsageCount(userId, appKey);
   const used = policy ? await getMonthlyUsageCount(userId, appKey, policy.meteredActions) : total;
