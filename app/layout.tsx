@@ -5,6 +5,7 @@ import {
   SignedIn,
   SignedOut,
   UserButton,
+  SignOutButton,
 } from "@clerk/nextjs";
 import Script from "next/script";
 import { SmartSignUpButton } from "@/components/SmartSignUpButton";
@@ -96,6 +97,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
               <div className="flex items-center gap-2 rounded-xl border border-slate-100 bg-white/90 px-2 py-1.5 shadow-sm backdrop-blur-sm">
                 <UserButton afterSignOutUrl="/" />
                 <BillingPortalLink />
+                {/* アイコンのメニューに気づかない利用者が多いため、明示的なログアウトボタンも置く */}
+                <SignOutButton redirectUrl="/">
+                  <button className="whitespace-nowrap px-2 text-[10px] font-bold text-slate-400 transition-colors hover:text-rose-600">
+                    ログアウト
+                  </button>
+                </SignOutButton>
               </div>
             </SignedIn>
           </div>
