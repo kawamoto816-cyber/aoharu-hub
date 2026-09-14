@@ -11,8 +11,10 @@ export {
   getPriceIdForPlan,
   planFromPriceId,
   getFreeMonthlyQuota,
+  FREE_TIER_POLICY,
+  getFreeTierPolicy,
 } from "./config/plans";
-export type { Plan, SubscriptionStatus, AppKey } from "./config/plans";
+export type { Plan, SubscriptionStatus, AppKey, FreeTierPolicy } from "./config/plans";
 
 export { getCurrentUserId, requireUserId, getUserEmail } from "./auth/session";
 
@@ -20,9 +22,15 @@ export {
   getEntitlement,
   checkAppAccess,
   checkAccessAndLogUsage,
+  getFreeTierStatus,
   getMonthlyUsageCount,
 } from "./entitlements";
-export type { Entitlement } from "./entitlements";
+export type {
+  Entitlement,
+  AccessResult,
+  AccessDeniedReason,
+  FreeTierStatus,
+} from "./entitlements";
 
 export { logUsage } from "./supabase/usage";
 export { getFreeAccessApps } from "./supabase/free-access";
