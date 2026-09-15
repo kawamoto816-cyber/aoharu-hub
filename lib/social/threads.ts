@@ -36,10 +36,24 @@ export async function postToThreads(text: string): Promise<{ id: string }> {
   const container = await graphPost("/me/threads", { media_type: "TEXT", text, access_token: token });
   const creationId = String(container.id ?? "");
   if (!creationId) throw new Error("Threads: コンテナIDが取得できませんでした");
-  const published = await graphPost("/me/threads_publish", { creation_id: creationId, access_token: token });
-  const id = String(published.id ?? "");
-  if (!id) throw new Error("Threads: 公開IDが取得できませんでした");
-  return { id };
+  // コンテナ作成直後に publish すると "The requested resource does not exist" (400) が返ることがある
+  // (Threads 側の処理待ち)。数秒おいて最大4回まで publish を試す (自己修復)。
+  let lastError: unknown = null;
+  for (let attempt = 0; attempt < 4; attempt++) {
+    if (attempt > 0) await new Promise((r) => setTimeout(r, 4000 * attempt));
+    try {
+      const published = await graphPost("/me/threads_publish", { creation_id: creationId, access_token: token });
+      const id = String(published.id ?? "");
+      if (!id) throw new Error("Threads: 公開IDが取得できませんでした");
+      return { id };
+    } catch (e) {
+      lastError = e;
+      const msg = e instanceof Error ? e.message : String(e);
+      // 認証エラー等は待っても直らないので即座に投げる
+      if (/Threads API 4(01|03)/.test(msg)) throw e;
+    }
+  }
+  throw lastError instanceof Error ? lastError : new Error(String(lastError));
 }
 
 // 長期トークンの更新 (発行から24時間以上経過していれば可能。有効期限が60日延びる)。
