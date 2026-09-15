@@ -86,6 +86,21 @@ export async function postToX(text: string): Promise<{ id: string }> {
   return { id: json.data.id };
 }
 
+// 認証付き GET (クエリパラメータは署名に含める)。投稿の反応 (public_metrics) の取得に使う。
+export async function xApiGet<T>(path: string, params: Record<string, string>): Promise<T> {
+  if (!isXConfigured()) throw new Error("X API のキーが設定されていません (X_API_KEY 等)");
+  const base = `https://api.x.com${path}`;
+  const qs = new URLSearchParams(params).toString();
+  const res = await fetch(`${base}?${qs}`, {
+    headers: {
+      Authorization: buildAuthHeader("GET", base, { token: process.env.X_ACCESS_TOKEN!, tokenSecret: process.env.X_ACCESS_SECRET! }, params),
+    },
+  });
+  const json = (await res.json().catch(() => ({}))) as T & { detail?: string; title?: string };
+  if (!res.ok) throw new Error(`X API ${res.status}: ${json.detail ?? json.title ?? JSON.stringify(json).slice(0, 300)}`);
+  return json;
+}
+
 // ---- 3-legged OAuth (投稿アカウントの認可) ----
 
 export async function xAuthStart(callbackUrl: string): Promise<{ authorizeUrl: string; requestToken: string; requestSecret: string }> {
