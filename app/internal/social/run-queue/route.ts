@@ -4,6 +4,7 @@ import { isXConfigured, postToX } from "@/lib/social/x";
 import { isThreadsConfigured, postToThreads } from "@/lib/social/threads";
 import { findRecentDuplicate, recordPost, textHash } from "@/lib/social/store";
 import { dueSlots, jstNow, loadQueue, type QueueItem } from "@/lib/social/queue";
+import { refreshSocialMetrics } from "@/lib/social/metrics";
 
 // 承認済み投稿キューをサーバー側で処理する (自己完結・冪等)。
 //   GET /internal/social/run-queue?token=...            現在時刻 (JST) までの枠を投稿
@@ -67,8 +68,16 @@ export async function GET(req: Request) {
   }
 
   const failed = results.filter((r) => r.status === "failed").length;
+
+  // 夜枠の実行時 (または ?metrics=1) に、投稿の反応も取り込む (Hobby プランは Cron が1日1回×2本までのため相乗り)。
+  let metrics: { updated: number; warnings: string[] } | { error: string } | null = null;
+  if (!dry && (p.get("metrics") === "1" || slots.includes("夜"))) {
+    metrics = await refreshSocialMetrics().catch((e: Error) => ({ error: e.message }));
+  }
+
   return NextResponse.json(
     {
+      metrics,
       ok: failed === 0,
       date,
       jstTime: `${String(now.hour).padStart(2, "0")}:${String(now.minute).padStart(2, "0")}`,
