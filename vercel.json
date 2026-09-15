@@ -1,0 +1,5 @@
+{
+  "crons": [
+    { "path": "/internal/social/run-queue", "schedule": "5 11 * * *" }
+  ]
+}
