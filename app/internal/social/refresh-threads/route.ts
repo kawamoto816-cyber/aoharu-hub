@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { isAdminToken } from "@/lib/metrics/admin-auth";
 import { refreshThreadsToken } from "@/lib/social/threads";
+import { isInstagramConfigured, refreshInstagramToken } from "@/lib/social/instagram";
 
 // Threads 長期トークンの更新 (週1回、定期タスクから呼ぶ)。
 //   GET /internal/social/refresh-threads?token=...
@@ -10,7 +11,8 @@ export async function GET(req: Request) {
   if (!isAdminToken(req)) return NextResponse.json({ error: "forbidden" }, { status: 403 });
   try {
     const r = await refreshThreadsToken();
-    return NextResponse.json({ ok: true, ...r });
+    const instagram = isInstagramConfigured() ? await refreshInstagramToken().catch((e: Error) => ({ error: e.message })) : null;
+    return NextResponse.json({ ok: true, ...r, instagram });
   } catch (e) {
     return NextResponse.json({ ok: false, error: e instanceof Error ? e.message : String(e) }, { status: 502 });
   }

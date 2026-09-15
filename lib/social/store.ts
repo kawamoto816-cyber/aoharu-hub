@@ -6,7 +6,7 @@ import { getSupabaseAdmin } from "@/lib/aoharu-entitlements/supabase/client";
 //   app_settings : key/value。Threads の長期トークン (自動更新後の値) を保持する。
 // テーブル定義は docs/social-posts.sql を参照。
 
-export type SocialChannel = "x" | "threads";
+export type SocialChannel = "x" | "threads" | "instagram";
 
 export function textHash(text: string): string {
   return createHash("sha256").update(text.trim()).digest("hex");

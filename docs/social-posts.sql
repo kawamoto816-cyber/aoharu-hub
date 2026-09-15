@@ -36,3 +36,9 @@ create table if not exists public.social_metrics (
 );
 alter table public.social_metrics enable row level security;
 grant all on table public.social_metrics to service_role;
+
+-- Instagram 対応: channel の制約を広げる
+alter table public.social_posts drop constraint if exists social_posts_channel_check;
+alter table public.social_posts add constraint social_posts_channel_check check (channel in ('x','threads','instagram'));
+alter table public.social_metrics drop constraint if exists social_metrics_channel_check;
+alter table public.social_metrics add constraint social_metrics_channel_check check (channel in ('x','threads','instagram'));

@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { isAdminToken } from "@/lib/metrics/admin-auth";
 import { isXConfigured, postToX } from "@/lib/social/x";
 import { isThreadsConfigured, postToThreads } from "@/lib/social/threads";
+import { isInstagramConfigured, postToInstagram } from "@/lib/social/instagram";
+import { parseCard } from "@/lib/social/card";
 import { findRecentDuplicate, recordPost, textHash } from "@/lib/social/store";
 import { dueSlots, jstNow, loadQueue, type QueueItem } from "@/lib/social/queue";
 import { refreshSocialMetrics } from "@/lib/social/metrics";
@@ -42,7 +44,7 @@ export async function GET(req: Request) {
 
   for (const it of targets) {
     const preview = it.text.slice(0, 40);
-    const configured = it.channel === "x" ? isXConfigured() : isThreadsConfigured();
+    const configured = it.channel === "x" ? isXConfigured() : it.channel === "threads" ? isThreadsConfigured() : isInstagramConfigured();
     if (!configured) {
       results.push({ channel: it.channel, slot: it.slot, status: "not_configured", preview });
       continue;
@@ -57,7 +59,14 @@ export async function GET(req: Request) {
       continue;
     }
     try {
-      const r = it.channel === "x" ? await postToX(it.text) : await postToThreads(it.text);
+      let r: { id: string };
+      if (it.channel === "x") r = await postToX(it.text);
+      else if (it.channel === "threads") r = await postToThreads(it.text);
+      else {
+        const card = parseCard(it.text);
+        if (!card) throw new Error("Instagram: 見出し行がありません");
+        r = await postToInstagram(card, new URL(req.url).origin);
+      }
       await recordPost({ channel: it.channel, text: it.text, status: "posted", external_id: r.id, source: `run-queue-${date}-${it.slot}` });
       results.push({ channel: it.channel, slot: it.slot, status: "posted", external_id: r.id, preview });
     } catch (e) {
