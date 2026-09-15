@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { isAdminToken } from "@/lib/metrics/admin-auth";
 import { isXConfigured } from "@/lib/social/x";
 import { isThreadsConfigured } from "@/lib/social/threads";
+import { isInstagramConfigured } from "@/lib/social/instagram";
 import { getSetting, listRecentPosts } from "@/lib/social/store";
 import { getServiceAccount } from "@/lib/metrics/google-auth";
 import { APPROVAL_FOLDER_ID } from "@/lib/social/queue";
@@ -19,7 +20,7 @@ export async function GET(req: Request) {
   return NextResponse.json(
     {
       generatedAt: new Date().toISOString(),
-      channels: { x: isXConfigured(), threads: isThreadsConfigured() },
+      channels: { x: isXConfigured(), threads: isThreadsConfigured(), instagram: isInstagramConfigured() },
       // 承認キューのフォルダをこのメールアドレスに閲覧共有すると run-queue が読めるようになる
       queue: { folderId: APPROVAL_FOLDER_ID, serviceAccountEmail: getServiceAccount()?.client_email ?? null },
       threadsTokenRefreshedAt: refreshedAt,

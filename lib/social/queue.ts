@@ -28,14 +28,14 @@ export function dueSlots(hour: number): Slot[] {
   return SLOT_ORDER.filter((s) => hour >= SLOT_HOUR[s]);
 }
 
-/** ドキュメント本文をパースする。形式: "[x][朝] 本文" を "----" で区切ったもの */
+/** ドキュメント本文をパースする。形式: "[x][朝] 本文" / "[threads][夜] 本文" / "[instagram][朝] 見出し…" を "----" で区切ったもの */
 export function parseQueue(text: string): QueueItem[] {
   const items: QueueItem[] = [];
   const blocks = text.replace(/\r\n/g, "\n").split(/^\s*-{3,}\s*$/m);
   for (const raw of blocks) {
     const block = raw.trim();
     if (!block) continue;
-    const m = block.match(/^\[(x|threads)\]\s*\[(朝|昼|夜)\]\s*/i);
+    const m = block.match(/^\[(x|threads|instagram)\]\s*\[(朝|昼|夜)\]\s*/i);
     if (!m) continue;
     const body = block
       .slice(m[0].length)

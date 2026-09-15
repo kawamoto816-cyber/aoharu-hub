@@ -12,9 +12,10 @@ import { findRecentDuplicate, recordPost, textHash, type SocialChannel } from "@
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
-const MAX_LEN: Record<SocialChannel, number> = { x: 280, threads: 500 };
+const MAX_LEN: Record<SocialChannel, number> = { x: 280, threads: 500, instagram: 2200 };
 
-function isChannel(v: string | null): v is SocialChannel {
+// このエンドポイントはテキスト投稿専用 (Instagram は run-queue 経由)
+function isChannel(v: string | null): v is "x" | "threads" {
   return v === "x" || v === "threads";
 }
 

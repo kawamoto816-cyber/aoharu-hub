@@ -14,8 +14,8 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-const CH_LABEL: Record<string, string> = { x: "X", threads: "Threads" };
-const CH_COLOR: Record<string, string> = { x: "bg-slate-900 text-white", threads: "bg-indigo-600 text-white" };
+const CH_LABEL: Record<string, string> = { x: "X", threads: "Threads", instagram: "Instagram" };
+const CH_COLOR: Record<string, string> = { x: "bg-slate-900 text-white", threads: "bg-indigo-600 text-white", instagram: "bg-pink-600 text-white" };
 
 function fmt(n: number | null | undefined) {
   return n == null ? "—" : n.toLocaleString("ja-JP");
@@ -137,7 +137,7 @@ export default async function SocialDashboardPage({
   const socialSessions = dash?.ga.daily.reduce((a, d) => a + d.socialSessions, 0) ?? 0;
   const socialSignupClicks = dash?.ga.daily.reduce((a, d) => a + d.signupClicks, 0) ?? 0;
 
-  const byChannel = ["x", "threads"].map((ch) => {
+  const byChannel = ["x", "threads", "instagram"].map((ch) => {
     const list = posts.filter((p) => p.channel === ch);
     return { ch, count: list.length, avgEng: avg(list.map((p) => engagement(p.metrics))), avgImp: avg(list.map((p) => p.metrics?.impressions ?? 0)) };
   });
@@ -200,7 +200,7 @@ export default async function SocialDashboardPage({
                 <a href={a.url} target="_blank" rel="noopener noreferrer" className="font-bold text-indigo-600 underline underline-offset-2">投稿一覧</a>
                 <a href={a.analytics} target="_blank" rel="noopener noreferrer" className="font-bold text-slate-500 underline underline-offset-2">アナリティクス</a>
               </div>
-              <p className="mt-2 text-[10px] text-slate-400">{a.key === "x" || a.key === "threads" ? "自動投稿・反応取り込み対応" : "手動投稿"}</p>
+              <p className="mt-2 text-[10px] text-slate-400">{a.key === "x" || a.key === "threads" ? "自動投稿・反応取り込み対応" : a.key === "instagram" ? "自動投稿（画像カード）対応" : "手動投稿"}</p>
             </div>
           ))}
         </div>
@@ -208,7 +208,7 @@ export default async function SocialDashboardPage({
 
       {/* サマリー */}
       <section className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-        <Tile label={`投稿数（${days}日）`} value={fmt(posts.length)} sub={`X ${byChannel[0].count} ／ Threads ${byChannel[1].count}${failedPosts.length ? ` ／ 失敗 ${failedPosts.length}` : ""}`} />
+        <Tile label={`投稿数（${days}日）`} value={fmt(posts.length)} sub={`X ${byChannel[0].count} ／ Threads ${byChannel[1].count} ／ Instagram ${byChannel[2].count}${failedPosts.length ? ` ／ 失敗 ${failedPosts.length}` : ""}`} />
         <Tile label="反応の合計" value={fmt(totalEng)} sub="いいね＋返信＋リポスト＋引用" />
         <Tile label="表示回数の合計" value={fmt(totalImp)} sub="取得できる投稿のみ" />
         <Tile label="SNS経由セッション" value={dash?.ga.ok ? fmt(socialSessions) : "—"} sub="GA4 Organic Social" />

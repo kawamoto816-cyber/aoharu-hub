@@ -3,6 +3,7 @@ import { getGoogleAccessToken } from "@/lib/metrics/google-auth";
 import { dateRange } from "@/lib/metrics/sources";
 import { xApiGet } from "./x";
 import { getSetting } from "./store";
+import { getInstagramPermalink } from "./instagram";
 import type { SocialChannel } from "./store";
 
 // 自社SNS投稿の反応 (いいね・返信・リポスト・表示) を各APIから取り込み、social_metrics に保存する。
@@ -43,7 +44,7 @@ export function postUrl(channel: SocialChannel, externalId: string | null, perma
   if (permalink) return permalink;
   if (!externalId) return null;
   if (channel === "x") return `https://x.com/aoharu_os/status/${externalId}`;
-  return null; // Threads は permalink をAPIから取得する
+  return null; // Threads / Instagram は permalink をAPIから取得する
 }
 
 // ---- 取り込み ----
@@ -129,6 +130,7 @@ export async function refreshSocialMetrics(days = 60): Promise<{ updated: number
   if (error) throw new Error(`social_posts select: ${error.message}`);
   const xIds = (data ?? []).filter((r) => r.channel === "x").map((r) => r.external_id as string);
   const thIds = (data ?? []).filter((r) => r.channel === "threads").map((r) => r.external_id as string);
+  const igIds = (data ?? []).filter((r) => r.channel === "instagram").map((r) => r.external_id as string);
 
   const warnings: string[] = [];
   const rows: PostMetrics[] = [];
@@ -143,6 +145,10 @@ export async function refreshSocialMetrics(days = 60): Promise<{ updated: number
     const r = await fetchThreadsMetrics(thIds);
     rows.push(...r.metrics);
     if (r.warning) warnings.push(r.warning);
+  }
+  for (const id of igIds) {
+    const permalink = await getInstagramPermalink(id);
+    rows.push({ external_id: id, channel: "instagram", likes: 0, replies: 0, reposts: 0, quotes: 0, impressions: null, permalink, fetched_at: new Date().toISOString() });
   }
   if (rows.length) {
     const { error: upErr } = await supabase.from("social_metrics").upsert(rows, { onConflict: "external_id" });
