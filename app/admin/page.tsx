@@ -141,6 +141,12 @@ export default async function AdminPage({
           >
             JSON
           </a>
+          <Link
+            href={`/admin/social?days=${days}`}
+            className="rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1 font-bold text-indigo-700"
+          >
+            配信ダッシュボード →
+          </Link>
         </nav>
       </div>
 

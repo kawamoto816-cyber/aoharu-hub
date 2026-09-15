@@ -1,5 +1,6 @@
 {
   "crons": [
-    { "path": "/internal/social/run-queue", "schedule": "5 11 * * *" }
+    { "path": "/internal/social/run-queue", "schedule": "5 11 * * *" },
+    { "path": "/internal/social/refresh-metrics", "schedule": "30 21 * * *" }
   ]
 }
