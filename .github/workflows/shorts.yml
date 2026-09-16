@@ -10,7 +10,7 @@ on:
         default: "scripts/shorts/samples/gakubu-mayotteru.json"
       speakers:
         description: "VOICEVOX 話者ID (カンマ区切り。例 13,2,8)"
-        default: "13"
+        default: "2"
 permissions:
   contents: write
 jobs:

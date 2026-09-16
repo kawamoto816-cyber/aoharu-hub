@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # 承認済みの [shorts] 台本を本番から取得し、未生成のものをレンダリングして Supabase Storage に置き、サーバーに記録する。
-# 必要な環境変数: CRON_SECRET, SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, (任意) SHORTS_SPEAKER (既定 13), SHORTS_DATE (既定 今日 JST)
+# 必要な環境変数: CRON_SECRET, SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, (任意) SHORTS_SPEAKER (既定 2 = 四国めたん), SHORTS_DATE (既定 今日 JST)
 set -euo pipefail
 BASE="https://app.bluespring.co.jp"
 DATE="${SHORTS_DATE:-$(TZ=Asia/Tokyo date +%F)}"
-SPEAKER="${SHORTS_SPEAKER:-13}"
+SPEAKER="${SHORTS_SPEAKER:-2}"
 mkdir -p out queue
 curl -sSf -H "Authorization: Bearer $CRON_SECRET" "$BASE/internal/shorts/queue?date=$DATE" > queue/queue.json
 echo "queue: $(python3 -c 'import json;q=json.load(open("queue/queue.json"));print(q.get("docs"), [ (s["slug"], s["rendered"]) for s in q.get("scripts",[]) ])')"

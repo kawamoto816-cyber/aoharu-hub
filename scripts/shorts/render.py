@@ -200,7 +200,7 @@ def run(cmd):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--script", required=True)
-    ap.add_argument("--speaker", type=int, default=13)
+    ap.add_argument("--speaker", type=int, default=2)
     ap.add_argument("--voicevox", default="http://localhost:50021")
     ap.add_argument("--no-tts", action="store_true")
     ap.add_argument("--out", default="out")
