@@ -1,0 +1,48 @@
+# アオハルOS 定時処理 (Vercel Hobby の Cron は 1日2本までのため、GitHub Actions から本番を叩く)
+#   - 07:40 JST 指標レポートを Google ドキュメントに書き出す (アナリスト 08:00 / 編集長 08:30 が読む)
+#   - 10:03 / 13:03 / 20:03 JST 承認済み投稿を投稿 (Vercel Cron 10:03 / 20:03 と二重化。冪等なので安全)
+# 必要な Secret: CRON_SECRET (Vercel の環境変数と同じ値)
+name: scheduled-jobs
+on:
+  schedule:
+    - cron: "40 22 * * *"   # 07:40 JST 指標レポート
+    - cron: "3 1 * * *"     # 10:03 JST 朝枠
+    - cron: "3 4 * * *"     # 13:03 JST 昼枠
+    - cron: "3 11 * * *"    # 20:03 JST 夜枠
+  workflow_dispatch:
+    inputs:
+      job:
+        description: "metrics | run-queue"
+        default: "run-queue"
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Decide job
+        id: pick
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "job=${{ github.event.inputs.job }}" >> "$GITHUB_OUTPUT"
+          elif [ "${{ github.event.schedule }}" = "40 22 * * *" ]; then
+            echo "job=metrics" >> "$GITHUB_OUTPUT"
+          else
+            echo "job=run-queue" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Call production
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          set -e
+          if [ -z "$CRON_SECRET" ]; then echo "CRON_SECRET secret is not set"; exit 1; fi
+          if [ "${{ steps.pick.outputs.job }}" = "metrics" ]; then
+            url="https://app.bluespring.co.jp/internal/metrics/publish"
+          else
+            url="https://app.bluespring.co.jp/internal/social/run-queue"
+          fi
+          for i in 1 2 3; do
+            code=$(curl -sS -o out.json -w '%{http_code}' --max-time 150 -H "Authorization: Bearer $CRON_SECRET" "$url") && break || true
+            echo "attempt $i failed (HTTP $code)"; sleep 60
+          done
+          echo "HTTP $code"; cat out.json; echo
+          [ "$code" = "200" ]
