@@ -5,15 +5,18 @@ import { APPROVAL_FOLDER_ID, jstNow } from "@/lib/social/queue";
 
 // 指標レポートを Google ドキュメントとして「承認キュー」フォルダに書き出す。
 // アナリスト／編集長の定期タスクは、ページ取得 (WebFetch) の許可待ちで失敗することがあるため、
-// 許可が要らない Google Drive 経由で指標を渡す。ドキュメント名は「指標レポート YYYY-MM-DD」(JST)。
-// 同じ日に複数回呼ばれたら同じドキュメントを上書きする (冪等)。
-//   必要: サービスアカウントにフォルダを「編集者」で共有、スコープ drive (google-auth.ts)。
+// 許可が要らない Google Drive 経由で指標を渡す。
+// サービスアカウントは Drive の保存容量を持たない (新規ファイルを作れない) ので、
+// じゅんさんが作った固定名のドキュメント「指標レポート（最新）」の中身を毎回上書きする (冪等)。
+//   必要: フォルダ内にその名前のドキュメントを作っておく／サービスアカウントにフォルダを「編集者」で共有／スコープ drive。
 
 const DRIVE = "https://www.googleapis.com/drive/v3";
 const UPLOAD = "https://www.googleapis.com/upload/drive/v3";
 
-export function metricsDocName(date = jstNow().date): string {
-  return `指標レポート ${date}`;
+export const METRICS_DOC_NAME = "指標レポート（最新）";
+
+export function metricsDocName(): string {
+  return METRICS_DOC_NAME;
 }
 
 async function driveToken(): Promise<string> {
@@ -42,7 +45,8 @@ function multipart(metadata: Record<string, unknown>, text: string): { body: str
 export async function publishMetricsDoc(days = 14): Promise<{ id: string; name: string; created: boolean; chars: number }> {
   const token = await driveToken();
   const report = await buildMetricsReport(days);
-  const text = formatReportText(report);
+  const { date } = jstNow();
+  const text = `更新日 (JST): ${date}\n${formatReportText(report)}`;
   const name = metricsDocName();
   const existing = await findDoc(token, name);
 
@@ -58,20 +62,7 @@ export async function publishMetricsDoc(days = 14): Promise<{ id: string; name: 
     return { id: existing, name, created: false, chars: text.length };
   }
 
-  const { body, contentType } = multipart(
-    { name, mimeType: "application/vnd.google-apps.document", parents: [APPROVAL_FOLDER_ID] },
-    text,
+  throw new Error(
+    `Drive にドキュメント「${name}」がありません。承認キューフォルダに Google ドキュメント「${name}」を作成し、サービスアカウント ${sa} を「編集者」で共有してください (サービスアカウントは新規作成できません)`,
   );
-  const res = await fetch(`${UPLOAD}/files?uploadType=multipart&supportsAllDrives=true`, {
-    method: "POST",
-    headers: { Authorization: `Bearer ${token}`, "Content-Type": contentType },
-    body,
-  });
-  if (!res.ok) {
-    throw new Error(
-      `Drive create ${res.status}: ${(await res.text()).slice(0, 200)} — フォルダをサービスアカウント ${sa} に「編集者」で共有してください`,
-    );
-  }
-  const json = (await res.json()) as { id: string };
-  return { id: json.id, name, created: true, chars: text.length };
 }
