@@ -10,7 +10,9 @@ on:
         default: "scripts/shorts/samples/gakubu-mayotteru.json"
       speakers:
         description: "VOICEVOX 話者ID (カンマ区切り。例 13,2,8)"
-        default: "13"
+        default: "2"
+permissions:
+  contents: write
 jobs:
   render:
     runs-on: ubuntu-latest
@@ -48,3 +50,12 @@ jobs:
           name: shorts
           path: out/
           retention-days: 14
+      # Artifacts の保存先 (Azure Blob) に届かない環境向けに、生成物を "shorts-output" ブランチにも置く (履歴なし・上書き)
+      - name: Publish to shorts-output branch
+        run: |
+          set -e
+          git config user.name "shorts-bot"
+          git config user.email "shorts-bot@users.noreply.github.com"
+          rm -rf /tmp/pub && mkdir -p /tmp/pub && cp -r out/. /tmp/pub/
+          cd /tmp/pub && git init -q && git checkout -q -b shorts-output && git add -A && git commit -q -m "shorts output $(date -u +%FT%TZ)"
+          git push -q --force "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" shorts-output
