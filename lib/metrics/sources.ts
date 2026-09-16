@@ -226,16 +226,33 @@ export async function fetchUsage(days: number): Promise<SourceResult<UsageSummar
     const { start, dates } = dateRange(days);
     const sinceIso = `${start}T00:00:00.000Z`;
 
-    const [{ data: subs, error: subsErr }, { data: usage, error: usageErr }] = await Promise.all([
-      supabase.from("subscriptions").select("plan,status,created_at"),
-      supabase
-        .from("usage_log")
-        .select("app_key,action,created_at")
-        .gte("created_at", sinceIso)
-        .limit(50000),
-    ]);
-    if (subsErr) throw new Error(subsErr.message);
-    if (usageErr) throw new Error(usageErr.message);
+    // Supabase (PostgREST) は稀に "JWT issued at future" (時刻ずれ) で一時的に失敗する。
+    // 数秒おいて最大3回まで取り直す (自己修復)。
+    const load = async () => {
+      const [{ data: subs, error: subsErr }, { data: usage, error: usageErr }] = await Promise.all([
+        supabase.from("subscriptions").select("plan,status,created_at"),
+        supabase
+          .from("usage_log")
+          .select("app_key,action,created_at")
+          .gte("created_at", sinceIso)
+          .limit(50000),
+      ]);
+      if (subsErr) throw new Error(subsErr.message);
+      if (usageErr) throw new Error(usageErr.message);
+      return { subs, usage };
+    };
+    let result: Awaited<ReturnType<typeof load>> | null = null;
+    let lastErr: unknown = null;
+    for (let attempt = 0; attempt < 3 && !result; attempt++) {
+      if (attempt > 0) await new Promise((r) => setTimeout(r, 3000));
+      try {
+        result = await load();
+      } catch (e) {
+        lastErr = e;
+      }
+    }
+    if (!result) throw lastErr instanceof Error ? lastErr : new Error(String(lastErr));
+    const { subs, usage } = result;
 
     const usersByPlan: Record<string, number> = {};
     const signups = new Map<string, number>(dates.map((d) => [d, 0]));
