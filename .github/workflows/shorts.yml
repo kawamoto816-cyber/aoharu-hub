@@ -1,0 +1,50 @@
+# アオハルOS ショート動画の自動生成 (静止スライド + VOICEVOX ナレーション + 字幕 → 縦動画)
+#   手動実行: Actions → shorts → Run workflow (script: 台本JSONのパス, speakers: VOICEVOX 話者ID をカンマ区切り)
+#   生成物は Artifacts (shorts-<speaker>) からダウンロードできる。
+name: shorts
+on:
+  workflow_dispatch:
+    inputs:
+      script:
+        description: "台本 JSON のパス"
+        default: "scripts/shorts/samples/gakubu-mayotteru.json"
+      speakers:
+        description: "VOICEVOX 話者ID (カンマ区切り。例 13,2,8)"
+        default: "13"
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    services:
+      voicevox:
+        image: voicevox/voicevox_engine:cpu-latest
+        ports:
+          - 50021:50021
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install deps
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg fonts-noto-cjk python3-pil > /dev/null
+      - name: Wait for VOICEVOX
+        run: |
+          for i in $(seq 1 60); do
+            if curl -sf http://localhost:50021/version > /dev/null; then echo "voicevox ready"; exit 0; fi
+            sleep 3
+          done
+          echo "voicevox not ready"; exit 1
+      - name: Render
+        run: |
+          mkdir -p out
+          IFS=',' read -ra SPK <<< "${{ github.event.inputs.speakers }}"
+          for s in "${SPK[@]}"; do
+            s=$(echo "$s" | tr -d ' ')
+            python3 scripts/shorts/render.py --script "${{ github.event.inputs.script }}" --speaker "$s" --out "out/speaker-$s"
+            rm -rf "out/speaker-$s"/_work_*
+          done
+          ls -R out
+      - uses: actions/upload-artifact@v4
+        with:
+          name: shorts
+          path: out/
+          retention-days: 14
