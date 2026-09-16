@@ -42,3 +42,19 @@ alter table public.social_posts drop constraint if exists social_posts_channel_c
 alter table public.social_posts add constraint social_posts_channel_check check (channel in ('x','threads','instagram'));
 alter table public.social_metrics drop constraint if exists social_metrics_channel_check;
 alter table public.social_metrics add constraint social_metrics_channel_check check (channel in ('x','threads','instagram'));
+
+-- ショート動画 (生成済み動画の記録。動画本体は Supabase Storage バケット "shorts" に置く)
+create table if not exists public.shorts_videos (
+  slug text primary key,
+  title text not null,
+  description text,
+  duration_sec numeric,
+  speaker text,
+  video_url text not null,
+  status text not null default 'rendered' check (status in ('rendered','posted_youtube','posted_tiktok','posted_all')),
+  source text,
+  rendered_at timestamptz not null default now()
+);
+alter table public.shorts_videos enable row level security;
+grant all on public.shorts_videos to service_role;
+-- Storage: Dashboard → Storage → New bucket "shorts" (Public bucket: ON)
