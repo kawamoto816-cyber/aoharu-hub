@@ -10,12 +10,12 @@ interface ServiceAccountKey {
   token_uri?: string;
 }
 
-// Drive 読み取りは SNS 投稿キュー (Google ドキュメント) を読むために使う。
-// 対象フォルダをサービスアカウントのメールアドレスに「閲覧者」で共有しておくこと。
+// Drive は SNS 投稿キュー (Google ドキュメント) の読み取りと、指標レポートの書き出しに使う。
+// 対象フォルダ (承認キュー) をサービスアカウントのメールアドレスに「編集者」で共有しておくこと。
 const SCOPES = [
   "https://www.googleapis.com/auth/analytics.readonly",
   "https://www.googleapis.com/auth/webmasters.readonly",
-  "https://www.googleapis.com/auth/drive.readonly",
+  "https://www.googleapis.com/auth/drive",
 ];
 
 let cached: { token: string; expiresAt: number } | null = null;
