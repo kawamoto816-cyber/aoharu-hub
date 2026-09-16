@@ -1,6 +1,7 @@
 # アオハルOS 定時処理 (Vercel Hobby の Cron は 1日2本までのため、GitHub Actions から本番を叩く)
 #   - 07:40 JST 指標レポートを Google ドキュメントに書き出す (アナリスト 08:00 / 編集長 08:30 が読む)
 #   - 10:03 / 13:03 / 20:03 JST 承認済み投稿を投稿 (Vercel Cron 10:03 / 20:03 と二重化。冪等なので安全)
+#   - 09:30 JST (平日) 法人営業の「送信承認」分をメール送信 (冪等)
 # 必要な Secret: CRON_SECRET (Vercel の環境変数と同じ値)
 name: scheduled-jobs
 on:
@@ -9,10 +10,11 @@ on:
     - cron: "3 1 * * *"     # 10:03 JST 朝枠
     - cron: "3 4 * * *"     # 13:03 JST 昼枠
     - cron: "3 11 * * *"    # 20:03 JST 夜枠
+    - cron: "30 0 * * 1-5"  # 09:30 JST 平日 法人営業の送信承認分を送信
   workflow_dispatch:
     inputs:
       job:
-        description: "metrics | run-queue"
+        description: "metrics | run-queue | sales"
         default: "run-queue"
 jobs:
   run:
@@ -26,6 +28,8 @@ jobs:
             echo "job=${{ github.event.inputs.job }}" >> "$GITHUB_OUTPUT"
           elif [ "${{ github.event.schedule }}" = "40 22 * * *" ]; then
             echo "job=metrics" >> "$GITHUB_OUTPUT"
+          elif [ "${{ github.event.schedule }}" = "30 0 * * 1-5" ]; then
+            echo "job=sales" >> "$GITHUB_OUTPUT"
           else
             echo "job=run-queue" >> "$GITHUB_OUTPUT"
           fi
@@ -37,6 +41,8 @@ jobs:
           if [ -z "$CRON_SECRET" ]; then echo "CRON_SECRET secret is not set"; exit 1; fi
           if [ "${{ steps.pick.outputs.job }}" = "metrics" ]; then
             url="https://app.bluespring.co.jp/internal/metrics/publish"
+          elif [ "${{ steps.pick.outputs.job }}" = "sales" ]; then
+            url="https://app.bluespring.co.jp/internal/sales/run"
           else
             url="https://app.bluespring.co.jp/internal/social/run-queue"
           fi
