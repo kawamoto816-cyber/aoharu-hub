@@ -5,8 +5,16 @@ import { createHash, randomBytes } from "node:crypto";
 //   TIKTOK_CLIENT_KEY, TIKTOK_CLIENT_SECRET (TikTok Developer Portal のアプリ情報)
 //   TIKTOK_ACCESS_TOKEN, TIKTOK_REFRESH_TOKEN (投稿アカウント @aoharu_os のトークン。
 //     /internal/social/tiktok-auth で発行し、/internal/social/tiktok-callback に表示されたものを登録する)
+//   run-queue からの自動投稿 (postShortToTikTok) は TIKTOK_ACCESS_TOKEN を使わず、
+//   毎回 TIKTOK_REFRESH_TOKEN からアクセストークンを取り直す (24時間で失効するため)。
+//   TIKTOK_ACCESS_TOKEN は /internal/social/tiktok-callback の動作確認用の単発投稿にのみ使う。
 //
 // OAuth 2.0 + PKCE (Authorization Code)。認可コード交換・動画投稿 (Direct Post, PULL_FROM_URL) をまとめる。
+//
+// 重要 (App Review が通るまでの挙動): TikTok は審査未完了 (unaudited) のアプリからの投稿を
+// privacy_level=SELF_ONLY (非公開) 以外で拒否する。run-queue の自動投稿は PUBLIC_TO_EVERYONE (公開) で
+// リクエストするため、審査が通るまでは failed が記録され続けるだけで安全に失敗し、
+// 審査が通り次第コードを変更しなくても自動的に投稿が成功するようになる。
 
 const AUTHORIZE_URL = "https://www.tiktok.com/v2/auth/authorize/";
 const TOKEN_URL = "https://open.tiktokapis.com/v2/oauth/token/";
@@ -133,8 +141,17 @@ export async function tiktokRefreshToken(refreshToken: string): Promise<TikTokTo
 
 // ---- Content Posting API (Direct Post, PULL_FROM_URL) ----
 
+// 自動投稿キューが使う設定判定。TIKTOK_ACCESS_TOKEN は24時間で失効するため、
+// 自動投稿では毎回 TIKTOK_REFRESH_TOKEN からアクセストークンを取り直す (YouTube と同じ方式)。
 export function isTikTokPostingConfigured(): boolean {
-  return Boolean(process.env.TIKTOK_ACCESS_TOKEN);
+  return Boolean(process.env.TIKTOK_CLIENT_KEY && process.env.TIKTOK_CLIENT_SECRET && process.env.TIKTOK_REFRESH_TOKEN);
+}
+
+async function getAccessToken(): Promise<string> {
+  const refreshToken = process.env.TIKTOK_REFRESH_TOKEN;
+  if (!refreshToken) throw new Error("TikTok のリフレッシュトークンが設定されていません (TIKTOK_REFRESH_TOKEN)");
+  const { accessToken } = await tiktokRefreshToken(refreshToken);
+  return accessToken;
 }
 
 /**
@@ -176,6 +193,22 @@ export async function postVideoPullFromUrl(
     throw new Error(`post init ${res.status}: ${json.error?.message ?? json.error?.code ?? JSON.stringify(json).slice(0, 300)}`);
   }
   return { publishId: json.data.publish_id };
+}
+
+/**
+ * run-queue からの自動投稿用。TIKTOK_REFRESH_TOKEN から都度アクセストークンを取得し、
+ * 本番公開 (PUBLIC_TO_EVERYONE) で投稿する。
+ * 審査未完了 (unaudited) のアプリでは TikTok 側が非公開以外の privacy_level を拒否するため、
+ * App Review が通るまではここが失敗し続け、通り次第コード変更なしで自動的に投稿が成功するようになる。
+ */
+export async function postShortToTikTok(video: { videoUrl: string; title: string; description?: string }): Promise<{ id: string }> {
+  const accessToken = await getAccessToken();
+  const caption = `${video.title}\n\n${video.description ?? ""}`.trim().slice(0, 2200);
+  const { publishId } = await postVideoPullFromUrl(video.videoUrl, caption, {
+    accessToken,
+    privacyLevel: "PUBLIC_TO_EVERYONE",
+  });
+  return { id: publishId };
 }
 
 export async function fetchPostStatus(publishId: string, accessToken?: string): Promise<Record<string, unknown>> {

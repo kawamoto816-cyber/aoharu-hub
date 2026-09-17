@@ -72,3 +72,10 @@ alter table public.shorts_videos add column if not exists youtube_video_id text;
 alter table public.shorts_videos add column if not exists youtube_error text;
 alter table public.shorts_videos add column if not exists youtube_attempts integer not null default 0;
 create index if not exists shorts_videos_youtube_pending_idx on public.shorts_videos (rendered_at) where youtube_posted_at is null;
+
+-- TikTok (Content Posting API) 自動投稿の進捗 (プラットフォームごとに独立して追跡する。status 列は既存のレンダリング状態のまま変更しない)
+alter table public.shorts_videos add column if not exists tiktok_posted_at timestamptz;
+alter table public.shorts_videos add column if not exists tiktok_publish_id text;
+alter table public.shorts_videos add column if not exists tiktok_error text;
+alter table public.shorts_videos add column if not exists tiktok_attempts integer not null default 0;
+create index if not exists shorts_videos_tiktok_pending_idx on public.shorts_videos (rendered_at) where tiktok_posted_at is null;

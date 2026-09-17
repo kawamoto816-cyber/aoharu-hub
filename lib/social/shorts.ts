@@ -182,7 +182,7 @@ export async function listShortsVideos(limit = 30) {
   const { data, error } = await supabase
     .from("shorts_videos")
     .select(
-      "slug,title,description,duration_sec,speaker,video_url,status,source,rendered_at,instagram_posted_at,instagram_media_id,instagram_error,instagram_attempts,youtube_posted_at,youtube_video_id,youtube_error,youtube_attempts",
+      "slug,title,description,duration_sec,speaker,video_url,status,source,rendered_at,instagram_posted_at,instagram_media_id,instagram_error,instagram_attempts,youtube_posted_at,youtube_video_id,youtube_error,youtube_attempts,tiktok_posted_at,tiktok_publish_id,tiktok_error,tiktok_attempts",
     )
     .order("rendered_at", { ascending: false })
     .limit(limit);
@@ -281,4 +281,47 @@ export async function markYoutubeFailed(slug: string, error: string, previousAtt
     .update({ youtube_error: error, youtube_attempts: previousAttempts + 1 })
     .eq("slug", slug);
   if (dbError) throw new Error(`shorts_videos update (youtube failed): ${dbError.message}`);
+}
+
+// ------------------------------------------------------------------
+// TikTok (Content Posting API) 投稿 (生成済み動画のうち、まだ投稿していないものを少しずつ処理する)
+// ------------------------------------------------------------------
+export interface PendingTiktokUpload {
+  slug: string;
+  title: string;
+  description: string | null;
+  video_url: string;
+  tiktok_attempts: number;
+}
+
+/** まだ TikTok に投稿していない (かつ失敗が3回未満の) 動画を古い順に取得する */
+export async function listPendingTiktokUploads(limit = 1): Promise<PendingTiktokUpload[]> {
+  const supabase = getSupabaseAdmin();
+  const { data, error } = await supabase
+    .from("shorts_videos")
+    .select("slug,title,description,video_url,tiktok_attempts")
+    .is("tiktok_posted_at", null)
+    .lt("tiktok_attempts", 3)
+    .order("rendered_at", { ascending: true })
+    .limit(limit);
+  if (error) throw new Error(`shorts_videos select (tiktok pending): ${error.message}`);
+  return (data ?? []).map((r) => ({ ...r, tiktok_attempts: r.tiktok_attempts ?? 0 }));
+}
+
+export async function markTiktokUploaded(slug: string, publishId: string): Promise<void> {
+  const supabase = getSupabaseAdmin();
+  const { error } = await supabase
+    .from("shorts_videos")
+    .update({ tiktok_posted_at: new Date().toISOString(), tiktok_publish_id: publishId, tiktok_error: null })
+    .eq("slug", slug);
+  if (error) throw new Error(`shorts_videos update (tiktok posted): ${error.message}`);
+}
+
+export async function markTiktokFailed(slug: string, error: string, previousAttempts: number): Promise<void> {
+  const supabase = getSupabaseAdmin();
+  const { error: dbError } = await supabase
+    .from("shorts_videos")
+    .update({ tiktok_error: error, tiktok_attempts: previousAttempts + 1 })
+    .eq("slug", slug);
+  if (dbError) throw new Error(`shorts_videos update (tiktok failed): ${dbError.message}`);
 }
