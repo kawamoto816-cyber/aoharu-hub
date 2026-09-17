@@ -6,7 +6,15 @@ import { isInstagramConfigured, postToInstagram, postReelToInstagram } from "@/l
 import { parseCard } from "@/lib/social/card";
 import { findRecentDuplicate, recordPost, textHash } from "@/lib/social/store";
 import { dueSlots, jstNow, loadQueue, type QueueItem } from "@/lib/social/queue";
-import { listPendingInstagramReels, markInstagramReelPosted, markInstagramReelFailed } from "@/lib/social/shorts";
+import {
+  listPendingInstagramReels,
+  markInstagramReelPosted,
+  markInstagramReelFailed,
+  listPendingYoutubeUploads,
+  markYoutubeUploaded,
+  markYoutubeFailed,
+} from "@/lib/social/shorts";
+import { isYouTubePostingConfigured, uploadShortToYouTube } from "@/lib/social/youtube";
 import { refreshSocialMetrics } from "@/lib/social/metrics";
 
 // 承認済み投稿キューをサーバー側で処理する (自己完結・冪等)。
@@ -102,6 +110,29 @@ export async function GET(req: Request) {
     }
   }
 
+  // ショート動画の YouTube (Shorts) 自動投稿。こちらも同じ理由で Cron 枠は増やさず相乗りさせる。
+  // 動画の実体を取得してアップロードするため Instagram より時間がかかりやすく、1本ずつ処理する。
+  const youtube: { slug: string; status: string; external_id?: string; error?: string }[] = [];
+  if (!dry && isYouTubePostingConfigured()) {
+    try {
+      const pending = await listPendingYoutubeUploads(1);
+      for (const v of pending) {
+        const description = `${v.description ?? ""}`.trim();
+        try {
+          const r = await uploadShortToYouTube({ videoUrl: v.video_url, title: v.title, description });
+          await markYoutubeUploaded(v.slug, r.id);
+          youtube.push({ slug: v.slug, status: "posted", external_id: r.id });
+        } catch (e) {
+          const message = e instanceof Error ? e.message : String(e);
+          await markYoutubeFailed(v.slug, message, v.youtube_attempts).catch(() => undefined);
+          youtube.push({ slug: v.slug, status: "failed", error: message });
+        }
+      }
+    } catch (e) {
+      youtube.push({ slug: "(query)", status: "failed", error: e instanceof Error ? e.message : String(e) });
+    }
+  }
+
   // 夜枠の実行時 (または ?metrics=1) に、投稿の反応も取り込む (Hobby プランは Cron が1日1回×2本までのため相乗り)。
   let metrics: { updated: number; warnings: string[] } | { error: string } | null = null;
   if (!dry && (p.get("metrics") === "1" || slots.includes("夜"))) {
@@ -123,6 +154,7 @@ export async function GET(req: Request) {
       failed,
       results,
       reels,
+      youtube,
     },
     { headers: { "Cache-Control": "no-store" } },
   );

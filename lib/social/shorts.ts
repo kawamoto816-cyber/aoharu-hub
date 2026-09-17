@@ -182,7 +182,7 @@ export async function listShortsVideos(limit = 30) {
   const { data, error } = await supabase
     .from("shorts_videos")
     .select(
-      "slug,title,description,duration_sec,speaker,video_url,status,source,rendered_at,instagram_posted_at,instagram_media_id,instagram_error,instagram_attempts",
+      "slug,title,description,duration_sec,speaker,video_url,status,source,rendered_at,instagram_posted_at,instagram_media_id,instagram_error,instagram_attempts,youtube_posted_at,youtube_video_id,youtube_error,youtube_attempts",
     )
     .order("rendered_at", { ascending: false })
     .limit(limit);
@@ -238,4 +238,47 @@ export async function markInstagramReelFailed(slug: string, error: string, previ
     .update({ instagram_error: error, instagram_attempts: previousAttempts + 1 })
     .eq("slug", slug);
   if (dbError) throw new Error(`shorts_videos update (instagram failed): ${dbError.message}`);
+}
+
+// ------------------------------------------------------------------
+// YouTube (Shorts) 投稿 (生成済み動画のうち、まだ投稿していないものを少しずつ処理する)
+// ------------------------------------------------------------------
+export interface PendingYoutubeUpload {
+  slug: string;
+  title: string;
+  description: string | null;
+  video_url: string;
+  youtube_attempts: number;
+}
+
+/** まだ YouTube に投稿していない (かつ失敗が3回未満の) 動画を古い順に取得する */
+export async function listPendingYoutubeUploads(limit = 1): Promise<PendingYoutubeUpload[]> {
+  const supabase = getSupabaseAdmin();
+  const { data, error } = await supabase
+    .from("shorts_videos")
+    .select("slug,title,description,video_url,youtube_attempts")
+    .is("youtube_posted_at", null)
+    .lt("youtube_attempts", 3)
+    .order("rendered_at", { ascending: true })
+    .limit(limit);
+  if (error) throw new Error(`shorts_videos select (youtube pending): ${error.message}`);
+  return (data ?? []).map((r) => ({ ...r, youtube_attempts: r.youtube_attempts ?? 0 }));
+}
+
+export async function markYoutubeUploaded(slug: string, videoId: string): Promise<void> {
+  const supabase = getSupabaseAdmin();
+  const { error } = await supabase
+    .from("shorts_videos")
+    .update({ youtube_posted_at: new Date().toISOString(), youtube_video_id: videoId, youtube_error: null })
+    .eq("slug", slug);
+  if (error) throw new Error(`shorts_videos update (youtube posted): ${error.message}`);
+}
+
+export async function markYoutubeFailed(slug: string, error: string, previousAttempts: number): Promise<void> {
+  const supabase = getSupabaseAdmin();
+  const { error: dbError } = await supabase
+    .from("shorts_videos")
+    .update({ youtube_error: error, youtube_attempts: previousAttempts + 1 })
+    .eq("slug", slug);
+  if (dbError) throw new Error(`shorts_videos update (youtube failed): ${dbError.message}`);
 }
