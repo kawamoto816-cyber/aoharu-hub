@@ -190,7 +190,10 @@ export async function postVideoPullFromUrl(
     error?: { code?: string; message?: string };
   };
   if (!res.ok || !json.data?.publish_id) {
-    throw new Error(`post init ${res.status}: ${json.error?.message ?? json.error?.code ?? JSON.stringify(json).slice(0, 300)}`);
+    const code = json.error?.code;
+    const message = json.error?.message;
+    const detail = code && message ? `${code}: ${message}` : (message ?? code ?? JSON.stringify(json).slice(0, 300));
+    throw new Error(`post init ${res.status}: ${detail}`);
   }
   return { publishId: json.data.publish_id };
 }
