@@ -2,10 +2,11 @@ import { NextResponse } from "next/server";
 import { isAdminToken } from "@/lib/metrics/admin-auth";
 import { isXConfigured, postToX } from "@/lib/social/x";
 import { isThreadsConfigured, postToThreads } from "@/lib/social/threads";
-import { isInstagramConfigured, postToInstagram } from "@/lib/social/instagram";
+import { isInstagramConfigured, postToInstagram, postReelToInstagram } from "@/lib/social/instagram";
 import { parseCard } from "@/lib/social/card";
 import { findRecentDuplicate, recordPost, textHash } from "@/lib/social/store";
 import { dueSlots, jstNow, loadQueue, type QueueItem } from "@/lib/social/queue";
+import { listPendingInstagramReels, markInstagramReelPosted, markInstagramReelFailed } from "@/lib/social/shorts";
 import { refreshSocialMetrics } from "@/lib/social/metrics";
 
 // 承認済み投稿キューをサーバー側で処理する (自己完結・冪等)。
@@ -78,6 +79,29 @@ export async function GET(req: Request) {
 
   const failed = results.filter((r) => r.status === "failed").length;
 
+  // ショート動画のInstagramリール自動投稿。専用の Cron 枠は追加できない (Hobby プランの上限) ため、
+  // このキュー処理に相乗りさせ、未投稿ぶんを1本だけ少しずつ消化する (自己回復・多重実行しても安全)。
+  const reels: { slug: string; status: string; external_id?: string; error?: string }[] = [];
+  if (!dry && isInstagramConfigured()) {
+    try {
+      const pending = await listPendingInstagramReels(1);
+      for (const v of pending) {
+        const caption = `${v.title}\n\n${v.description ?? ""}`.trim();
+        try {
+          const r = await postReelToInstagram({ videoUrl: v.video_url, caption });
+          await markInstagramReelPosted(v.slug, r.id);
+          reels.push({ slug: v.slug, status: "posted", external_id: r.id });
+        } catch (e) {
+          const message = e instanceof Error ? e.message : String(e);
+          await markInstagramReelFailed(v.slug, message, v.instagram_attempts).catch(() => undefined);
+          reels.push({ slug: v.slug, status: "failed", error: message });
+        }
+      }
+    } catch (e) {
+      reels.push({ slug: "(query)", status: "failed", error: e instanceof Error ? e.message : String(e) });
+    }
+  }
+
   // 夜枠の実行時 (または ?metrics=1) に、投稿の反応も取り込む (Hobby プランは Cron が1日1回×2本までのため相乗り)。
   let metrics: { updated: number; warnings: string[] } | { error: string } | null = null;
   if (!dry && (p.get("metrics") === "1" || slots.includes("夜"))) {
@@ -98,6 +122,7 @@ export async function GET(req: Request) {
       alreadyPosted: results.filter((r) => r.status === "already_posted").length,
       failed,
       results,
+      reels,
     },
     { headers: { "Cache-Control": "no-store" } },
   );

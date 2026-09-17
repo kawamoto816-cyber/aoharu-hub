@@ -181,7 +181,9 @@ export async function listShortsVideos(limit = 30) {
   const supabase = getSupabaseAdmin();
   const { data, error } = await supabase
     .from("shorts_videos")
-    .select("slug,title,description,duration_sec,speaker,video_url,status,source,rendered_at")
+    .select(
+      "slug,title,description,duration_sec,speaker,video_url,status,source,rendered_at,instagram_posted_at,instagram_media_id,instagram_error,instagram_attempts",
+    )
     .order("rendered_at", { ascending: false })
     .limit(limit);
   if (error) throw new Error(`shorts_videos select: ${error.message}`);
@@ -193,4 +195,47 @@ export async function hasRenderedVideo(slug: string): Promise<boolean> {
   const { data, error } = await supabase.from("shorts_videos").select("slug").eq("slug", slug).limit(1);
   if (error) throw new Error(`shorts_videos select: ${error.message}`);
   return (data?.length ?? 0) > 0;
+}
+
+// ------------------------------------------------------------------
+// Instagram リール投稿 (生成済み動画のうち、まだ投稿していないものを少しずつ処理する)
+// ------------------------------------------------------------------
+export interface PendingReel {
+  slug: string;
+  title: string;
+  description: string | null;
+  video_url: string;
+  instagram_attempts: number;
+}
+
+/** まだ Instagram に投稿していない (かつ失敗が3回未満の) 動画を古い順に取得する */
+export async function listPendingInstagramReels(limit = 1): Promise<PendingReel[]> {
+  const supabase = getSupabaseAdmin();
+  const { data, error } = await supabase
+    .from("shorts_videos")
+    .select("slug,title,description,video_url,instagram_attempts")
+    .is("instagram_posted_at", null)
+    .lt("instagram_attempts", 3)
+    .order("rendered_at", { ascending: true })
+    .limit(limit);
+  if (error) throw new Error(`shorts_videos select (instagram pending): ${error.message}`);
+  return (data ?? []).map((r) => ({ ...r, instagram_attempts: r.instagram_attempts ?? 0 }));
+}
+
+export async function markInstagramReelPosted(slug: string, mediaId: string): Promise<void> {
+  const supabase = getSupabaseAdmin();
+  const { error } = await supabase
+    .from("shorts_videos")
+    .update({ instagram_posted_at: new Date().toISOString(), instagram_media_id: mediaId, instagram_error: null })
+    .eq("slug", slug);
+  if (error) throw new Error(`shorts_videos update (instagram posted): ${error.message}`);
+}
+
+export async function markInstagramReelFailed(slug: string, error: string, previousAttempts: number): Promise<void> {
+  const supabase = getSupabaseAdmin();
+  const { error: dbError } = await supabase
+    .from("shorts_videos")
+    .update({ instagram_error: error, instagram_attempts: previousAttempts + 1 })
+    .eq("slug", slug);
+  if (dbError) throw new Error(`shorts_videos update (instagram failed): ${dbError.message}`);
 }

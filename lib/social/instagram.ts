@@ -63,6 +63,40 @@ export async function postToInstagram(card: CardContent, origin?: string): Promi
   return { id, imageUrl };
 }
 
+/**
+ * ショート動画を Instagram リールとして投稿する。
+ * video_url は公開アクセス可能な URL (Supabase Storage の public バケット) を渡すこと。
+ * 画像と同じくコンテナ作成 → 処理完了待ち (動画のため長め) → 公開、の3段階。
+ */
+export async function postReelToInstagram(video: { videoUrl: string; caption: string }): Promise<{ id: string }> {
+  const token = await getToken();
+  const userId = await getUserId(token);
+  const container = await graph("POST", `/${userId}/media`, {
+    video_url: video.videoUrl,
+    caption: video.caption.slice(0, 2200),
+    media_type: "REELS",
+    access_token: token,
+  });
+  const creationId = String(container.id ?? "");
+  if (!creationId) throw new Error("Instagram: リールのコンテナIDが取得できませんでした");
+  // 動画の取り込み・処理完了を待つ (最大 96秒。数十秒の縦動画なので通常はもっと早く終わる)
+  let status = "IN_PROGRESS";
+  let statusDetail = "";
+  for (let i = 0; i < 16; i++) {
+    const st = await graph("GET", `/${creationId}`, { fields: "status_code,status", access_token: token });
+    status = String(st.status_code ?? "");
+    statusDetail = String(st.status ?? "");
+    if (status === "FINISHED") break;
+    if (status === "ERROR" || status === "EXPIRED") throw new Error(`Instagram: リール処理エラー (${status}) ${statusDetail}`);
+    await new Promise((r) => setTimeout(r, 6000));
+  }
+  if (status !== "FINISHED") throw new Error(`Instagram: リール処理がタイムアウトしました (最終状態 ${status} ${statusDetail})`);
+  const published = await graph("POST", `/${userId}/media_publish`, { creation_id: creationId, access_token: token });
+  const id = String(published.id ?? "");
+  if (!id) throw new Error("Instagram: リール公開IDが取得できませんでした");
+  return { id };
+}
+
 export async function getInstagramPermalink(mediaId: string): Promise<string | null> {
   try {
     const token = await getToken();

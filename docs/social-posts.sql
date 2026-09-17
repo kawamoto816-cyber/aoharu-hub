@@ -58,3 +58,10 @@ create table if not exists public.shorts_videos (
 alter table public.shorts_videos enable row level security;
 grant all on public.shorts_videos to service_role;
 -- Storage: Dashboard → Storage → New bucket "shorts" (Public bucket: ON)
+
+-- Instagram リール自動投稿の進捗 (プラットフォームごとに独立して追跡する。status 列は既存のレンダリング状態のまま変更しない)
+alter table public.shorts_videos add column if not exists instagram_posted_at timestamptz;
+alter table public.shorts_videos add column if not exists instagram_media_id text;
+alter table public.shorts_videos add column if not exists instagram_error text;
+alter table public.shorts_videos add column if not exists instagram_attempts integer not null default 0;
+create index if not exists shorts_videos_instagram_pending_idx on public.shorts_videos (rendered_at) where instagram_posted_at is null;
