@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { isAdminUser } from "@/lib/metrics/admin-auth";
 import { ACCOUNTS, getSocialDashboard, refreshSocialMetrics, type SocialDashboard } from "@/lib/social/metrics";
+import { listShortsVideos } from "@/lib/social/shorts";
 
 // /admin/social: 自社配信の可視化ダッシュボード (@bluespring.co.jp でログインした人だけ)。
 // 公式SNS一覧 → 自社投稿の一覧 (本文・投稿先リンク・反応) → 成果の分析 (チャネル別・時間帯別・日次推移・SNS経由の流入)。
@@ -42,6 +43,46 @@ function Tile({ label, value, sub }: { label: string; value: string; sub?: strin
       {sub && <p className="mt-1 text-[11px] text-slate-400">{sub}</p>}
     </div>
   );
+}
+
+/** ショート動画のプラットフォーム別ステータス表示 (投稿済み・再試行中・失敗・未投稿) */
+function PlatformCell({
+  postedAt,
+  error,
+  attempts,
+  link,
+  pendingNote,
+}: {
+  postedAt: string | null;
+  error: string | null;
+  attempts: number | null;
+  link?: string | null;
+  pendingNote?: string;
+}) {
+  if (postedAt) {
+    return link ? (
+      <a href={link} target="_blank" rel="noopener noreferrer" className="font-bold text-emerald-600 underline underline-offset-2">
+        投稿済み
+      </a>
+    ) : (
+      <span className="font-bold text-emerald-600">投稿済み</span>
+    );
+  }
+  if (error && (attempts ?? 0) >= 3) {
+    return (
+      <span className="font-bold text-rose-600" title={error}>
+        失敗
+      </span>
+    );
+  }
+  if (error) {
+    return (
+      <span className="font-bold text-amber-600" title={error}>
+        再試行中
+      </span>
+    );
+  }
+  return <span className="text-slate-400">{pendingNote ?? "未投稿"}</span>;
 }
 
 /** 日次: 投稿数 (棒) と SNS経由セッション (折れ線) を1つのSVGに */
@@ -129,6 +170,17 @@ export default async function SocialDashboardPage({
   } catch (e) {
     loadError = e instanceof Error ? e.message : String(e);
   }
+
+  let shorts: Awaited<ReturnType<typeof listShortsVideos>> = [];
+  let shortsError: string | null = null;
+  try {
+    shorts = await listShortsVideos(30);
+  } catch (e) {
+    shortsError = e instanceof Error ? e.message : String(e);
+  }
+  const shortsYoutubePosted = shorts.filter((s) => s.youtube_posted_at).length;
+  const shortsInstagramPosted = shorts.filter((s) => s.instagram_posted_at).length;
+  const shortsTiktokPosted = shorts.filter((s) => s.tiktok_posted_at).length;
 
   const posts = dash?.posts.filter((p) => p.status === "posted") ?? [];
   const failedPosts = dash?.posts.filter((p) => p.status === "failed") ?? [];
@@ -321,6 +373,73 @@ export default async function SocialDashboardPage({
         <p className="mt-3 text-[11px] leading-relaxed text-slate-400">
           反応は毎日 6:30（日本時間）に自動で取り込みます。Threads の反応（いいね・表示）は threads_manage_insights 権限付きのトークンが必要で、未取得の間は「—」になります。note・Instagram・TikTok・YouTube は各サービスのアナリティクスをご覧ください（上のリンク）。
         </p>
+      </section>
+
+      {/* ショート動画 */}
+      <section className="mt-8 rounded-2xl border border-slate-200 bg-white p-5">
+        <h2 className="text-sm font-bold text-slate-900">ショート動画（YouTube Shorts ／ Instagram リール ／ TikTok）</h2>
+        <p className="mt-1 text-[11px] text-slate-400">
+          静止画スライド＋AIナレーションで毎日20:30（日本時間）に自動生成。生成後、YouTube・Instagramへ自動投稿されます（TikTokは審査完了後に稼働）。
+        </p>
+        {shortsError && (
+          <p className="mt-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-2 text-xs text-amber-800">読み込みエラー: {shortsError}</p>
+        )}
+        <div className="mt-3 grid gap-3 sm:grid-cols-4">
+          <Tile label={`生成数（直近${shorts.length}件）`} value={fmt(shorts.length)} />
+          <Tile label="YouTube 投稿済み" value={fmt(shortsYoutubePosted)} />
+          <Tile label="Instagram リール投稿済み" value={fmt(shortsInstagramPosted)} />
+          <Tile label="TikTok 投稿済み" value={fmt(shortsTiktokPosted)} sub="審査完了後に稼働" />
+        </div>
+        <div className="mt-4 overflow-x-auto">
+          <table className="w-full min-w-[760px] text-xs">
+            <thead>
+              <tr className="text-left text-slate-500">
+                <th className="py-1.5">生成日時</th>
+                <th className="py-1.5">タイトル</th>
+                <th className="py-1.5">動画</th>
+                <th className="py-1.5">YouTube</th>
+                <th className="py-1.5">Instagram</th>
+                <th className="py-1.5">TikTok</th>
+              </tr>
+            </thead>
+            <tbody>
+              {shorts.map((v) => (
+                <tr key={v.slug} className="border-t border-slate-100 align-top">
+                  <td className="py-2 whitespace-nowrap tabular-nums text-slate-500">{jst(v.rendered_at)}</td>
+                  <td className="py-2">
+                    <p className="line-clamp-2 max-w-xs whitespace-pre-line leading-relaxed text-slate-700">{v.title}</p>
+                  </td>
+                  <td className="py-2">
+                    <a href={v.video_url} target="_blank" rel="noopener noreferrer" className="font-bold text-indigo-600 underline underline-offset-2">
+                      再生
+                    </a>
+                  </td>
+                  <td className="py-2">
+                    <PlatformCell
+                      postedAt={v.youtube_posted_at}
+                      error={v.youtube_error}
+                      attempts={v.youtube_attempts}
+                      link={v.youtube_video_id ? `https://youtube.com/shorts/${v.youtube_video_id}` : null}
+                    />
+                  </td>
+                  <td className="py-2">
+                    <PlatformCell postedAt={v.instagram_posted_at} error={v.instagram_error} attempts={v.instagram_attempts} />
+                  </td>
+                  <td className="py-2">
+                    <PlatformCell postedAt={v.tiktok_posted_at} error={v.tiktok_error} attempts={v.tiktok_attempts} pendingNote="審査待ち" />
+                  </td>
+                </tr>
+              ))}
+              {!shorts.length && (
+                <tr>
+                  <td colSpan={6} className="py-6 text-center text-slate-400">
+                    まだ生成された動画はありません
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </section>
     </main>
   );
