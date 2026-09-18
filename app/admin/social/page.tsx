@@ -17,6 +17,14 @@ export const dynamic = "force-dynamic";
 
 const CH_LABEL: Record<string, string> = { x: "X", threads: "Threads", instagram: "Instagram" };
 const CH_COLOR: Record<string, string> = { x: "bg-slate-900 text-white", threads: "bg-indigo-600 text-white", instagram: "bg-pink-600 text-white" };
+const ACCOUNT_STATUS: Record<string, string> = {
+  x: "自動投稿・反応取り込み対応",
+  threads: "自動投稿・反応取り込み対応",
+  instagram: "自動投稿（画像カード・リール）対応",
+  youtube: "自動投稿（ショート動画）対応",
+  tiktok: "自動投稿の実装済み・審査完了後に稼働",
+  note: "手動投稿",
+};
 
 function fmt(n: number | null | undefined) {
   return n == null ? "—" : n.toLocaleString("ja-JP");
@@ -252,7 +260,7 @@ export default async function SocialDashboardPage({
                 <a href={a.url} target="_blank" rel="noopener noreferrer" className="font-bold text-indigo-600 underline underline-offset-2">投稿一覧</a>
                 <a href={a.analytics} target="_blank" rel="noopener noreferrer" className="font-bold text-slate-500 underline underline-offset-2">アナリティクス</a>
               </div>
-              <p className="mt-2 text-[10px] text-slate-400">{a.key === "x" || a.key === "threads" ? "自動投稿・反応取り込み対応" : a.key === "instagram" ? "自動投稿（画像カード）対応" : "手動投稿"}</p>
+              <p className="mt-2 text-[10px] text-slate-400">{ACCOUNT_STATUS[a.key] ?? "手動投稿"}</p>
             </div>
           ))}
         </div>
