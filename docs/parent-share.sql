@@ -8,3 +8,6 @@ create table if not exists parent_shares (
 );
 
 create index if not exists parent_shares_token_idx on parent_shares (token);
+
+alter table public.parent_shares enable row level security;
+grant all on table public.parent_shares to service_role;
