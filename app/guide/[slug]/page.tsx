@@ -2,14 +2,19 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { GuideCta } from "@/components/GuideCta";
-import { GUIDE_ARTICLES, TOPIC_LABEL, getGuideArticle, getRelatedArticles } from "@/lib/guide";
+import { GUIDE_ARTICLES, TOPIC_LABEL, loadGuideArticle, loadGuideArticles, pickRelated } from "@/lib/guide";
 import type { GuideBlock } from "@/lib/guide/types";
 import { SEGMENT_COPY } from "@/lib/segments";
 
-// /guide/[slug]: SEO記事。lib/guide/articles/*.ts のデータから静的生成する。
+// /guide/[slug]: SEO記事。lib/guide/articles/*.ts の静的記事に加えて、
+// Google ドライブから取り込んだDBの記事 (guide_articles) も同じ形で表示する。
 // 構造化データ (Article + FAQPage + BreadcrumbList) を付け、AI検索にも引用されやすい形にする。
 
 const BASE = "https://app.bluespring.co.jp";
+
+// 静的記事はビルド時に、DBの記事は初回アクセス時に生成する (10分ごとに再検証)。
+export const dynamicParams = true;
+export const revalidate = 600;
 
 export function generateStaticParams() {
   return GUIDE_ARTICLES.map((a) => ({ slug: a.slug }));
@@ -17,7 +22,7 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
-  const article = getGuideArticle(slug);
+  const article = await loadGuideArticle(slug);
   if (!article) return {};
   return {
     title: `${article.title}｜アオハルOS`,
@@ -99,10 +104,10 @@ function Block({ block }: { block: GuideBlock }) {
 
 export default async function GuideArticlePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const article = getGuideArticle(slug);
+  const article = await loadGuideArticle(slug);
   if (!article) notFound();
 
-  const related = getRelatedArticles(article);
+  const related = pickRelated(article, await loadGuideArticles());
   const url = `${BASE}/guide/${article.slug}`;
 
   const jsonLd = [

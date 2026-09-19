@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { GUIDE_ARTICLES, TOPIC_LABEL } from "@/lib/guide";
+import { TOPIC_LABEL, loadGuideArticles } from "@/lib/guide";
 import { SEGMENTS, SEGMENT_COPY } from "@/lib/segments";
 
-// /guide: 記事一覧。セグメント別にグルーピングして表示する。
+// /guide: 記事一覧。静的記事とDBの記事をまとめ、セグメント別にグルーピングして表示する。
 export const metadata: Metadata = {
   title: "受験・就活・転職のガイド｜アオハルOS",
   description:
@@ -11,7 +11,10 @@ export const metadata: Metadata = {
   alternates: { canonical: "https://app.bluespring.co.jp/guide" },
 };
 
-export default function GuideIndexPage() {
+export const revalidate = 600;
+
+export default async function GuideIndexPage() {
+  const articles = await loadGuideArticles();
   return (
     <main className="flex-1">
       <section className="mx-auto max-w-3xl px-6 pt-12 pb-8 sm:pt-16">
@@ -24,7 +27,7 @@ export default function GuideIndexPage() {
 
       <section className="mx-auto max-w-3xl px-6 pb-16">
         {SEGMENTS.map((seg) => {
-          const items = GUIDE_ARTICLES.filter((a) => a.segment === seg);
+          const items = articles.filter((a) => a.segment === seg);
           if (items.length === 0) return null;
           return (
             <div key={seg} className="mt-8">

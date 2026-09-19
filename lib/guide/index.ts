@@ -29,6 +29,38 @@ export function getGuideArticle(slug: string): GuideArticle | undefined {
   return GUIDE_ARTICLES.find((a) => a.slug === slug);
 }
 
+/**
+ * 表示に使う記事の全件 (静的記事 + DBの記事)。同じ slug があれば静的記事を優先する。
+ * DBが未設定・未作成でも静的記事だけで動く。
+ */
+export async function loadGuideArticles(): Promise<GuideArticle[]> {
+  const { listPublishedArticles } = await import("./store");
+  const stored = await listPublishedArticles();
+  const staticSlugs = new Set(GUIDE_ARTICLES.map((a) => a.slug));
+  return [...GUIDE_ARTICLES, ...stored.filter((a) => !staticSlugs.has(a.slug))];
+}
+
+/** 1本ぶん。静的記事になければDBを見る */
+export async function loadGuideArticle(slug: string): Promise<GuideArticle | undefined> {
+  const found = getGuideArticle(slug);
+  if (found) return found;
+  const { getStoredArticle } = await import("./store");
+  return (await getStoredArticle(slug)) ?? undefined;
+}
+
+/** 関連記事 (全件のプールから選ぶ) */
+export function pickRelated(article: GuideArticle, pool: GuideArticle[], limit = 3): GuideArticle[] {
+  const bySlug = new Map(pool.map((a) => [a.slug, a]));
+  const explicit = (article.related ?? [])
+    .map((s) => bySlug.get(s))
+    .filter((a): a is GuideArticle => Boolean(a) && a!.slug !== article.slug);
+  if (explicit.length >= limit) return explicit.slice(0, limit);
+  const rest = pool.filter(
+    (a) => a.slug !== article.slug && !explicit.some((e) => e.slug === a.slug) && a.segment === article.segment,
+  );
+  return [...explicit, ...rest].slice(0, limit);
+}
+
 export function getRelatedArticles(article: GuideArticle, limit = 3): GuideArticle[] {
   const explicit = (article.related ?? [])
     .map((s) => getGuideArticle(s))
