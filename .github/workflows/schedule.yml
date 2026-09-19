@@ -4,6 +4,9 @@
 #   - 09:30 JST (平日) 法人営業の「送信承認」分をメール送信 (冪等)
 #   - 12:00 JST SEO記事エージェントがドライブに書いた記事を /guide に取り込む
 #   - 13:00 JST 法人営業の「返信記録」を取り込み、返信・面談を記録する
+#   - 3時間おき 法人営業の見込み先をGoogle Places APIで少しずつ拾う (sales_leads に積む)
+#   - 05:50 JST 拾った見込み先をテンプレートで提案文まで組み立てて「テンプレート提案」に書き出す
+#     (法人営業エージェントの06:30実行より前に終える)
 #   - 月曜 03:00 JST Threads / Instagram の長期トークンを更新 (60日で失効するため)
 # 必要な Secret: CRON_SECRET (Vercel の環境変数と同じ値)
 #
@@ -20,11 +23,13 @@ on:
     - cron: "30 0 * * 1-5"  # 09:30 JST 平日 法人営業の送信承認分を送信
     - cron: "0 3 * * *"     # 12:00 JST SEO記事の取り込み
     - cron: "0 4 * * *"     # 13:00 JST 法人営業の返信記録の取り込み
+    - cron: "15 */3 * * *"  # 3時間おき 見込み先のハーベスト (Google Places API)
+    - cron: "50 20 * * *"   # 05:50 JST テンプレート提案の書き出し (エージェント実行前)
     - cron: "0 18 * * 0"    # 月曜 03:00 JST Threads/Instagram トークン更新
   workflow_dispatch:
     inputs:
       job:
-        description: "metrics | run-queue | sales | refresh-tokens | guide-ingest | sales-replies-ingest"
+        description: "metrics | run-queue | sales | refresh-tokens | guide-ingest | sales-replies-ingest | sales-leads-harvest | sales-leads-candidates"
         default: "run-queue"
 jobs:
   run:
@@ -44,6 +49,10 @@ jobs:
             echo "job=guide-ingest" >> "$GITHUB_OUTPUT"
           elif [ "${{ github.event.schedule }}" = "0 4 * * *" ]; then
             echo "job=sales-replies-ingest" >> "$GITHUB_OUTPUT"
+          elif [ "${{ github.event.schedule }}" = "15 */3 * * *" ]; then
+            echo "job=sales-leads-harvest" >> "$GITHUB_OUTPUT"
+          elif [ "${{ github.event.schedule }}" = "50 20 * * *" ]; then
+            echo "job=sales-leads-candidates" >> "$GITHUB_OUTPUT"
           elif [ "${{ github.event.schedule }}" = "0 18 * * 0" ]; then
             echo "job=refresh-tokens" >> "$GITHUB_OUTPUT"
           else
@@ -63,6 +72,10 @@ jobs:
             url="https://app.bluespring.co.jp/internal/guide/ingest"
           elif [ "${{ steps.pick.outputs.job }}" = "sales-replies-ingest" ]; then
             url="https://app.bluespring.co.jp/internal/sales/replies/ingest?all=1"
+          elif [ "${{ steps.pick.outputs.job }}" = "sales-leads-harvest" ]; then
+            url="https://app.bluespring.co.jp/internal/sales/leads/harvest"
+          elif [ "${{ steps.pick.outputs.job }}" = "sales-leads-candidates" ]; then
+            url="https://app.bluespring.co.jp/internal/sales/leads/candidates"
           elif [ "${{ steps.pick.outputs.job }}" = "refresh-tokens" ]; then
             url="https://app.bluespring.co.jp/internal/social/refresh-threads"
           else

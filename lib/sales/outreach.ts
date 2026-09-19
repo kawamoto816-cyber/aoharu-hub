@@ -12,8 +12,12 @@ import { jstNow } from "@/lib/social/queue";
 export const SALES_FOLDER_ID = process.env.SALES_FOLDER_ID ?? "1AP0qpLTO3wyh1gSiySPApz-CzLMEO_yb";
 const FROM = process.env.SALES_FROM_EMAIL ?? "アオハルOS（株式会社ブルースプリング） <pr@bluespring.co.jp>";
 const REPLY_TO = process.env.SALES_REPLY_TO ?? "pr@bluespring.co.jp";
-const MAX_PER_RUN = 20;
+const DEFAULT_MAX_PER_RUN = 20;
 const RESEND_COOLDOWN_DAYS = 90;
+// バウンス・苦情が増えたときの自動停止のしきい値 (直近の送信N件のうち)
+const BOUNCE_WINDOW = 100;
+const BOUNCE_RATE_LIMIT = 0.05; // 5%
+const COMPLAINT_COUNT_LIMIT = 2; // 直近BOUNCE_WINDOW件中2件以上の苦情で停止
 
 export type OutreachMethod = "email" | "form";
 
@@ -60,6 +64,28 @@ export async function exportDocText(fileId: string): Promise<string> {
   const res = await driveFetch(`https://www.googleapis.com/drive/v3/files/${fileId}/export?mimeType=text/plain`);
   if (!res.ok) throw new Error(`Drive export ${res.status}: ${(await res.text()).slice(0, 200)}`);
   return (await res.text()).replace(/^﻿/, "");
+}
+
+/** プレーンテキストをGoogleドキュメントとして新規作成する (テンプレート提案の書き出し用) */
+export async function createDriveDoc(name: string, parentId: string, text: string): Promise<string> {
+  const token = await getGoogleAccessToken();
+  if (!token) throw new Error("GA4_SERVICE_ACCOUNT_JSON が未設定です (Drive に書けません)");
+  const boundary = `aoharu_${Math.random().toString(36).slice(2)}`;
+  const metadata = JSON.stringify({ name, parents: [parentId], mimeType: "application/vnd.google-apps.document" });
+  const body =
+    `--${boundary}\r\n` +
+    `Content-Type: application/json; charset=UTF-8\r\n\r\n${metadata}\r\n` +
+    `--${boundary}\r\n` +
+    `Content-Type: text/plain; charset=UTF-8\r\n\r\n${text}\r\n` +
+    `--${boundary}--`;
+  const res = await fetch("https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&supportsAllDrives=true", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}`, "Content-Type": `multipart/related; boundary=${boundary}` },
+    body,
+  });
+  if (!res.ok) throw new Error(`Drive files.create ${res.status}: ${(await res.text()).slice(0, 200)}`);
+  const json = (await res.json()) as { id: string };
+  return json.id;
 }
 
 /**
@@ -247,6 +273,73 @@ export async function applyReplyRecord(record: ReplyRecord): Promise<ApplyReplyR
 // ------------------------------------------------------------------
 // Resend Webhook からの自動更新 (開封・クリック)
 // ------------------------------------------------------------------
+// ------------------------------------------------------------------
+// 送信の上限・一時停止 (sales_controls: 1行だけ持つ)
+// ------------------------------------------------------------------
+export interface SalesControls {
+  maxPerRun: number;
+  paused: boolean;
+  pausedReason: string | null;
+}
+
+/** テーブルが無い/読めない場合は安全側 (デフォルト上限・停止なし) で返す */
+export async function getSalesControls(): Promise<SalesControls> {
+  try {
+    const supabase = getSupabaseAdmin();
+    const { data, error } = await supabase.from("sales_controls").select("max_per_run,paused,paused_reason").eq("id", 1).limit(1);
+    if (error || !data?.length) return { maxPerRun: DEFAULT_MAX_PER_RUN, paused: false, pausedReason: null };
+    const row = data[0] as { max_per_run: number; paused: boolean; paused_reason: string | null };
+    return { maxPerRun: row.max_per_run, paused: row.paused, pausedReason: row.paused_reason };
+  } catch {
+    return { maxPerRun: DEFAULT_MAX_PER_RUN, paused: false, pausedReason: null };
+  }
+}
+
+async function pauseSending(reason: string): Promise<void> {
+  const supabase = getSupabaseAdmin();
+  await supabase
+    .from("sales_controls")
+    .upsert({ id: 1, paused: true, paused_reason: reason, paused_at: new Date().toISOString() }, { onConflict: "id" });
+}
+
+/** バウンス・苦情マークのたびに呼ぶ。直近の送信のうち割合がしきい値を超えたら自動停止する */
+async function checkAutoPause(): Promise<void> {
+  const supabase = getSupabaseAdmin();
+  const { data, error } = await supabase
+    .from("sales_outreach")
+    .select("bounced_at,complained_at")
+    .in("status", ["sent"])
+    .order("sent_at", { ascending: false })
+    .limit(BOUNCE_WINDOW);
+  if (error || !data || data.length < 10) return; // 母数が少なすぎる判断は避ける
+  const rows = data as { bounced_at: string | null; complained_at: string | null }[];
+  const bounceRate = rows.filter((r) => r.bounced_at).length / rows.length;
+  const complaints = rows.filter((r) => r.complained_at).length;
+  if (bounceRate > BOUNCE_RATE_LIMIT) {
+    await pauseSending(`直近${rows.length}件のバウンス率が${Math.round(bounceRate * 100)}%に達したため自動停止`);
+  } else if (complaints >= COMPLAINT_COUNT_LIMIT) {
+    await pauseSending(`直近${rows.length}件で苦情(スパム報告)が${complaints}件に達したため自動停止`);
+  }
+}
+
+export async function markBounced(externalId: string): Promise<boolean> {
+  const supabase = getSupabaseAdmin();
+  const { data, error } = await supabase.from("sales_outreach").update({ bounced_at: new Date().toISOString() }).eq("external_id", externalId).is("bounced_at", null).select("id");
+  if (error) throw new Error(`sales_outreach update (bounced): ${error.message}`);
+  const changed = (data?.length ?? 0) > 0;
+  if (changed) await checkAutoPause();
+  return changed;
+}
+
+export async function markComplained(externalId: string): Promise<boolean> {
+  const supabase = getSupabaseAdmin();
+  const { data, error } = await supabase.from("sales_outreach").update({ complained_at: new Date().toISOString() }).eq("external_id", externalId).is("complained_at", null).select("id");
+  if (error) throw new Error(`sales_outreach update (complained): ${error.message}`);
+  const changed = (data?.length ?? 0) > 0;
+  if (changed) await checkAutoPause();
+  return changed;
+}
+
 export async function markOpened(externalId: string): Promise<boolean> {
   const supabase = getSupabaseAdmin();
   const { data, error } = await supabase.from("sales_outreach").update({ opened_at: new Date().toISOString() }).eq("external_id", externalId).is("opened_at", null).select("id");
@@ -323,7 +416,7 @@ export interface RunResult {
   method: OutreachMethod;
   to: string;
   company: string;
-  status: "sent" | "failed" | "manual" | "already_sent" | "suppressed" | "dry_run" | "not_configured" | "limit";
+  status: "sent" | "failed" | "manual" | "already_sent" | "suppressed" | "dry_run" | "not_configured" | "limit" | "paused";
   external_id?: string | null;
   error?: string;
 }
@@ -334,9 +427,14 @@ export async function runOutreach(opts: { date?: string; dry?: boolean }): Promi
   const results: RunResult[] = [];
   let sentCount = 0;
   const source = `send-approval-${date}`;
+  const controls = await getSalesControls();
 
   for (const it of items) {
     const base = { method: it.method, to: it.to, company: it.company };
+    if (controls.paused && it.method === "email" && !opts.dry) {
+      results.push({ ...base, status: "paused", error: controls.pausedReason ?? undefined });
+      continue;
+    }
     if (await isSuppressed(it.to)) {
       results.push({ ...base, status: "suppressed" });
       continue;
@@ -360,7 +458,7 @@ export async function runOutreach(opts: { date?: string; dry?: boolean }): Promi
       results.push({ ...base, status: "not_configured" });
       continue;
     }
-    if (sentCount >= MAX_PER_RUN) {
+    if (sentCount >= controls.maxPerRun) {
       results.push({ ...base, status: "limit" });
       continue;
     }

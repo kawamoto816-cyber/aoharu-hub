@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server";
-import { markClicked, markOpened } from "@/lib/sales/outreach";
+import { markBounced, markClicked, markComplained, markOpened } from "@/lib/sales/outreach";
 
-// Resend の Webhook 受け口。「開封」「クリック」を自動で sales_outreach に記録する。
+// Resend の Webhook 受け口。「開封」「クリック」「バウンス」「苦情(スパム報告)」を自動で
+// sales_outreach に記録する。バウンス率・苦情件数がしきい値を超えると自動で送信を一時停止する
+// (lib/sales/outreach.ts の checkAutoPause)。
 // Resend ダッシュボード → Webhooks で、このURLに ?secret=<RESEND_WEBHOOK_SECRET> を付けて登録し、
-// イベントは email.opened と email.clicked を選ぶ。
+// イベントは email.opened / email.clicked / email.bounced / email.complained を選ぶ。
 // 例: https://app.bluespring.co.jp/api/webhooks/resend?secret=xxxxx
 // RESEND_WEBHOOK_SECRET が未設定の場合はこの受け口自体を無効化する (誰でも叩けてしまうため)。
 export const dynamic = "force-dynamic";
@@ -35,6 +37,10 @@ export async function POST(req: Request) {
     } else if (body.type === "email.clicked") {
       await markClicked(emailId);
       await markOpened(emailId); // クリックしたなら開封もしている
+    } else if (body.type === "email.bounced") {
+      await markBounced(emailId);
+    } else if (body.type === "email.complained") {
+      await markComplained(emailId);
     } else {
       return NextResponse.json({ ok: true, skipped: body.type ?? "unknown" });
     }
