@@ -2,7 +2,14 @@
 
 import { revalidatePath } from "next/cache";
 import { auth } from "@clerk/nextjs/server";
-import { bumpDraft, createApplication, deleteApplication, updateApplication } from "@/lib/applications/store";
+import {
+  bumpDraft,
+  createApplication,
+  deleteApplication,
+  setDocuments,
+  updateApplication,
+} from "@/lib/applications/store";
+import { DOC_KINDS, isAdmissionType, isDocKind, type DocKind } from "@/lib/applications/kinds";
 
 // マイページの出願案件フォームから呼ばれるサーバーアクション。
 // Server Function は直接POSTでも叩けるため、どの関数でも必ず先にログイン確認と
@@ -25,6 +32,23 @@ function dateOrNull(formData: FormData, key: string): string | null {
   return /^\d{4}-\d{2}-\d{2}$/.test(v) ? v : null;
 }
 
+/** 募集要項のURL。http(s) 以外は保存しない */
+function urlOrNull(formData: FormData, key: string): string | null {
+  const v = text(formData, key).slice(0, 500);
+  return /^https?:\/\/\S+$/.test(v) ? v : null;
+}
+
+function admissionOrNull(formData: FormData, key: string): string | null {
+  const v = text(formData, key);
+  return isAdmissionType(v) ? v : null;
+}
+
+/** チェックされた書類の種類だけを拾う */
+function docKinds(formData: FormData): DocKind[] {
+  const picked = formData.getAll("kinds").filter((v): v is string => typeof v === "string");
+  return DOC_KINDS.filter((k) => picked.includes(k) && isDocKind(k));
+}
+
 export async function createApplicationAction(formData: FormData): Promise<void> {
   const userId = await requireUser();
   const schoolName = text(formData, "schoolName").slice(0, 100);
@@ -32,8 +56,9 @@ export async function createApplicationAction(formData: FormData): Promise<void>
   await createApplication(userId, {
     schoolName,
     faculty: text(formData, "faculty").slice(0, 100) || null,
-    admissionType: text(formData, "admissionType").slice(0, 50) || null,
+    admissionType: admissionOrNull(formData, "admissionType"),
     deadline: dateOrNull(formData, "deadline"),
+    guidelinesUrl: urlOrNull(formData, "guidelinesUrl"),
   });
   revalidatePath("/");
 }
@@ -45,9 +70,19 @@ export async function updateApplicationAction(formData: FormData): Promise<void>
   await updateApplication(userId, id, {
     schoolName: text(formData, "schoolName").slice(0, 100) || undefined,
     faculty: text(formData, "faculty").slice(0, 100) || null,
-    admissionType: text(formData, "admissionType").slice(0, 50) || null,
+    admissionType: admissionOrNull(formData, "admissionType"),
     deadline: dateOrNull(formData, "deadline"),
+    guidelinesUrl: urlOrNull(formData, "guidelinesUrl"),
   });
+  revalidatePath("/");
+}
+
+/** その入試で実際に課される書類を確定する */
+export async function setDocumentsAction(formData: FormData): Promise<void> {
+  const userId = await requireUser();
+  const id = text(formData, "applicationId");
+  if (!id) return;
+  await setDocuments(userId, id, docKinds(formData));
   revalidatePath("/");
 }
 

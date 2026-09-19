@@ -2,13 +2,23 @@ import {
   bumpDraftAction,
   createApplicationAction,
   deleteApplicationAction,
+  setDocumentsAction,
   updateApplicationAction,
 } from "@/app/actions/applications";
-import { DOC_LABEL, type Application } from "@/lib/applications/store";
+import type { Application } from "@/lib/applications/store";
+import {
+  ADMISSION_TYPES,
+  ADMISSION_LABEL,
+  DOC_KINDS,
+  DOC_LABEL,
+  admissionLabel,
+} from "@/lib/applications/kinds";
 import { daysLeft, nextStep } from "@/lib/applications/next-step";
 
 // マイページ上部の「出願案件」。残り日数・書類の稿数・次にやること を出す。
-// すべてサーバーコンポーネント + フォーム（サーバーアクション）で、JSなしでも動く。
+// 書類は入試方式ごとの初期値から始まるが、実際に課されるものはユーザーが確定する
+// （課される書類は大学・学部・年度で変わるため、こちらで断定しない）。
+// すべてサーバーコンポーネント + フォームで、JSなしでも動く。
 
 const INPUT =
   "w-full rounded-xl border border-slate-200 px-3 py-2 text-sm text-slate-900 outline-none focus:border-indigo-400";
@@ -18,7 +28,6 @@ function formatDeadline(deadline: string): string {
   return `${Number(deadline.slice(5, 7))}月${Number(deadline.slice(8, 10))}日`;
 }
 
-/** 残り日数の一言。締切が近いほど強い色にする（煽らない範囲で） */
 function DeadlineBadge({ deadline }: { deadline: string | null }) {
   const left = daysLeft(deadline);
   if (deadline === null || left === null) {
@@ -35,15 +44,30 @@ function DeadlineBadge({ deadline }: { deadline: string | null }) {
   );
 }
 
+function AdmissionSelect({ id, defaultValue }: { id: string; defaultValue?: string | null }) {
+  const known = ADMISSION_TYPES.find((t) => t === defaultValue);
+  return (
+    <select id={id} name="admissionType" defaultValue={known ?? ""} className={`${INPUT} mt-1`}>
+      <option value="">選択してください</option>
+      {ADMISSION_TYPES.map((t) => (
+        <option key={t} value={t}>
+          {ADMISSION_LABEL[t]}
+        </option>
+      ))}
+    </select>
+  );
+}
+
 function NewApplicationForm({ compact = false }: { compact?: boolean }) {
+  const s = compact ? "c" : "n";
   return (
     <form action={createApplicationAction} className="mt-4 grid gap-3 sm:grid-cols-2">
       <div>
-        <label className={LABEL} htmlFor={`schoolName-${compact ? "c" : "n"}`}>
+        <label className={LABEL} htmlFor={`schoolName-${s}`}>
           大学・学校名（必須）
         </label>
         <input
-          id={`schoolName-${compact ? "c" : "n"}`}
+          id={`schoolName-${s}`}
           name="schoolName"
           required
           maxLength={100}
@@ -52,38 +76,35 @@ function NewApplicationForm({ compact = false }: { compact?: boolean }) {
         />
       </div>
       <div>
-        <label className={LABEL} htmlFor={`deadline-${compact ? "c" : "n"}`}>
+        <label className={LABEL} htmlFor={`deadline-${s}`}>
           出願日
         </label>
+        <input id={`deadline-${s}`} name="deadline" type="date" className={`${INPUT} mt-1`} />
+      </div>
+      <div>
+        <label className={LABEL} htmlFor={`faculty-${s}`}>
+          学部・学科
+        </label>
+        <input id={`faculty-${s}`} name="faculty" maxLength={100} placeholder="△△学部" className={`${INPUT} mt-1`} />
+      </div>
+      <div>
+        <label className={LABEL} htmlFor={`admissionType-${s}`}>
+          入試方式
+        </label>
+        <AdmissionSelect id={`admissionType-${s}`} />
+      </div>
+      <div className="sm:col-span-2">
+        <label className={LABEL} htmlFor={`guidelinesUrl-${s}`}>
+          募集要項のURL（任意）
+        </label>
         <input
-          id={`deadline-${compact ? "c" : "n"}`}
-          name="deadline"
-          type="date"
+          id={`guidelinesUrl-${s}`}
+          name="guidelinesUrl"
+          type="url"
+          placeholder="https://..."
           className={`${INPUT} mt-1`}
         />
       </div>
-      {!compact && (
-        <>
-          <div>
-            <label className={LABEL} htmlFor="faculty-n">
-              学部・学科
-            </label>
-            <input id="faculty-n" name="faculty" maxLength={100} placeholder="△△学部" className={`${INPUT} mt-1`} />
-          </div>
-          <div>
-            <label className={LABEL} htmlFor="admissionType-n">
-              入試方式
-            </label>
-            <input
-              id="admissionType-n"
-              name="admissionType"
-              maxLength={50}
-              placeholder="総合型選抜"
-              className={`${INPUT} mt-1`}
-            />
-          </div>
-        </>
-      )}
       <div className="sm:col-span-2">
         <button
           type="submit"
@@ -91,13 +112,65 @@ function NewApplicationForm({ compact = false }: { compact?: boolean }) {
         >
           登録する
         </button>
+        <p className="mt-2 text-xs text-slate-500">
+          入試方式を選ぶと、よくある書類が最初から入ります。実際に課される書類は募集要項で確認して、あとから増減できます。
+        </p>
       </div>
+    </form>
+  );
+}
+
+/** その入試で使う書類を選ぶ（ここが正確さの決め手なので、隠さず常に出す） */
+function DocumentPicker({ application }: { application: Application }) {
+  const selected = new Set(application.documents.map((d) => d.kind));
+  return (
+    <form action={setDocumentsAction} className="mt-3 rounded-xl border border-slate-200 p-4">
+      <input type="hidden" name="applicationId" value={application.id} />
+      <p className="text-xs font-bold text-slate-500">この入試で課される書類</p>
+      <div className="mt-2 flex flex-wrap gap-x-5 gap-y-2">
+        {DOC_KINDS.map((kind) => (
+          <label key={kind} className="flex items-center gap-2 text-sm text-slate-700">
+            <input
+              type="checkbox"
+              name="kinds"
+              value={kind}
+              defaultChecked={selected.has(kind)}
+              className="h-4 w-4 rounded border-slate-300"
+            />
+            {DOC_LABEL[kind]}
+          </label>
+        ))}
+      </div>
+      <div className="mt-3 flex flex-wrap items-center gap-3">
+        <button
+          type="submit"
+          className="rounded-xl bg-slate-900 px-4 py-2 text-xs font-bold text-white transition-colors hover:bg-slate-700"
+        >
+          この内容で確定する
+        </button>
+        {application.guidelinesUrl ? (
+          <a
+            href={application.guidelinesUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs font-bold text-indigo-600 underline underline-offset-2"
+          >
+            募集要項を開く →
+          </a>
+        ) : (
+          <span className="text-xs text-slate-400">募集要項のURLを登録すると、ここから開けます</span>
+        )}
+      </div>
+      <p className="mt-2 text-xs leading-relaxed text-slate-500">
+        課される書類は大学・学部・年度で変わります。学科試験（英語・数学など）はここには入れていません。必ず募集要項で確認してください。
+      </p>
     </form>
   );
 }
 
 function ApplicationCard({ application }: { application: Application }) {
   const step = nextStep(application);
+  const typeLabel = admissionLabel(application.admissionType);
 
   return (
     <article className="rounded-2xl border border-slate-200 bg-white p-6">
@@ -108,58 +181,74 @@ function ApplicationCard({ application }: { application: Application }) {
         </h3>
         <DeadlineBadge deadline={application.deadline} />
       </div>
-      {application.admissionType && <p className="mt-1 text-xs text-slate-500">{application.admissionType}</p>}
+      {typeLabel && <p className="mt-1 text-xs text-slate-500">{typeLabel}</p>}
 
-      <div className="mt-5 rounded-xl bg-indigo-50/70 p-4">
-        <p className="text-xs font-bold text-indigo-700">次にやること</p>
-        <p className="mt-1 text-base font-bold text-slate-900">{step.label}</p>
-        <p className="mt-1 text-xs leading-relaxed text-slate-600">{step.reason}</p>
-        <a
-          href={step.appUrl}
-          className="mt-3 inline-flex w-fit items-center gap-1 rounded-xl bg-indigo-600 px-4 py-2 text-xs font-bold text-white transition-colors hover:bg-indigo-500"
-        >
-          {step.appName}を開く →
-        </a>
-      </div>
+      {step ? (
+        <div className="mt-5 rounded-xl bg-indigo-50/70 p-4">
+          <p className="text-xs font-bold text-indigo-700">次にやること</p>
+          <p className="mt-1 text-base font-bold text-slate-900">{step.label}</p>
+          <p className="mt-1 text-xs leading-relaxed text-slate-600">{step.reason}</p>
+          <a
+            href={step.appUrl}
+            className="mt-3 inline-flex w-fit items-center gap-1 rounded-xl bg-indigo-600 px-4 py-2 text-xs font-bold text-white transition-colors hover:bg-indigo-500"
+          >
+            {step.appName}を開く →
+          </a>
+        </div>
+      ) : (
+        <div className="mt-5 rounded-xl bg-slate-50 p-4">
+          <p className="text-sm font-bold text-slate-900">この入試で課される書類を選んでください</p>
+          <p className="mt-1 text-xs leading-relaxed text-slate-600">
+            選ぶと、残りの日数に合わせて「次にやること」が出るようになります。
+          </p>
+        </div>
+      )}
 
-      <div className="mt-5">
-        <p className="text-xs font-bold text-slate-500">書類の進み具合</p>
-        <ul className="mt-2 divide-y divide-slate-100">
-          {application.documents.map((doc) => (
-            <li key={doc.id} className="flex items-center justify-between gap-3 py-2.5">
-              <span className="text-sm text-slate-700">{DOC_LABEL[doc.kind]}</span>
-              <span className="flex items-center gap-2">
-                <span className="text-sm font-bold text-slate-900">
-                  {doc.draftCount === 0 ? "未着手" : `${doc.draftCount}稿目`}
-                </span>
-                <form action={bumpDraftAction}>
-                  <input type="hidden" name="documentId" value={doc.id} />
-                  <button
-                    type="submit"
-                    className="rounded-lg border border-slate-200 px-2.5 py-1 text-xs font-bold text-slate-600 transition-colors hover:border-indigo-300 hover:text-indigo-600"
-                  >
-                    +1稿
-                  </button>
-                </form>
-                {doc.draftCount > 0 && (
+      {application.documents.length > 0 && (
+        <div className="mt-5">
+          <p className="text-xs font-bold text-slate-500">書類の進み具合</p>
+          <ul className="mt-2 divide-y divide-slate-100">
+            {application.documents.map((doc) => (
+              <li key={doc.id} className="flex items-center justify-between gap-3 py-2.5">
+                <span className="text-sm text-slate-700">{DOC_LABEL[doc.kind]}</span>
+                <span className="flex items-center gap-2">
+                  <span className="text-sm font-bold text-slate-900">
+                    {doc.draftCount === 0
+                      ? "未着手"
+                      : doc.kind === "mensetsu"
+                        ? `${doc.draftCount}回目`
+                        : `${doc.draftCount}稿目`}
+                  </span>
                   <form action={bumpDraftAction}>
                     <input type="hidden" name="documentId" value={doc.id} />
-                    <input type="hidden" name="delta" value="-1" />
                     <button
                       type="submit"
-                      className="rounded-lg px-1.5 py-1 text-xs text-slate-400 transition-colors hover:text-slate-600"
-                      aria-label={`${DOC_LABEL[doc.kind]}の稿数を1つ戻す`}
+                      className="rounded-lg border border-slate-200 px-2.5 py-1 text-xs font-bold text-slate-600 transition-colors hover:border-indigo-300 hover:text-indigo-600"
                     >
-                      −
+                      {doc.kind === "mensetsu" ? "+1回" : "+1稿"}
                     </button>
                   </form>
-                )}
-              </span>
-            </li>
-          ))}
-        </ul>
-        <p className="mt-2 text-xs text-slate-400">書き直すたびに「+1稿」を押してください。</p>
-      </div>
+                  {doc.draftCount > 0 && (
+                    <form action={bumpDraftAction}>
+                      <input type="hidden" name="documentId" value={doc.id} />
+                      <input type="hidden" name="delta" value="-1" />
+                      <button
+                        type="submit"
+                        className="rounded-lg px-1.5 py-1 text-xs text-slate-400 transition-colors hover:text-slate-600"
+                        aria-label={`${DOC_LABEL[doc.kind]}の回数を1つ戻す`}
+                      >
+                        −
+                      </button>
+                    </form>
+                  )}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      <DocumentPicker application={application} />
 
       <details className="mt-4 text-xs text-slate-500">
         <summary className="cursor-pointer select-none font-bold">この案件を編集する</summary>
@@ -205,11 +294,18 @@ function ApplicationCard({ application }: { application: Application }) {
             <label className={LABEL} htmlFor={`edit-type-${application.id}`}>
               入試方式
             </label>
+            <AdmissionSelect id={`edit-type-${application.id}`} defaultValue={application.admissionType} />
+          </div>
+          <div className="sm:col-span-2">
+            <label className={LABEL} htmlFor={`edit-url-${application.id}`}>
+              募集要項のURL
+            </label>
             <input
-              id={`edit-type-${application.id}`}
-              name="admissionType"
-              defaultValue={application.admissionType ?? ""}
-              maxLength={50}
+              id={`edit-url-${application.id}`}
+              name="guidelinesUrl"
+              type="url"
+              defaultValue={application.guidelinesUrl ?? ""}
+              placeholder="https://..."
               className={`${INPUT} mt-1`}
             />
           </div>
@@ -220,6 +316,9 @@ function ApplicationCard({ application }: { application: Application }) {
             >
               保存する
             </button>
+            <p className="mt-2 text-xs text-slate-400">
+              入試方式を変えても、いま選んでいる書類はそのままです。書類は上のチェックで変えてください。
+            </p>
           </div>
         </form>
         <form action={deleteApplicationAction} className="mt-3">
