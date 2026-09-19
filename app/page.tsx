@@ -11,6 +11,8 @@ import { DemoVideoGallery } from "@/components/DemoVideoGallery";
 import { IntroVideo } from "@/components/IntroVideo";
 import { TrackedLink } from "@/components/TrackedLink";
 import { SEGMENTS, SEGMENT_COPY } from "@/lib/segments";
+import { ApplicationBoard } from "@/components/ApplicationBoard";
+import { listApplications, type Application } from "@/lib/applications/store";
 
 const PLAN_LABEL: Record<"free" | "pro" | "max", string> = {
   free: "Free",
@@ -42,8 +44,8 @@ export default async function Home() {
     return <LandingPage />;
   }
 
-  const entitlement = await getEntitlement(userId);
-  return <Hub plan={entitlement.plan} entitlement={entitlement} />;
+  const [entitlement, applications] = await Promise.all([getEntitlement(userId), listApplications(userId)]);
+  return <Hub plan={entitlement.plan} entitlement={entitlement} applications={applications} />;
 }
 
 // ------------------------------------------------------------------
@@ -53,9 +55,11 @@ export default async function Home() {
 function Hub({
   plan,
   entitlement,
+  applications,
 }: {
   plan: "free" | "pro" | "max";
   entitlement: Awaited<ReturnType<typeof getEntitlement>>;
+  applications: Application[];
 }) {
   const periodEnd = formatDate(entitlement.currentPeriodEnd);
 
@@ -70,7 +74,9 @@ function Hub({
         マイページ
       </h1>
 
-      <section className="mt-8 rounded-2xl border border-slate-200 bg-slate-50/60 p-6 sm:p-8">
+      <ApplicationBoard applications={applications} />
+
+      <section className="mt-10 rounded-2xl border border-slate-200 bg-slate-50/60 p-6 sm:p-8">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
             <p className="text-xs font-bold text-slate-500">現在のプラン</p>
