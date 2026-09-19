@@ -40,7 +40,12 @@ async function driveFetch(url: string): Promise<Response> {
 }
 
 export async function findApprovalDocs(date: string): Promise<{ id: string; name: string }[]> {
-  const q = `'${SALES_FOLDER_ID}' in parents and name contains '送信承認 ${date}' and trashed = false`;
+  return findDocsByPrefix(`送信承認 ${date}`);
+}
+
+/** SALES_FOLDER_ID 内で、名前が prefix を含むドキュメントを新しい順に探す (共通処理) */
+export async function findDocsByPrefix(prefix: string): Promise<{ id: string; name: string }[]> {
+  const q = `'${SALES_FOLDER_ID}' in parents and name contains '${prefix.replace(/'/g, "\\'")}' and trashed = false`;
   const url = `https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(q)}&fields=files(id,name)&orderBy=modifiedTime%20desc&supportsAllDrives=true&includeItemsFromAllDrives=true`;
   const res = await driveFetch(url);
   if (!res.ok) {
@@ -51,7 +56,7 @@ export async function findApprovalDocs(date: string): Promise<{ id: string; name
   return json.files ?? [];
 }
 
-async function exportDocText(fileId: string): Promise<string> {
+export async function exportDocText(fileId: string): Promise<string> {
   const res = await driveFetch(`https://www.googleapis.com/drive/v3/files/${fileId}/export?mimeType=text/plain`);
   if (!res.ok) throw new Error(`Drive export ${res.status}: ${(await res.text()).slice(0, 200)}`);
   return (await res.text()).replace(/^﻿/, "");
@@ -169,11 +174,119 @@ export async function recordOutreach(row: {
   if (error) throw new Error(`sales_outreach insert: ${error.message}`);
 }
 
+// ------------------------------------------------------------------
+// 返信・面談の追跳 (「返信記録 YYYY-MM-DD」を営業エージェントがドライブに書く → ここで取り込む)
+// ------------------------------------------------------------------
+export interface ReplyRecord {
+  kind: "replied" | "meeting";
+  match: string; // 宛先(メール)または法人名
+  note: string;
+}
+
+/**
+ * 「返信記録 YYYY-MM-DD」ドキュメントをパースする。ブロックは "----" 区切り。形式:
+ *   ■ 種別: replied
+ *   宛先または法人名: ○○教室
+ *   メモ: ...
+ */
+export function parseReplyDoc(text: string): ReplyRecord[] {
+  const records: ReplyRecord[] = [];
+  const blocks = text.replace(/\r\n/g, "\n").split(/^\s*-{3,}\s*$/m);
+  for (const raw of blocks) {
+    const block = raw.trim();
+    if (!block) continue;
+    const kindMatch = block.match(/^■?\s*種別\s*[:：]\s*(replied|meeting)\s*$/im);
+    if (!kindMatch) continue;
+    const kind = kindMatch[1].toLowerCase() as "replied" | "meeting";
+    const match = block.match(/^宛先または法人名\s*[:：]\s*(.+)$/m)?.[1]?.trim() ?? "";
+    const note = block.match(/^メモ\s*[:：]\s*(.+)$/m)?.[1]?.trim() ?? "";
+    if (!match) continue;
+    records.push({ kind, match, note });
+  }
+  return records;
+}
+
+export async function findReplyDocs(date?: string): Promise<{ id: string; name: string }[]> {
+  return findDocsByPrefix(date ? `返信記録 ${date}` : "返信記録");
+}
+
+/** 宛先(メール完全一致) または 法人名(部分一致) で sales_outreach の行を探す */
+async function findOutreachRowsFor(match: string): Promise<{ id: number; recipient: string; company: string | null }[]> {
+  const supabase = getSupabaseAdmin();
+  const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(match);
+  if (isEmail) {
+    const { data, error } = await supabase.from("sales_outreach").select("id,recipient,company").eq("recipient", match.toLowerCase());
+    if (error) throw new Error(`sales_outreach select: ${error.message}`);
+    return data ?? [];
+  }
+  const { data, error } = await supabase.from("sales_outreach").select("id,recipient,company").ilike("company", `%${match}%`).order("created_at", { ascending: false }).limit(5);
+  if (error) throw new Error(`sales_outreach select: ${error.message}`);
+  return data ?? [];
+}
+
+export interface ApplyReplyResult {
+  match: string;
+  kind: "replied" | "meeting";
+  status: "applied" | "not_found" | "ambiguous";
+  matchedCompany?: string | null;
+}
+
+/** 1件の返信/面談レコードを、一番新しい該当行 (複数該当は最新のもの) に反映する */
+export async function applyReplyRecord(record: ReplyRecord): Promise<ApplyReplyResult> {
+  const rows = await findOutreachRowsFor(record.match);
+  if (rows.length === 0) return { match: record.match, kind: record.kind, status: "not_found" };
+  const row = rows[0]; // created_at 降順の先頭 = 一番新しい送信
+  const supabase = getSupabaseAdmin();
+  const patch: Record<string, unknown> = record.kind === "replied" ? { replied_at: new Date().toISOString() } : { meeting_at: new Date().toISOString() };
+  if (record.note) patch.reply_note = record.note;
+  const { error } = await supabase.from("sales_outreach").update(patch).eq("id", row.id);
+  if (error) throw new Error(`sales_outreach update: ${error.message}`);
+  return { match: record.match, kind: record.kind, status: rows.length > 1 ? "ambiguous" : "applied", matchedCompany: row.company };
+}
+
+// ------------------------------------------------------------------
+// Resend Webhook からの自動更新 (開封・クリック)
+// ------------------------------------------------------------------
+export async function markOpened(externalId: string): Promise<boolean> {
+  const supabase = getSupabaseAdmin();
+  const { data, error } = await supabase.from("sales_outreach").update({ opened_at: new Date().toISOString() }).eq("external_id", externalId).is("opened_at", null).select("id");
+  if (error) throw new Error(`sales_outreach update (opened): ${error.message}`);
+  return (data?.length ?? 0) > 0;
+}
+
+export async function markClicked(externalId: string): Promise<boolean> {
+  const supabase = getSupabaseAdmin();
+  const { data, error } = await supabase.from("sales_outreach").update({ clicked_at: new Date().toISOString() }).eq("external_id", externalId).is("clicked_at", null).select("id");
+  if (error) throw new Error(`sales_outreach update (clicked): ${error.message}`);
+  return (data?.length ?? 0) > 0;
+}
+
+// ------------------------------------------------------------------
+// 4数字のまとめ (送信・開封・返信・面談)
+// ------------------------------------------------------------------
+export interface SalesFunnelStats {
+  sent: number;
+  opened: number;
+  replied: number;
+  meeting: number;
+}
+
+export async function salesFunnelStats(): Promise<SalesFunnelStats> {
+  const supabase = getSupabaseAdmin();
+  const [sentQ, openedQ, repliedQ, meetingQ] = await Promise.all([
+    supabase.from("sales_outreach").select("id", { count: "exact", head: true }).in("status", ["sent", "manual_sent"]),
+    supabase.from("sales_outreach").select("id", { count: "exact", head: true }).not("opened_at", "is", null),
+    supabase.from("sales_outreach").select("id", { count: "exact", head: true }).not("replied_at", "is", null),
+    supabase.from("sales_outreach").select("id", { count: "exact", head: true }).not("meeting_at", "is", null),
+  ]);
+  return { sent: sentQ.count ?? 0, opened: openedQ.count ?? 0, replied: repliedQ.count ?? 0, meeting: meetingQ.count ?? 0 };
+}
+
 export async function listRecentOutreach(limit = 50) {
   const supabase = getSupabaseAdmin();
   const { data, error } = await supabase
     .from("sales_outreach")
-    .select("id,method,recipient,company,subject,status,external_id,error,source,sent_at,created_at")
+    .select("id,method,recipient,company,subject,status,external_id,error,source,sent_at,created_at,opened_at,clicked_at,replied_at,meeting_at,reply_note")
     .order("created_at", { ascending: false })
     .limit(limit);
   if (error) throw new Error(`sales_outreach select: ${error.message}`);

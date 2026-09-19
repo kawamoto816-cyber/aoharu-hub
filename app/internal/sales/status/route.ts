@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { isAdminToken } from "@/lib/metrics/admin-auth";
-import { isResendConfigured, listRecentOutreach, SALES_FOLDER_ID } from "@/lib/sales/outreach";
+import { isResendConfigured, listRecentOutreach, SALES_FOLDER_ID, salesFunnelStats } from "@/lib/sales/outreach";
 import { getServiceAccount } from "@/lib/metrics/google-auth";
 
 // 法人営業の送信状況。GET /internal/sales/status?token=...
@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 export async function GET(req: Request) {
   if (!isAdminToken(req)) return NextResponse.json({ error: "forbidden" }, { status: 403 });
   try {
-    const recent = await listRecentOutreach(50);
+    const [recent, funnel] = await Promise.all([listRecentOutreach(50), salesFunnelStats()]);
     return NextResponse.json(
       {
         generatedAt: new Date().toISOString(),
@@ -21,6 +21,7 @@ export async function GET(req: Request) {
           manual: recent.filter((r) => r.status === "manual").length,
           failed: recent.filter((r) => r.status === "failed").length,
         },
+        funnel,
         recent,
       },
       { headers: { "Cache-Control": "no-store" } },
