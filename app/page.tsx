@@ -13,6 +13,10 @@ import { TrackedLink } from "@/components/TrackedLink";
 import { SEGMENTS, SEGMENT_COPY } from "@/lib/segments";
 import { ApplicationBoard } from "@/components/ApplicationBoard";
 import { listApplications, type Application } from "@/lib/applications/store";
+import { ParentShareCard } from "@/components/ParentShareCard";
+import { getShareToken } from "@/lib/parent-share/store";
+
+const SITE_URL = "https://app.bluespring.co.jp";
 
 const PLAN_LABEL: Record<"free" | "pro" | "max", string> = {
   free: "Free",
@@ -44,8 +48,15 @@ export default async function Home() {
     return <LandingPage />;
   }
 
-  const [entitlement, applications] = await Promise.all([getEntitlement(userId), listApplications(userId)]);
-  return <Hub plan={entitlement.plan} entitlement={entitlement} applications={applications} />;
+  const [entitlement, applications, shareToken] = await Promise.all([
+    getEntitlement(userId),
+    listApplications(userId),
+    getShareToken(userId),
+  ]);
+  const shareUrl = shareToken ? `${SITE_URL}/parent-view/${shareToken}` : null;
+  return (
+    <Hub plan={entitlement.plan} entitlement={entitlement} applications={applications} shareUrl={shareUrl} />
+  );
 }
 
 // ------------------------------------------------------------------
@@ -56,10 +67,12 @@ function Hub({
   plan,
   entitlement,
   applications,
+  shareUrl,
 }: {
   plan: "free" | "pro" | "max";
   entitlement: Awaited<ReturnType<typeof getEntitlement>>;
   applications: Application[];
+  shareUrl: string | null;
 }) {
   const periodEnd = formatDate(entitlement.currentPeriodEnd);
 
@@ -75,6 +88,8 @@ function Hub({
       </h1>
 
       <ApplicationBoard applications={applications} />
+
+      <ParentShareCard shareUrl={shareUrl} />
 
       <section className="mt-10 rounded-2xl border border-slate-200 bg-slate-50/60 p-6 sm:p-8">
         <div className="flex flex-wrap items-center justify-between gap-4">

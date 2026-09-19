@@ -25,7 +25,7 @@ const APP = {
 const ORDER: DocKind[] = ["shibo-riyusho", "katsudo-hokoku", "es", "shoronbun", "mensetsu"];
 
 /** 書き直しの目安。ここに達するまでは同じ書類を勧め続ける */
-const TARGET_DRAFTS: Record<DocKind, number> = {
+export const TARGET_DRAFTS: Record<DocKind, number> = {
   "shibo-riyusho": 3,
   "katsudo-hokoku": 2,
   shoronbun: 2,
