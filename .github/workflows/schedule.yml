@@ -2,6 +2,7 @@
 #   - 07:40 JST 指標レポートを Google ドキュメントに書き出す (アナリスト 08:00 / 編集長 08:30 が読む)
 #   - 10:03 / 13:03 / 20:03 JST 承認済み投稿を投稿 (Vercel Cron 10:03 / 20:03 と二重化。冪等なので安全)
 #   - 09:30 JST (平日) 法人営業の「送信承認」分をメール送信 (冪等)
+#   - 12:00 JST SEO記事エージェントがドライブに書いた記事を /guide に取り込む
 #   - 月曜 03:00 JST Threads / Instagram の長期トークンを更新 (60日で失効するため)
 # 必要な Secret: CRON_SECRET (Vercel の環境変数と同じ値)
 #
@@ -16,11 +17,12 @@ on:
     - cron: "3 4 * * *"     # 13:03 JST 昼枠
     - cron: "3 11 * * *"    # 20:03 JST 夜枠
     - cron: "30 0 * * 1-5"  # 09:30 JST 平日 法人営業の送信承認分を送信
+    - cron: "0 3 * * *"     # 12:00 JST SEO記事の取り込み
     - cron: "0 18 * * 0"    # 月曜 03:00 JST Threads/Instagram トークン更新
   workflow_dispatch:
     inputs:
       job:
-        description: "metrics | run-queue | sales | refresh-tokens"
+        description: "metrics | run-queue | sales | refresh-tokens | guide-ingest"
         default: "run-queue"
 jobs:
   run:
@@ -36,6 +38,8 @@ jobs:
             echo "job=metrics" >> "$GITHUB_OUTPUT"
           elif [ "${{ github.event.schedule }}" = "30 0 * * 1-5" ]; then
             echo "job=sales" >> "$GITHUB_OUTPUT"
+          elif [ "${{ github.event.schedule }}" = "0 3 * * *" ]; then
+            echo "job=guide-ingest" >> "$GITHUB_OUTPUT"
           elif [ "${{ github.event.schedule }}" = "0 18 * * 0" ]; then
             echo "job=refresh-tokens" >> "$GITHUB_OUTPUT"
           else
@@ -51,6 +55,8 @@ jobs:
             url="https://app.bluespring.co.jp/internal/metrics/publish"
           elif [ "${{ steps.pick.outputs.job }}" = "sales" ]; then
             url="https://app.bluespring.co.jp/internal/sales/run"
+          elif [ "${{ steps.pick.outputs.job }}" = "guide-ingest" ]; then
+            url="https://app.bluespring.co.jp/internal/guide/ingest"
           elif [ "${{ steps.pick.outputs.job }}" = "refresh-tokens" ]; then
             url="https://app.bluespring.co.jp/internal/social/refresh-threads"
           else
