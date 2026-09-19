@@ -1,8 +1,13 @@
-# アオハルOS 定時処理 (Vercel Hobby の Cron は 1日2本までのため、GitHub Actions から本番を叩く)
+# アオハルOS 定時処理 (サーバーへのHTTP呼び出しは、すべてここから行う)
 #   - 07:40 JST 指標レポートを Google ドキュメントに書き出す (アナリスト 08:00 / 編集長 08:30 が読む)
 #   - 10:03 / 13:03 / 20:03 JST 承認済み投稿を投稿 (Vercel Cron 10:03 / 20:03 と二重化。冪等なので安全)
 #   - 09:30 JST (平日) 法人営業の「送信承認」分をメール送信 (冪等)
+#   - 月曜 03:00 JST Threads / Instagram の長期トークンを更新 (60日で失効するため)
 # 必要な Secret: CRON_SECRET (Vercel の環境変数と同じ値)
+#
+# 重要: Claude の「スケジュール済みタスク」からは本番ドメインを叩かないこと。
+# あちらの実行環境は外部通信が許可制で、app.bluespring.co.jp への接続が拒否される
+# (403 CONNECT tunnel failed)。サーバー処理の定期実行はこのワークフローの責任範囲。
 name: scheduled-jobs
 on:
   schedule:
@@ -11,10 +16,11 @@ on:
     - cron: "3 4 * * *"     # 13:03 JST 昼枠
     - cron: "3 11 * * *"    # 20:03 JST 夜枠
     - cron: "30 0 * * 1-5"  # 09:30 JST 平日 法人営業の送信承認分を送信
+    - cron: "0 18 * * 0"    # 月曜 03:00 JST Threads/Instagram トークン更新
   workflow_dispatch:
     inputs:
       job:
-        description: "metrics | run-queue | sales"
+        description: "metrics | run-queue | sales | refresh-tokens"
         default: "run-queue"
 jobs:
   run:
@@ -30,6 +36,8 @@ jobs:
             echo "job=metrics" >> "$GITHUB_OUTPUT"
           elif [ "${{ github.event.schedule }}" = "30 0 * * 1-5" ]; then
             echo "job=sales" >> "$GITHUB_OUTPUT"
+          elif [ "${{ github.event.schedule }}" = "0 18 * * 0" ]; then
+            echo "job=refresh-tokens" >> "$GITHUB_OUTPUT"
           else
             echo "job=run-queue" >> "$GITHUB_OUTPUT"
           fi
@@ -43,6 +51,8 @@ jobs:
             url="https://app.bluespring.co.jp/internal/metrics/publish"
           elif [ "${{ steps.pick.outputs.job }}" = "sales" ]; then
             url="https://app.bluespring.co.jp/internal/sales/run"
+          elif [ "${{ steps.pick.outputs.job }}" = "refresh-tokens" ]; then
+            url="https://app.bluespring.co.jp/internal/social/refresh-threads"
           else
             url="https://app.bluespring.co.jp/internal/social/run-queue"
           fi
