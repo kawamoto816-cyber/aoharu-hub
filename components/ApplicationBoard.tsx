@@ -14,6 +14,7 @@ import {
   admissionLabel,
 } from "@/lib/applications/kinds";
 import { daysLeft, nextStep } from "@/lib/applications/next-step";
+import { ActionForm, SubmitButton } from "@/components/ActionForm";
 
 // マイページ上部の「出願案件」。残り日数・書類の稿数・次にやること を出す。
 // 書類は入試方式ごとの初期値から始まるが、実際に課されるものはユーザーが確定する
@@ -61,7 +62,7 @@ function AdmissionSelect({ id, defaultValue }: { id: string; defaultValue?: stri
 function NewApplicationForm({ compact = false }: { compact?: boolean }) {
   const s = compact ? "c" : "n";
   return (
-    <form action={createApplicationAction} className="mt-4 grid gap-3 sm:grid-cols-2">
+    <ActionForm action={createApplicationAction} className="mt-4 grid gap-3 sm:grid-cols-2">
       <div>
         <label className={LABEL} htmlFor={`schoolName-${s}`}>
           大学・学校名（必須）
@@ -106,17 +107,17 @@ function NewApplicationForm({ compact = false }: { compact?: boolean }) {
         />
       </div>
       <div className="sm:col-span-2">
-        <button
-          type="submit"
+        <p className="mb-2 text-xs text-slate-500">
+          入試方式を選ぶと、よくある対策が最初から入ります。実際に必要な対策は募集要項で確認して、あとから増減できます。
+        </p>
+        <SubmitButton
+          pendingLabel="登録中…"
           className="rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-bold text-white transition-colors hover:bg-indigo-500"
         >
           登録する
-        </button>
-        <p className="mt-2 text-xs text-slate-500">
-          入試方式を選ぶと、よくある書類が最初から入ります。実際に課される書類は募集要項で確認して、あとから増減できます。
-        </p>
+        </SubmitButton>
       </div>
-    </form>
+    </ActionForm>
   );
 }
 
@@ -124,9 +125,9 @@ function NewApplicationForm({ compact = false }: { compact?: boolean }) {
 function DocumentPicker({ application }: { application: Application }) {
   const selected = new Set(application.documents.map((d) => d.kind));
   return (
-    <form action={setDocumentsAction} className="mt-3 rounded-xl border border-slate-200 p-4">
+    <ActionForm action={setDocumentsAction} className="mt-3 rounded-xl border border-slate-200 p-4">
       <input type="hidden" name="applicationId" value={application.id} />
-      <p className="text-xs font-bold text-slate-500">この入試で課される書類</p>
+      <p className="text-xs font-bold text-slate-500">この入試で必要な対策</p>
       <div className="mt-2 flex flex-wrap gap-x-5 gap-y-2">
         {DOC_KINDS.map((kind) => (
           <label key={kind} className="flex items-center gap-2 text-sm text-slate-700">
@@ -141,13 +142,16 @@ function DocumentPicker({ application }: { application: Application }) {
           </label>
         ))}
       </div>
+      <p className="mt-2 text-xs leading-relaxed text-slate-500">
+        課される内容は大学・学部・年度で変わります。学科試験（英語・数学など）はここには入れていません。必ず募集要項で確認してください。
+      </p>
       <div className="mt-3 flex flex-wrap items-center gap-3">
-        <button
-          type="submit"
+        <SubmitButton
+          pendingLabel="保存中…"
           className="rounded-xl bg-slate-900 px-4 py-2 text-xs font-bold text-white transition-colors hover:bg-slate-700"
         >
           この内容で確定する
-        </button>
+        </SubmitButton>
         {application.guidelinesUrl ? (
           <a
             href={application.guidelinesUrl}
@@ -161,10 +165,7 @@ function DocumentPicker({ application }: { application: Application }) {
           <span className="text-xs text-slate-400">募集要項のURLを登録すると、ここから開けます</span>
         )}
       </div>
-      <p className="mt-2 text-xs leading-relaxed text-slate-500">
-        課される書類は大学・学部・年度で変わります。学科試験（英語・数学など）はここには入れていません。必ず募集要項で確認してください。
-      </p>
-    </form>
+    </ActionForm>
   );
 }
 
@@ -197,7 +198,7 @@ function ApplicationCard({ application }: { application: Application }) {
         </div>
       ) : (
         <div className="mt-5 rounded-xl bg-slate-50 p-4">
-          <p className="text-sm font-bold text-slate-900">この入試で課される書類を選んでください</p>
+          <p className="text-sm font-bold text-slate-900">この入試で必要な対策を選んでください</p>
           <p className="mt-1 text-xs leading-relaxed text-slate-600">
             選ぶと、残りの日数に合わせて「次にやること」が出るようになります。
           </p>
@@ -206,7 +207,7 @@ function ApplicationCard({ application }: { application: Application }) {
 
       {application.documents.length > 0 && (
         <div className="mt-5">
-          <p className="text-xs font-bold text-slate-500">書類の進み具合</p>
+          <p className="text-xs font-bold text-slate-500">対策の進み具合</p>
           <ul className="mt-2 divide-y divide-slate-100">
             {application.documents.map((doc) => (
               <li key={doc.id} className="flex items-center justify-between gap-3 py-2.5">
@@ -221,24 +222,24 @@ function ApplicationCard({ application }: { application: Application }) {
                   </span>
                   <form action={bumpDraftAction}>
                     <input type="hidden" name="documentId" value={doc.id} />
-                    <button
-                      type="submit"
+                    <SubmitButton
+                      pendingLabel="…"
                       className="rounded-lg border border-slate-200 px-2.5 py-1 text-xs font-bold text-slate-600 transition-colors hover:border-indigo-300 hover:text-indigo-600"
                     >
                       {doc.kind === "mensetsu" ? "+1回" : "+1稿"}
-                    </button>
+                    </SubmitButton>
                   </form>
                   {doc.draftCount > 0 && (
                     <form action={bumpDraftAction}>
                       <input type="hidden" name="documentId" value={doc.id} />
                       <input type="hidden" name="delta" value="-1" />
-                      <button
-                        type="submit"
+                      <SubmitButton
+                        pendingLabel="…"
+                        ariaLabel={`${DOC_LABEL[doc.kind]}の回数を1つ戻す`}
                         className="rounded-lg px-1.5 py-1 text-xs text-slate-400 transition-colors hover:text-slate-600"
-                        aria-label={`${DOC_LABEL[doc.kind]}の回数を1つ戻す`}
                       >
                         −
-                      </button>
+                      </SubmitButton>
                     </form>
                   )}
                 </span>
@@ -252,7 +253,7 @@ function ApplicationCard({ application }: { application: Application }) {
 
       <details className="mt-4 text-xs text-slate-500">
         <summary className="cursor-pointer select-none font-bold">この案件を編集する</summary>
-        <form action={updateApplicationAction} className="mt-3 grid gap-3 sm:grid-cols-2">
+        <ActionForm action={updateApplicationAction} className="mt-3 grid gap-3 sm:grid-cols-2">
           <input type="hidden" name="applicationId" value={application.id} />
           <div>
             <label className={LABEL} htmlFor={`edit-school-${application.id}`}>
@@ -310,23 +311,26 @@ function ApplicationCard({ application }: { application: Application }) {
             />
           </div>
           <div className="sm:col-span-2">
-            <button
-              type="submit"
+            <p className="mb-2 text-xs text-slate-400">
+              入試方式を変えても、いま選んでいる対策はそのままです。対策は上のチェックで変えてください。
+            </p>
+            <SubmitButton
+              pendingLabel="保存中…"
               className="rounded-xl bg-slate-900 px-4 py-2 text-xs font-bold text-white transition-colors hover:bg-slate-700"
             >
               保存する
-            </button>
-            <p className="mt-2 text-xs text-slate-400">
-              入試方式を変えても、いま選んでいる書類はそのままです。書類は上のチェックで変えてください。
-            </p>
+            </SubmitButton>
           </div>
-        </form>
-        <form action={deleteApplicationAction} className="mt-3">
+        </ActionForm>
+        <ActionForm action={deleteApplicationAction} className="mt-3">
           <input type="hidden" name="applicationId" value={application.id} />
-          <button type="submit" className="text-xs text-slate-400 underline underline-offset-2 hover:text-rose-600">
+          <SubmitButton
+            pendingLabel="削除中…"
+            className="text-xs text-slate-400 underline underline-offset-2 hover:text-rose-600"
+          >
             この案件を削除する
-          </button>
-        </form>
+          </SubmitButton>
+        </ActionForm>
       </details>
     </article>
   );
