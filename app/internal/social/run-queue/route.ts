@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { isAdminToken } from "@/lib/metrics/admin-auth";
 import { isXConfigured, postToX } from "@/lib/social/x";
 import { isThreadsConfigured, postToThreads } from "@/lib/social/threads";
-import { isInstagramConfigured, postToInstagram, postReelToInstagram } from "@/lib/social/instagram";
+import { isInstagramConfigured, postToInstagram, postReelToInstagram, ReelPendingError } from "@/lib/social/instagram";
 import { parseCard } from "@/lib/social/card";
 import { findRecentDuplicate, recordPost, textHash } from "@/lib/social/store";
 import { dueSlots, jstNow, loadQueue, type QueueItem } from "@/lib/social/queue";
@@ -36,8 +36,18 @@ function isCron(req: Request): boolean {
   return Boolean(secret) && req.headers.get("authorization") === `Bearer ${secret}`;
 }
 
+// サーバーレス関数には実行時間の上限がある (Vercel Hobby は 60 秒)。
+// リールの取り込み待ち・YouTube への動画アップロードは秒単位で読めないため、
+// 残り時間を見ながら実行し、間に合わないぶんは次回に持ち越す (このキュー処理は何度呼んでも安全な設計)。
+// 上限に張り付いて関数ごと強制終了されると、呼び出し側からは「タイムアウト・応答なし」に見えてしまう。
+const DEFAULT_BUDGET_MS = 45_000;
+
 export async function GET(req: Request) {
   if (!isAdminToken(req) && !isCron(req)) return NextResponse.json({ error: "forbidden" }, { status: 403 });
+  const startedAt = Date.now();
+  const budgetRaw = Number(process.env.RUN_QUEUE_BUDGET_MS ?? DEFAULT_BUDGET_MS);
+  const budgetMs = Number.isFinite(budgetRaw) ? Math.min(Math.max(budgetRaw, 10_000), 240_000) : DEFAULT_BUDGET_MS;
+  const remainingMs = () => budgetMs - (Date.now() - startedAt);
   const p = new URL(req.url).searchParams;
   const now = jstNow();
   const date = p.get("date") ?? now.date;
@@ -60,6 +70,12 @@ export async function GET(req: Request) {
     const configured = it.channel === "x" ? isXConfigured() : it.channel === "threads" ? isThreadsConfigured() : isInstagramConfigured();
     if (!configured) {
       results.push({ channel: it.channel, slot: it.slot, status: "not_configured", preview });
+      continue;
+    }
+    // Instagram の画像カードはコンテナの取り込み完了待ちで最大40秒かかる。
+    // 残り時間が足りないときは投稿せずに次回へ回す (記録を残さないので次の実行で再試行される)。
+    if (it.channel === "instagram" && !dry && remainingMs() < 20_000) {
+      results.push({ channel: it.channel, slot: it.slot, status: "deferred", preview });
       continue;
     }
     const dup = await findRecentDuplicate(it.channel, textHash(it.text)).catch(() => null);
@@ -94,16 +110,23 @@ export async function GET(req: Request) {
   // ショート動画のInstagramリール自動投稿。専用の Cron 枠は追加できない (Hobby プランの上限) ため、
   // このキュー処理に相乗りさせ、未投稿ぶんを1本だけ少しずつ消化する (自己回復・多重実行しても安全)。
   const reels: { slug: string; status: string; external_id?: string; error?: string }[] = [];
-  if (!dry && isInstagramConfigured()) {
+  if (!dry && isInstagramConfigured() && remainingMs() > 15_000) {
     try {
       const pending = await listPendingInstagramReels(1);
       for (const v of pending) {
         const caption = `${v.title}\n\n${v.description ?? ""}`.trim();
         try {
-          const r = await postReelToInstagram({ videoUrl: v.video_url, caption });
+          // 取り込み待ちは実行時間の残りまで。終わらなければ ReelPendingError で中断し、次回やり直す。
+          const r = await postReelToInstagram({ videoUrl: v.video_url, caption }, { deadlineAt: startedAt + budgetMs - 5_000 });
           await markInstagramReelPosted(v.slug, r.id);
           reels.push({ slug: v.slug, status: "posted", external_id: r.id });
         } catch (e) {
+          // 実行時間切れは「恒久的な失敗」ではないので attempts を増やさない
+          // (増やすと3回で見切られ、動画が二度と投稿されなくなってしまう)。
+          if (e instanceof ReelPendingError) {
+            reels.push({ slug: v.slug, status: "deferred", error: e.message });
+            continue;
+          }
           const message = e instanceof Error ? e.message : String(e);
           await markInstagramReelFailed(v.slug, message, v.instagram_attempts).catch(() => undefined);
           reels.push({ slug: v.slug, status: "failed", error: message });
@@ -112,12 +135,14 @@ export async function GET(req: Request) {
     } catch (e) {
       reels.push({ slug: "(query)", status: "failed", error: e instanceof Error ? e.message : String(e) });
     }
+  } else if (!dry && isInstagramConfigured()) {
+    reels.push({ slug: "(budget)", status: "deferred" });
   }
 
   // ショート動画の YouTube (Shorts) 自動投稿。こちらも同じ理由で Cron 枠は増やさず相乗りさせる。
   // 動画の実体を取得してアップロードするため Instagram より時間がかかりやすく、1本ずつ処理する。
   const youtube: { slug: string; status: string; external_id?: string; error?: string }[] = [];
-  if (!dry && isYouTubePostingConfigured()) {
+  if (!dry && isYouTubePostingConfigured() && remainingMs() > 20_000) {
     try {
       const pending = await listPendingYoutubeUploads(1);
       for (const v of pending) {
@@ -135,13 +160,15 @@ export async function GET(req: Request) {
     } catch (e) {
       youtube.push({ slug: "(query)", status: "failed", error: e instanceof Error ? e.message : String(e) });
     }
+  } else if (!dry && isYouTubePostingConfigured()) {
+    youtube.push({ slug: "(budget)", status: "deferred" });
   }
 
   // ショート動画の TikTok (Content Posting API) 自動投稿。こちらも同じ理由で Cron 枠は増やさず相乗りさせる。
   // 審査 (App Review) が未完了のうちは TikTok 側が非公開以外の投稿を拒否するため failed が続くだけで、
   // 審査が通り次第コード変更なしで自動的に posted に切り替わる。
   const tiktok: { slug: string; status: string; external_id?: string; error?: string }[] = [];
-  if (!dry && isTikTokPostingConfigured()) {
+  if (!dry && isTikTokPostingConfigured() && remainingMs() > 10_000) {
     try {
       const pending = await listPendingTiktokUploads(1);
       for (const v of pending) {
@@ -158,12 +185,19 @@ export async function GET(req: Request) {
     } catch (e) {
       tiktok.push({ slug: "(query)", status: "failed", error: e instanceof Error ? e.message : String(e) });
     }
+  } else if (!dry && isTikTokPostingConfigured()) {
+    tiktok.push({ slug: "(budget)", status: "deferred" });
   }
 
   // 夜枠の実行時 (または ?metrics=1) に、投稿の反応も取り込む (Hobby プランは Cron が1日1回×2本までのため相乗り)。
-  let metrics: { updated: number; warnings: string[] } | { error: string } | null = null;
+  // 反応の取り込みは /admin/social の「反応を更新」や /internal/social/refresh-metrics でも行えるため、
+  // 残り時間が足りないときは見送ってよい。
+  let metrics: { updated: number; warnings: string[] } | { error: string } | { skipped: string } | null = null;
   if (!dry && (p.get("metrics") === "1" || slots.includes("夜"))) {
-    metrics = await refreshSocialMetrics().catch((e: Error) => ({ error: e.message }));
+    metrics =
+      remainingMs() > 8_000
+        ? await refreshSocialMetrics().catch((e: Error) => ({ error: e.message }))
+        : { skipped: "実行時間の残りが足りないため見送りました (次回またはダッシュボードの「反応を更新」で取り込まれます)" };
   }
 
   return NextResponse.json(

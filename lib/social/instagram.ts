@@ -64,11 +64,32 @@ export async function postToInstagram(card: CardContent, origin?: string): Promi
 }
 
 /**
+ * リールの取り込みが「実行時間内に終わらなかった」ことを表す。
+ * Instagram 側の恒久的なエラーではなく、次回の実行でやり直せば成功する種類の中断なので、
+ * 呼び出し側はこれを失敗として数えない (attempts を増やさない) こと。
+ */
+export class ReelPendingError extends Error {
+  readonly creationId: string;
+  constructor(creationId: string, status: string) {
+    super(`Instagram: リールの取り込みが実行時間内に終わりませんでした (現在の状態 ${status})。次回の実行でやり直します`);
+    this.name = "ReelPendingError";
+    this.creationId = creationId;
+  }
+}
+
+/**
  * ショート動画を Instagram リールとして投稿する。
  * video_url は公開アクセス可能な URL (Supabase Storage の public バケット) を渡すこと。
  * 画像と同じくコンテナ作成 → 処理完了待ち (動画のため長め) → 公開、の3段階。
+ *
+ * deadlineAt (エポックミリ秒) を渡すと、その時刻までしか取り込み完了を待たない。
+ * サーバーレス関数の実行時間上限 (Vercel Hobby は 60 秒) の中に収めるために使う。
+ * 期限までに終わらなかった場合は ReelPendingError を投げる (恒久的な失敗ではない)。
  */
-export async function postReelToInstagram(video: { videoUrl: string; caption: string }): Promise<{ id: string }> {
+export async function postReelToInstagram(
+  video: { videoUrl: string; caption: string },
+  opts: { deadlineAt?: number } = {},
+): Promise<{ id: string }> {
   const token = await getToken();
   const userId = await getUserId(token);
   const container = await graph("POST", `/${userId}/media`, {
@@ -79,18 +100,22 @@ export async function postReelToInstagram(video: { videoUrl: string; caption: st
   });
   const creationId = String(container.id ?? "");
   if (!creationId) throw new Error("Instagram: リールのコンテナIDが取得できませんでした");
-  // 動画の取り込み・処理完了を待つ (最大 96秒。数十秒の縦動画なので通常はもっと早く終わる)
+  // 動画の取り込み・処理完了を待つ (既定は最大 96秒。deadlineAt が渡されていればそちらを優先する)
+  const deadlineAt = opts.deadlineAt ?? Date.now() + 96_000;
+  const POLL_MS = 6_000;
   let status = "IN_PROGRESS";
   let statusDetail = "";
-  for (let i = 0; i < 16; i++) {
+  for (;;) {
     const st = await graph("GET", `/${creationId}`, { fields: "status_code,status", access_token: token });
     status = String(st.status_code ?? "");
     statusDetail = String(st.status ?? "");
     if (status === "FINISHED") break;
     if (status === "ERROR" || status === "EXPIRED") throw new Error(`Instagram: リール処理エラー (${status}) ${statusDetail}`);
-    await new Promise((r) => setTimeout(r, 6000));
+    // 次のポーリングまで待つと期限を越えてしまうなら、ここで打ち切る (関数が強制終了されるのを避ける)
+    if (Date.now() + POLL_MS >= deadlineAt) break;
+    await new Promise((r) => setTimeout(r, POLL_MS));
   }
-  if (status !== "FINISHED") throw new Error(`Instagram: リール処理がタイムアウトしました (最終状態 ${status} ${statusDetail})`);
+  if (status !== "FINISHED") throw new ReelPendingError(creationId, `${status} ${statusDetail}`.trim());
   const published = await graph("POST", `/${userId}/media_publish`, { creation_id: creationId, access_token: token });
   const id = String(published.id ?? "");
   if (!id) throw new Error("Instagram: リール公開IDが取得できませんでした");
