@@ -1,5 +1,8 @@
 # アオハルOS 定時処理 (サーバーへのHTTP呼び出しは、すべてここから行う)
-#   - 07:40 JST 指標レポートを Google ドキュメントに書き出す (アナリスト 08:00 / 編集長 08:30 が読む)
+#   - 04:00 JST 指標レポートを Google ドキュメントに書き出す (アナリスト 08:00 / 編集長 08:30 が読む)
+#     (2026-09-20: GitHub Actions のスケジュール実行が「07:40 JST」設定に対して
+#      毎日ほぼ一定して2時間前後遅延する事象を確認したため、遅延を吸収できるよう
+#      実行時刻を前倒しした。元は "40 22 * * *" = 07:40 JST 設定だった)
 #   - 10:03 / 13:03 / 20:03 JST 承認済み投稿を投稿 (Vercel Cron 10:03 / 20:03 と二重化。冪等なので安全)
 #   - 09:30 JST (平日) 法人営業の「送信承認」分をメール送信 (冪等)
 #   - 12:00 JST SEO記事エージェントがドライブに書いた記事を /guide に取り込む
@@ -16,7 +19,7 @@
 name: scheduled-jobs
 on:
   schedule:
-    - cron: "40 22 * * *"   # 07:40 JST 指標レポート
+    - cron: "0 19 * * *"    # 04:00 JST 指標レポート (遅延を見込んで前倒し。詳細は冒頭コメント)
     - cron: "3 1 * * *"     # 10:03 JST 朝枠
     - cron: "3 4 * * *"     # 13:03 JST 昼枠
     - cron: "3 11 * * *"    # 20:03 JST 夜枠
@@ -41,7 +44,7 @@ jobs:
         run: |
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             echo "job=${{ github.event.inputs.job }}" >> "$GITHUB_OUTPUT"
-          elif [ "${{ github.event.schedule }}" = "40 22 * * *" ]; then
+          elif [ "${{ github.event.schedule }}" = "0 19 * * *" ]; then
             echo "job=metrics" >> "$GITHUB_OUTPUT"
           elif [ "${{ github.event.schedule }}" = "30 0 * * 1-5" ]; then
             echo "job=sales" >> "$GITHUB_OUTPUT"
