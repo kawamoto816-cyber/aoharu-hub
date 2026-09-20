@@ -3,6 +3,7 @@ import Link from "next/link";
 import { isAdminUser } from "@/lib/metrics/admin-auth";
 import { ACCOUNTS, getSocialDashboard, refreshSocialMetrics, type SocialDashboard } from "@/lib/social/metrics";
 import { listShortsVideos } from "@/lib/social/shorts";
+import { GuideSection } from "@/components/admin/GuideSection";
 
 // /admin/social: 自社配信の可視化ダッシュボード (@bluespring.co.jp でログインした人だけ)。
 // 公式SNS一覧 → 自社投稿の一覧 (本文・投稿先リンク・反応) → 成果の分析 (チャネル別・時間帯別・日次推移・SNS経由の流入)。
@@ -447,6 +448,14 @@ export default async function SocialDashboardPage({
               )}
             </tbody>
           </table>
+        </div>
+      </section>
+
+      {/* SEO記事 (/guide) */}
+      <section className="mt-8 rounded-2xl border border-slate-200 bg-white p-5">
+        <h2 className="text-sm font-bold text-slate-900">SEO記事（/guide）</h2>
+        <div className="mt-3">
+          <GuideSection />
         </div>
       </section>
     </main>

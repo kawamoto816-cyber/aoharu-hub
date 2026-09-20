@@ -175,6 +175,49 @@ interface LeadRow {
   contact_form_url: string | null;
 }
 
+export interface LeadsPipelineStats {
+  total: number;
+  byStatus: Record<"new" | "excluded" | "queued" | "contacted", number>;
+}
+
+/** 見込み先パイプラインの件数 (法人営業ダッシュボードの集計用) */
+export async function leadsPipelineStats(): Promise<LeadsPipelineStats> {
+  const supabase = getSupabaseAdmin();
+  const { count: total } = await supabase.from("sales_leads").select("id", { count: "exact", head: true });
+  const statuses = ["new", "excluded", "queued", "contacted"] as const;
+  const byStatus = {} as LeadsPipelineStats["byStatus"];
+  for (const s of statuses) {
+    const { count } = await supabase.from("sales_leads").select("id", { count: "exact", head: true }).eq("status", s);
+    byStatus[s] = count ?? 0;
+  }
+  return { total: total ?? 0, byStatus };
+}
+
+export interface LeadListRow {
+  id: number;
+  name: string;
+  pattern_key: PatternKey;
+  activity_label: string | null;
+  pref: string | null;
+  contact_email: string | null;
+  contact_form_url: string | null;
+  status: "new" | "excluded" | "queued" | "contacted";
+  exclude_reason: string | null;
+  discovered_at: string;
+}
+
+/** 見込み先の一覧 (新しい順)。法人営業ダッシュボードの「リスト」表示に使う */
+export async function listRecentLeads(limit = 50): Promise<LeadListRow[]> {
+  const supabase = getSupabaseAdmin();
+  const { data, error } = await supabase
+    .from("sales_leads")
+    .select("id,name,pattern_key,activity_label,pref,contact_email,contact_form_url,status,exclude_reason,discovered_at")
+    .order("discovered_at", { ascending: false })
+    .limit(limit);
+  if (error) throw new Error(`sales_leads select: ${error.message}`);
+  return (data ?? []) as LeadListRow[];
+}
+
 /** 未着手 (status='new') のリードを、パターン別テンプレートで提案文まで組み立ててDriveに書き出す */
 export async function generateCandidateDoc(limit = 150): Promise<{ count: number; docId: string | null }> {
   const supabase = getSupabaseAdmin();

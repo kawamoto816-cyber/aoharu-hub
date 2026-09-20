@@ -147,6 +147,12 @@ export default async function AdminPage({
           >
             配信ダッシュボード →
           </Link>
+          <Link
+            href="/admin/sales"
+            className="rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1 font-bold text-indigo-700"
+          >
+            法人営業ダッシュボード →
+          </Link>
         </nav>
       </div>
 
