@@ -238,6 +238,9 @@ export default async function SocialDashboardPage({
           <Link href={`/admin/social?days=${days}&refresh=1`} className="rounded-full border border-slate-200 px-3 py-1 font-bold text-slate-600 hover:bg-slate-50">
             反応を更新
           </Link>
+          <Link href="/admin/sales" className="rounded-full border border-slate-200 px-3 py-1 font-bold text-slate-600 hover:bg-slate-50">
+            法人営業ダッシュボード →
+          </Link>
           <Link href={`/admin?days=${days}`} className="rounded-full border border-slate-200 px-3 py-1 font-bold text-slate-600 hover:bg-slate-50">
             管理ダッシュボード →
           </Link>
