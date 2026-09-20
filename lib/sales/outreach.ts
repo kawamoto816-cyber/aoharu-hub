@@ -89,6 +89,35 @@ export async function createDriveDoc(name: string, parentId: string, text: strin
 }
 
 /**
+ * 固定名のドキュメントの中身を上書きする (存在しなければ例外)。
+ * サービスアカウントは Drive の保存容量を持たず新規ファイルを作れないため
+ * (lib/metrics/publish.ts と同じ制約)、テンプレート提案はこの方式に統一する:
+ * じゅんさんが一度だけ固定名のドキュメントを作り、以後は毎回その中身を上書きする。
+ */
+export async function upsertDriveDoc(name: string, parentId: string, text: string): Promise<{ id: string; created: boolean }> {
+  const token = await getGoogleAccessToken();
+  if (!token) throw new Error("GA4_SERVICE_ACCOUNT_JSON が未設定です (Drive に書けません)");
+  const [existing] = await findDocsByPrefix(name);
+  const boundary = `aoharu_${Math.random().toString(36).slice(2)}`;
+  const body =
+    `--${boundary}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${JSON.stringify({ mimeType: "application/vnd.google-apps.document" })}\r\n` +
+    `--${boundary}\r\nContent-Type: text/plain; charset=UTF-8\r\n\r\n${text}\r\n--${boundary}--`;
+  if (existing) {
+    const res = await fetch(`https://www.googleapis.com/upload/drive/v3/files/${existing.id}?uploadType=multipart&supportsAllDrives=true`, {
+      method: "PATCH",
+      headers: { Authorization: `Bearer ${token}`, "Content-Type": `multipart/related; boundary=${boundary}` },
+      body,
+    });
+    if (!res.ok) throw new Error(`Drive update ${res.status}: ${(await res.text()).slice(0, 200)}`);
+    return { id: existing.id, created: false };
+  }
+  const sa = getServiceAccount()?.client_email ?? "(不明)";
+  throw new Error(
+    `Drive にドキュメント「${name}」がありません。法人営業フォルダに Google ドキュメント「${name}」を作成し、サービスアカウント ${sa} を「編集者」で共有してください (サービスアカウントは新規作成できません)`,
+  );
+}
+
+/**
  * ドキュメント本文をパースする。ブロックは "----" で区切る。形式:
  *   [email] 宛先: info@example.jp
  *   法人名: ○○教室

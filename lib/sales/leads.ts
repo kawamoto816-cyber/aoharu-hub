@@ -1,6 +1,6 @@
 import { getSupabaseAdmin } from "@/lib/aoharu-entitlements/supabase/client";
 import { jstNow } from "@/lib/social/queue";
-import { createDriveDoc, SALES_FOLDER_ID } from "./outreach";
+import { upsertDriveDoc, SALES_FOLDER_ID } from "./outreach";
 import { placeDetails, textSearch } from "./places";
 import { buildProposal, type LeadForProposal, type PatternKey } from "./patterns";
 
@@ -8,6 +8,11 @@ import { buildProposal, type LeadForProposal, type PatternKey } from "./patterns
 //   1. harvestNext()  — 都道府県×業態の組み合わせを少しずつ回し、sales_leads に候補を積む
 //   2. generateCandidateDoc() — 未着手ぶんをテンプレートで提案文まで組み立て、Driveに書き出す
 //      (法人営業エージェントが、この提案候補に自分のWebSearch分を合わせてじゅんさんに報告する)
+//      サービスアカウントは Drive の保存容量を持たず新規ファイルを作れないため
+//      (lib/metrics/publish.ts と同じ制約)、日付入りの新規ドキュメントではなく、
+//      固定名 TEMPLATE_DOC_NAME の中身を毎回上書きする。中身の1行目 (更新日 (JST)) で鮮度を判断する。
+
+export const TEMPLATE_DOC_NAME = "テンプレート提案（最新）";
 
 const PREFECTURES = [
   "北海道", "青森県", "岩手県", "宮城県", "秋田県", "山形県", "福島県",
@@ -253,7 +258,7 @@ export async function generateCandidateDoc(limit = 150): Promise<{ count: number
     lines.push("----");
   });
 
-  const docId = await createDriveDoc(`テンプレート提案 ${date}`, SALES_FOLDER_ID, lines.join("\n"));
+  const { id: docId } = await upsertDriveDoc(TEMPLATE_DOC_NAME, SALES_FOLDER_ID, lines.join("\n"));
   const ids = usable.map((l) => l.id);
   await supabase.from("sales_leads").update({ status: "queued", updated_at: new Date().toISOString() }).in("id", ids);
   return { count: usable.length, docId };
