@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { isAdminUser } from "@/lib/metrics/admin-auth";
-import { listRecentOutreach, salesFunnelStats } from "@/lib/sales/outreach";
+import { listRecentOutreach, salesFunnelStats, SALES_FOLDER_ID } from "@/lib/sales/outreach";
 import { leadsPipelineStats, listRecentLeads } from "@/lib/sales/leads";
 import { PATTERN_LABEL } from "@/lib/sales/patterns";
+import { getServiceAccount } from "@/lib/metrics/google-auth";
 
 // /admin/sales: 法人営業の見込み先リスト（Places APIでの発見〜提案〜送信）と
 // 送信数・開封・返信・面談のアクション履歴を一覧する (@bluespring.co.jp でログインした人だけ)。
@@ -58,6 +59,7 @@ export default async function AdminSalesPage() {
   ]);
   const openRate = stats.sent ? Math.round((stats.opened / stats.sent) * 100) : 0;
   const replyRate = stats.sent ? Math.round((stats.replied / stats.sent) * 100) : 0;
+  const serviceAccountEmail = getServiceAccount()?.client_email ?? null;
 
   return (
     <main className="mx-auto max-w-5xl px-6 py-12">
@@ -89,6 +91,18 @@ export default async function AdminSalesPage() {
           <p className="mt-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-2 text-xs text-amber-800">
             「提案作成済み・承認待ち」が{leadsStats.byStatus.queued}件あります。ドライブの「テンプレート提案」ドキュメントを確認し、送っていい先を「送信承認」ドキュメントに反映してください。
           </p>
+        )}
+        {leadsStats.byStatus.new > 0 && leadsStats.byStatus.queued === 0 && (
+          <div className="mt-3 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-xs leading-relaxed text-rose-800">
+            <p className="font-bold">「新規（未着手）」が{leadsStats.byStatus.new}件たまっていますが、「提案作成済み・承認待ち」に進んでいません。</p>
+            <p className="mt-1">
+              毎日05:50 JSTの自動処理（テンプレート提案の書き出し）が、Google ドライブへの書き込み権限不足で失敗している可能性があります。
+              以下のサービスアカウントに、法人営業フォルダ（フォルダID: <span className="font-mono">{SALES_FOLDER_ID}</span>）を
+              「編集者」権限で共有してください（現在は閲覧権限のみの可能性があります）。
+            </p>
+            <p className="mt-1 font-mono">{serviceAccountEmail ?? "（サービスアカウント未設定）"}</p>
+            <p className="mt-1">共有し直せば、コードの変更なしに翌日の自動処理から解消します。</p>
+          </div>
         )}
       </section>
 
