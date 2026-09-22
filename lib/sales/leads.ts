@@ -58,6 +58,37 @@ const OPT_OUT_PATTERNS = /営業(のご連絡|目的|のお電話|お断り|に�
 const EMAIL_PATTERN = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/;
 const CONTACT_LINK_PATTERN = /href="([^"]+)"[^>]*>[^<]*(お問い合わせ|お問合せ|contact|CONTACT|Contact)/i;
 
+// ------------------------------------------------------------------
+// 法人名NGリスト (じゅんさんが「ここには送らないで」と指定した先。
+// sales_name_suppression テーブル (docs/sales-name-suppression.sql) に入れて記憶する。
+// メール/ドメイン単位の sales_suppression とは別で、法人名の部分一致で判定する
+// (連絡先が変わって再発見されても、法人名が同じなら再度NGになる)。
+// ------------------------------------------------------------------
+function normalizeOrgName(s: string): string {
+  return s.replace(/\s+/g, "").normalize("NFKC");
+}
+
+function nameMatchesSuppression(name: string, patterns: string[]): boolean {
+  const target = normalizeOrgName(name);
+  if (!target) return false;
+  return patterns.some((p) => {
+    const np = normalizeOrgName(p);
+    return Boolean(np) && (target.includes(np) || np.includes(target));
+  });
+}
+
+/** テーブル未作成でも harvest/提案作成を止めないよう、失敗時は空配列を返す */
+async function nameSuppressionPatterns(): Promise<string[]> {
+  try {
+    const supabase = getSupabaseAdmin();
+    const { data, error } = await supabase.from("sales_name_suppression").select("pattern");
+    if (error) return [];
+    return (data ?? []).map((r) => (r as { pattern: string }).pattern);
+  } catch {
+    return [];
+  }
+}
+
 /** 公式サイトのトップページだけを軽く見て、連絡先と「営業お断り」表示を拾う (深追いしない) */
 async function inspectWebsite(url: string): Promise<{ email: string | null; formUrl: string | null; optedOut: boolean }> {
   try {
@@ -105,6 +136,7 @@ export async function harvestNext(opts: { combosPerRun?: number; budgetMs?: numb
 
   const { data: stateRow } = await supabase.from("sales_harvest_state").select("next_index").eq("id", 1).limit(1);
   let index = (stateRow?.[0] as { next_index: number } | undefined)?.next_index ?? 0;
+  const ngPatterns = await nameSuppressionPatterns();
 
   let combosProcessed = 0;
   let placesFound = 0;
@@ -147,6 +179,7 @@ export async function harvestNext(opts: { combosPerRun?: number; budgetMs?: numb
       }
 
       const hasContact = Boolean(email || formUrl);
+      const nameSuppressed = nameMatchesSuppression(place.name, ngPatterns);
       const { error } = await supabase.from("sales_leads").insert({
         place_id: place.id,
         name: place.name,
@@ -158,8 +191,8 @@ export async function harvestNext(opts: { combosPerRun?: number; budgetMs?: numb
         contact_email: email,
         contact_form_url: formUrl,
         opted_out_notice: optedOut,
-        status: !hasContact ? "excluded" : optedOut ? "excluded" : "new",
-        exclude_reason: !hasContact ? "no_contact" : optedOut ? "opt_out_notice" : null,
+        status: nameSuppressed ? "excluded" : !hasContact ? "excluded" : optedOut ? "excluded" : "new",
+        exclude_reason: nameSuppressed ? "name_suppressed" : !hasContact ? "no_contact" : optedOut ? "opt_out_notice" : null,
       });
       if (!error) leadsAdded += 1;
     }
@@ -234,7 +267,19 @@ export async function generateCandidateDoc(limit = 150): Promise<{ count: number
     .limit(limit);
   if (error) throw new Error(`sales_leads select: ${error.message}`);
   const leads = (data ?? []) as LeadRow[];
-  const usable = leads.filter((l) => l.contact_email || l.contact_form_url);
+
+  // NGリストに該当する法人は、ここで確実に除外する (harvest 後にNG登録された場合の保険)
+  const ngPatterns = await nameSuppressionPatterns();
+  const ngLeads = leads.filter((l) => nameMatchesSuppression(l.name, ngPatterns));
+  if (ngLeads.length > 0) {
+    await supabase
+      .from("sales_leads")
+      .update({ status: "excluded", exclude_reason: "name_suppressed", updated_at: new Date().toISOString() })
+      .in("id", ngLeads.map((l) => l.id));
+  }
+  const ngIds = new Set(ngLeads.map((l) => l.id));
+
+  const usable = leads.filter((l) => !ngIds.has(l.id) && (l.contact_email || l.contact_form_url));
   if (usable.length === 0) return { count: 0, docId: null };
 
   const { date } = jstNow();
