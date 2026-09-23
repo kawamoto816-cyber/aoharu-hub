@@ -54,6 +54,8 @@ const OPT_OUT =
 const SUCCESS =
   /送信(が|を)?(完了|しました|されました|いたしました|致しました)|ありがとうございま(す|した)|受け付け(ました|いたしました|致しました)|受付(完了|いたしました|致しました|しました)|承りました|thank\s*you|thanks for|successfully|has been sent|was sent/gi;
 const INPUT_ERROR = /入力してください|入力して下さい|選択してください|必須項目です|必須です|正しく入力|入力内容に(誤り|エラー)|エラーがあります|入力されていません|invalid|is required|required field/gi;
+// サイト側で送信を断られたときの表示 (reCAPTCHA v3 でスパム判定された Contact Form 7 など)。この場合は届いていない
+const REJECTED = /送信に失敗|失敗しました|スパム|spam|エラーが発生|送信できませんでした|送信中にエラー|failed to send|could not be sent/gi;
 const NOT_CONTACT_PURPOSE = /(体験|見学|無料体験|体験レッスン|予約|入会|入塾|入校|申込|申し込み|エントリー|求人|採用|応募|資料請求)/;
 const CONTACT_WORD = /(問い?合|問合|contact|inquiry|お問合せ|ご相談|ご意見)/i;
 
@@ -384,6 +386,12 @@ function fillForm(args) {
 
 /** 送信ボタン (または確認画面の「送信する」) を押す */
 function clickSubmit(confirmStep) {
+  // 確認画面の「送信」を押すのは、元の入力フォームが消えたとき (確認画面に切り替わったとき) だけ。
+  // 同じページのまま (送信中・送信済み・拒否) で「送信」を押し直すと、二重送信になるおそれがあるため
+  if (confirmStep && window.__aoForm && document.contains(window.__aoForm)) {
+    const ta = window.__aoForm.querySelector("textarea");
+    if (ta && ta.offsetParent !== null && !ta.readOnly && !ta.disabled) return "form-still-visible";
+  }
   const scope = (!confirmStep && window.__aoForm && document.contains(window.__aoForm) ? window.__aoForm : document);
   const cands = [...scope.querySelectorAll("button,input[type=submit],input[type=image],input[type=button],a[role=button]")];
   const label = (b) => (b.value || b.innerText || b.alt || b.getAttribute("aria-label") || "").trim();
@@ -496,38 +504,57 @@ async function processItem(context, item, idx) {
     let clicked = await target.fr.evaluate(clickSubmit, false);
     if (clicked === "no-button") return { status: "skipped", note: "送信ボタンが見つからない" };
     await settle(page);
-    for (let step = 0; step < 2; step++) {
-      const after = await pageText(page);
-      if (count(SUCCESS, after) > beforeOk) {
-        await shot("sent");
-        return { status: "sent", note: `完了表示を確認 (${clicked})` };
+    const beforeRej = count(REJECTED, before);
+    const judge = async () => {
+      const t = await pageText(page);
+      if (count(SUCCESS, t) > beforeOk) return { status: "sent", note: `完了表示を確認 (${clicked})` };
+      if (count(REJECTED, t) > beforeRej) {
+        const m = t.match(new RegExp(`.{0,20}(${REJECTED.source}).{0,40}`, "i"));
+        return { status: "skipped", note: `サイト側で送信を拒否された (届いていない。手動送信の候補): ${(m ? m[0] : "").replace(/\s+/g, " ").slice(0, 100)}` };
       }
-      if (count(INPUT_ERROR, after) > beforeErr) {
-        await shot("error");
-        const m = after.match(new RegExp(`.{0,30}(${INPUT_ERROR.source}).{0,30}`, "i"));
-        return { status: "failed", note: `入力エラー: ${(m ? m[0] : "").replace(/\s+/g, " ").slice(0, 120)}` };
+      if (count(INPUT_ERROR, t) > beforeErr) {
+        const m = t.match(new RegExp(`.{0,30}(${INPUT_ERROR.source}).{0,30}`, "i"));
+        return { status: "failed", note: `入力エラー (届いていない): ${(m ? m[0] : "").replace(/\s+/g, " ").slice(0, 120)}` };
       }
-      if (hasVisibleCaptcha(page)) {
-        await shot("captcha2");
-        return { status: "failed", note: "送信後に画像認証が出た" };
+      if (hasVisibleCaptcha(page)) return { status: "failed", note: "送信後に画像認証が出た (届いていない)" };
+      return null;
+    };
+    for (let step = 0; step < 3; step++) {
+      const r = await judge();
+      if (r) {
+        await shot(r.status);
+        return r;
       }
-      // 確認画面: 確認ボタン/送信ボタンを探して押す
+      // 確認画面なら「送信」を押す (元のフォームが残っている間は押し直さない)
       let c = "no-button";
       for (const fr of page.frames()) {
         c = await fr.evaluate(clickSubmit, true).catch(() => "no-button");
         if (c !== "no-button") break;
       }
+      if (c === "form-still-visible") {
+        // 同じページで送信処理中 (Contact Form 7 等)。結果が出るまで最大15秒待つ
+        for (let i = 0; i < 5; i++) {
+          await page.waitForTimeout(3000);
+          const r2 = await judge();
+          if (r2) {
+            await shot(r2.status);
+            return r2;
+          }
+        }
+        break;
+      }
       if (c === "no-button") break;
       clicked = c;
       await settle(page);
     }
-    const last = await pageText(page);
-    if (count(SUCCESS, last) > beforeOk) {
-      await shot("sent");
-      return { status: "sent", note: `完了表示を確認 (${clicked})` };
+    const last = await judge();
+    if (last) {
+      await shot(last.status);
+      return last;
     }
     await shot("unknown");
-    return { status: "failed", note: "送信ボタンは押したが完了表示を確認できない (二重送信を避けるため再送しない)" };
+    const tail = (await pageText(page)).replace(/\s+/g, " ").slice(0, 80);
+    return { status: "failed", note: `送信ボタンは押したが完了表示を確認できない (二重送信を避けるため再送しない)。画面: ${tail}` };
   } finally {
     await page.close().catch(() => undefined);
   }
