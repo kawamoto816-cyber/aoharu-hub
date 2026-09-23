@@ -266,7 +266,15 @@ function fillForm(args) {
       }
       const grpReq = grp.some((r) => r.required) || /必須|※|\*/.test(L);
       if (grp.some((r) => r.checked)) continue;
-      const pick = grp.find((r) => OK.test(lab(r) + " " + r.value));
+      // 選択肢そのものの文字 (ラベル・値・直後の文字) だけで選ぶ。周りの文字で選ぶと「個人・法人」の「個人」を選ぶ等の誤りが起きる。
+      // 「一般」はクラス名 (例:「月曜Girls一般」) にも使われるため、選択肢の決め手にしない
+      const optText = (r) => [r.labels && r.labels[0] && txt(r.labels[0]), r.value, r.nextSibling && r.nextSibling.textContent].filter(Boolean).join(" ");
+      const PRIORITY = [/法人|企業|会社|団体/, /営業|提案|取材|ご案内/, /お問い?合わ?せ|問合|ご相談|ご質問/, /その他|other/i];
+      let pick = null;
+      for (const re of PRIORITY) {
+        pick = grp.find((r) => re.test(optText(r)) && !/個人/.test(optText(r)));
+        if (pick) break;
+      }
       if (pick) {
         pick.click();
         filled[key] = t + ":" + pick.value;
