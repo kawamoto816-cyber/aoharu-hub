@@ -1,0 +1,54 @@
+# 法人営業のフォーム宛てを、GitHub のサーバー上のヘッドレスブラウザで自動入力・送信する。
+#   - 平日 12:30 JST。09:30 の送信ジョブ (schedule.yml の sales) が、承認済みの [form] 項目を
+#     sales_outreach に「手動 (manual)」として記録する → それをここで1件ずつ送る
+#   - 1回あたり最大 LIMIT 件 (既定30)。営業お断り・画像認証・答えられない必須項目・予約/申込専用フォームは見送る
+#   - 結果は /internal/sales/forms に書き戻し、ダッシュボードの送信アクション履歴に出る
+#   - 各フォームのスクリーンショットと一覧 (summary.tsv) は、実行結果の Artifacts「sales-forms」に14日間残る
+#   手動実行: Actions → sales-forms → Run workflow (dry=1 で送信せず入力までの確認だけ)
+#   必要な Secret: CRON_SECRET (schedule.yml と同じ)
+name: sales-forms
+on:
+  schedule:
+    - cron: "30 3 * * 1-5" # 12:30 JST 平日
+  workflow_dispatch:
+    inputs:
+      limit:
+        description: "1回に処理する最大件数"
+        default: "30"
+      dry:
+        description: "1 にすると送信せず、入力できるかだけ確かめる"
+        default: "0"
+concurrency:
+  group: sales-forms
+  cancel-in-progress: false
+jobs:
+  submit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Install Playwright (Chromium)
+        run: |
+          mkdir -p /tmp/pw && cd /tmp/pw
+          npm init -y > /dev/null
+          npm i --no-audit --no-fund playwright@1 > /dev/null
+          npx playwright install --with-deps chromium > /dev/null
+          sudo apt-get install -y -qq fonts-noto-cjk > /dev/null
+          cp "$GITHUB_WORKSPACE/scripts/sales-forms/submit.mjs" /tmp/pw/
+      - name: Submit approved forms
+        working-directory: /tmp/pw
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          LIMIT: ${{ github.event.inputs.limit || '30' }}
+          DRY: ${{ github.event.inputs.dry || '0' }}
+          OUT_DIR: ${{ github.workspace }}/out/sales-forms
+        run: node submit.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sales-forms
+          path: out/sales-forms/
+          retention-days: 14

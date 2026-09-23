@@ -7,7 +7,8 @@ import { isUsableEmail } from "./contact";
 
 // 法人営業のアウトリーチ送信 (じゅんさんの「送信OK」後にサーバーが送る)。
 //   - 営業エージェントが Google Drive「アオハルOS 法人営業」フォルダに「送信承認 YYYY-MM-DD」ドキュメントを作る
-//   - サーバーがそれを読み、[email] の項目を Resend で送信、[form] の項目は「手動 (フォーム入力)」として記録する
+//   - サーバーがそれを読み、[email] の項目を Resend で送信、[form] の項目は「manual (フォーム入力待ち)」として記録する
+//     (manual のフォーム宛ては GitHub Actions の sales-forms ワークフローが自動入力・送信する。lib/sales/forms.ts)
 //   - 送信ログは Supabase sales_outreach。同じ宛先には 90 日間は再送しない。sales_suppression にある宛先には送らない
 //   必要な環境変数: RESEND_API_KEY, (任意) SALES_FROM_EMAIL, SALES_REPLY_TO, SALES_FOLDER_ID
 
@@ -610,7 +611,7 @@ export async function runOutreach(opts: { date?: string; days?: number; dry?: bo
       continue;
     }
     if (it.method === "form") {
-      // フォームは自動送信しない。手動 (Claude が右画面で入力) の対象として記録する
+      // フォームはここでは送らない。「manual」として記録し、sales-forms ワークフロー (ヘッドレスブラウザ) が後で送る
       if (!opts.dry && !state.manual.has(key)) {
         await recordOutreach({ ...it, recipient: it.to, status: "manual", source });
         state.manual.add(key);

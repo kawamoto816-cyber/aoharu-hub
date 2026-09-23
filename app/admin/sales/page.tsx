@@ -38,6 +38,17 @@ function fmt(d: string | null | undefined): string {
   return new Date(d).toLocaleString("ja-JP", { timeZone: "Asia/Tokyo", month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" });
 }
 
+// 送信アクション履歴の「状態」の表示名
+const OUTREACH_STATUS_LABEL: Record<string, string> = {
+  sent: "メール送信済み",
+  "form:manual": "フォーム送信待ち",
+  "form:manual_sent": "フォーム送信済み",
+  manual: "手動対応待ち",
+  manual_sent: "送信済み",
+  skipped: "見送り",
+  failed: "失敗",
+};
+
 export default async function AdminSalesPage() {
   const admin = await isAdminUser();
   if (!admin.ok) {
@@ -70,7 +81,7 @@ export default async function AdminSalesPage() {
       <h1 className="mt-2 text-2xl font-bold text-slate-900">法人営業ダッシュボード</h1>
       <p className="mt-3 text-sm leading-relaxed text-slate-500">
         見込み先は Google Places API で毎日少しずつ発見し（3時間おき）、テンプレートで提案文を組み立てて承認待ちにします。
-        じゅんさんが法人営業エージェントに「送信OK」と返信すると「送信承認」ドキュメントが作られ、次の平日09:30 JSTにサーバーが自動送信します（直近5日分の承認をまとめて処理。フォーム宛のみ手動）。
+        じゅんさんが法人営業エージェントに「送信OK」と返信すると「送信承認」ドキュメントが作られ、次の平日09:30 JSTにサーバーが自動送信します（直近5日分の承認をまとめて処理）。フォーム宛ては、同じ日の12:30 JSTにGitHub上のブラウザが自動で入力・送信します（営業お断り・画像認証・住所や学年など答えられない必須項目があるフォームは見送り）。
         開封・クリックは送信メールの追跡で自動的に記録され、返信・面談は営業エージェントに伝えると自動で反映されます。
       </p>
 
@@ -92,7 +103,7 @@ export default async function AdminSalesPage() {
         </div>
         {leadsStats.byStatus.queued > 0 && (
           <p className="mt-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-2 text-xs text-amber-800">
-            「提案作成済み・承認待ち」が{leadsStats.byStatus.queued}件あります。毎朝の法人営業エージェントの報告（通知）に「送信OK」と返信すると、エージェントが「送信承認」ドキュメントを作り、次の平日09:30 JSTの送信ジョブが直近5日分の承認をまとめてメール送信します（フォーム宛は手動）。
+            「提案作成済み・承認待ち」が{leadsStats.byStatus.queued}件あります。毎朝の法人営業エージェントの報告（通知）に「送信OK」と返信すると、エージェントが「送信承認」ドキュメントを作り、次の平日09:30 JSTの送信ジョブが直近5日分の承認をまとめてメール送信します（フォーム宛ては12:30に自動入力・送信）。
           </p>
         )}
         <div className="mt-3 flex flex-wrap items-center gap-3 rounded-xl border border-indigo-200 bg-indigo-50 px-4 py-3 text-xs text-indigo-900">
@@ -106,7 +117,7 @@ export default async function AdminSalesPage() {
               )}
             </p>
             <p className="mt-1 text-indigo-700">
-              まとめて承認すると、平日09:30の送信ジョブが1日の上限まで古い順に自動送信します（フォーム宛ては対象外・手動）。
+              まとめて承認すると、平日09:30の送信ジョブが1日の上限まで古い順に自動送信します（フォーム宛ては対象外）。
             </p>
           </div>
           {queuedWithEmail - approvedWaiting > 0 && (
@@ -207,11 +218,11 @@ export default async function AdminSalesPage() {
                     <td className="whitespace-nowrap border-b border-slate-200 px-3 py-2 text-slate-500">{fmt(r.sent_at ?? r.created_at)}</td>
                     <td className="border-b border-slate-200 px-3 py-2 font-bold text-slate-900">{r.company || "—"}</td>
                     <td className="border-b border-slate-200 px-3 py-2 text-slate-600">{r.recipient}</td>
-                    <td className="whitespace-nowrap border-b border-slate-200 px-3 py-2 text-slate-600">{r.status}</td>
+                    <td className="whitespace-nowrap border-b border-slate-200 px-3 py-2 text-slate-600">{OUTREACH_STATUS_LABEL[`${r.method}:${r.status}`] ?? OUTREACH_STATUS_LABEL[r.status] ?? r.status}</td>
                     <td className="whitespace-nowrap border-b border-slate-200 px-3 py-2 text-slate-500">{fmt(r.opened_at)}</td>
                     <td className="whitespace-nowrap border-b border-slate-200 px-3 py-2 text-slate-500">{fmt(r.replied_at)}</td>
                     <td className="whitespace-nowrap border-b border-slate-200 px-3 py-2 text-slate-500">{fmt(r.meeting_at)}</td>
-                    <td className="border-b border-slate-200 px-3 py-2 text-xs text-slate-500">{r.reply_note || ""}</td>
+                    <td className="border-b border-slate-200 px-3 py-2 text-xs text-slate-500">{r.reply_note || (r.status === "skipped" || r.status === "failed" ? r.error : "") || ""}</td>
                   </tr>
                 ))}
               </tbody>

@@ -69,7 +69,7 @@ function normalizeOrgName(s: string): string {
   return s.replace(/\s+/g, "").normalize("NFKC");
 }
 
-function nameMatchesSuppression(name: string, patterns: string[]): boolean {
+export function nameMatchesSuppression(name: string, patterns: string[]): boolean {
   const target = normalizeOrgName(name);
   if (!target) return false;
   return patterns.some((p) => {
@@ -79,7 +79,7 @@ function nameMatchesSuppression(name: string, patterns: string[]): boolean {
 }
 
 /** テーブル未作成でも harvest/提案作成を止めないよう、失敗時は空配列を返す */
-async function nameSuppressionPatterns(): Promise<string[]> {
+export async function nameSuppressionPatterns(): Promise<string[]> {
   try {
     const supabase = getSupabaseAdmin();
     const { data, error } = await supabase.from("sales_name_suppression").select("pattern");
