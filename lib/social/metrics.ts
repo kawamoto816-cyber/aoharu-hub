@@ -2,7 +2,7 @@ import { getSupabaseAdmin } from "@/lib/aoharu-entitlements/supabase/client";
 import { getGoogleAccessToken } from "@/lib/metrics/google-auth";
 import { dateRange } from "@/lib/metrics/sources";
 import { xApiGet } from "./x";
-import { getSetting } from "./store";
+import { getSetting, setSetting } from "./store";
 import { getInstagramPermalink } from "./instagram";
 import type { SocialChannel } from "./store";
 
@@ -28,6 +28,7 @@ export interface SocialPostRow {
   external_id: string | null;
   source: string | null;
   status: string;
+  error?: string | null;
   created_at: string;
 }
 
@@ -118,17 +119,31 @@ async function fetchThreadsMetrics(ids: string[]): Promise<{ metrics: PostMetric
   return { metrics, warning };
 }
 
+const X_METRICS_DAYS = 7;
+const X_METRICS_MIN_INTERVAL_MS = 20 * 3600 * 1000;
+
 export async function refreshSocialMetrics(days = 60): Promise<{ updated: number; warnings: string[] }> {
   const supabase = getSupabaseAdmin();
   const since = new Date(Date.now() - days * 86400 * 1000).toISOString();
   const { data, error } = await supabase
     .from("social_posts")
-    .select("channel,external_id")
+    .select("channel,external_id,created_at")
     .eq("status", "posted")
     .gte("created_at", since)
     .not("external_id", "is", null);
   if (error) throw new Error(`social_posts select: ${error.message}`);
-  const xIds = (data ?? []).filter((r) => r.channel === "x").map((r) => r.external_id as string);
+  // X は従量課金で、反応の取得も「読んだ投稿1件ごと」に課金される ($0.005/件)。
+  // 以前は直近60日の全投稿を1日2回読んでいたため、投稿よりも反応取得でクレジットを使い切り、
+  // 「X API 402: credits depleted」で投稿が止まっていた。反応は投稿後数日でほぼ出揃うので、
+  // X は直近 X_METRICS_DAYS 日分だけを、1日1回まで取り込む。
+  const xSince = Date.now() - X_METRICS_DAYS * 86400 * 1000;
+  const xLast = await getSetting("x_metrics_refreshed_at").catch(() => null);
+  const xDue = !xLast || Date.now() - new Date(xLast).getTime() > X_METRICS_MIN_INTERVAL_MS;
+  const xIds = xDue
+    ? (data ?? [])
+        .filter((r) => r.channel === "x" && new Date((r as { created_at: string }).created_at).getTime() >= xSince)
+        .map((r) => r.external_id as string)
+    : [];
   const thIds = (data ?? []).filter((r) => r.channel === "threads").map((r) => r.external_id as string);
   const igIds = (data ?? []).filter((r) => r.channel === "instagram").map((r) => r.external_id as string);
 
@@ -137,6 +152,7 @@ export async function refreshSocialMetrics(days = 60): Promise<{ updated: number
   if (xIds.length) {
     try {
       rows.push(...(await fetchXMetrics(xIds)));
+      await setSetting("x_metrics_refreshed_at", new Date().toISOString()).catch(() => undefined);
     } catch (e) {
       warnings.push(`X: ${e instanceof Error ? e.message : String(e)}`);
     }
@@ -177,7 +193,7 @@ export async function getSocialDashboard(days: number): Promise<SocialDashboard>
   const { start, end, dates } = dateRange(days);
   const sinceIso = `${start}T00:00:00.000Z`;
   const [{ data: posts, error: pErr }, { data: metrics, error: mErr }] = await Promise.all([
-    supabase.from("social_posts").select("id,channel,text,external_id,source,status,created_at").gte("created_at", sinceIso).order("created_at", { ascending: false }).limit(500),
+    supabase.from("social_posts").select("id,channel,text,external_id,source,status,error,created_at").gte("created_at", sinceIso).order("created_at", { ascending: false }).limit(500),
     supabase.from("social_metrics").select("*").limit(1000),
   ]);
   if (pErr) throw new Error(`social_posts: ${pErr.message}`);

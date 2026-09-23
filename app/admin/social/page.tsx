@@ -370,7 +370,7 @@ export default async function SocialDashboardPage({
                   <td className="py-2 whitespace-nowrap tabular-nums text-slate-500">{jst(p.created_at)}</td>
                   <td className="py-2"><span className={`rounded-full px-2 py-0.5 text-[11px] font-bold ${CH_COLOR[p.channel]}`}>{CH_LABEL[p.channel]}</span></td>
                   <td className="py-2 text-slate-500">{p.slot ?? (p.source ?? "").replace(/^setup-test$/, "テスト")}</td>
-                  <td className="py-2"><p className="line-clamp-2 max-w-md whitespace-pre-line leading-relaxed text-slate-700">{p.text}</p>{p.status === "failed" && <p className="text-[11px] text-amber-700">失敗</p>}</td>
+                  <td className="py-2"><p className="line-clamp-2 max-w-md whitespace-pre-line leading-relaxed text-slate-700">{p.text}</p>{p.status === "failed" && <p className="text-[11px] text-amber-700">失敗{p.error ? `：${/credits depleted/i.test(p.error) ? "Xのクレジット残高切れ（developer.x.com で残高を追加すると次の枠から再開）" : p.error.slice(0, 120)}` : ""}</p>}</td>
                   <td className="py-2 text-right tabular-nums">{fmt(p.metrics?.likes)}</td>
                   <td className="py-2 text-right tabular-nums">{fmt(p.metrics?.replies)}</td>
                   <td className="py-2 text-right tabular-nums">{fmt(p.metrics?.reposts)}</td>
