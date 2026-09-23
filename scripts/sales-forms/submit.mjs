@@ -8,7 +8,8 @@
 // 見送るもの (嘘の内容を入れない・迷惑をかけないためのルール):
 //   - 「営業お断り」「セールスお断り」等の記載があるページ
 //   - CAPTCHA (画像認証) があるフォーム
-//   - 住所・郵便番号・年齢・学年・生年月日・性別など、こちらが正しく答えられない必須項目があるフォーム
+//   - 住所・郵便番号・学年・お子さまの情報・性別など、こちらが正しく答えられない必須項目があるフォーム
+//     (生年月日・年齢が必須の場合は、じゅんさん本人の生年月日 1980年8月16日 と、そこから計算した年齢を入れる)
 //   - 体験・見学の予約、入会・入塾の申込、採用応募など、問い合わせ以外が目的のフォーム
 //   - ブログのコメント欄
 // 失敗・完了画面を確認できなかったものは、二重送信を避けるため自動では再送しない。
@@ -44,6 +45,8 @@ const SENDER = {
   tel: "09036593315",
   telParts: ["090", "3659", "3315"],
   url: "https://app.bluespring.co.jp",
+  // 生年月日・年齢が必須のフォーム用 (じゅんさん本人の生年月日。じゅんさん指定)
+  birth: { y: 1980, m: 8, d: 16 },
 };
 
 const OPT_OUT =
@@ -131,6 +134,26 @@ function fillForm(args) {
     for (const ev of ["input", "change", "blur"]) e.dispatchEvent(new Event(ev, { bubbles: true }));
   };
   const OK = /その他|お問い?合わ?せ|問合|ご相談|other|一般|提案|営業|取材|法人|企業/i;
+  // 生年月日・年齢 (じゅんさん本人の値)
+  const B = P.birth;
+  const nowD = new Date();
+  const age = nowD.getFullYear() - B.y - (nowD.getMonth() + 1 < B.m || (nowD.getMonth() + 1 === B.m && nowD.getDate() < B.d) ? 1 : 0);
+  const isBirth = (l) => /生年月日|誕生日|birth|dob/.test(l);
+  const isAge = (l) => /年齢|\bage\b/.test(l) && !isBirth(l);
+  // 年・月・日に分かれた欄のどれかを、name/id/placeholder/直後の文字から判定する
+  const birthPart = (e) => {
+    const s = `${e.name || ""} ${e.id || ""} ${e.placeholder || ""}`.toLowerCase();
+    if (/year|yyyy|(^|[_\-\[\s])y([_\-\]\s]|$)/.test(s)) return "y";
+    if (/month|(^|[^a-z])mm([^a-z]|$)|(^|[_\-\[\s])m([_\-\]\s]|$)/.test(s)) return "m";
+    if (/day|(^|[^a-z])dd([^a-z]|$)|(^|[_\-\[\s])d([_\-\]\s]|$)/.test(s)) return "d";
+    const next = ((e.nextSibling && e.nextSibling.textContent) || "").trim().charAt(0);
+    if (next === "年") return "y";
+    if (next === "月") return "m";
+    if (next === "日") return "d";
+    return null;
+  };
+  const partValue = (part) => (part === "y" ? B.y : part === "m" ? B.m : B.d);
+  const pad = (n) => String(n).padStart(2, "0");
   const els = [...f.elements].filter((e) => {
     const t = (e.type || "").toLowerCase();
     return !["hidden", "submit", "button", "reset", "image", "file", "password"].includes(t) && (e.name || e.id);
@@ -159,6 +182,24 @@ function fillForm(args) {
         put("body", hasSubject ? body : `【件名】${subject}\n\n${body}`);
         bodyDone = true;
       } else if (req) miss.push("textarea:" + L.slice(0, 30));
+      continue;
+    }
+    if (e.tagName === "SELECT" && (isBirth(l) || isAge(l))) {
+      const part = isBirth(l) ? birthPart(e) : null;
+      const want = isAge(l) ? age : part ? partValue(part) : null;
+      const opts = [...e.options].filter((x) => x.value);
+      const opt =
+        want === null
+          ? null
+          : isAge(l)
+            ? opts.find((x) => parseInt(x.text, 10) === age || parseInt(x.value, 10) === age) ||
+              opts.find((x) => new RegExp(`${Math.floor(age / 10) * 10}代`).test(x.text))
+            : opts.find((x) => parseInt(x.value, 10) === want || parseInt(x.text, 10) === want);
+      if (opt) {
+        e.value = opt.value;
+        e.dispatchEvent(new Event("change", { bubbles: true }));
+        filled[key] = isAge(l) ? "age" : "birth-" + part;
+      } else if (req) miss.push("生年月日/年齢の選択肢:" + L.slice(0, 20));
       continue;
     }
     if (e.tagName === "SELECT") {
@@ -196,7 +237,20 @@ function fillForm(args) {
       if (req) miss.push("住所");
       continue;
     }
-    if (/年齢|\bage\b|性別|gender|学年|生年月日|birth|お子様|お子さま|生徒名|保護者/.test(l)) {
+    if (isBirth(l)) {
+      if (t === "date") put("birth", `${B.y}-${pad(B.m)}-${pad(B.d)}`);
+      else {
+        const part = birthPart(e);
+        put("birth", part ? String(partValue(part)) : `${B.y}/${pad(B.m)}/${pad(B.d)}`);
+      }
+      continue;
+    }
+    if (isAge(l)) {
+      put("age", String(age));
+      continue;
+    }
+    // 学年・お子さま・生徒の情報は、こちらに該当者がいないため入れない (嘘の内容になる)
+    if (/性別|gender|学年|お子様|お子さま|生徒名|保護者/.test(l)) {
       if (req) miss.push("個人情報:" + L.slice(0, 20));
       continue;
     }
