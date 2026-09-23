@@ -67,7 +67,7 @@ export default async function AdminSalesPage() {
       <h1 className="mt-2 text-2xl font-bold text-slate-900">法人営業ダッシュボード</h1>
       <p className="mt-3 text-sm leading-relaxed text-slate-500">
         見込み先は Google Places API で毎日少しずつ発見し（3時間おき）、テンプレートで提案文を組み立てて承認待ちにします。
-        じゅんさんが「送信承認」ドキュメントで承認すると、翌営業日09:30 JSTにサーバーが自動送信します（フォーム宛のみ手動）。
+        じゅんさんが法人営業エージェントに「送信OK」と返信すると「送信承認」ドキュメントが作られ、次の平日09:30 JSTにサーバーが自動送信します（直近5日分の承認をまとめて処理。フォーム宛のみ手動）。
         開封・クリックは送信メールの追跡で自動的に記録され、返信・面談は営業エージェントに伝えると自動で反映されます。
       </p>
 
@@ -89,7 +89,7 @@ export default async function AdminSalesPage() {
         </div>
         {leadsStats.byStatus.queued > 0 && (
           <p className="mt-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-2 text-xs text-amber-800">
-            「提案作成済み・承認待ち」が{leadsStats.byStatus.queued}件あります。ドライブの「テンプレート提案」ドキュメントを確認し、送っていい先を「送信承認」ドキュメントに反映してください。
+            「提案作成済み・承認待ち」が{leadsStats.byStatus.queued}件あります。毎朝の法人営業エージェントの報告（通知）に「送信OK」と返信すると、エージェントが「送信承認」ドキュメントを作り、次の平日09:30 JSTの送信ジョブが直近5日分の承認をまとめてメール送信します（フォーム宛は手動）。
           </p>
         )}
         {leadsStats.byStatus.new > 0 && leadsStats.byStatus.queued === 0 && (

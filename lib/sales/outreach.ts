@@ -47,6 +47,30 @@ export async function findApprovalDocs(date: string): Promise<{ id: string; name
   return findDocsByPrefix(`送信承認 ${date}`);
 }
 
+/** 既定で何日前までの「送信承認」ドキュメントを送信対象にするか */
+export const APPROVAL_LOOKBACK_DAYS = 5;
+
+/**
+ * 直近 days 日以内に作られた「送信承認」ドキュメントを古い順に返す。
+ * 以前は「今日の日付の名前」のドキュメントしか読んでいなかったため、
+ * 09:30 の送信ジョブより後に作られた承認 (例: 11時に作った「送信承認 2026-09-21（2）」) や
+ * 週末に作られた承認が、翌日以降どの実行からも読まれず取り残されていた。
+ * 同じ宛先への二重送信は recentlyContacted() (90日) で防いでいるので、複数日を読んでも安全。
+ */
+export async function findRecentApprovalDocs(days = APPROVAL_LOOKBACK_DAYS): Promise<{ id: string; name: string }[]> {
+  const since = new Date(Date.now() - days * 86400 * 1000).toISOString();
+  const q = `'${SALES_FOLDER_ID}' in parents and name contains '送信承認' and createdTime > '${since}' and trashed = false`;
+  const url = `https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(q)}&fields=files(id,name)&orderBy=createdTime&pageSize=100&supportsAllDrives=true&includeItemsFromAllDrives=true`;
+  const res = await driveFetch(url);
+  if (!res.ok) {
+    const sa = getServiceAccount()?.client_email ?? "(不明)";
+    throw new Error(`Drive files.list ${res.status}: ${(await res.text()).slice(0, 200)} — 法人営業フォルダをサービスアカウント ${sa} に共有してください`);
+  }
+  const json = (await res.json()) as { files?: { id: string; name: string }[] };
+  // 「（テスト）」と付いた承認は動作確認用なので送らない
+  return (json.files ?? []).filter((f) => !/テスト/.test(f.name));
+}
+
 /** SALES_FOLDER_ID 内で、名前が prefix を含むドキュメントを新しい順に探す (共通処理) */
 export async function findDocsByPrefix(prefix: string): Promise<{ id: string; name: string }[]> {
   const q = `'${SALES_FOLDER_ID}' in parents and name contains '${prefix.replace(/'/g, "\\'")}' and trashed = false`;
@@ -155,8 +179,8 @@ export function parseApprovalDoc(text: string): OutreachItem[] {
   return items;
 }
 
-export async function loadApprovals(date: string): Promise<{ docs: string[]; items: OutreachItem[] }> {
-  const docs = await findApprovalDocs(date);
+export async function loadApprovals(date?: string, days?: number): Promise<{ docs: string[]; items: OutreachItem[] }> {
+  const docs = date ? await findApprovalDocs(date) : await findRecentApprovalDocs(days);
   const seen = new Set<string>();
   const items: OutreachItem[] = [];
   for (const d of docs) {
@@ -199,6 +223,21 @@ export async function recentlyContacted(to: string): Promise<{ sent_at: string }
     .limit(1);
   if (error) throw new Error(`sales_outreach select: ${error.message}`);
   return data?.[0] ?? null;
+}
+
+/**
+ * 送信できた宛先を、見込み先リスト (sales_leads) 側でも「送信済み」にする。
+ * これが無かったため、ダッシュボードの「送信済み」が送っても 0 のままになっていた。
+ */
+export async function markLeadContacted(to: string): Promise<void> {
+  const supabase = getSupabaseAdmin();
+  const now = new Date().toISOString();
+  const col = to.includes("@") && !/^https?:\/\//.test(to) ? "contact_email" : "contact_form_url";
+  await supabase
+    .from("sales_leads")
+    .update({ status: "contacted", last_contacted_at: now, updated_at: now })
+    .ilike(col, to.replace(/[%_\\]/g, "\\$&")) // 大文字小文字の違いだけ吸収する (ワイルドカードは無効化)
+    .neq("status", "excluded");
 }
 
 export async function recordOutreach(row: {
@@ -450,9 +489,10 @@ export interface RunResult {
   error?: string;
 }
 
-export async function runOutreach(opts: { date?: string; dry?: boolean }): Promise<{ date: string; docs: string[]; queued: number; results: RunResult[] }> {
+export async function runOutreach(opts: { date?: string; days?: number; dry?: boolean }): Promise<{ date: string; docs: string[]; queued: number; results: RunResult[] }> {
+  // date 指定時はその日の承認だけ (従来どおり)。未指定なら直近 APPROVAL_LOOKBACK_DAYS 日分の承認をまとめて処理する
   const date = opts.date ?? jstNow().date;
-  const { docs, items } = await loadApprovals(date);
+  const { docs, items } = await loadApprovals(opts.date, opts.days);
   const results: RunResult[] = [];
   let sentCount = 0;
   const source = `send-approval-${date}`;
@@ -498,6 +538,7 @@ export async function runOutreach(opts: { date?: string; dry?: boolean }): Promi
     try {
       const r = await sendEmail(it);
       await recordOutreach({ ...it, recipient: it.to, status: "sent", external_id: r.id, source });
+      await markLeadContacted(it.to).catch(() => undefined); // 見込み先リストの反映失敗で送信を止めない
       sentCount += 1;
       results.push({ ...base, status: "sent", external_id: r.id });
     } catch (e) {
