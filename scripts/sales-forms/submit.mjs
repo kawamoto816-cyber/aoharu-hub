@@ -123,6 +123,36 @@ function fillForm(args) {
     }
     return s;
   };
+  // その欄だけのラベル (周りの文字を拾わない)。「お名前 姓 名」のように周りの文字が混ざると、
+  // 名の欄に姓を入れる・氏名の欄にフリガナを入れる、といった取り違えが起きるため、こちらを優先して判定する
+  const ownLab = (e) => {
+    let s = [e.labels && e.labels[0] && txt(e.labels[0]), e.getAttribute("aria-label"), e.placeholder, e.name, e.id].filter(Boolean).join(" ");
+    const tr = e.closest("tr");
+    if (tr && tr.querySelector("th") && tr.querySelectorAll("input,textarea,select").length === 1) s += " " + txt(tr.querySelector("th"));
+    const dd = e.closest("dd");
+    if (dd && dd.previousElementSibling && dd.querySelectorAll("input,textarea,select").length === 1) s += " " + txt(dd.previousElementSibling);
+    return s;
+  };
+  const short = (s) => s.replace(/\s+/g, " ").trim().slice(0, 14);
+  const KANA = /カナ|かな|フリガナ|ふりがな|kana|furigana|ruby|yomi/;
+  const SEI = /姓|せい|(^|[^a-z])sei([^a-z]|$)|last.?name|family|lname|name1|name_1|name-1|namae1/;
+  const MEI = /(^|[\s（(【])名([\s)）】]|$)|めい|(^|[^a-z])mei([^a-z]|$)|first.?name|given|fname|name2|name_2|name-2|namae2/;
+  /** 文字の欄の種類を判定する (該当なしは null) */
+  const classify = (s, t) => {
+    if (/お子|生徒|児童|学年|保護者|性別|gender|郵便|〒|zip|住所|address|生年月日|誕生|birth|年齢/.test(s)) return null;
+    if (t === "email" || /mail|メール/.test(s)) return "email";
+    if (/fax/.test(s)) return "fax";
+    if (t === "tel" || /tel|phone|電話|携帯/.test(s)) return "tel";
+    if (t === "url" || /url|ホームページ|website|サイト/.test(s)) return "url";
+    if (KANA.test(s)) return SEI.test(s) ? "seiKana" : MEI.test(s) ? "meiKana" : "kana";
+    if (/会社|法人|団体|組織|所属|company|organization|corp|貴社|御社|屋号|店名|学校名|教室名/.test(s)) return "company";
+    if (isSubject(s)) return "subject";
+    if (/氏名|名前|お名|ご芳名|担当者|full.?name/.test(s)) return SEI.test(s) && !/氏名/.test(s) ? "sei" : MEI.test(s) && !/氏名|名前/.test(s) ? "mei" : "name";
+    if (SEI.test(s)) return "sei";
+    if (MEI.test(s)) return "mei";
+    if (/name/.test(s)) return "name";
+    return null;
+  };
   const isVisible = (e) => {
     const r = e.getBoundingClientRect();
     const cs = getComputedStyle(e);
@@ -165,6 +195,7 @@ function fillForm(args) {
   const filled = {};
   const miss = [];
   const tels = [];
+  const textFields = [];
   const done = new Set();
   let bodyDone = false;
   for (const e of els) {
@@ -229,6 +260,11 @@ function fillForm(args) {
       } else if (grpReq) miss.push(t + ":" + (e.name || "") + " [" + grp.map((r) => r.value).slice(0, 6).join("/") + "]");
       continue;
     }
+    const ownKind = classify(ownLab(e).toLowerCase(), t);
+    if (ownKind) {
+      textFields.push({ e, kind: ownKind, own: ownLab(e), req, hira: /ふりがな|ひらがな/.test(ownLab(e) + " " + L) });
+      continue;
+    }
     if (/郵便|〒|zip|postal/.test(l)) {
       if (req) miss.push("郵便番号");
       continue;
@@ -254,46 +290,51 @@ function fillForm(args) {
       if (req) miss.push("個人情報:" + L.slice(0, 20));
       continue;
     }
-    if (t === "email" || /mail|メール/.test(l)) {
-      put("email", P.email);
-      continue;
-    }
-    if (t === "tel" || /tel|phone|電話|携帯|fax/.test(l)) {
-      if (!/fax/.test(l)) tels.push({ e, req });
-      continue;
-    }
-    if (t === "url" || /url|ホームページ|website|サイト/.test(l)) {
-      put("url", P.url);
-      continue;
-    }
-    if (/カナ|かな|フリガナ|ふりがな|kana|furigana|ruby/.test(l)) {
-      const hira = /ふりがな|ひらがな/.test(L);
-      if (/姓|せい|sei|last|family/.test(l)) put("seiKana", hira ? P.seiHira : P.seiKana);
-      else if (/(^|[^氏])名(?!前)|めい|mei|first|given/.test(L)) put("meiKana", hira ? P.meiHira : P.meiKana);
-      else put("kana", hira ? P.hira : P.kana);
-      continue;
-    }
-    if (/会社|法人|団体|組織|所属|company|organization|corp|貴社|御社|屋号|店名|学校名|教室名/.test(l)) {
-      put("company", P.company);
-      continue;
-    }
-    if (isSubject(l)) {
-      put("subject", subject);
-      continue;
-    }
-    if (/姓|last.?name|family|\bsei\b/.test(l) && !/氏名/.test(l)) {
-      put("sei", P.sei);
-      continue;
-    }
-    if (/first.?name|given|\bmei\b/.test(l) || /^\s*名\s*$/.test(L.split(" ").pop())) {
-      put("mei", P.mei);
-      continue;
-    }
-    if (/名前|氏名|担当|name|お名|ご芳名/.test(l)) {
-      put("name", hasCo ? P.name : `${P.company} ${P.name}`);
+    const own = ownLab(e).toLowerCase();
+    const kind = classify(own, t) || classify(l, t);
+    if (kind) {
+      textFields.push({ e, kind, own: ownLab(e), req, hira: /ふりがな|ひらがな/.test(own + " " + L) });
       continue;
     }
     if (req && !e.value) miss.push((t || e.tagName) + ":" + L.slice(0, 40));
+  }
+  // 同じ行に「お名前」欄が2つ並んでいたら、1つ目を姓・2つ目を名にする (フリガナも同様)
+  const rowOf = (e) => e.closest("tr,dd,li") || e.parentElement;
+  for (const [base, a, b] of [["name", "sei", "mei"], ["kana", "seiKana", "meiKana"]]) {
+    const same = textFields.filter((x) => x.kind === base);
+    for (let i = 0; i + 1 < same.length; i++) {
+      if (rowOf(same[i].e) === rowOf(same[i + 1].e)) {
+        same[i].kind = a;
+        same[i + 1].kind = b;
+        i++;
+      }
+    }
+  }
+  const valueOf = (x) => {
+    switch (x.kind) {
+      case "email": return P.email;
+      case "url": return P.url;
+      case "company": return P.company;
+      case "subject": return subject;
+      case "sei": return P.sei;
+      case "mei": return P.mei;
+      case "name": return hasCo ? P.name : `${P.company} ${P.name}`;
+      case "kana": return x.hira ? P.hira : P.kana;
+      case "seiKana": return x.hira ? P.seiHira : P.seiKana;
+      case "meiKana": return x.hira ? P.meiHira : P.meiKana;
+      default: return null;
+    }
+  };
+  for (const x of textFields) {
+    if (x.kind === "fax") continue;
+    if (x.kind === "tel") {
+      tels.push({ e: x.e, req: x.req });
+      continue;
+    }
+    const v = valueOf(x);
+    if (v === null) continue;
+    set(x.e, v);
+    filled[x.e.name || x.e.id] = `${x.kind}「${short(x.own)}」`;
   }
   // 電話番号は必須のときだけ入れる (3分割の欄にも対応)
   const telReq = tels.some((x) => x.req);
@@ -464,7 +505,9 @@ async function main() {
   if (!items.length) return;
 
   const browser = await chromium.launch({ headless: true, executablePath: process.env.CHROMIUM_PATH || undefined });
-  const context = await browser.newContext({ locale: "ja-JP", timezoneId: "Asia/Tokyo", viewport: { width: 1280, height: 900 } });
+  // 「HeadlessChrome」を名乗ると門前払い (403) するサイトがあるため、通常の Chrome と同じ名乗りにする
+  const ua = (await browser.newPage().then(async (p) => { const u = await p.evaluate(() => navigator.userAgent); await p.close(); return u; })).replace("HeadlessChrome", "Chrome");
+  const context = await browser.newContext({ locale: "ja-JP", timezoneId: "Asia/Tokyo", viewport: { width: 1280, height: 900 }, userAgent: ua });
   context.on("dialog", (d) => d.accept().catch(() => undefined)); // 「送信してよろしいですか？」の確認ダイアログ
   const started = Date.now();
   const rows = [];
