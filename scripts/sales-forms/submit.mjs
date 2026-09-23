@@ -27,7 +27,7 @@ const LIMIT = Number(process.env.LIMIT || 30);
 const DRY = process.env.DRY === "1";
 const OUT_DIR = process.env.OUT_DIR || "out/sales-forms";
 const RUN_BUDGET_MS = 25 * 60 * 1000; // ワークフローの制限時間より手前で止める
-const ITEM_BUDGET_MS = 120 * 1000;
+const ITEM_BUDGET_MS = 180 * 1000;
 
 // 送信者情報 (じゅんさん指定: 担当者名は「川本　潤」、電話番号は必須のフォームにだけ入れる)
 const SENDER = {
@@ -446,7 +446,13 @@ async function processItem(context, item, idx) {
     await page.screenshot({ path: join(OUT_DIR, name), fullPage: false }).catch(() => undefined);
   };
   try {
-    const res = await page.goto(item.url, { waitUntil: "domcontentloaded", timeout: 30000 }).catch((e) => ({ err: e }));
+    // 読み込みが遅いサイト (画像や外部スクリプト待ちで止まる等) があるため、
+    // 1回目は本文の読み込み完了まで、だめなら2回目は「応答が返り始めた」時点で次に進む
+    let res = await page.goto(item.url, { waitUntil: "domcontentloaded", timeout: 30000 }).catch((e) => ({ err: e }));
+    if (res && res.err) {
+      res = await page.goto(item.url, { waitUntil: "commit", timeout: 45000 }).catch((e) => ({ err: e }));
+      if (!(res && res.err)) await page.waitForTimeout(8000);
+    }
     if (res && res.err) return { status: "failed", note: `ページを開けない: ${String(res.err.message || res.err).slice(0, 120)}` };
     if (res && typeof res.status === "function" && res.status() >= 400) return { status: "failed", note: `ページを開けない (HTTP ${res.status()})` };
     await settle(page);
@@ -538,7 +544,7 @@ async function main() {
   const browser = await chromium.launch({ headless: true, executablePath: process.env.CHROMIUM_PATH || undefined });
   // 「HeadlessChrome」を名乗ると門前払い (403) するサイトがあるため、通常の Chrome と同じ名乗りにする
   const ua = (await browser.newPage().then(async (p) => { const u = await p.evaluate(() => navigator.userAgent); await p.close(); return u; })).replace("HeadlessChrome", "Chrome");
-  const context = await browser.newContext({ locale: "ja-JP", timezoneId: "Asia/Tokyo", viewport: { width: 1280, height: 900 }, userAgent: ua });
+  const context = await browser.newContext({ locale: "ja-JP", timezoneId: "Asia/Tokyo", viewport: { width: 1280, height: 900 }, userAgent: ua, ignoreHTTPSErrors: true });
   context.on("dialog", (d) => d.accept().catch(() => undefined)); // 「送信してよろしいですか？」の確認ダイアログ
   const started = Date.now();
   const rows = [];
