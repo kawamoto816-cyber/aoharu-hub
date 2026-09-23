@@ -131,12 +131,19 @@ function fillForm(args) {
     if (tr && tr.querySelector("th") && tr.querySelectorAll("input,textarea,select").length === 1) s += " " + txt(tr.querySelector("th"));
     const dd = e.closest("dd");
     if (dd && dd.previousElementSibling && dd.querySelectorAll("input,textarea,select").length === 1) s += " " + txt(dd.previousElementSibling);
+    // この欄だけを囲む枠 (入力欄が1つだけ入っている一番外側の要素) の文字も、その欄の見出しとして使う
+    let box = null;
+    for (let p = e.parentElement, i = 0; p && i < 5; p = p.parentElement, i++) {
+      if (p.querySelectorAll("input:not([type=hidden]),textarea,select").length !== 1) break;
+      if (txt(p).length <= 80) box = p;
+    }
+    if (box) s += " " + txt(box);
     return s;
   };
   const short = (s) => s.replace(/\s+/g, " ").trim().slice(0, 14);
   const KANA = /カナ|かな|フリガナ|ふりがな|kana|furigana|ruby|yomi/;
-  const SEI = /姓|せい|(^|[^a-z])sei([^a-z]|$)|last.?name|family|lname|name1|name_1|name-1|namae1/;
-  const MEI = /(^|[\s（(【])名([\s)）】]|$)|めい|(^|[^a-z])mei([^a-z]|$)|first.?name|given|fname|name2|name_2|name-2|namae2/;
+  const SEI = /姓|せい|セイ|sei_?kana|namesei|(^|[^a-z])sei([^a-z]|$)|last.?name|family|lname/;
+  const MEI = /(^|[\s（(【])名([\s)）】]|$)|めい|メイ|mei_?kana|namemei|(^|[^a-z])mei([^a-z]|$)|first.?name|given|fname/;
   /** 文字の欄の種類を判定する (該当なしは null) */
   const classify = (s, t) => {
     if (/お子|生徒|児童|学年|保護者|性別|gender|郵便|〒|zip|住所|address|生年月日|誕生|birth|年齢/.test(s)) return null;
@@ -145,6 +152,8 @@ function fillForm(args) {
     if (t === "tel" || /tel|phone|電話|携帯/.test(s)) return "tel";
     if (t === "url" || /url|ホームページ|website|サイト/.test(s)) return "url";
     if (KANA.test(s)) return SEI.test(s) ? "seiKana" : MEI.test(s) ? "meiKana" : "kana";
+    if (/部署|部門|department|division|dept/.test(s)) return "dept";
+    if (/役職|肩書|position|job.?title/.test(s)) return "position";
     if (/会社|法人|団体|組織|所属|company|organization|corp|貴社|御社|屋号|店名|学校名|教室名/.test(s)) return "company";
     if (isSubject(s)) return "subject";
     if (/氏名|名前|お名|ご芳名|担当者|full.?name/.test(s)) return SEI.test(s) && !/氏名/.test(s) ? "sei" : MEI.test(s) && !/氏名|名前/.test(s) ? "mei" : "name";
@@ -233,6 +242,10 @@ function fillForm(args) {
       } else if (req) miss.push("生年月日/年齢の選択肢:" + L.slice(0, 20));
       continue;
     }
+    if (e.tagName === "SELECT" && /学年|生徒|お子|児童|保護者|校舎|教室を選|性別|gender|都道府県|pref/.test(ownLab(e) + " " + (e.name || ""))) {
+      if (req) miss.push("select:" + ownLab(e).slice(0, 30));
+      continue;
+    }
     if (e.tagName === "SELECT") {
       const opt = [...e.options].find((x) => OK.test(x.text) && x.value);
       if (opt) {
@@ -260,9 +273,17 @@ function fillForm(args) {
       } else if (grpReq) miss.push(t + ":" + (e.name || "") + " [" + grp.map((r) => r.value).slice(0, 6).join("/") + "]");
       continue;
     }
-    const ownKind = classify(ownLab(e).toLowerCase(), t);
+    const ownFull = ownLab(e);
+    // 生徒・お子さま・学年の欄 (保護者向けの入会・体験フォーム) には、こちらの情報を入れない
+    if (/お子|生徒|児童|学年|保護者/.test(ownFull)) {
+      if (req) miss.push("個人情報:" + short(ownFull));
+      continue;
+    }
+    // 欄そのもののラベル・名前 → 欄を囲む枠の文字 の順に判定する
+    const core = [e.labels && e.labels[0] && txt(e.labels[0]), e.getAttribute("aria-label"), e.placeholder, e.name, e.id].filter(Boolean).join(" ").toLowerCase();
+    const ownKind = classify(core, t) || classify(ownFull.toLowerCase(), t);
     if (ownKind) {
-      textFields.push({ e, kind: ownKind, own: ownLab(e), req, hira: /ふりがな|ひらがな/.test(ownLab(e) + " " + L) });
+      textFields.push({ e, kind: ownKind, own: ownFull, req, hira: /ふりがな|ひらがな/.test(ownFull + " " + L) });
       continue;
     }
     if (/郵便|〒|zip|postal/.test(l)) {
@@ -315,6 +336,8 @@ function fillForm(args) {
       case "email": return P.email;
       case "url": return P.url;
       case "company": return P.company;
+      case "dept": return x.req ? "アオハルOS担当" : null;
+      case "position": return x.req ? "担当" : null;
       case "subject": return subject;
       case "sei": return P.sei;
       case "mei": return P.mei;
