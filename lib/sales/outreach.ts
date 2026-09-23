@@ -183,8 +183,10 @@ export async function loadApprovals(date?: string, days?: number): Promise<{ doc
   const docs = date ? await findApprovalDocs(date) : await findRecentApprovalDocs(days);
   const seen = new Set<string>();
   const items: OutreachItem[] = [];
-  for (const d of docs) {
-    for (const it of parseApprovalDoc(await exportDocText(d.id))) {
+  // 書き出しは並列で (ドキュメントが10件を超えると、順番に読むだけで数十秒かかるため)。順序は作成順を保つ
+  const texts = await Promise.all(docs.map((d) => exportDocText(d.id)));
+  for (const text of texts) {
+    for (const it of parseApprovalDoc(text)) {
       const key = `${it.method}:${it.to.toLowerCase()}`;
       if (seen.has(key)) continue;
       seen.add(key);
@@ -484,9 +486,52 @@ export interface RunResult {
   method: OutreachMethod;
   to: string;
   company: string;
-  status: "sent" | "failed" | "manual" | "already_sent" | "suppressed" | "dry_run" | "not_configured" | "limit" | "paused";
+  status: "sent" | "failed" | "manual" | "already_sent" | "suppressed" | "dry_run" | "not_configured" | "limit" | "paused" | "deferred";
   external_id?: string | null;
   error?: string;
+}
+
+// 1回の実行で使ってよい時間。ルートの maxDuration (120秒) より手前で打ち切り、
+// 残りは "deferred" として次回に回す (途中でタイムアウトして 504 になるのを防ぐ)
+const RUN_TIME_BUDGET_MS = 90_000;
+
+/** 宛先ごとの「送信済み/手動記録済み/停止」を、1件ずつではなくまとめて引く (件数が多いと1件ずつでは時間切れになるため) */
+async function prefetchRecipientState(recipients: string[]): Promise<{ recent: Set<string>; manual: Set<string>; suppressed: Set<string> }> {
+  const supabase = getSupabaseAdmin();
+  const lower = [...new Set(recipients.map((r) => r.toLowerCase()))];
+  const recent = new Set<string>();
+  const manual = new Set<string>();
+  const suppressed = new Set<string>();
+  if (lower.length === 0) return { recent, manual, suppressed };
+  const since = new Date(Date.now() - RESEND_COOLDOWN_DAYS * 86400 * 1000).toISOString();
+  for (let i = 0; i < lower.length; i += 100) {
+    const chunk = lower.slice(i, i + 100);
+    const [sentQ, manualQ] = await Promise.all([
+      supabase.from("sales_outreach").select("recipient").in("recipient", chunk).in("status", ["sent", "manual_sent"]).gte("sent_at", since),
+      supabase.from("sales_outreach").select("recipient").in("recipient", chunk).eq("status", "manual"),
+    ]);
+    if (sentQ.error) throw new Error(`sales_outreach select: ${sentQ.error.message}`);
+    for (const r of sentQ.data ?? []) recent.add((r as { recipient: string }).recipient);
+    for (const r of manualQ.data ?? []) manual.add((r as { recipient: string }).recipient);
+  }
+  const patterns = new Set<string>();
+  for (const addr of lower) {
+    patterns.add(addr);
+    const domain = addr.split("@")[1];
+    if (domain && !/^https?:/.test(addr)) patterns.add(`@${domain}`);
+  }
+  const patternList = [...patterns];
+  const hit = new Set<string>();
+  for (let i = 0; i < patternList.length; i += 100) {
+    const { data, error } = await supabase.from("sales_suppression").select("pattern").in("pattern", patternList.slice(i, i + 100));
+    if (error) throw new Error(`sales_suppression select: ${error.message}`);
+    for (const r of data ?? []) hit.add((r as { pattern: string }).pattern);
+  }
+  for (const addr of lower) {
+    const domain = addr.split("@")[1];
+    if (hit.has(addr) || (domain && hit.has(`@${domain}`))) suppressed.add(addr);
+  }
+  return { recent, manual, suppressed };
 }
 
 export async function runOutreach(opts: { date?: string; days?: number; dry?: boolean }): Promise<{ date: string; docs: string[]; queued: number; results: RunResult[] }> {
@@ -497,28 +542,33 @@ export async function runOutreach(opts: { date?: string; days?: number; dry?: bo
   let sentCount = 0;
   const source = `send-approval-${date}`;
   const controls = await getSalesControls();
+  const started = Date.now();
+  const state = await prefetchRecipientState(items.map((it) => it.to));
 
   for (const it of items) {
     const base = { method: it.method, to: it.to, company: it.company };
+    const key = it.to.toLowerCase();
     if (controls.paused && it.method === "email" && !opts.dry) {
       results.push({ ...base, status: "paused", error: controls.pausedReason ?? undefined });
       continue;
     }
-    if (await isSuppressed(it.to)) {
+    if (state.suppressed.has(key)) {
       results.push({ ...base, status: "suppressed" });
       continue;
     }
-    const recent = await recentlyContacted(it.to);
-    if (recent) {
+    if (state.recent.has(key)) {
       results.push({ ...base, status: "already_sent" });
+      continue;
+    }
+    if (Date.now() - started > RUN_TIME_BUDGET_MS) {
+      results.push({ ...base, status: "deferred" }); // 時間切れ。次回の実行で続きから処理する
       continue;
     }
     if (it.method === "form") {
       // フォームは自動送信しない。手動 (Claude が右画面で入力) の対象として記録する
-      if (!opts.dry) {
-        const supabase = getSupabaseAdmin();
-        const { data } = await supabase.from("sales_outreach").select("id").eq("recipient", it.to.toLowerCase()).eq("status", "manual").limit(1);
-        if (!data?.length) await recordOutreach({ ...it, recipient: it.to, status: "manual", source });
+      if (!opts.dry && !state.manual.has(key)) {
+        await recordOutreach({ ...it, recipient: it.to, status: "manual", source });
+        state.manual.add(key);
       }
       results.push({ ...base, status: "manual" });
       continue;
@@ -539,6 +589,7 @@ export async function runOutreach(opts: { date?: string; days?: number; dry?: bo
       const r = await sendEmail(it);
       await recordOutreach({ ...it, recipient: it.to, status: "sent", external_id: r.id, source });
       await markLeadContacted(it.to).catch(() => undefined); // 見込み先リストの反映失敗で送信を止めない
+      state.recent.add(key);
       sentCount += 1;
       results.push({ ...base, status: "sent", external_id: r.id });
     } catch (e) {

@@ -33,6 +33,7 @@ export async function GET(req: Request) {
         manual: result.results.filter((r) => r.status === "manual").length,
         alreadySent: result.results.filter((r) => r.status === "already_sent").length,
         failed,
+        deferred: result.results.filter((r) => r.status === "deferred").length,
       },
       { headers: { "Cache-Control": "no-store" } },
     );
