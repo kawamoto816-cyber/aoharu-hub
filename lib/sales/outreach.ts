@@ -2,6 +2,8 @@ import { createHash } from "node:crypto";
 import { getSupabaseAdmin } from "@/lib/aoharu-entitlements/supabase/client";
 import { getGoogleAccessToken, getServiceAccount } from "@/lib/metrics/google-auth";
 import { jstNow } from "@/lib/social/queue";
+import { buildProposal, type PatternKey } from "./patterns";
+import { isUsableEmail } from "./contact";
 
 // 法人営業のアウトリーチ送信 (じゅんさんの「送信OK」後にサーバーが送る)。
 //   - 営業エージェントが Google Drive「アオハルOS 法人営業」フォルダに「送信承認 YYYY-MM-DD」ドキュメントを作る
@@ -194,6 +196,31 @@ export async function loadApprovals(date?: string, days?: number): Promise<{ doc
     }
   }
   return { docs: docs.map((d) => d.name), items };
+}
+
+/**
+ * ダッシュボードで一括承認された見込み先 (sales_leads.approved_at あり・未送信・メール宛て) を
+ * 送信アイテムに組み立てる。承認の古い順。approved_at 列がまだ無い環境では空で返す。
+ */
+export async function loadApprovedLeadItems(limit = 300): Promise<OutreachItem[]> {
+  const supabase = getSupabaseAdmin();
+  const { data, error } = await supabase
+    .from("sales_leads")
+    .select("name,pattern_key,activity_label,pref,contact_email")
+    .eq("status", "queued")
+    .not("approved_at", "is", null)
+    .not("contact_email", "is", null)
+    .order("approved_at", { ascending: true })
+    .order("id", { ascending: true })
+    .limit(limit);
+  if (error) return [];
+  const rows = (data ?? []) as { name: string; pattern_key: PatternKey; activity_label: string | null; pref: string | null; contact_email: string }[];
+  return rows
+    .filter((r) => isUsableEmail(r.contact_email))
+    .map((r) => {
+      const p = buildProposal({ name: r.name, pref: r.pref, activityLabel: r.activity_label, patternKey: r.pattern_key });
+      return { method: "email" as const, to: r.contact_email.trim(), company: r.name, subject: p.subject, body: p.body };
+    });
 }
 
 // ------------------------------------------------------------------
@@ -537,7 +564,19 @@ async function prefetchRecipientState(recipients: string[]): Promise<{ recent: S
 export async function runOutreach(opts: { date?: string; days?: number; dry?: boolean }): Promise<{ date: string; docs: string[]; queued: number; results: RunResult[] }> {
   // date 指定時はその日の承認だけ (従来どおり)。未指定なら直近 APPROVAL_LOOKBACK_DAYS 日分の承認をまとめて処理する
   const date = opts.date ?? jstNow().date;
-  const { docs, items } = await loadApprovals(opts.date, opts.days);
+  const loaded = await loadApprovals(opts.date, opts.days);
+  const docs = loaded.docs;
+  // 承認ドキュメントの分を先に、続けてダッシュボードで一括承認された分 (日付指定の再実行時は含めない)
+  const items: OutreachItem[] = [...loaded.items];
+  if (!opts.date) {
+    const seen = new Set(items.map((it) => `${it.method}:${it.to.toLowerCase()}`));
+    for (const it of await loadApprovedLeadItems()) {
+      const key = `${it.method}:${it.to.toLowerCase()}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      items.push(it);
+    }
+  }
   const results: RunResult[] = [];
   let sentCount = 0;
   const source = `send-approval-${date}`;
@@ -558,6 +597,12 @@ export async function runOutreach(opts: { date?: string; days?: number; dry?: bo
     }
     if (state.recent.has(key)) {
       results.push({ ...base, status: "already_sent" });
+      // 送信済みなのに見込み先リストが承認待ちのまま残らないよう、ここでも反映しておく
+      if (it.method === "email" && !opts.dry) await markLeadContacted(it.to).catch(() => undefined);
+      continue;
+    }
+    if (it.method === "email" && !isUsableEmail(it.to)) {
+      results.push({ ...base, status: "suppressed", error: "記入例などの送れないアドレス" });
       continue;
     }
     if (Date.now() - started > RUN_TIME_BUDGET_MS) {

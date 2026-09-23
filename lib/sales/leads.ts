@@ -3,6 +3,7 @@ import { jstNow } from "@/lib/social/queue";
 import { upsertDriveDoc, SALES_FOLDER_ID } from "./outreach";
 import { placeDetails, textSearch } from "./places";
 import { buildProposal, type LeadForProposal, type PatternKey } from "./patterns";
+import { isUsableEmail, isUsableFormUrl } from "./contact";
 
 // 法人営業の見込み先を、Google Places API で機械的に大量発見するパイプライン。
 //   1. harvestNext()  — 都道府県×業態の組み合わせを少しずつ回し、sales_leads に候補を積む
@@ -98,15 +99,20 @@ async function inspectWebsite(url: string): Promise<{ email: string | null; form
     clearTimeout(timeout);
     if (!res.ok) return { email: null, formUrl: null, optedOut: false };
     const html = (await res.text()).slice(0, 200_000);
-    const mailto = html.match(/mailto:([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/);
-    const emailMatch = mailto?.[1] ?? html.match(EMAIL_PATTERN)?.[0] ?? null;
-    const contactLink = html.match(CONTACT_LINK_PATTERN)?.[1] ?? null;
+    // 最初に見つかったものではなく、「送れる」最初のアドレスを採る (記入例や画像名が先に出てくることがあるため)
+    const mailtos = [...html.matchAll(/mailto:([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g)].map((m) => m[1]);
+    const plain = [...html.matchAll(new RegExp(EMAIL_PATTERN.source, "g"))].map((m) => m[0]);
+    const emailMatch = [...mailtos, ...plain].find((e) => isUsableEmail(e)) ?? null;
     let formUrl: string | null = null;
-    if (contactLink) {
+    for (const m of html.matchAll(new RegExp(CONTACT_LINK_PATTERN.source, "gi"))) {
       try {
-        formUrl = new URL(contactLink, url).toString();
+        const candidate = new URL(m[1], url).toString();
+        if (isUsableFormUrl(candidate)) {
+          formUrl = candidate;
+          break;
+        }
       } catch {
-        formUrl = null;
+        // 壊れたリンクは飛ばす
       }
     }
     const optedOut = OPT_OUT_PATTERNS.test(html.replace(/<[^>]+>/g, ""));
@@ -178,6 +184,9 @@ export async function harvestNext(opts: { combosPerRun?: number; budgetMs?: numb
         optedOut = inspected.optedOut;
       }
 
+      // 記入例のアドレス (xxxx@example.com)、画像名 (logo@2x.png)、javascript:void(0) などは連絡先として扱わない
+      if (!isUsableEmail(email)) email = null;
+      if (!isUsableFormUrl(formUrl)) formUrl = null;
       const hasContact = Boolean(email || formUrl);
       const nameSuppressed = nameMatchesSuppression(place.name, ngPatterns);
       const { error } = await supabase.from("sales_leads").insert({
@@ -279,7 +288,22 @@ export async function generateCandidateDoc(limit = 150): Promise<{ count: number
   }
   const ngIds = new Set(ngLeads.map((l) => l.id));
 
-  const usable = leads.filter((l) => !ngIds.has(l.id) && (l.contact_email || l.contact_form_url));
+  // 送れない連絡先 (記入例・画像名・javascript: など) しか無い見込み先は、ここで除外にする
+  const unusable = leads.filter((l) => !ngIds.has(l.id) && !isUsableEmail(l.contact_email) && !isUsableFormUrl(l.contact_form_url));
+  if (unusable.length > 0) {
+    await supabase
+      .from("sales_leads")
+      .update({ status: "excluded", exclude_reason: "bad_contact", updated_at: new Date().toISOString() })
+      .in("id", unusable.map((l) => l.id));
+  }
+  const unusableIds = new Set(unusable.map((l) => l.id));
+  const usable = leads
+    .filter((l) => !ngIds.has(l.id) && !unusableIds.has(l.id))
+    .map((l) => ({
+      ...l,
+      contact_email: isUsableEmail(l.contact_email) ? l.contact_email : null,
+      contact_form_url: isUsableFormUrl(l.contact_form_url) ? l.contact_form_url : null,
+    }));
   if (usable.length === 0) return { count: 0, docId: null };
 
   const { date } = jstNow();
@@ -307,4 +331,65 @@ export async function generateCandidateDoc(limit = 150): Promise<{ count: number
   const ids = usable.map((l) => l.id);
   await supabase.from("sales_leads").update({ status: "queued", updated_at: new Date().toISOString() }).in("id", ids);
   return { count: usable.length, docId };
+}
+
+// ------------------------------------------------------------------
+// 一括承認 (ダッシュボードの「承認待ちのメール宛てをまとめて承認」ボタン)
+//   status='queued' のうち、送れるメールアドレスがある見込み先に approved_at を付ける。
+//   平日09:30の送信ジョブが、承認ドキュメントの分に続けて、approved_at の古い順に
+//   1日の上限 (sales_controls.max_per_run) まで送る。フォームしか無い先は手動のため対象外。
+//   事前に docs/sales-bulk-approve.sql (approved_at 列の追加) を実行しておくこと。
+// ------------------------------------------------------------------
+export async function approveQueuedEmailLeads(): Promise<{ approved: number; badContact: number }> {
+  const supabase = getSupabaseAdmin();
+  const { data, error } = await supabase
+    .from("sales_leads")
+    .select("id,contact_email")
+    .eq("status", "queued")
+    .not("contact_email", "is", null)
+    .is("approved_at", null)
+    .limit(1000);
+  if (error) throw new Error(`sales_leads select: ${error.message}`);
+  const rows = (data ?? []) as { id: number; contact_email: string }[];
+  const good = rows.filter((r) => isUsableEmail(r.contact_email)).map((r) => r.id);
+  const bad = rows.filter((r) => !isUsableEmail(r.contact_email)).map((r) => r.id);
+  const now = new Date().toISOString();
+  if (good.length) {
+    const { error: e } = await supabase.from("sales_leads").update({ approved_at: now, updated_at: now }).in("id", good);
+    if (e) throw new Error(`sales_leads update: ${e.message}`);
+  }
+  if (bad.length) {
+    // 記入例アドレスしか無い先 (フォームも無い) は除外。フォームがある先はフォーム宛てとして残す
+    await supabase.from("sales_leads").update({ contact_email: null, updated_at: now }).in("id", bad);
+    await supabase
+      .from("sales_leads")
+      .update({ status: "excluded", exclude_reason: "bad_contact", updated_at: now })
+      .in("id", bad)
+      .is("contact_form_url", null);
+  }
+  return { approved: good.length, badContact: bad.length };
+}
+
+/** 承認済みでまだ送っていないメール宛ての件数 (ダッシュボード表示用。列が無ければ 0) */
+export async function countApprovedWaiting(): Promise<number> {
+  const supabase = getSupabaseAdmin();
+  const { count, error } = await supabase
+    .from("sales_leads")
+    .select("id", { count: "exact", head: true })
+    .eq("status", "queued")
+    .not("approved_at", "is", null);
+  if (error) return 0;
+  return count ?? 0;
+}
+
+/** 承認待ちのうち、送れるメールアドレスがある件数 (一括承認ボタンに出す) */
+export async function countQueuedWithEmail(): Promise<number> {
+  const supabase = getSupabaseAdmin();
+  const { data } = await supabase
+    .from("sales_leads")
+    .select("contact_email")
+    .eq("status", "queued")
+    .not("contact_email", "is", null)
+    .limit(2000);
+  return ((data ?? []) as { contact_email: string }[]).filter((r) => isUsableEmail(r.contact_email)).length;
 }

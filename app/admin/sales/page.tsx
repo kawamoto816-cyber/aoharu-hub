@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { isAdminUser } from "@/lib/metrics/admin-auth";
 import { listRecentOutreach, salesFunnelStats, SALES_FOLDER_ID } from "@/lib/sales/outreach";
-import { leadsPipelineStats, listRecentLeads } from "@/lib/sales/leads";
+import { countApprovedWaiting, countQueuedWithEmail, leadsPipelineStats, listRecentLeads } from "@/lib/sales/leads";
+import { approveAllQueuedEmailsAction } from "./actions";
 import { PATTERN_LABEL } from "@/lib/sales/patterns";
 import { getServiceAccount } from "@/lib/metrics/google-auth";
 
@@ -51,11 +52,13 @@ export default async function AdminSalesPage() {
     );
   }
 
-  const [stats, recent, leadsStats, leads] = await Promise.all([
+  const [stats, recent, leadsStats, leads, approvedWaiting, queuedWithEmail] = await Promise.all([
     salesFunnelStats(),
     listRecentOutreach(50),
     leadsPipelineStats(),
     listRecentLeads(80),
+    countApprovedWaiting(),
+    countQueuedWithEmail(),
   ]);
   const openRate = stats.sent ? Math.round((stats.opened / stats.sent) * 100) : 0;
   const replyRate = stats.sent ? Math.round((stats.replied / stats.sent) * 100) : 0;
@@ -92,6 +95,28 @@ export default async function AdminSalesPage() {
             「提案作成済み・承認待ち」が{leadsStats.byStatus.queued}件あります。毎朝の法人営業エージェントの報告（通知）に「送信OK」と返信すると、エージェントが「送信承認」ドキュメントを作り、次の平日09:30 JSTの送信ジョブが直近5日分の承認をまとめてメール送信します（フォーム宛は手動）。
           </p>
         )}
+        <div className="mt-3 flex flex-wrap items-center gap-3 rounded-xl border border-indigo-200 bg-indigo-50 px-4 py-3 text-xs text-indigo-900">
+          <div className="flex-1 leading-relaxed">
+            <p>
+              承認待ちのうち、メールで送れる先: <span className="font-bold">{queuedWithEmail}件</span>
+              {approvedWaiting > 0 && (
+                <>
+                  ／ 一括承認済み・送信待ち: <span className="font-bold">{approvedWaiting}件</span>
+                </>
+              )}
+            </p>
+            <p className="mt-1 text-indigo-700">
+              まとめて承認すると、平日09:30の送信ジョブが1日の上限まで古い順に自動送信します（フォーム宛ては対象外・手動）。
+            </p>
+          </div>
+          {queuedWithEmail - approvedWaiting > 0 && (
+            <form action={approveAllQueuedEmailsAction}>
+              <button type="submit" className="rounded-full bg-indigo-600 px-4 py-2 font-bold text-white hover:bg-indigo-700">
+                メール宛て{queuedWithEmail - approvedWaiting}件をまとめて承認
+              </button>
+            </form>
+          )}
+        </div>
         {leadsStats.byStatus.new > 0 && leadsStats.byStatus.queued === 0 && (
           <div className="mt-3 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-xs leading-relaxed text-rose-800">
             <p className="font-bold">「新規（未着手）」が{leadsStats.byStatus.new}件たまっていますが、「提案作成済み・承認待ち」に進んでいません。</p>
