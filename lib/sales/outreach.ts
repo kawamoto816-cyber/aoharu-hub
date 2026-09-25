@@ -536,7 +536,10 @@ async function prefetchRecipientState(recipients: string[]): Promise<{ recent: S
     const chunk = lower.slice(i, i + 100);
     const [sentQ, manualQ] = await Promise.all([
       supabase.from("sales_outreach").select("recipient").in("recipient", chunk).in("status", ["sent", "manual_sent"]).gte("sent_at", since),
-      supabase.from("sales_outreach").select("recipient").in("recipient", chunk).eq("status", "manual"),
+      // フォーム宛ては、一度「送信待ち・見送り・失敗」になった宛先を再び送信待ちに戻さない。
+      // 以前は status='manual' だけを見ていたため、自動送信で見送り/失敗にした宛先が、
+      // 翌朝の送信ジョブ (直近5日分の承認を読み直す) で再び送信待ちに積まれ、同じフォームへ毎日送ろうとしていた
+      supabase.from("sales_outreach").select("recipient").in("recipient", chunk).in("status", ["manual", "skipped", "failed"]),
     ]);
     if (sentQ.error) throw new Error(`sales_outreach select: ${sentQ.error.message}`);
     for (const r of sentQ.data ?? []) recent.add((r as { recipient: string }).recipient);

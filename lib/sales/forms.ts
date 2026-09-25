@@ -49,6 +49,9 @@ export async function listPendingForms(limit = 30): Promise<PendingForm[]> {
     .in("status", ["sent", "manual_sent"])
     .gte("sent_at", since);
   const alreadySent = new Set(((sentRows ?? []) as { recipient: string }[]).map((r) => r.recipient));
+  // 以前に自動送信で「見送り・失敗」にした宛先 (同じフォームに何度も送ろうとしない。失敗には押した可能性のあるものも含む)
+  const { data: doneRows } = await supabase.from("sales_outreach").select("recipient").in("recipient", urls).in("status", ["skipped", "failed"]);
+  const alreadyTried = new Set(((doneRows ?? []) as { recipient: string }[]).map((r) => r.recipient));
   const ngNames = await nameSuppressionPatterns();
   // 送信停止リスト: フォームURLそのもの、または同じドメインのメールアドレスで受信拒否があった先
   const hostOf = (u: string) => {
@@ -69,6 +72,7 @@ export async function listPendingForms(limit = 30): Promise<PendingForm[]> {
     let skip: string | null = null;
     if (seen.has(r.recipient)) skip = "同じフォームが重複して承認されていたため";
     else if (alreadySent.has(r.recipient)) skip = "90日以内に同じフォームへ送信済み";
+    else if (alreadyTried.has(r.recipient)) skip = "以前に見送り・失敗になったフォーム (同じフォームに繰り返し送らない)";
     else if (suppressed.has(r.recipient) || suppressed.has(`@${hostOf(r.recipient)}`)) skip = "送信停止リストにある宛先";
     else if (!isUsableFormUrl(r.recipient)) skip = "フォームのURLではない";
     else if (/^https?:\/\/(lin\.ee|line\.me|page\.line\.me)\//i.test(r.recipient)) skip = "LINEの友だち追加リンク (フォームではない)";
