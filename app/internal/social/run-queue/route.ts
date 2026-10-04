@@ -13,12 +13,8 @@ import {
   listPendingYoutubeUploads,
   markYoutubeUploaded,
   markYoutubeFailed,
-  listPendingTiktokUploads,
-  markTiktokUploaded,
-  markTiktokFailed,
 } from "@/lib/social/shorts";
 import { isYouTubePostingConfigured, uploadShortToYouTube } from "@/lib/social/youtube";
-import { isTikTokPostingConfigured, postShortToTikTok } from "@/lib/social/tiktok";
 import { refreshSocialMetrics } from "@/lib/social/metrics";
 
 // 承認済み投稿キューをサーバー側で処理する (自己完結・冪等)。
@@ -164,30 +160,9 @@ export async function GET(req: Request) {
     youtube.push({ slug: "(budget)", status: "deferred" });
   }
 
-  // ショート動画の TikTok (Content Posting API) 自動投稿。こちらも同じ理由で Cron 枠は増やさず相乗りさせる。
-  // 審査 (App Review) が未完了のうちは TikTok 側が非公開以外の投稿を拒否するため failed が続くだけで、
-  // 審査が通り次第コード変更なしで自動的に posted に切り替わる。
+  // TikTok は自動投稿しない (2026-10)。TikTok のガイドラインが投稿ごとに人の操作 (公開範囲の選択など) を
+  // 求めるため、/admin/social/tiktok の投稿画面から1本ずつ投稿する。
   const tiktok: { slug: string; status: string; external_id?: string; error?: string }[] = [];
-  if (!dry && isTikTokPostingConfigured() && remainingMs() > 10_000) {
-    try {
-      const pending = await listPendingTiktokUploads(1);
-      for (const v of pending) {
-        try {
-          const r = await postShortToTikTok({ videoUrl: v.video_url, title: v.title, description: v.description ?? undefined });
-          await markTiktokUploaded(v.slug, r.id);
-          tiktok.push({ slug: v.slug, status: "posted", external_id: r.id });
-        } catch (e) {
-          const message = e instanceof Error ? e.message : String(e);
-          await markTiktokFailed(v.slug, message, v.tiktok_attempts).catch(() => undefined);
-          tiktok.push({ slug: v.slug, status: "failed", error: message });
-        }
-      }
-    } catch (e) {
-      tiktok.push({ slug: "(query)", status: "failed", error: e instanceof Error ? e.message : String(e) });
-    }
-  } else if (!dry && isTikTokPostingConfigured()) {
-    tiktok.push({ slug: "(budget)", status: "deferred" });
-  }
 
   // 夜枠の実行時 (または ?metrics=1) に、投稿の反応も取り込む (Hobby プランは Cron が1日1回×2本までのため相乗り)。
   // 反応の取り込みは /admin/social の「反応を更新」や /internal/social/refresh-metrics でも行えるため、

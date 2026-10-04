@@ -325,3 +325,47 @@ export async function markTiktokFailed(slug: string, error: string, previousAtte
     .eq("slug", slug);
   if (dbError) throw new Error(`shorts_videos update (tiktok failed): ${dbError.message}`);
 }
+
+// ------------------------------------------------------------------
+// TikTok 投稿画面 (/admin/social/tiktok) 用
+// ------------------------------------------------------------------
+export interface TiktokCandidate {
+  slug: string;
+  title: string;
+  description: string | null;
+  video_url: string;
+  duration_sec: number | null;
+  rendered_at: string;
+  tiktok_error: string | null;
+}
+
+/** まだ TikTok に投稿していない動画を新しい順に返す (人が選んで投稿するので失敗回数では絞らない) */
+export async function listTiktokCandidates(limit = 20): Promise<TiktokCandidate[]> {
+  const supabase = getSupabaseAdmin();
+  const { data, error } = await supabase
+    .from("shorts_videos")
+    .select("slug,title,description,video_url,duration_sec,rendered_at,tiktok_error")
+    .is("tiktok_posted_at", null)
+    .order("rendered_at", { ascending: false })
+    .limit(limit);
+  if (error) throw new Error(`shorts_videos select (tiktok candidates): ${error.message}`);
+  return data ?? [];
+}
+
+export async function getShortsVideo(slug: string): Promise<(TiktokCandidate & { tiktok_posted_at: string | null; tiktok_publish_id: string | null }) | null> {
+  const supabase = getSupabaseAdmin();
+  const { data, error } = await supabase
+    .from("shorts_videos")
+    .select("slug,title,description,video_url,duration_sec,rendered_at,tiktok_error,tiktok_posted_at,tiktok_publish_id")
+    .eq("slug", slug)
+    .limit(1);
+  if (error) throw new Error(`shorts_videos select (one): ${error.message}`);
+  return data?.[0] ?? null;
+}
+
+/** 投稿画面からの失敗を記録する (attempts は増やさない。人が見て直してから押し直せるようにする) */
+export async function recordTiktokError(slug: string, message: string): Promise<void> {
+  const supabase = getSupabaseAdmin();
+  const { error } = await supabase.from("shorts_videos").update({ tiktok_error: message }).eq("slug", slug);
+  if (error) throw new Error(`shorts_videos update (tiktok error): ${error.message}`);
+}

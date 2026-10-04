@@ -11,16 +11,18 @@ import { createHash, randomBytes } from "node:crypto";
 //
 // OAuth 2.0 + PKCE (Authorization Code)。認可コード交換・動画投稿 (Direct Post, PULL_FROM_URL) をまとめる。
 //
-// 重要 (App Review が通るまでの挙動): TikTok は審査未完了 (unaudited) のアプリからの投稿を
-// privacy_level=SELF_ONLY (非公開) 以外で拒否する。run-queue の自動投稿は PUBLIC_TO_EVERYONE (公開) で
-// リクエストするため、審査が通るまでは failed が記録され続けるだけで安全に失敗し、
-// 審査が通り次第コードを変更しなくても自動的に投稿が成功するようになる。
+// 投稿の方式 (2026-10 変更):
+//   TikTok の Content Sharing Guidelines は、投稿のたびに「投稿先アカウントの表示」「公開範囲を人が選ぶ (初期値なし)」
+//   「コメント・デュエット・ステッチの許可」「商用コンテンツの表示 (初期値オフ)」「音楽利用の同意」を求めている。
+//   そのため run-queue からの全自動投稿はやめ、/admin/social/tiktok の投稿画面から人が1本ずつ投稿する。
+//   Direct Post の監査 (audit) が通るまでは、TikTok 側が SELF_ONLY (自分だけ) 以外の公開範囲を拒否する。
 
 const AUTHORIZE_URL = "https://www.tiktok.com/v2/auth/authorize/";
 const TOKEN_URL = "https://open.tiktokapis.com/v2/oauth/token/";
 const REFRESH_URL = TOKEN_URL;
 const POST_INIT_URL = "https://open.tiktokapis.com/v2/post/publish/video/init/";
 const POST_STATUS_URL = "https://open.tiktokapis.com/v2/post/publish/status/fetch/";
+const CREATOR_INFO_URL = "https://open.tiktokapis.com/v2/post/publish/creator_info/query/";
 
 // アプリ審査 (App Review) に登録しているスコープ。Direct Post を使うため video.publish を含む。
 export const TIKTOK_SCOPES = ["user.info.basic", "video.publish", "video.upload"];
@@ -147,7 +149,7 @@ export function isTikTokPostingConfigured(): boolean {
   return Boolean(process.env.TIKTOK_CLIENT_KEY && process.env.TIKTOK_CLIENT_SECRET && process.env.TIKTOK_REFRESH_TOKEN);
 }
 
-async function getAccessToken(): Promise<string> {
+export async function getAccessToken(): Promise<string> {
   const refreshToken = process.env.TIKTOK_REFRESH_TOKEN;
   if (!refreshToken) throw new Error("TikTok のリフレッシュトークンが設定されていません (TIKTOK_REFRESH_TOKEN)");
   const { accessToken } = await tiktokRefreshToken(refreshToken);
@@ -198,22 +200,6 @@ export async function postVideoPullFromUrl(
   return { publishId: json.data.publish_id };
 }
 
-/**
- * run-queue からの自動投稿用。TIKTOK_REFRESH_TOKEN から都度アクセストークンを取得し、
- * 本番公開 (PUBLIC_TO_EVERYONE) で投稿する。
- * 審査未完了 (unaudited) のアプリでは TikTok 側が非公開以外の privacy_level を拒否するため、
- * App Review が通るまではここが失敗し続け、通り次第コード変更なしで自動的に投稿が成功するようになる。
- */
-export async function postShortToTikTok(video: { videoUrl: string; title: string; description?: string }): Promise<{ id: string }> {
-  const accessToken = await getAccessToken();
-  const caption = `${video.title}\n\n${video.description ?? ""}`.trim().slice(0, 2200);
-  const { publishId } = await postVideoPullFromUrl(video.videoUrl, caption, {
-    accessToken,
-    privacyLevel: "PUBLIC_TO_EVERYONE",
-  });
-  return { id: publishId };
-}
-
 export async function fetchPostStatus(publishId: string, accessToken?: string): Promise<Record<string, unknown>> {
   const token = accessToken ?? process.env.TIKTOK_ACCESS_TOKEN;
   if (!token) throw new Error("TikTok のアクセストークンが設定されていません (TIKTOK_ACCESS_TOKEN)");
@@ -225,4 +211,114 @@ export async function fetchPostStatus(publishId: string, accessToken?: string): 
   const json = (await res.json().catch(() => ({}))) as Record<string, unknown>;
   if (!res.ok) throw new Error(`post status ${res.status}: ${JSON.stringify(json).slice(0, 300)}`);
   return json;
+}
+
+// ---- 投稿画面 (/admin/social/tiktok) 用 ----
+
+export interface TikTokCreatorInfo {
+  avatarUrl: string;
+  username: string;
+  nickname: string;
+  privacyLevelOptions: string[];
+  commentDisabled: boolean;
+  duetDisabled: boolean;
+  stitchDisabled: boolean;
+  maxVideoPostDurationSec: number;
+}
+
+/**
+ * 投稿画面を開くたびに呼ぶ (ガイドライン: 最新のクリエイター情報を表示し、公開範囲の選択肢はここから出す)。
+ * 1日の投稿上限などで今は投稿できない場合は、TikTok のエラーをそのまま投げる (画面に表示する)。
+ */
+export async function queryCreatorInfo(accessToken: string): Promise<TikTokCreatorInfo> {
+  const res = await fetch(CREATOR_INFO_URL, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json; charset=UTF-8" },
+  });
+  const json = (await res.json().catch(() => ({}))) as {
+    data?: {
+      creator_avatar_url?: string;
+      creator_username?: string;
+      creator_nickname?: string;
+      privacy_level_options?: string[];
+      comment_disabled?: boolean;
+      duet_disabled?: boolean;
+      stitch_disabled?: boolean;
+      max_video_post_duration_sec?: number;
+    };
+    error?: { code?: string; message?: string };
+  };
+  if (!res.ok || (json.error?.code && json.error.code !== "ok")) {
+    throw new Error(`creator_info ${res.status}: ${json.error?.code ?? ""} ${json.error?.message ?? ""}`.trim());
+  }
+  const d = json.data ?? {};
+  return {
+    avatarUrl: d.creator_avatar_url ?? "",
+    username: d.creator_username ?? "",
+    nickname: d.creator_nickname ?? "",
+    privacyLevelOptions: d.privacy_level_options ?? [],
+    commentDisabled: Boolean(d.comment_disabled),
+    duetDisabled: Boolean(d.duet_disabled),
+    stitchDisabled: Boolean(d.stitch_disabled),
+    maxVideoPostDurationSec: d.max_video_post_duration_sec ?? 0,
+  };
+}
+
+export interface TikTokPostChoices {
+  title: string;
+  privacyLevel: string;
+  allowComment: boolean;
+  allowDuet: boolean;
+  allowStitch: boolean;
+  /** 商用コンテンツ: 自分のブランドの宣伝 (Promotional content) */
+  brandOrganic: boolean;
+  /** 商用コンテンツ: 第三者との有償の提携 (Paid partnership) */
+  brandedContent: boolean;
+}
+
+/**
+ * 人が投稿画面で選んだ内容で、動画ファイルを直接アップロードして投稿する (FILE_UPLOAD)。
+ * PULL_FROM_URL はドメインの所有確認が必要で、動画の置き場所 (Supabase Storage) は確認できないため使わない。
+ */
+export async function postVideoFileUpload(accessToken: string, videoUrl: string, c: TikTokPostChoices): Promise<{ publishId: string }> {
+  const file = await fetch(videoUrl);
+  if (!file.ok) throw new Error(`動画の取得に失敗しました (${file.status})`);
+  const bytes = Buffer.from(await file.arrayBuffer());
+  const size = bytes.length;
+  if (size > 64 * 1024 * 1024) throw new Error("動画が64MBを超えているため、1回のアップロードで送れません");
+
+  const init = await fetch(POST_INIT_URL, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json; charset=UTF-8" },
+    body: JSON.stringify({
+      post_info: {
+        title: c.title.slice(0, 2200),
+        privacy_level: c.privacyLevel,
+        disable_comment: !c.allowComment,
+        disable_duet: !c.allowDuet,
+        disable_stitch: !c.allowStitch,
+        brand_organic_toggle: c.brandOrganic,
+        brand_content_toggle: c.brandedContent,
+      },
+      source_info: { source: "FILE_UPLOAD", video_size: size, chunk_size: size, total_chunk_count: 1 },
+    }),
+  });
+  const json = (await init.json().catch(() => ({}))) as {
+    data?: { publish_id?: string; upload_url?: string };
+    error?: { code?: string; message?: string };
+  };
+  if (!init.ok || !json.data?.publish_id || !json.data.upload_url) {
+    throw new Error(`post init ${init.status}: ${json.error?.code ?? ""} ${json.error?.message ?? JSON.stringify(json).slice(0, 300)}`.trim());
+  }
+  const put = await fetch(json.data.upload_url, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "video/mp4",
+      "Content-Length": String(size),
+      "Content-Range": `bytes 0-${size - 1}/${size}`,
+    },
+    body: bytes,
+  });
+  if (!put.ok) throw new Error(`upload ${put.status}: ${(await put.text().catch(() => "")).slice(0, 300)}`);
+  return { publishId: json.data.publish_id };
 }
