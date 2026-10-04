@@ -283,7 +283,9 @@ export function parseArticle(text: string, today: string): ParsedArticle | null 
   if (!lead) issues.push("リードがない");
   if (sections.length < 4) issues.push(`見出しが少ない (${sections.length}個。4個以上)`);
   const len = textLength(sections);
-  if (len < 1800) issues.push(`本文が短い (約${len}字。1800字以上)`);
+  // 字数は公開を止める理由にしない (2026-10 方針)。1800字に少し足りない程度の記事で毎日の公開を止めないよう、
+  // 中身がほぼない記事 (本文800字未満) だけを下書きに回す。目標の1800字はSEO記事エージェントの指示書で守らせる。
+  if (len < 800) issues.push(`本文がほとんどない (約${len}字。800字以上)`);
   if (sources.length < 1) issues.push("出典がない (一次情報のURLを1つ以上)");
   if (faq.length < 2) issues.push(`よくある質問が少ない (${faq.length}個。2個以上)`);
   if (!SEGMENTS.includes(segmentRaw)) issues.push("対象が不正 (highschool / student / career)");
