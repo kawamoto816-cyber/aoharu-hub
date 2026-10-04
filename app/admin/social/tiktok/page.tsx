@@ -70,6 +70,12 @@ export default async function TiktokPostPage({ searchParams }: { searchParams: P
       <p className="mt-1 text-sm text-slate-500">
         生成済みのショート動画を確認し、公開範囲などを選んで1本ずつ投稿します。YouTube・Instagram は自動投稿のままです。
       </p>
+      <a
+        href="/internal/social/tiktok-auth"
+        className="mt-4 inline-block rounded-xl border border-slate-300 px-4 py-2 text-xs font-bold text-slate-700"
+      >
+        TikTok と連携する (Connect TikTok account)
+      </a>
       {loadError && <p className="mt-4 text-sm font-bold text-rose-600">読み込めませんでした: {loadError}</p>}
 
       <div className="mt-8 grid gap-8 md:grid-cols-[280px_1fr]">

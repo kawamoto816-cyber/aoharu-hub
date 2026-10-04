@@ -1,15 +1,17 @@
 import { NextResponse } from "next/server";
-import { isAdminToken } from "@/lib/metrics/admin-auth";
+import { isAdminToken, isAdminUser } from "@/lib/metrics/admin-auth";
 import { tiktokAuthStart } from "@/lib/social/tiktok";
 
 // TikTok 投稿アカウントの認可 (OAuth 2.0 + PKCE) 開始。
-//   GET /internal/social/tiktok-auth?token=ADMIN_METRICS_TOKEN
+//   GET /internal/social/tiktok-auth                 社内アカウント (@bluespring.co.jp) でログインしていれば開ける
+//   GET /internal/social/tiktok-auth?token=ADMIN_METRICS_TOKEN   (プログラム用)
+// 投稿画面 /admin/social/tiktok の「TikTok と連携する」ボタンからも開く。
 // ブラウザで開くと TikTok の認可画面 (Login Kit) に飛ぶ。投稿したいアカウント (@aoharu_os) でログインした状態で開くこと。
 // 認可後 /internal/social/tiktok-callback に戻り、アクセストークンが表示され、続けて動作確認用の投稿 (Content Posting API) を1件試みる。
 export const dynamic = "force-dynamic";
 
 export async function GET(req: Request) {
-  if (!isAdminToken(req)) return NextResponse.json({ error: "forbidden" }, { status: 403 });
+  if (!isAdminToken(req) && !(await isAdminUser()).ok) return NextResponse.json({ error: "forbidden" }, { status: 403 });
   const origin = new URL(req.url).origin;
   try {
     const { authorizeUrl, state, codeVerifier } = tiktokAuthStart(`${origin}/internal/social/tiktok-callback`);

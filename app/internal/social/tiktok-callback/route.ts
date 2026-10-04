@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
-import { postVideoPullFromUrl, tiktokAuthFinish } from "@/lib/social/tiktok";
+import { queryCreatorInfo, tiktokAuthFinish } from "@/lib/social/tiktok";
 
-// TikTok 認可のコールバック。アクセストークンを取得して画面に表示し (サーバーには保存しない)、
-// 続けて Content Posting API (Direct Post, PULL_FROM_URL) で動作確認用の動画を1件投稿してみる
-// (審査担当者向けデモ動画の録画は、このページの一連の流れをそのまま画面録画すればよい)。
+// TikTok 認可のコールバック。連携できたアカウント名を表示し、投稿画面 (/admin/social/tiktok) へ案内する。
+// トークンはサーバーに保存しない。Vercel に登録し直すときのために、閉じた状態の「設定用の情報」の中にだけ表示する
+// (審査用の画面録画にトークンが映らないよう、初期状態では開かない)。
 export const dynamic = "force-dynamic";
 
 function page(body: string, status = 200) {
@@ -32,26 +32,24 @@ export async function GET(req: Request) {
     const origin = url.origin;
     const token = await tiktokAuthFinish(code, codeVerifier, `${origin}/internal/social/tiktok-callback`);
 
-    // Content Posting API の動作確認: 検証済みドメイン配下のサンプル動画を PULL_FROM_URL で投稿してみる。
-    let postResult = "";
+    // 連携できたアカウントの表示名を取得する (失敗しても認可自体は完了しているので続ける)
+    let accountLabel = "";
     try {
-      const demoVideoUrl = `${origin}/demo/tiktok-sandbox-test.mp4`;
-      const { publishId } = await postVideoPullFromUrl(demoVideoUrl, "アオハルOS 動作確認投稿", {
-        accessToken: token.accessToken,
-      });
-      postResult = `<p style="color:#0a7">Content Posting API 投稿を開始しました。publish_id: <code>${publishId}</code></p>`;
-    } catch (e) {
-      postResult = `<p style="color:#a00">投稿テストに失敗しました: ${e instanceof Error ? e.message : String(e)}</p>`;
+      const info = await queryCreatorInfo(token.accessToken);
+      accountLabel = `${info.nickname}${info.username ? ` (@${info.username})` : ""}`;
+    } catch {
+      accountLabel = "";
     }
 
-    const res = page(`<h1>TikTok の認可が完了しました</h1>
-<p>open_id: <b>${token.openId}</b>　scope: <code>${token.scope}</code></p>
-<p>次の2つを Vercel（aoharu-hub → Settings → Environment Variables、Type=Secret）に登録し、Redeploy してください。<b>この画面を閉じると再表示されません。</b></p>
-<table style="border-collapse:collapse"><tr><td style="padding:6px 12px 6px 0"><code>TIKTOK_ACCESS_TOKEN</code></td><td><code style="user-select:all">${token.accessToken}</code></td></tr>
-<tr><td style="padding:6px 12px 6px 0"><code>TIKTOK_REFRESH_TOKEN</code></td><td><code style="user-select:all">${token.refreshToken}</code></td></tr></table>
-<h2>Content Posting API 動作確認</h2>
-${postResult}
-<p style="color:#666;font-size:14px">このページの内容はサーバーに保存していません。</p>`);
+    const res = page(`<h1>TikTok との連携が完了しました (Connected to TikTok)</h1>
+<p>連携したアカウント (Account): <b>${accountLabel || "取得できませんでした"}</b></p>
+<p>許可された範囲 (Scopes): <code>${token.scope}</code></p>
+<p><a href="/admin/social/tiktok" style="display:inline-block;margin-top:8px;padding:10px 18px;background:#0f172a;color:#fff;border-radius:10px;font-weight:bold;text-decoration:none">投稿画面へ進む (Go to Post to TikTok)</a></p>
+<details style="margin-top:40px;color:#666;font-size:13px"><summary>設定用の情報（運営者のみ。画面録画しないこと）</summary>
+<p>トークンを登録し直す場合だけ、次の2つを Vercel（aoharu-hub → Settings → Environment Variables、Type=Secret）に登録して Redeploy してください。この画面を閉じると再表示されません。</p>
+<table style="border-collapse:collapse"><tr><td style="padding:6px 12px 6px 0"><code>TIKTOK_ACCESS_TOKEN</code></td><td><code style="user-select:all;word-break:break-all">${token.accessToken}</code></td></tr>
+<tr><td style="padding:6px 12px 6px 0"><code>TIKTOK_REFRESH_TOKEN</code></td><td><code style="user-select:all;word-break:break-all">${token.refreshToken}</code></td></tr></table>
+<p>このページの内容はサーバーに保存していません。</p></details>`);
     res.cookies.set("tt_oauth_req", "", { path: "/internal/social", maxAge: 0 });
     return res;
   } catch (e) {
