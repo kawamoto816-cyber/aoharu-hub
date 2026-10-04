@@ -1,17 +1,25 @@
 # 承認済み台本 ([shorts] ブロック) からショート動画を自動生成し、Supabase Storage に置いてサーバーに記録する。
-#   スケジュール: 毎日 20:30 JST (11:30 UTC)。1日に複数の [shorts] ブロックが承認されていれば、
-#   run_queue.sh がその日のキューを1件ずつ順番に処理する (1回の実行で複数本レンダリングされる)。
-#   手動実行も可 (date で日付指定)。
+#   スケジュール (2026-10 変更): 17:30 JST と、予備の 22:30 JST の1日2回。
+#     GitHub Actions のスケジュール実行は数時間遅れることがある (指標の書き出しで約2時間の遅れを確認済み)。
+#     以前の 20:30 JST 1回だけの設定では、遅れて0時をまたいだ日に「翌日」のキューを見て0本で終わっていた。
+#     承認済み投稿は朝に揃っているので前倒しし、予備の実行と「今日と昨日の両方を見る」処理で取りこぼしを防ぐ。
+#     生成済みの台本は飛ばすので、2回走っても同じ動画を二度作らない。
+#   生成した動画は、run-queue (10:03 / 13:03 / 20:03 JST) が YouTube・Instagram に1本ずつ投稿する。
+#   手動実行も可 (date で日付指定。空なら今日と昨日)。
 #   必要な Secrets: CRON_SECRET, SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY。Variables: SHORTS_SPEAKER (任意)
 name: shorts-auto
 on:
   schedule:
-    - cron: "30 11 * * *"
+    - cron: "30 8 * * *"   # 17:30 JST
+    - cron: "30 13 * * *"  # 22:30 JST (予備。遅延・失敗の取りこぼし用)
   workflow_dispatch:
     inputs:
       date:
-        description: "対象日 (YYYY-MM-DD, JST)。空なら今日"
+        description: "対象日 (YYYY-MM-DD, JST)。空なら今日と昨日"
         default: ""
+concurrency:
+  group: shorts-auto
+  cancel-in-progress: false
 jobs:
   render:
     runs-on: ubuntu-latest
