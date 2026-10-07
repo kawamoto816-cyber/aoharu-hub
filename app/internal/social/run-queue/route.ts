@@ -2,19 +2,10 @@ import { NextResponse } from "next/server";
 import { isAdminToken } from "@/lib/metrics/admin-auth";
 import { isXConfigured, postToX } from "@/lib/social/x";
 import { isThreadsConfigured, postToThreads } from "@/lib/social/threads";
-import { isInstagramConfigured, postToInstagram, postReelToInstagram, ReelPendingError } from "@/lib/social/instagram";
+import { isInstagramConfigured, postToInstagram } from "@/lib/social/instagram";
 import { parseCard } from "@/lib/social/card";
 import { findRecentDuplicate, recordPost, textHash } from "@/lib/social/store";
 import { dueSlots, jstNow, loadQueue, type QueueItem } from "@/lib/social/queue";
-import {
-  listPendingInstagramReels,
-  markInstagramReelPosted,
-  markInstagramReelFailed,
-  listPendingYoutubeUploads,
-  markYoutubeUploaded,
-  markYoutubeFailed,
-} from "@/lib/social/shorts";
-import { isYouTubePostingConfigured, uploadShortToYouTube } from "@/lib/social/youtube";
 import { refreshSocialMetrics } from "@/lib/social/metrics";
 
 // 承認済み投稿キューをサーバー側で処理する (自己完結・冪等)。
@@ -103,62 +94,10 @@ export async function GET(req: Request) {
 
   const failed = results.filter((r) => r.status === "failed").length;
 
-  // ショート動画のInstagramリール自動投稿。専用の Cron 枠は追加できない (Hobby プランの上限) ため、
-  // このキュー処理に相乗りさせ、未投稿ぶんを1本だけ少しずつ消化する (自己回復・多重実行しても安全)。
+  // ショート動画の YouTube・Instagram リール投稿は /internal/shorts/publish に分けた (2026-10)。
+  // ここに相乗りさせていた頃は、リールの取り込み待ちが実行時間を使い切り、YouTube が毎回見送られていた。
   const reels: { slug: string; status: string; external_id?: string; error?: string }[] = [];
-  if (!dry && isInstagramConfigured() && remainingMs() > 15_000) {
-    try {
-      const pending = await listPendingInstagramReels(1);
-      for (const v of pending) {
-        const caption = `${v.title}\n\n${v.description ?? ""}`.trim();
-        try {
-          // 取り込み待ちは実行時間の残りまで。終わらなければ ReelPendingError で中断し、次回やり直す。
-          const r = await postReelToInstagram({ videoUrl: v.video_url, caption }, { deadlineAt: startedAt + budgetMs - 5_000 });
-          await markInstagramReelPosted(v.slug, r.id);
-          reels.push({ slug: v.slug, status: "posted", external_id: r.id });
-        } catch (e) {
-          // 実行時間切れは「恒久的な失敗」ではないので attempts を増やさない
-          // (増やすと3回で見切られ、動画が二度と投稿されなくなってしまう)。
-          if (e instanceof ReelPendingError) {
-            reels.push({ slug: v.slug, status: "deferred", error: e.message });
-            continue;
-          }
-          const message = e instanceof Error ? e.message : String(e);
-          await markInstagramReelFailed(v.slug, message, v.instagram_attempts).catch(() => undefined);
-          reels.push({ slug: v.slug, status: "failed", error: message });
-        }
-      }
-    } catch (e) {
-      reels.push({ slug: "(query)", status: "failed", error: e instanceof Error ? e.message : String(e) });
-    }
-  } else if (!dry && isInstagramConfigured()) {
-    reels.push({ slug: "(budget)", status: "deferred" });
-  }
-
-  // ショート動画の YouTube (Shorts) 自動投稿。こちらも同じ理由で Cron 枠は増やさず相乗りさせる。
-  // 動画の実体を取得してアップロードするため Instagram より時間がかかりやすく、1本ずつ処理する。
   const youtube: { slug: string; status: string; external_id?: string; error?: string }[] = [];
-  if (!dry && isYouTubePostingConfigured() && remainingMs() > 20_000) {
-    try {
-      const pending = await listPendingYoutubeUploads(1);
-      for (const v of pending) {
-        const description = `${v.description ?? ""}`.trim();
-        try {
-          const r = await uploadShortToYouTube({ videoUrl: v.video_url, title: v.title, description });
-          await markYoutubeUploaded(v.slug, r.id);
-          youtube.push({ slug: v.slug, status: "posted", external_id: r.id });
-        } catch (e) {
-          const message = e instanceof Error ? e.message : String(e);
-          await markYoutubeFailed(v.slug, message, v.youtube_attempts).catch(() => undefined);
-          youtube.push({ slug: v.slug, status: "failed", error: message });
-        }
-      }
-    } catch (e) {
-      youtube.push({ slug: "(query)", status: "failed", error: e instanceof Error ? e.message : String(e) });
-    }
-  } else if (!dry && isYouTubePostingConfigured()) {
-    youtube.push({ slug: "(budget)", status: "deferred" });
-  }
 
   // TikTok は自動投稿しない (2026-10)。TikTok のガイドラインが投稿ごとに人の操作 (公開範囲の選択など) を
   // 求めるため、/admin/social/tiktok の投稿画面から1本ずつ投稿する。

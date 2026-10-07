@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { isAdminToken } from "@/lib/metrics/admin-auth";
+import { isAdminToken, isAdminUser } from "@/lib/metrics/admin-auth";
 import { APPROVAL_FOLDER_ID, exportDocText, jstNow } from "@/lib/social/queue";
 import { getGoogleAccessToken, getServiceAccount } from "@/lib/metrics/google-auth";
 import { parseArticleDoc } from "@/lib/guide/parse";
@@ -36,7 +36,8 @@ async function findArticleDocs(date: string): Promise<{ id: string; name: string
 }
 
 export async function GET(req: Request) {
-  if (!isAdminToken(req) && !isCron(req)) return NextResponse.json({ error: "forbidden" }, { status: 403 });
+  // 社内アカウントでログインしていれば、ブラウザから日付指定で取り込み直せる
+  if (!isAdminToken(req) && !isCron(req) && !(await isAdminUser()).ok) return NextResponse.json({ error: "forbidden" }, { status: 403 });
   const p = new URL(req.url).searchParams;
   const date = p.get("date") ?? jstNow().date;
   const dry = p.get("dry") === "1";

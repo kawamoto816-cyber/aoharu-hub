@@ -145,3 +145,36 @@ export async function refreshInstagramToken(): Promise<{ expiresInDays: number }
   await setSetting("instagram_token_refreshed_at", new Date().toISOString());
   return { expiresInDays: Math.round((json.expires_in ?? 0) / 86400) };
 }
+
+// ---- リールの「再開できる」投稿 (/internal/shorts/publish 用) ----
+// 取り込み (IN_PROGRESS) を同じ実行の中で待ち続けると、ほかの投稿 (YouTube など) の時間を食いつぶす。
+// そこで、コンテナを作ったら ID を保存して一度終わり、次の実行で状態を見て公開する。
+
+export async function startReelContainer(video: { videoUrl: string; caption: string }): Promise<string> {
+  const token = await getToken();
+  const userId = await getUserId(token);
+  const container = await graph("POST", `/${userId}/media`, {
+    video_url: video.videoUrl,
+    caption: video.caption.slice(0, 2200),
+    media_type: "REELS",
+    access_token: token,
+  });
+  const creationId = String(container.id ?? "");
+  if (!creationId) throw new Error("Instagram: リールのコンテナIDが取得できませんでした");
+  return creationId;
+}
+
+export async function reelContainerStatus(creationId: string): Promise<{ code: string; detail: string }> {
+  const token = await getToken();
+  const st = await graph("GET", `/${creationId}`, { fields: "status_code,status", access_token: token });
+  return { code: String(st.status_code ?? ""), detail: String(st.status ?? "") };
+}
+
+export async function publishReelContainer(creationId: string): Promise<{ id: string }> {
+  const token = await getToken();
+  const userId = await getUserId(token);
+  const published = await graph("POST", `/${userId}/media_publish`, { creation_id: creationId, access_token: token });
+  const id = String(published.id ?? "");
+  if (!id) throw new Error("Instagram: リール公開IDが取得できませんでした");
+  return { id };
+}
