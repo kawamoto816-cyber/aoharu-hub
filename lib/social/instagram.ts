@@ -1,5 +1,7 @@
 import { getSetting, setSetting } from "./store";
+import { createHash } from "node:crypto";
 import { cardImageUrl, type CardContent } from "./card";
+import { getSupabaseAdmin } from "@/lib/aoharu-entitlements/supabase/client";
 
 // Instagram への画像投稿 (Instagram API with Instagram Login)。
 // トークンは長期トークン (60日)。app_settings の最新値を優先し、なければ環境変数 INSTAGRAM_ACCESS_TOKEN。
@@ -42,10 +44,41 @@ async function getUserId(token: string): Promise<string> {
   return id;
 }
 
+/**
+ * カード画像を一度こちらで生成して JPEG であることを確かめ、Supabase Storage (公開バケット) に置いてその URL を返す。
+ * 以前は生成用の URL (/internal/social/card) を Instagram に直接取りに来させていたが、取得のたびに
+ * 生成し直すため時間がかかり、Instagram 側が画像として受け取れずに
+ * 「Only photo or video can be accepted」「The image format is not supported」で失敗することが多かった。
+ * 動画 (リール) と同じく、静的なファイルとして渡すと安定する。
+ */
+async function stageCardImage(card: CardContent, origin?: string): Promise<string> {
+  const src = cardImageUrl(card, origin);
+  let jpeg: Buffer | null = null;
+  let lastErr = "";
+  for (let i = 0; i < 3 && !jpeg; i++) {
+    try {
+      const res = await fetch(src, { cache: "no-store" });
+      const type = res.headers.get("content-type") ?? "";
+      const buf = Buffer.from(await res.arrayBuffer());
+      if (res.ok && type.startsWith("image/jpeg") && buf.length > 1000 && buf[0] === 0xff && buf[1] === 0xd8) jpeg = buf;
+      else lastErr = `HTTP ${res.status} ${type} ${buf.length}bytes`;
+    } catch (e) {
+      lastErr = e instanceof Error ? e.message : String(e);
+    }
+    if (!jpeg) await new Promise((r) => setTimeout(r, 1500));
+  }
+  if (!jpeg) throw new Error(`Instagram: カード画像を生成できませんでした (${lastErr})`);
+  const name = `cards/${createHash("sha1").update(src).digest("hex").slice(0, 16)}.jpg`;
+  const bucket = getSupabaseAdmin().storage.from("shorts");
+  const { error } = await bucket.upload(name, jpeg, { contentType: "image/jpeg", upsert: true });
+  if (error) throw new Error(`Instagram: カード画像を保存できませんでした (${error.message})`);
+  return bucket.getPublicUrl(name).data.publicUrl;
+}
+
 export async function postToInstagram(card: CardContent, origin?: string): Promise<{ id: string; imageUrl: string }> {
   const token = await getToken();
   const userId = await getUserId(token);
-  const imageUrl = cardImageUrl(card, origin);
+  const imageUrl = await stageCardImage(card, origin);
   const container = await graph("POST", `/${userId}/media`, { image_url: imageUrl, caption: card.caption, access_token: token });
   const creationId = String(container.id ?? "");
   if (!creationId) throw new Error("Instagram: コンテナIDが取得できませんでした");
