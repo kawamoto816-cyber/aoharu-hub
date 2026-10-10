@@ -1,3 +1,4 @@
+import { isDocForDate } from "./docname";
 import { getGoogleAccessToken, getServiceAccount } from "@/lib/metrics/google-auth";
 import type { SocialChannel } from "./store";
 
@@ -67,7 +68,7 @@ export async function findQueueDocs(date: string): Promise<{ id: string; name: s
     throw new Error(`Drive files.list ${res.status}: ${body.slice(0, 200)} — フォルダをサービスアカウント ${sa} に閲覧共有してください`);
   }
   const json = (await res.json()) as { files?: { id: string; name: string; modifiedTime: string }[] };
-  return json.files ?? [];
+  return (json.files ?? []).filter((f) => isDocForDate(f.name, `承認済み投稿 ${date}`));
 }
 
 /** Google ドキュメントをプレーンテキストで取得 */

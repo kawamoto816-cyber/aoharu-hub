@@ -50,6 +50,15 @@ jobs:
           SHORTS_SPEAKER: ${{ vars.SHORTS_SPEAKER }}
           SHORTS_DATE: ${{ github.event.inputs.date }}
         run: bash scripts/shorts/run_queue.sh
+      - name: Alert on failure
+        if: failure()
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          curl -sS --max-time 30 -X POST "https://app.bluespring.co.jp/internal/alerts" \
+            -H "Authorization: Bearer $CRON_SECRET" -H "Content-Type: application/json" \
+            --data "{\"key\":\"shorts_render\",\"title\":\"ショート動画の生成が失敗しました\",\"body\":\"実行結果: ${RUN_URL}\",\"action\":\"上のリンクで失敗した動画を確認するか、Claude に「ショート動画の生成を調べて」と依頼してください。\"}" || true
       - uses: actions/upload-artifact@v4
         if: always()
         with:

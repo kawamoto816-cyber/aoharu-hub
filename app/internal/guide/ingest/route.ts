@@ -5,6 +5,7 @@ import { getGoogleAccessToken, getServiceAccount } from "@/lib/metrics/google-au
 import { parseArticleDoc } from "@/lib/guide/parse";
 import { upsertArticle } from "@/lib/guide/store";
 import { GUIDE_ARTICLES } from "@/lib/guide";
+import { isDocForDate } from "@/lib/social/docname";
 
 // Google ドライブの「SEO記事 YYYY-MM-DD」ドキュメントを読み、/guide の記事としてDBに取り込む。
 //   GET /internal/guide/ingest?token=...                            (管理トークン / 手動)
@@ -32,7 +33,7 @@ async function findArticleDocs(date: string): Promise<{ id: string; name: string
     throw new Error(`Drive files.list ${res.status}: ${(await res.text()).slice(0, 200)} — フォルダをサービスアカウント ${sa} に閲覧共有してください`);
   }
   const json = (await res.json()) as { files?: { id: string; name: string }[] };
-  return json.files ?? [];
+  return (json.files ?? []).filter((f) => isDocForDate(f.name, `SEO記事 ${date}`));
 }
 
 export async function GET(req: Request) {

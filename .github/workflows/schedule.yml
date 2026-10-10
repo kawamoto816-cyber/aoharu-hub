@@ -11,8 +11,10 @@
 #   - 05:50 JST 拾った見込み先をテンプレートで提案文まで組み立てて「テンプレート提案」に書き出す
 #     (法人営業エージェントの06:30実行より前に終える)
 #   - 月曜 03:00 JST Threads / Instagram の長期トークンを更新 (60日で失効するため)
-#   - 08:20〜20:20 JST の2時間おき 生成済みショート動画を YouTube・Instagram リールへ1本ずつ投稿
-#     (たまった分も時間差で出ていく。YouTube は API の割り当ての都合で1日6本まで)
+#   - 08:20〜21:20 JST の1時間おき 生成済みショート動画を YouTube・Instagram リールへ1本ずつ投稿
+#     (GitHub の定時実行は遅れたり抜けたりするため多めに呼び、間隔90分以上・8〜21時台はサーバー側で守る。
+#      YouTube は API の割り当ての都合で1日6本まで)
+#   - どのジョブも失敗したら /internal/alerts で運営者にメールで知らせる
 # 必要な Secret: CRON_SECRET (Vercel の環境変数と同じ値)
 #
 # 重要: Claude の「スケジュール済みタスク」からは本番ドメインを叩かないこと。
@@ -31,7 +33,7 @@ on:
     - cron: "15 */3 * * *"  # 3時間おき 見込み先のハーベスト (Google Places API)
     - cron: "50 20 * * *"   # 05:50 JST テンプレート提案の書き出し (エージェント実行前)
     - cron: "0 18 * * 0"    # 月曜 03:00 JST Threads/Instagram トークン更新
-    - cron: "20 23,1,3,5,7,9,11 * * *"  # 08:20〜20:20 JST 2時間おき ショート動画の投稿
+    - cron: "20 23,0-12 * * *"  # 08:20〜21:20 JST 1時間おき ショート動画の投稿
   workflow_dispatch:
     inputs:
       job:
@@ -59,7 +61,7 @@ jobs:
             echo "job=sales-leads-harvest" >> "$GITHUB_OUTPUT"
           elif [ "${{ github.event.schedule }}" = "50 20 * * *" ]; then
             echo "job=sales-leads-candidates" >> "$GITHUB_OUTPUT"
-          elif [ "${{ github.event.schedule }}" = "20 23,1,3,5,7,9,11 * * *" ]; then
+          elif [ "${{ github.event.schedule }}" = "20 23,0-12 * * *" ]; then
             echo "job=shorts-publish" >> "$GITHUB_OUTPUT"
           elif [ "${{ github.event.schedule }}" = "0 18 * * 0" ]; then
             echo "job=refresh-tokens" >> "$GITHUB_OUTPUT"
@@ -97,3 +99,13 @@ jobs:
           done
           echo "HTTP $code"; cat out.json; echo
           [ "$code" = "200" ]
+      - name: Alert on failure
+        if: failure()
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          JOB: ${{ steps.pick.outputs.job }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          curl -sS --max-time 30 -X POST "https://app.bluespring.co.jp/internal/alerts" \
+            -H "Authorization: Bearer $CRON_SECRET" -H "Content-Type: application/json" \
+            --data "{\"key\":\"job_${JOB}\",\"title\":\"定時処理「${JOB}」が失敗しました\",\"body\":\"実行結果: ${RUN_URL}\",\"action\":\"上のリンクで失敗の内容を確認するか、Claude に「定時処理の失敗を調べて」と依頼してください。\"}" || true

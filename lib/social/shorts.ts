@@ -190,11 +190,44 @@ export async function listShortsVideos(limit = 30) {
   return data ?? [];
 }
 
+/** slug の末尾 (台本タイトルのハッシュ)。日付が違っても同じ台本なら同じ値になる */
+export function scriptHash(slug: string): string {
+  return slug.slice(slug.lastIndexOf("-") + 1);
+}
+
+/** 同じ台本 (タイトル) の動画が、日付に関係なくすでに生成済みかどうか */
 export async function hasRenderedVideo(slug: string): Promise<boolean> {
   const supabase = getSupabaseAdmin();
-  const { data, error } = await supabase.from("shorts_videos").select("slug").eq("slug", slug).limit(1);
+  const { data, error } = await supabase.from("shorts_videos").select("slug").like("slug", `%-${scriptHash(slug)}`).limit(1);
   if (error) throw new Error(`shorts_videos select: ${error.message}`);
   return (data?.length ?? 0) > 0;
+}
+
+/**
+ * 同じ台本の動画が先に生成されていれば、その slug を返す (自分がいちばん古ければ null)。
+ * 2026-10-10 に、別の日の承認済み投稿を誤って読み込み、同じ台本の動画が新しい日付で作り直されたため、
+ * 投稿の前にこれで重複を見分けて、古い方だけを投稿する。
+ */
+export async function findOriginalOf(slug: string): Promise<string | null> {
+  const supabase = getSupabaseAdmin();
+  const { data, error } = await supabase
+    .from("shorts_videos")
+    .select("slug,rendered_at")
+    .like("slug", `%-${scriptHash(slug)}`)
+    .order("rendered_at", { ascending: true })
+    .limit(1);
+  if (error) throw new Error(`shorts_videos select (original): ${error.message}`);
+  const first = data?.[0]?.slug ?? null;
+  return first && first !== slug ? first : null;
+}
+
+/** 重複した動画を、指定したプラットフォームでは投稿しないよう印を付ける */
+export async function markDuplicate(slug: string, platform: "youtube" | "instagram", original: string): Promise<void> {
+  const supabase = getSupabaseAdmin();
+  const note = `重複のため投稿しません (同じ台本の動画 ${original} があります)`;
+  const patch = platform === "youtube" ? { youtube_error: note, youtube_attempts: 99 } : { instagram_error: note, instagram_attempts: 99 };
+  const { error } = await supabase.from("shorts_videos").update(patch).eq("slug", slug);
+  if (error) throw new Error(`shorts_videos update (duplicate): ${error.message}`);
 }
 
 // ------------------------------------------------------------------

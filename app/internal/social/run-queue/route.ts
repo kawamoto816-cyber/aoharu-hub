@@ -7,6 +7,7 @@ import { parseCard } from "@/lib/social/card";
 import { findRecentDuplicate, recordPost, textHash } from "@/lib/social/store";
 import { dueSlots, jstNow, loadQueue, type QueueItem } from "@/lib/social/queue";
 import { refreshSocialMetrics } from "@/lib/social/metrics";
+import { classifyPostError, clearAlert, raiseAlert } from "@/lib/social/alert";
 
 // 承認済み投稿キューをサーバー側で処理する (自己完結・冪等)。
 //   GET /internal/social/run-queue?token=...            現在時刻 (JST) までの枠を投稿
@@ -93,6 +94,21 @@ export async function GET(req: Request) {
   }
 
   const failed = results.filter((r) => r.status === "failed").length;
+
+  // 失敗があれば運営者に知らせる (同じ種類は12時間に1回まで)。投稿できたチャネルのアラートは消す。
+  if (!dry) {
+    const seen = new Set<string>();
+    for (const r of results.filter((x) => x.status === "failed")) {
+      const c = classifyPostError(r.channel, r.error ?? "");
+      if (seen.has(c.key)) continue;
+      seen.add(c.key);
+      const n = results.filter((x) => x.status === "failed" && classifyPostError(x.channel, x.error ?? "").key === c.key).length;
+      await raiseAlert(c.key, c.title, `${date} の${r.slot}枠などで ${n} 件の投稿が失敗しました。\nエラー: ${r.error ?? "(不明)"}\n例: ${r.preview}`, c.action);
+    }
+    for (const ch of new Set(results.filter((x) => x.status === "posted").map((x) => x.channel))) {
+      for (const k of ch === "x" ? ["x_credits", "x_auth", "x_quota", "x_failed"] : [`${ch}_auth`, `${ch}_quota`, `${ch}_failed`]) await clearAlert(k);
+    }
+  }
 
   // ショート動画の YouTube・Instagram リール投稿は /internal/shorts/publish に分けた (2026-10)。
   // ここに相乗りさせていた頃は、リールの取り込み待ちが実行時間を使い切り、YouTube が毎回見送られていた。

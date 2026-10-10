@@ -3,6 +3,7 @@ import Link from "next/link";
 import { isAdminUser } from "@/lib/metrics/admin-auth";
 import { ACCOUNTS, getSocialDashboard, refreshSocialMetrics, type SocialDashboard } from "@/lib/social/metrics";
 import { listShortsVideos } from "@/lib/social/shorts";
+import { listRecentAlerts } from "@/lib/social/alert";
 import { GuideSection } from "@/components/admin/GuideSection";
 
 // /admin/social: 自社配信の可視化ダッシュボード (@bluespring.co.jp でログインした人だけ)。
@@ -75,6 +76,13 @@ function PlatformCell({
       </a>
     ) : (
       <span className="font-bold text-emerald-600">投稿済み</span>
+    );
+  }
+  if (error && error.startsWith("重複のため")) {
+    return (
+      <span className="text-slate-400" title={error}>
+        重複のため見送り
+      </span>
     );
   }
   if (error && (attempts ?? 0) >= 3) {
@@ -180,6 +188,7 @@ export default async function SocialDashboardPage({
     loadError = e instanceof Error ? e.message : String(e);
   }
 
+  const alerts = await listRecentAlerts().catch(() => []);
   let shorts: Awaited<ReturnType<typeof listShortsVideos>> = [];
   let shortsError: string | null = null;
   try {
@@ -249,6 +258,21 @@ export default async function SocialDashboardPage({
 
       {refreshNote && <p className="mt-4 rounded-xl border border-indigo-100 bg-indigo-50 px-4 py-2 text-xs text-indigo-800">{refreshNote}</p>}
       {loadError && <p className="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-2 text-xs text-amber-800">読み込みエラー: {loadError}</p>}
+      {alerts.length > 0 && (
+        <section className="mt-4 rounded-2xl border border-rose-200 bg-rose-50 p-4">
+          <h2 className="text-sm font-bold text-rose-800">配信アラート（{alerts.length}件）</h2>
+          <ul className="mt-2 space-y-2">
+            {alerts.map((a) => (
+              <li key={a.key} className="text-xs text-rose-900">
+                <span className="font-bold">{a.title}</span>
+                <span className="ml-2 text-rose-500">{jst(a.at)}</span>
+                <span className="mt-0.5 block whitespace-pre-wrap text-rose-800">{a.body}</span>
+                <span className="mt-0.5 block font-bold">→ {a.action}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       {/* 公式SNS一覧 */}
       <section className="mt-8">
