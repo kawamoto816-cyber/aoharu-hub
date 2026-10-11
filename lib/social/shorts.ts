@@ -380,9 +380,17 @@ export async function listTiktokCandidates(limit = 20): Promise<TiktokCandidate[
     .select("slug,title,description,video_url,duration_sec,rendered_at,tiktok_error")
     .is("tiktok_posted_at", null)
     .order("rendered_at", { ascending: false })
-    .limit(limit);
+    .limit(limit * 3);
   if (error) throw new Error(`shorts_videos select (tiktok candidates): ${error.message}`);
-  return data ?? [];
+  // 同じ台本の動画 (2026-10-10 の重複生成分) は、いちばん古いもの1本だけを候補にする
+  const rows = data ?? [];
+  const earliest = new Map<string, string>();
+  for (const r of rows) {
+    const h = scriptHash(r.slug);
+    const cur = earliest.get(h);
+    if (!cur || r.rendered_at < (rows.find((x) => x.slug === cur)?.rendered_at ?? "")) earliest.set(h, r.slug);
+  }
+  return rows.filter((r) => earliest.get(scriptHash(r.slug)) === r.slug).slice(0, limit);
 }
 
 export async function getShortsVideo(slug: string): Promise<(TiktokCandidate & { tiktok_posted_at: string | null; tiktok_publish_id: string | null }) | null> {

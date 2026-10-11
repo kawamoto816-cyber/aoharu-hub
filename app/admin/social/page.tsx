@@ -415,7 +415,7 @@ export default async function SocialDashboardPage({
       <section className="mt-8 rounded-2xl border border-slate-200 bg-white p-5">
         <h2 className="text-sm font-bold text-slate-900">ショート動画（YouTube Shorts ／ Instagram リール ／ TikTok）</h2>
         <p className="mt-1 text-[11px] text-slate-400">
-          静止画スライド＋AIナレーションで毎日17:30（日本時間。予備22:30）に自動生成。生成後、YouTube・Instagramへ自動投稿されます。TikTok は<Link href="/admin/social/tiktok" className="font-bold text-indigo-600 underline underline-offset-2">投稿画面</Link>から1本ずつ投稿します。
+          静止画スライド＋AIナレーションで毎日17:30（日本時間。予備22:30）に自動生成。生成後、YouTube・Instagramへ自動投稿されます。TikTok は（ガイドラインにより投稿ごとに公開範囲を選ぶ必要があるため）毎朝9時台に届くメールのリンクか<Link href="/admin/social/tiktok" className="font-bold text-indigo-600 underline underline-offset-2">投稿画面</Link>から1本ずつ投稿します。
         </p>
         {shortsError && (
           <p className="mt-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-2 text-xs text-amber-800">読み込みエラー: {shortsError}</p>
@@ -424,7 +424,7 @@ export default async function SocialDashboardPage({
           <Tile label={`生成数（直近${shorts.length}件）`} value={fmt(shorts.length)} />
           <Tile label="YouTube 投稿済み" value={fmt(shortsYoutubePosted)} />
           <Tile label="Instagram リール投稿済み" value={fmt(shortsInstagramPosted)} />
-          <Tile label="TikTok 投稿済み" value={fmt(shortsTiktokPosted)} sub="投稿画面から手動で投稿" />
+          <Tile label="TikTok 投稿済み" value={fmt(shortsTiktokPosted)} sub="毎朝メールで候補を通知・投稿画面で1タップ" />
         </div>
         <div className="mt-4 overflow-x-auto">
           <table className="w-full min-w-[760px] text-xs">

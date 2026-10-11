@@ -15,7 +15,8 @@ import { createHash, randomBytes } from "node:crypto";
 //   TikTok の Content Sharing Guidelines は、投稿のたびに「投稿先アカウントの表示」「公開範囲を人が選ぶ (初期値なし)」
 //   「コメント・デュエット・ステッチの許可」「商用コンテンツの表示 (初期値オフ)」「音楽利用の同意」を求めている。
 //   そのため run-queue からの全自動投稿はやめ、/admin/social/tiktok の投稿画面から人が1本ずつ投稿する。
-//   Direct Post の監査 (audit) が通るまでは、TikTok 側が SELF_ONLY (自分だけ) 以外の公開範囲を拒否する。
+//   Direct Post の監査 (audit) は 2026-10-05 に通過し、全員公開 (PUBLIC_TO_EVERYONE) で投稿できる。
+//   未投稿の動画がある日は /internal/shorts/publish が1日1回、投稿画面へのリンクをメールで知らせる。
 
 const AUTHORIZE_URL = "https://www.tiktok.com/v2/auth/authorize/";
 const TOKEN_URL = "https://open.tiktokapis.com/v2/oauth/token/";

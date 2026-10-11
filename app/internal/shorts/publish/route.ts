@@ -7,13 +7,14 @@ import {
   listPendingInstagramReels,
   listPendingYoutubeUploads,
   listShortsVideos,
+  listTiktokCandidates,
   markDuplicate,
   markInstagramReelFailed,
   markInstagramReelPosted,
   markYoutubeFailed,
   markYoutubeUploaded,
 } from "@/lib/social/shorts";
-import { clearAlert, raiseAlert } from "@/lib/social/alert";
+import { clearAlert, raiseAlert, sendMail } from "@/lib/social/alert";
 import { isInstagramConfigured, publishReelContainer, reelContainerStatus, startReelContainer } from "@/lib/social/instagram";
 import { isYouTubePostingConfigured, uploadShortToYouTube } from "@/lib/social/youtube";
 
@@ -146,6 +147,27 @@ async function reelStep(deadlineAt: number): Promise<Result> {
   }
 }
 
+
+// TikTok は Content Sharing Guidelines により、投稿ごとに人が公開範囲などを選ぶ必要があり、全自動投稿はできない。
+// そのかわり、未投稿の動画があれば1日1回 (9時台以降・21時台まで) 投稿画面へのリンクをメールで知らせ、
+// 開いて公開範囲を選んで押すだけで投稿できるようにする (2026-10-05 Direct Post 監査通過。全員に公開できる)。
+const TIKTOK_REMIND_HOUR = 9;
+async function tiktokReminder(now: { date: string; hour: number }): Promise<string> {
+  if (now.hour < TIKTOK_REMIND_HOUR || now.hour > CLOSE_HOUR) return "時間外";
+  const key = "tiktok_reminder_date";
+  if ((await getSetting(key).catch(() => null)) === now.date) return "本日通知済み";
+  const list = await listTiktokCandidates(10);
+  if (!list.length) return "未投稿なし";
+  await setSetting(key, now.date);
+  const base = "https://app.bluespring.co.jp/admin/social/tiktok";
+  const lines = list.slice(0, 5).map((v) => `・${v.title}\n  ${base}?slug=${encodeURIComponent(v.slug)}`);
+  await sendMail(
+    `【アオハルOS】今日の TikTok 投稿（未投稿 ${list.length} 本）`,
+    `TikTok に未投稿のショート動画があります。リンクを開き、公開範囲（全員）を選んで「TikTok に投稿」を押すと投稿されます（1本30秒ほど）。\n\nおすすめ（新しい順）:\n${lines.join("\n")}\n\n投稿画面: ${base}\n（この通知は未投稿の動画がある日に1日1回お送りします）`,
+  );
+  return `通知 (${list.length}本)`;
+}
+
 export async function GET(req: Request) {
   if (!isAdminToken(req) && !isCron(req)) return NextResponse.json({ error: "forbidden" }, { status: 403 });
   const startedAt = Date.now();
@@ -186,6 +208,8 @@ export async function GET(req: Request) {
     } else if (r.status === "posted") await clearAlert(key);
   }
 
+  const tiktok = await tiktokReminder(now).catch((e: Error) => `通知失敗: ${e.message}`);
+
   const ok = youtube.status !== "failed" && reel.status !== "failed";
-  return NextResponse.json({ ok, jst: now, youtube, reel }, { headers: { "Cache-Control": "no-store" } });
+  return NextResponse.json({ ok, jst: now, youtube, reel, tiktok }, { headers: { "Cache-Control": "no-store" } });
 }

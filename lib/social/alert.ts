@@ -28,7 +28,7 @@ export async function listRecentAlerts(): Promise<AlertEntry[]> {
   }
 }
 
-async function sendMail(subject: string, text: string): Promise<void> {
+export async function sendMail(subject: string, text: string): Promise<void> {
   const key = process.env.RESEND_API_KEY;
   const to = (process.env.ALERT_EMAIL ?? "").split(",").map((s) => s.trim()).filter(Boolean);
   if (!key || !to.length) return;

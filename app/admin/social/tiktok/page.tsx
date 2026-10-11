@@ -68,7 +68,7 @@ export default async function TiktokPostPage({ searchParams }: { searchParams: P
       </Link>
       <h1 className="mt-2 text-2xl font-bold text-slate-900">TikTok に投稿 (Post to TikTok)</h1>
       <p className="mt-1 text-sm text-slate-500">
-        生成済みのショート動画を確認し、公開範囲などを選んで1本ずつ投稿します。YouTube・Instagram は自動投稿のままです。
+        生成済みのショート動画を確認し、公開範囲などを選んで1本ずつ投稿します。YouTube・Instagram は自動投稿です。未投稿の動画がある日は毎朝9時台にこの画面へのリンクをメールでお知らせします。
       </p>
       <a
         href="/internal/social/tiktok-auth"
