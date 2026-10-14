@@ -8,6 +8,7 @@ import {
   SignOutButton,
 } from "@clerk/nextjs";
 import Script from "next/script";
+import { jaJP } from "@clerk/localizations";
 import { SmartSignUpButton } from "@/components/SmartSignUpButton";
 import { GA_MEASUREMENT_ID } from "@/lib/analytics";
 import { UpgradeModalProvider } from "@/components/UpgradeModal";
@@ -65,8 +66,10 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
+  // 登録・ログイン画面は日本語で表示する (2026-10: 英語の「Create your account」のままで、
+  // 14日間で登録ボタンが16回押されて登録0件だったため)
   return (
-    <ClerkProvider signInForceRedirectUrl="/" signUpForceRedirectUrl="/">
+    <ClerkProvider localization={jaJP} signInForceRedirectUrl="/" signUpForceRedirectUrl="/">
       <html
         lang="ja"
         className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
@@ -82,6 +85,14 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             {`
               window.dataLayer = window.dataLayer || [];
               function gtag(){window.dataLayer.push(arguments);}
+              // 社内の閲覧を集計から外す: /admin・/internal を開いたブラウザは以後計測しない
+              // (?ga_internal=off で解除)。管理画面の閲覧が「閲覧の多いページ」上位に混ざっていたため。
+              try {
+                var p = location.pathname;
+                if (location.search.indexOf('ga_internal=off') >= 0) localStorage.removeItem('aoharu_internal');
+                else if (p.indexOf('/admin') === 0 || p.indexOf('/internal') === 0) localStorage.setItem('aoharu_internal', '1');
+                if (localStorage.getItem('aoharu_internal') === '1') window['ga-disable-${GA_MEASUREMENT_ID}'] = true;
+              } catch (e) {}
               gtag('js', new Date());
               gtag('config', '${GA_MEASUREMENT_ID}');
             `}

@@ -33,6 +33,7 @@ const EVENT_LABEL: Record<string, string> = {
   parents_cta_click: "保護者CTA",
   share_to_child: "子に送る",
   sign_up_click: "登録クリック",
+  guide_cta_click: "記事CTA",
   begin_checkout: "決済開始",
   purchase: "購入",
 };
@@ -181,7 +182,7 @@ export default async function AdminPage({
 
       <section className="mt-10">
         <h2 className="text-sm font-bold text-slate-900">ファネル（{days}日合計）</h2>
-        <div className="mt-3 grid gap-2 sm:grid-cols-4 lg:grid-cols-7">
+        <div className="mt-3 grid gap-2 sm:grid-cols-4 lg:grid-cols-8">
           {FUNNEL_EVENTS.map((e) => (
             <div key={e} className="rounded-xl border border-slate-200 bg-white px-3 py-2">
               <p className="text-[10px] font-bold text-slate-500">{EVENT_LABEL[e] ?? e}</p>

@@ -10,6 +10,7 @@ const FUNNEL_LABEL: Record<(typeof FUNNEL_EVENTS)[number], string> = {
   parents_cta_click: "保護者CTA",
   share_to_child: "子に送る",
   sign_up_click: "登録クリック",
+  guide_cta_click: "記事CTAクリック",
   begin_checkout: "決済開始",
   purchase: "購入",
 };
@@ -141,6 +142,24 @@ export function formatReportText(report: MetricsReport): string {
         .slice(0, 20)
         .map((q) => `- ${q.query}: クリック ${q.clicks} / 表示 ${q.impressions} / 掲載順位 ${q.position.toFixed(1)}`)
         .join("\n") || "- まだ検索流入がありません",
+    );
+    lines.push("");
+    // SEO記事エージェントが「あと少しで1ページ目」の記事を書き直すための材料
+    const rewrite = new Map<string, { page: string; impressions: number; clicks: number; queries: string[]; best: number }>();
+    for (const r of gsc.pageQueries ?? []) {
+      if (r.position < 5 || r.position > 20) continue;
+      const cur = rewrite.get(r.page) ?? { page: r.page, impressions: 0, clicks: 0, queries: [], best: 99 };
+      cur.impressions += r.impressions;
+      cur.clicks += r.clicks;
+      cur.best = Math.min(cur.best, r.position);
+      if (cur.queries.length < 4) cur.queries.push(`${r.query}（${r.position.toFixed(1)}位・表示${r.impressions}）`);
+      rewrite.set(r.page, cur);
+    }
+    const cands = [...rewrite.values()].sort((a, b) => b.impressions - a.impressions).slice(0, 8);
+    lines.push("## リライト候補（掲載順位5〜20位の記事。表示の多い順）");
+    lines.push(
+      cands.map((c) => `- ${c.page}: 表示 ${c.impressions} / クリック ${c.clicks} / 検索語: ${c.queries.join("、")}`).join("\n") ||
+        "- なし",
     );
     lines.push("");
   }

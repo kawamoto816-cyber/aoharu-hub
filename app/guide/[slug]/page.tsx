@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { GuideCta } from "@/components/GuideCta";
+import { GuideCta, GuideStickyCta } from "@/components/GuideCta";
 import { GUIDE_ARTICLES, TOPIC_LABEL, loadGuideArticle, loadGuideArticles, pickRelated } from "@/lib/guide";
 import type { GuideBlock } from "@/lib/guide/types";
 import { SEGMENT_COPY } from "@/lib/segments";
@@ -196,6 +196,11 @@ export default async function GuideArticlePage({ params }: { params: Promise<{ s
                 <Block key={j} block={b} />
               ))}
             </div>
+            {i === 1 && article.sections.length > 2 && (
+              <div className="mt-8">
+                <GuideCta article={article} variant="inline" />
+              </div>
+            )}
           </section>
         ))}
 
@@ -249,7 +254,9 @@ export default async function GuideArticlePage({ params }: { params: Promise<{ s
         )}
       </article>
 
-      <footer className="mx-auto max-w-3xl px-6 pb-12 text-center text-xs text-slate-400">
+      <GuideStickyCta article={article} />
+
+      <footer className="mx-auto max-w-3xl px-6 pb-28 text-center text-xs text-slate-400 sm:pb-12">
         <Link href="/legal/tokushoho" className="underline underline-offset-2 hover:text-slate-600">
           特定商取引法に基づく表記
         </Link>

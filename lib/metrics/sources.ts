@@ -43,6 +43,7 @@ export const FUNNEL_EVENTS = [
   "parents_cta_click",
   "share_to_child",
   "sign_up_click",
+  "guide_cta_click",
   "begin_checkout",
   "purchase",
 ] as const;
@@ -105,6 +106,17 @@ export async function fetchGa4(days: number): Promise<SourceResult<Ga4Summary | 
         dateRanges: [{ startDate: start, endDate: end }],
         dimensions: [{ name: "pagePath" }],
         metrics: [{ name: "screenPageViews" }],
+        // 社内の管理画面は除く
+        dimensionFilter: {
+          notExpression: {
+            orGroup: {
+              expressions: [
+                { filter: { fieldName: "pagePath", stringFilter: { matchType: "BEGINS_WITH", value: "/admin" } } },
+                { filter: { fieldName: "pagePath", stringFilter: { matchType: "BEGINS_WITH", value: "/internal" } } },
+              ],
+            },
+          },
+        },
         orderBys: [{ metric: { metricName: "screenPageViews" }, desc: true }],
         limit: 15,
       }),
@@ -158,6 +170,8 @@ export interface GscDaily {
 export interface GscSummary {
   daily: GscDaily[];
   queries: { query: string; clicks: number; impressions: number; position: number }[];
+  /** 記事ごとの検索語 (リライト候補を選ぶため。/guide/ のページだけ) */
+  pageQueries: { page: string; query: string; clicks: number; impressions: number; position: number }[];
 }
 
 export async function fetchSearchConsole(days: number): Promise<SourceResult<GscSummary | null>> {
@@ -180,9 +194,16 @@ export async function fetchSearchConsole(days: number): Promise<SourceResult<Gsc
       };
     };
 
-    const [byDate, byQuery] = await Promise.all([
+    const [byDate, byQuery, byPageQuery] = await Promise.all([
       query({ startDate: start, endDate: ymd(endAdj), dimensions: ["date"], rowLimit: 100 }),
       query({ startDate: start, endDate: ymd(endAdj), dimensions: ["query"], rowLimit: 20 }),
+      query({
+        startDate: start,
+        endDate: ymd(endAdj),
+        dimensions: ["page", "query"],
+        dimensionFilterGroups: [{ filters: [{ dimension: "page", operator: "contains", expression: "/guide/" }] }],
+        rowLimit: 100,
+      }).catch(() => ({ rows: [] })),
     ]);
 
     return {
@@ -196,6 +217,13 @@ export async function fetchSearchConsole(days: number): Promise<SourceResult<Gsc
         })),
         queries: (byQuery.rows ?? []).map((r) => ({
           query: r.keys[0],
+          clicks: r.clicks,
+          impressions: r.impressions,
+          position: Math.round(r.position * 10) / 10,
+        })),
+        pageQueries: (byPageQuery.rows ?? []).map((r) => ({
+          page: r.keys[0].replace("https://app.bluespring.co.jp", ""),
+          query: r.keys[1],
           clicks: r.clicks,
           impressions: r.impressions,
           position: Math.round(r.position * 10) / 10,

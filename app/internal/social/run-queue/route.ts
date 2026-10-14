@@ -53,8 +53,16 @@ export async function GET(req: Request) {
   const targets = queue.items.filter((it) => slots.includes(it.slot));
   const results: { channel: string; slot: string; status: string; external_id?: string | null; error?: string; preview: string }[] = [];
 
+  // X は有料API (従量課金) のため、投稿する枠を絞る (2026-10: 反応が少なく、配分をショート動画と検索に寄せた)。
+  // 既定は朝 (編集長) と夜 (広告) の1日2本まで。X_SLOTS="朝,昼,夜" で元に戻せる。
+  const xSlots = (process.env.X_SLOTS ?? "朝,夜").split(",").map((v) => v.trim()).filter(Boolean);
+
   for (const it of targets) {
     const preview = it.text.slice(0, 40);
+    if (it.channel === "x" && !xSlots.includes(it.slot)) {
+      results.push({ channel: it.channel, slot: it.slot, status: "skipped_policy", preview });
+      continue;
+    }
     const configured = it.channel === "x" ? isXConfigured() : it.channel === "threads" ? isThreadsConfigured() : isInstagramConfigured();
     if (!configured) {
       results.push({ channel: it.channel, slot: it.slot, status: "not_configured", preview });
