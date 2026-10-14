@@ -12,7 +12,7 @@
 #     (法人営業エージェントの06:30実行より前に終える)
 #   - 月曜 03:00 JST Threads / Instagram の長期トークンを更新 (60日で失効するため)
 #   - 08:20〜21:20 JST の1時間おき 生成済みショート動画を YouTube・Instagram リールへ1本ずつ投稿
-#     (GitHub の定時実行は遅れたり抜けたりするため多めに呼び、間隔90分以上・8〜21時台はサーバー側で守る。
+#     (GitHub の定時実行は遅れたり抜けたりするため多めに呼び、ほかのジョブの実行時にも相乗りで呼ぶ。間隔90分以上・8〜21時台はサーバー側で守る。
 #      YouTube は API の割り当ての都合で1日6本まで)
 #   - どのジョブも失敗したら /internal/alerts で運営者にメールで知らせる
 # 必要な Secret: CRON_SECRET (Vercel の環境変数と同じ値)
@@ -42,7 +42,7 @@ on:
 jobs:
   run:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 12
     steps:
       - name: Decide job
         id: pick
@@ -94,11 +94,21 @@ jobs:
             url="https://app.bluespring.co.jp/internal/social/run-queue"
           fi
           for i in 1 2 3; do
-            code=$(curl -sS -o out.json -w '%{http_code}' --max-time 150 -H "Authorization: Bearer $CRON_SECRET" "$url") && break || true
+            code=$(curl -sS -o out.json -w '%{http_code}' --max-time 290 -H "Authorization: Bearer $CRON_SECRET" "$url") && break || true
             echo "attempt $i failed (HTTP $code)"; sleep 60
           done
           echo "HTTP $code"; cat out.json; echo
           [ "$code" = "200" ]
+      # GitHub の定時実行は抜けが多く、1時間おきのショート動画投稿が1日2〜3回しか動かない日があった (2026-10-13〜14)。
+      # どのジョブで起動した場合も、ついでにショート動画の投稿を1回試みる (間隔・時間帯・上限はサーバー側で守るので重複投稿にはならない)。
+      - name: Shorts publish (piggyback)
+        if: always() && steps.pick.outputs.job != 'shorts-publish'
+        continue-on-error: true
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          code=$(curl -sS -o shorts.json -w '%{http_code}' --max-time 290 -H "Authorization: Bearer $CRON_SECRET" "https://app.bluespring.co.jp/internal/shorts/publish") || true
+          echo "HTTP $code"; cat shorts.json || true; echo
       - name: Alert on failure
         if: failure()
         env:

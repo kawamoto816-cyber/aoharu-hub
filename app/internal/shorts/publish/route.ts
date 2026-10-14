@@ -28,7 +28,7 @@ import { isYouTubePostingConfigured, uploadShortToYouTube } from "@/lib/social/y
 // 後ろにある YouTube が毎回「時間切れで見送り」になっていた (2026-10-04 以降 YouTube だけ未投稿)。
 // この処理では YouTube を先に行い、リールは取り込みを待たずに「作成 → 次回の実行で公開」と分けて進める。
 export const dynamic = "force-dynamic";
-export const maxDuration = 120;
+export const maxDuration = 300;
 
 // YouTube Data API の1日の割り当て (既定 10,000) で、動画アップロードは1回 1,600。上限に余裕を残して1日6本まで。
 const YOUTUBE_DAILY_MAX = Number(process.env.YOUTUBE_DAILY_MAX ?? 6);
@@ -191,8 +191,8 @@ export async function GET(req: Request) {
   }
 
   const youtube = await youtubeStep().catch((e: Error) => ({ slug: "(error)", status: "failed", error: e.message }));
-  // リールは残り時間の範囲で (関数の上限 120 秒から余裕を引く)
-  const reel = await reelStep(startedAt + 100_000).catch((e: Error) => ({ slug: "(error)", status: "failed", error: e.message }));
+  // リールは残り時間の範囲で (関数の上限 300 秒から余裕を引く。10/13 に YouTube のアップロードが長引き 120 秒で打ち切られたため延長)
+  const reel = await reelStep(startedAt + 240_000).catch((e: Error) => ({ slug: "(error)", status: "failed", error: e.message }));
 
   for (const [name, r] of [["YouTube", youtube], ["Instagram リール", reel]] as const) {
     const key = name === "YouTube" ? "shorts_youtube_failed" : "shorts_reel_failed";

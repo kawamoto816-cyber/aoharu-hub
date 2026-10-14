@@ -190,6 +190,42 @@ export async function listShortsVideos(limit = 30) {
   return data ?? [];
 }
 
+/** 配信ダッシュボード用の全期間の集計 (直近30件だけを数えると、投稿済みが画面外に流れて「0本」に見えるため) */
+export async function shortsStats(): Promise<{
+  total: number;
+  youtubePosted: number;
+  instagramPosted: number;
+  tiktokPosted: number;
+  youtubeWaiting: number;
+  instagramWaiting: number;
+  lastYoutubeAt: string | null;
+  lastInstagramAt: string | null;
+}> {
+  const supabase = getSupabaseAdmin();
+  const base = () => supabase.from("shorts_videos").select("slug", { count: "exact", head: true });
+  const count = async (f: (q: ReturnType<typeof base>) => ReturnType<typeof base>) => {
+    const { count: n, error } = await f(base());
+    if (error) throw new Error(`shorts_videos count: ${error.message}`);
+    return n ?? 0;
+  };
+  const last = async (col: "youtube_posted_at" | "instagram_posted_at") => {
+    const { data } = await supabase.from("shorts_videos").select(col).not(col, "is", null).order(col, { ascending: false }).limit(1);
+    return ((data?.[0] as Record<string, string> | undefined)?.[col] as string | undefined) ?? null;
+  };
+  const [total, youtubePosted, instagramPosted, tiktokPosted, youtubeWaiting, instagramWaiting, lastYoutubeAt, lastInstagramAt] =
+    await Promise.all([
+      count((q) => q),
+      count((q) => q.not("youtube_posted_at", "is", null)),
+      count((q) => q.not("instagram_posted_at", "is", null)),
+      count((q) => q.not("tiktok_posted_at", "is", null)),
+      count((q) => q.is("youtube_posted_at", null).lt("youtube_attempts", 3)),
+      count((q) => q.is("instagram_posted_at", null).lt("instagram_attempts", 3)),
+      last("youtube_posted_at"),
+      last("instagram_posted_at"),
+    ]);
+  return { total, youtubePosted, instagramPosted, tiktokPosted, youtubeWaiting, instagramWaiting, lastYoutubeAt, lastInstagramAt };
+}
+
 /** slug の末尾 (台本タイトルのハッシュ)。日付が違っても同じ台本なら同じ値になる */
 export function scriptHash(slug: string): string {
   return slug.slice(slug.lastIndexOf("-") + 1);
@@ -249,7 +285,8 @@ export async function listPendingInstagramReels(limit = 1): Promise<PendingReel[
     .select("slug,title,description,video_url,instagram_attempts")
     .is("instagram_posted_at", null)
     .lt("instagram_attempts", 3)
-    .order("rendered_at", { ascending: true })
+    // 新しい動画から先に出す (古い順だと、生成ペースに投稿が追いつかない間は新作がいつまでも出なかった)
+    .order("rendered_at", { ascending: false })
     .limit(limit);
   if (error) throw new Error(`shorts_videos select (instagram pending): ${error.message}`);
   return (data ?? []).map((r) => ({ ...r, instagram_attempts: r.instagram_attempts ?? 0 }));
@@ -292,7 +329,8 @@ export async function listPendingYoutubeUploads(limit = 1): Promise<PendingYoutu
     .select("slug,title,description,video_url,youtube_attempts")
     .is("youtube_posted_at", null)
     .lt("youtube_attempts", 3)
-    .order("rendered_at", { ascending: true })
+    // 新しい動画から先に出す (古い順だと、生成ペースに投稿が追いつかない間は新作がいつまでも出なかった)
+    .order("rendered_at", { ascending: false })
     .limit(limit);
   if (error) throw new Error(`shorts_videos select (youtube pending): ${error.message}`);
   return (data ?? []).map((r) => ({ ...r, youtube_attempts: r.youtube_attempts ?? 0 }));

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { isAdminUser } from "@/lib/metrics/admin-auth";
 import { ACCOUNTS, getSocialDashboard, refreshSocialMetrics, type SocialDashboard } from "@/lib/social/metrics";
-import { listShortsVideos } from "@/lib/social/shorts";
+import { listShortsVideos, shortsStats } from "@/lib/social/shorts";
 import { listRecentAlerts } from "@/lib/social/alert";
 import { GuideSection } from "@/components/admin/GuideSection";
 
@@ -196,9 +196,12 @@ export default async function SocialDashboardPage({
   } catch (e) {
     shortsError = e instanceof Error ? e.message : String(e);
   }
-  const shortsYoutubePosted = shorts.filter((s) => s.youtube_posted_at).length;
-  const shortsInstagramPosted = shorts.filter((s) => s.instagram_posted_at).length;
-  const shortsTiktokPosted = shorts.filter((s) => s.tiktok_posted_at).length;
+  const stats = await shortsStats().catch(() => null);
+  const jstShort = (iso: string | null) => {
+    if (!iso) return "まだありません";
+    const d = new Date(new Date(iso).getTime() + 9 * 3600 * 1000);
+    return `最終 ${d.getUTCMonth() + 1}/${d.getUTCDate()} ${String(d.getUTCHours()).padStart(2, "0")}:${String(d.getUTCMinutes()).padStart(2, "0")}`;
+  };
 
   const posts = dash?.posts.filter((p) => p.status === "posted") ?? [];
   const failedPosts = dash?.posts.filter((p) => p.status === "failed") ?? [];
@@ -415,16 +418,24 @@ export default async function SocialDashboardPage({
       <section className="mt-8 rounded-2xl border border-slate-200 bg-white p-5">
         <h2 className="text-sm font-bold text-slate-900">ショート動画（YouTube Shorts ／ Instagram リール ／ TikTok）</h2>
         <p className="mt-1 text-[11px] text-slate-400">
-          静止画スライド＋AIナレーションで毎日17:30（日本時間。予備22:30）に自動生成。生成後、YouTube・Instagramへ自動投稿されます。TikTok は（ガイドラインにより投稿ごとに公開範囲を選ぶ必要があるため）毎朝9時台に届くメールのリンクか<Link href="/admin/social/tiktok" className="font-bold text-indigo-600 underline underline-offset-2">投稿画面</Link>から1本ずつ投稿します。
+          静止画スライド＋AIナレーションで毎日17:30（日本時間。予備22:30）に自動生成。生成後、YouTube・Instagramへ新しい順に、90分以上あけて8〜21時台に1本ずつ自動投稿されます（YouTubeは1日6本まで）。TikTok は（ガイドラインにより投稿ごとに公開範囲を選ぶ必要があるため）毎朝9時台に届くメールのリンクか<Link href="/admin/social/tiktok" className="font-bold text-indigo-600 underline underline-offset-2">投稿画面</Link>から1本ずつ投稿します。
         </p>
         {shortsError && (
           <p className="mt-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-2 text-xs text-amber-800">読み込みエラー: {shortsError}</p>
         )}
         <div className="mt-3 grid gap-3 sm:grid-cols-4">
-          <Tile label={`生成数（直近${shorts.length}件）`} value={fmt(shorts.length)} />
-          <Tile label="YouTube 投稿済み" value={fmt(shortsYoutubePosted)} />
-          <Tile label="Instagram リール投稿済み" value={fmt(shortsInstagramPosted)} />
-          <Tile label="TikTok 投稿済み" value={fmt(shortsTiktokPosted)} sub="毎朝メールで候補を通知・投稿画面で1タップ" />
+          <Tile label="生成数（累計）" value={stats ? fmt(stats.total) : "—"} />
+          <Tile
+            label="YouTube 投稿済み（累計）"
+            value={stats ? fmt(stats.youtubePosted) : "—"}
+            sub={stats ? `投稿待ち ${stats.youtubeWaiting}本・${jstShort(stats.lastYoutubeAt)}` : undefined}
+          />
+          <Tile
+            label="Instagram リール投稿済み（累計）"
+            value={stats ? fmt(stats.instagramPosted) : "—"}
+            sub={stats ? `投稿待ち ${stats.instagramWaiting}本・${jstShort(stats.lastInstagramAt)}` : undefined}
+          />
+          <Tile label="TikTok 投稿済み（累計）" value={stats ? fmt(stats.tiktokPosted) : "—"} sub="毎朝メールで候補を通知・投稿画面で1タップ" />
         </div>
         <div className="mt-4 overflow-x-auto">
           <table className="w-full min-w-[760px] text-xs">
