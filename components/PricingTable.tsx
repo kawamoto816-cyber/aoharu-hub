@@ -141,31 +141,29 @@ export function PricingTable() {
   );
 
   return (
-    <div className="mt-8 grid gap-5 sm:grid-cols-3">
+    <div className="mt-8 grid gap-4 sm:grid-cols-3">
       {PRICING.map((tier) => (
         <div
           key={tier.key}
-          className={`flex flex-col rounded-2xl border p-6 ${
-            tier.highlight
-              ? "border-indigo-600 bg-white shadow-md shadow-indigo-600/10"
-              : "border-slate-200 bg-white"
+          className={`relative flex flex-col rounded-[18px] bg-white p-7 text-[#15172B] ${
+            tier.highlight ? "border-[3px] border-[#1533B8]" : "border-[1.5px] border-[#15172B]"
           }`}
         >
           {tier.highlight && (
-            <span className="mb-3 w-fit rounded-full bg-indigo-600 px-2.5 py-1 text-[10px] font-bold text-white">
-             人気プラン
+            <span className="absolute -top-3.5 left-6 rounded-full border-[1.5px] border-[#15172B] bg-[#FFE45C] px-3 py-1 text-xs font-bold">
+              出願シーズンにおすすめ
             </span>
           )}
-          <p className="text-sm font-bold text-slate-900">{tier.name}</p>
-          <p className="mt-2 text-2xl font-bold text-slate-900">
+          <p className="text-base font-bold">{tier.name}</p>
+          <p className="mt-2 text-4xl font-black">
             {tier.price}
-            <span className="text-sm font-bold text-slate-400">{tier.period}</span>
+            <span className="text-[15px] font-medium text-[#5A5D73]">{tier.period}</span>
           </p>
-          <p className="mt-1 text-xs text-slate-500">{tier.description}</p>
-          <ul className="mt-4 flex-1 space-y-2 text-xs text-slate-600">
+          <p className="mt-1 text-sm text-[#3A3D55]">{tier.description}</p>
+          <ul className="mt-4 flex-1 space-y-2 text-sm leading-relaxed text-[#3A3D55]">
             {tier.features.map((f) => (
               <li key={f} className="flex items-start gap-1.5">
-                <span className="mt-0.5 text-indigo-600">✓</span>
+                <span className="mt-0.5 font-black text-[#1533B8]">✓</span>
                 <span>{f}</span>
               </li>
             ))}
@@ -177,7 +175,7 @@ export function PricingTable() {
                 trackEvent("sign_up_click", { location: "pricing_free" });
                 openSignUpWithRecovery(clerk);
               }}
-              className="mt-5 rounded-xl border border-slate-200 px-4 py-2.5 text-xs font-bold text-slate-600 transition-colors hover:bg-slate-50"
+              className="mt-6 min-h-[48px] rounded-xl border-2 border-[#15172B] px-4 py-3 text-sm font-bold text-[#15172B] transition-colors hover:bg-[#FFF6C4]"
             >
               無料ではじめる
             </button>
@@ -185,10 +183,10 @@ export function PricingTable() {
             <button
               onClick={() => handleUpgradeClick(tier.key as "pro" | "max")}
               disabled={loading !== null}
-              className={`mt-5 rounded-xl px-4 py-2.5 text-xs font-bold transition-colors disabled:opacity-50 ${
+              className={`mt-6 min-h-[48px] rounded-xl px-4 py-3 text-sm font-bold transition-colors disabled:opacity-50 ${
                 tier.highlight
-                  ? "bg-indigo-600 text-white shadow-sm shadow-indigo-600/20 hover:bg-indigo-500"
-                  : "border border-indigo-200 bg-indigo-50 text-indigo-700 hover:bg-indigo-100"
+                  ? "bg-[#1533B8] text-white shadow-[0_4px_0_#0B1F7A] hover:bg-[#1A3BD0]"
+                  : "border-2 border-[#15172B] text-[#15172B] hover:bg-[#FFF6C4]"
               }`}
             >
               {loading === tier.key ? "お申し込み手続き中…" : "このプランで申し込む"}

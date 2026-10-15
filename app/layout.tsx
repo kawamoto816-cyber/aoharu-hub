@@ -104,7 +104,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
                   ページ内に既にCTAが多数あるため、狭い画面幅では
                   この固定ボタンが料金プランの申し込みボタン等と
                   重なってしまう不具合があった(sm未満のみ非表示)。 */}
-              <SmartSignUpButton analyticsLocation="header" className="hidden rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-bold text-white shadow-sm shadow-indigo-600/20 transition-colors hover:bg-indigo-500 sm:inline-flex">
+              <SmartSignUpButton analyticsLocation="header" className="hidden rounded-full bg-[#1533B8] px-5 py-3 text-sm font-bold text-white shadow-[0_3px_0_#0B1F7A] transition-colors hover:bg-[#1A3BD0] sm:inline-flex">
                 無料登録してはじめる
               </SmartSignUpButton>
             </SignedOut>
