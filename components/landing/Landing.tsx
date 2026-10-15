@@ -4,6 +4,10 @@ import { SmartSignUpButton } from "@/components/SmartSignUpButton";
 import { TrackedLink } from "@/components/TrackedLink";
 import { PricingTable } from "@/components/PricingTable";
 import { APP_URLS } from "@/lib/segments";
+import { LoopVideo } from "./LoopVideo";
+import { DemoButton } from "./DemoButton";
+
+const VIDEO_BASE = "https://bluespring.co.jp/videos";
 
 // アオハルOS: 未ログインのトップページ (2026-10 リニューアル)。
 // コンセプトは「赤ペンの入ったノート」。方眼の紙・濃い青・蛍光ペンの黄・添削の赤。
@@ -71,38 +75,27 @@ export function Landing() {
             <p className="mt-4 text-[13px] text-[#5A5D73]">登録だけ・クレジットカード不要／添削は月2本まで無料／いつでも解約</p>
           </div>
 
-          {/* 添削の見本 */}
+          {/* 実際の画面 (テンサクンの操作動画から、貼り付け→採点レポートの部分を約20秒に切り出したもの) */}
           <figure className="relative m-0 min-w-0 flex-[1_1_420px]">
-            <div className={`${card} -rotate-[1.2deg] p-6 shadow-[10px_10px_0_#15172B] sm:p-7`}>
-              <div className="flex items-center justify-between text-xs text-[#5A5D73]">
-                <span>志望理由書　下書き２</span>
-                <span>テンサクン</span>
+            <div className={`${card} -rotate-[1.2deg] p-3 shadow-[10px_10px_0_#15172B] sm:p-4`}>
+              <div className="flex items-center justify-between px-1 pb-2.5 pt-6 text-xs text-[#5A5D73]">
+                <span>テンサクン｜小論文の添削</span>
+                <span className="flex items-center gap-1.5 font-bold text-[#D9341F]">
+                  <span className="h-2 w-2 rounded-full bg-[#D9341F]" aria-hidden="true" />
+                  実際の画面
+                </span>
               </div>
-              <p className="mt-4 text-[15px] leading-[2.1]">
-                私は貴学で
-                <span className="line-through decoration-[#D9341F] decoration-2">色々なことを学びたい</span>
-                <span className={`${klee.className} text-[#D9341F]`}>地域医療の担い手が不足する理由を学びたい</span>
-                と考えています。高校2年の夏、祖母の通院に付き添い、
-                <span className="border-b-[2.5px] border-[#D9341F]">片道1時間半かかる現実を知りました</span>。
-              </p>
-              <div className="mt-3.5 flex items-start gap-2.5">
-                <span className="flex h-6 w-6 flex-none items-center justify-center rounded-full bg-[#D9341F] text-xs font-bold text-white">1</span>
-                <p className={`${klee.className} m-0 text-[15px] leading-[1.7] text-[#D9341F]`}>「色々」では何を学ぶのか伝わりません。体験とつながる言葉に。</p>
-              </div>
-              <div className="mt-2 flex items-start gap-2.5">
-                <span className="flex h-6 w-6 flex-none items-center justify-center rounded-full bg-[#D9341F] text-xs font-bold text-white">2</span>
-                <p className={`${klee.className} m-0 text-[15px] leading-[1.7] text-[#D9341F]`}>ここが一番の強み。最初の段落に上げましょう。</p>
-              </div>
+              <LoopVideo
+                webm="/demo/tensakun-demo.webm"
+                mp4="/demo/tensakun-demo.mp4"
+                poster="/demo/tensakun-demo.jpg"
+                label="テンサクンの操作画面。小論文を提出すると、採点レポートと改善点が表示される"
+              />
             </div>
-            <div className="absolute -bottom-9 right-0 w-[200px] rotate-2 rounded-[14px] border-[1.5px] border-[#15172B] bg-[#FFE45C] px-[18px] py-3.5 sm:-right-2">
-              <p className="m-0 text-xs font-bold">観点別のふり返り</p>
-              <dl className="mt-2 flex flex-col gap-1.5 text-[13px]">
-                <div className="flex justify-between"><dt>結論の明確さ</dt><dd className="m-0 font-black">◎</dd></div>
-                <div className="flex justify-between"><dt>体験の具体性</dt><dd className="m-0 font-black">○</dd></div>
-                <div className="flex justify-between"><dt>大学との接続</dt><dd className="m-0 font-black">△</dd></div>
-              </dl>
-            </div>
-            <figcaption className="mt-[52px] text-xs text-[#5A5D73]">画面はイメージです（見本の文章と添削）。</figcaption>
+            <p className={`${klee.className} absolute -top-6 left-3 z-10 m-0 -rotate-2 rounded-[12px] border-[1.5px] border-[#15172B] bg-[#FFE45C] px-4 py-2 text-[15px] text-[#15172B] sm:-left-3`}>
+              貼るだけで、ここまで返ってくる。
+            </p>
+            <figcaption className="mt-5 text-xs text-[#5A5D73]">音声なし・約20秒。操作の流れの一部を切り出しています。</figcaption>
           </figure>
         </div>
       </section>
@@ -113,17 +106,20 @@ export function Landing() {
         <h2 className="mt-2.5 text-[28px] font-black leading-[1.3] sm:text-[40px]">白紙から、面接の日まで。</h2>
         <div className="mt-10 grid gap-5 [grid-template-columns:repeat(auto-fit,minmax(260px,1fr))]">
           {[
-            { no: "01", color: BLUE, title: "書く ― しぼりゆ", text: "質問に答えていくだけで、志望理由書の「核」と構成案ができます。何を書けばいいか分からない夜に。", cta: "構成案をつくる", href: APP_URLS.shiboriyu, app: "shiboriyu" },
-            { no: "02", color: "#D9341F", title: "直す ― テンサクン", text: "志望理由書・小論文を貼り付けると、観点別のふり返りと直す場所が返ってきます。何度でも書き直せます。", cta: "添削してもらう", href: APP_URLS.tensakun, app: "tensakun" },
-            { no: "03", color: "#15172B", title: "話す ― メンサツ", text: "AI面接官が、大学のアドミッション・ポリシーをふまえて質問し、答えへのフィードバックを返します。", cta: "1問だけ試す", href: APP_URLS.mensatsu, app: "mensatsu" },
+            { no: "01", color: BLUE, title: "書く ― しぼりゆ", text: "質問に答えていくだけで、志望理由書の「核」と構成案ができます。何を書けばいいか分からない夜に。", cta: "構成案をつくる", href: APP_URLS.shiboriyu, app: "shiboriyu", name: "しぼりゆ", video: `${VIDEO_BASE}/narrative-app2.mp4` },
+            { no: "02", color: "#D9341F", title: "直す ― テンサクン", text: "志望理由書・小論文を貼り付けると、観点別のふり返りと直す場所が返ってきます。何度でも書き直せます。", cta: "添削してもらう", href: APP_URLS.tensakun, app: "tensakun", name: "テンサクン", video: `${VIDEO_BASE}/tensakun.mp4` },
+            { no: "03", color: "#15172B", title: "話す ― メンサツ", text: "AI面接官が、大学のアドミッション・ポリシーをふまえて質問し、答えへのフィードバックを返します。", cta: "1問だけ試す", href: APP_URLS.mensatsu, app: "mensatsu", name: "メンサツ", video: `${VIDEO_BASE}/mensatsu_ao.mp4` },
           ].map((s) => (
             <article key={s.no} className={`${card} flex flex-col gap-3 p-7`}>
               <p className="m-0 text-[44px] font-black leading-none" style={{ color: s.color }}>{s.no}</p>
               <h3 className="m-0 text-[22px] font-black">{s.title}</h3>
               <p className="m-0 text-[15px] leading-[1.8] text-[#3A3D55]">{s.text}</p>
-              <TrackedLink href={s.href} event="try_entry_click" params={{ app: s.app, location: "lp_steps" }} className="mt-auto pt-2 text-[15px] font-bold text-[#1533B8] hover:text-[#0E2380]">
-                {s.cta} →
-              </TrackedLink>
+              <div className="mt-auto flex flex-wrap items-center gap-x-4 gap-y-2 pt-2">
+                <TrackedLink href={s.href} event="try_entry_click" params={{ app: s.app, location: "lp_steps" }} className="text-[15px] font-bold text-[#1533B8] hover:text-[#0E2380]">
+                  {s.cta} →
+                </TrackedLink>
+                <DemoButton src={s.video} title={s.name} app={s.app} />
+              </div>
             </article>
           ))}
         </div>
@@ -212,6 +208,14 @@ export function Landing() {
               </div>
             ))}
           </div>
+          <a
+            href="https://bluespring.co.jp/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-10 inline-flex min-h-[48px] items-center gap-2 rounded-xl border-[1.5px] border-[#15172B] px-5 text-[15px] font-bold text-[#15172B] transition-colors hover:bg-[#FFF6C4]"
+          >
+            11のAIを、動く画面で見る（ブルースプリング公式サイト）↗
+          </a>
         </div>
       </section>
 
