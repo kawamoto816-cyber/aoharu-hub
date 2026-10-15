@@ -1,11 +1,11 @@
 import Link from "next/link";
-import { Klee_One, Zen_Kaku_Gothic_New } from "next/font/google";
 import { SmartSignUpButton } from "@/components/SmartSignUpButton";
 import { TrackedLink } from "@/components/TrackedLink";
 import { PricingTable } from "@/components/PricingTable";
 import { APP_URLS } from "@/lib/segments";
 import { LoopVideo } from "./LoopVideo";
 import { DemoButton } from "./DemoButton";
+import { zen, klee } from "./fonts";
 
 const VIDEO_BASE = "https://bluespring.co.jp/videos";
 
@@ -15,8 +15,6 @@ const VIDEO_BASE = "https://bluespring.co.jp/videos";
 // 「使うと何が返ってくるか」を添削の見本で見せる。大学生・社会人・保護者は下の帯から専用ページへ。
 // デザイン案: claude.ai のアーティファクト「アオハルOS LP リニューアル案」。
 
-const zen = Zen_Kaku_Gothic_New({ weight: ["400", "500", "700", "900"], subsets: ["latin"], display: "swap", preload: false });
-const klee = Klee_One({ weight: "600", subsets: ["latin"], display: "swap", preload: false });
 
 const BLUE = "#1533B8";
 
@@ -115,9 +113,9 @@ export function Landing() {
               <h3 className="m-0 text-[22px] font-black">{s.title}</h3>
               <p className="m-0 text-[15px] leading-[1.8] text-[#3A3D55]">{s.text}</p>
               <div className="mt-auto flex flex-wrap items-center gap-x-4 gap-y-2 pt-2">
-                <TrackedLink href={s.href} event="try_entry_click" params={{ app: s.app, location: "lp_steps" }} className="text-[15px] font-bold text-[#1533B8] hover:text-[#0E2380]">
-                  {s.cta} →
-                </TrackedLink>
+                <Link href={`/tutorial/${s.app}`} className="text-[15px] font-bold text-[#1533B8] hover:text-[#0E2380]">
+                  使い方と効果を見る →
+                </Link>
                 <DemoButton src={s.video} title={s.name} app={s.app} />
               </div>
             </article>
