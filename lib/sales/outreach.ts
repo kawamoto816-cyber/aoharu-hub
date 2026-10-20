@@ -302,7 +302,7 @@ export async function recordOutreach(row: {
 // 返信・面談の追跳 (「返信記録 YYYY-MM-DD」を営業エージェントがドライブに書く → ここで取り込む)
 // ------------------------------------------------------------------
 export interface ReplyRecord {
-  kind: "replied" | "meeting";
+  kind: "replied" | "meeting" | "optout";
   match: string; // 宛先(メール)または法人名
   note: string;
 }
@@ -312,6 +312,8 @@ export interface ReplyRecord {
  *   ■ 種別: replied
  *   宛先または法人名: ○○教室
  *   メモ: ...
+ * 種別 optout (または「送信停止」) は「以後送らないで」という返信。返信済みの記録に加えて、
+ * 宛先がメールアドレスなら sales_suppression に入れ、90日経っても二度と送らないようにする。
  */
 export function parseReplyDoc(text: string): ReplyRecord[] {
   const records: ReplyRecord[] = [];
@@ -319,9 +321,10 @@ export function parseReplyDoc(text: string): ReplyRecord[] {
   for (const raw of blocks) {
     const block = raw.trim();
     if (!block) continue;
-    const kindMatch = block.match(/^■?\s*種別\s*[:：]\s*(replied|meeting)\s*$/im);
+    const kindMatch = block.match(/^■?\s*種別\s*[:：]\s*(replied|meeting|optout|送信停止)\s*$/im);
     if (!kindMatch) continue;
-    const kind = kindMatch[1].toLowerCase() as "replied" | "meeting";
+    const rawKind = kindMatch[1].toLowerCase();
+    const kind = (rawKind === "送信停止" ? "optout" : rawKind) as ReplyRecord["kind"];
     const match = block.match(/^宛先または法人名\s*[:：]\s*(.+)$/m)?.[1]?.trim() ?? "";
     const note = block.match(/^メモ\s*[:：]\s*(.+)$/m)?.[1]?.trim() ?? "";
     if (!match) continue;
@@ -350,18 +353,28 @@ async function findOutreachRowsFor(match: string): Promise<{ id: number; recipie
 
 export interface ApplyReplyResult {
   match: string;
-  kind: "replied" | "meeting";
+  kind: ReplyRecord["kind"];
   status: "applied" | "not_found" | "ambiguous";
   matchedCompany?: string | null;
 }
 
 /** 1件の返信/面談レコードを、一番新しい該当行 (複数該当は最新のもの) に反映する */
 export async function applyReplyRecord(record: ReplyRecord): Promise<ApplyReplyResult> {
+  const supabase = getSupabaseAdmin();
+  if (record.kind === "optout") {
+    // 送信履歴が見つからなくても、宛先がメールアドレスなら必ず送信停止に入れる (冪等)
+    const addr = record.match.toLowerCase();
+    if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(addr)) {
+      const { error } = await supabase
+        .from("sales_suppression")
+        .upsert({ pattern: addr, reason: `返信で送信停止の希望${record.note ? `: ${record.note.slice(0, 120)}` : ""}` }, { onConflict: "pattern" });
+      if (error) throw new Error(`sales_suppression upsert: ${error.message}`);
+    }
+  }
   const rows = await findOutreachRowsFor(record.match);
   if (rows.length === 0) return { match: record.match, kind: record.kind, status: "not_found" };
   const row = rows[0]; // created_at 降順の先頭 = 一番新しい送信
-  const supabase = getSupabaseAdmin();
-  const patch: Record<string, unknown> = record.kind === "replied" ? { replied_at: new Date().toISOString() } : { meeting_at: new Date().toISOString() };
+  const patch: Record<string, unknown> = record.kind === "meeting" ? { meeting_at: new Date().toISOString() } : { replied_at: new Date().toISOString() };
   if (record.note) patch.reply_note = record.note;
   const { error } = await supabase.from("sales_outreach").update(patch).eq("id", row.id);
   if (error) throw new Error(`sales_outreach update: ${error.message}`);
