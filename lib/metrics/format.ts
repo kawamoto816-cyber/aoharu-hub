@@ -155,12 +155,57 @@ export function formatReportText(report: MetricsReport): string {
       if (cur.queries.length < 4) cur.queries.push(`${r.query}（${r.position.toFixed(1)}位・表示${r.impressions}）`);
       rewrite.set(r.page, cur);
     }
-    const cands = [...rewrite.values()].sort((a, b) => b.impressions - a.impressions).slice(0, 8);
+    const cands = [...rewrite.values()].sort((a, b) => b.impressions - a.impressions).slice(0, 12);
     lines.push("## リライト候補（掲載順位5〜20位の記事。表示の多い順）");
     lines.push(
       cands.map((c) => `- ${c.page}: 表示 ${c.impressions} / クリック ${c.clicks} / 検索語: ${c.queries.join("、")}`).join("\n") ||
         "- なし",
     );
+    lines.push("");
+
+    // 記事ごとに検索語をまとめる (下の3つの欄で共通に使う)
+    type Group = { page: string; impressions: number; clicks: number; queries: { q: string; pos: number; imp: number }[] };
+    const groupBy = (pred: (r: { position: number; clicks: number }) => boolean) => {
+      const m = new Map<string, Group>();
+      for (const r of gsc.pageQueries ?? []) {
+        if (!pred(r)) continue;
+        const g = m.get(r.page) ?? { page: r.page, impressions: 0, clicks: 0, queries: [] };
+        g.impressions += r.impressions;
+        g.clicks += r.clicks;
+        g.queries.push({ q: r.query, pos: r.position, imp: r.impressions });
+        m.set(r.page, g);
+      }
+      return [...m.values()]
+        .map((g) => ({ ...g, queries: g.queries.sort((a, b) => b.imp - a.imp).slice(0, 5) }))
+        .sort((a, b) => b.impressions - a.impressions);
+    };
+    const fmt = (g: Group) =>
+      `- ${g.page}: 表示 ${g.impressions} / クリック ${g.clicks} / 検索語: ${g.queries
+        .map((x) => `${x.q}（${x.pos.toFixed(1)}位・表示${x.imp}）`)
+        .join("、")}`;
+
+    // A. 1ページ目に出ているのにクリックされない → タイトル・説明文・リード冒頭を直すだけで効く
+    const zeroClick = groupBy((r) => r.position <= 10 && r.clicks === 0).filter((g) => g.impressions >= 5).slice(0, 10);
+    lines.push("## タイトル直し候補（掲載順位10位以内なのにクリック0の検索語。表示の多い順）");
+    lines.push(zeroClick.map(fmt).join("\n") || "- なし");
+    lines.push("");
+
+    // B. 2ページ目の先頭 (10〜15位) → 本文を厚くして1ページ目に押し上げる
+    const push = groupBy((r) => r.position > 10 && r.position <= 15).filter((g) => g.impressions >= 5).slice(0, 10);
+    lines.push("## 押し上げ候補（掲載順位10〜15位の検索語。表示の多い順）");
+    lines.push(push.map(fmt).join("\n") || "- なし");
+    lines.push("");
+
+    // C. 20位より下 → 合う記事がまだない。新しく書く題材の候補
+    const gaps = new Map<string, { q: string; imp: number; pos: number; page: string }>();
+    for (const r of gsc.pageQueries ?? []) {
+      if (r.position <= 20 || r.impressions < 2) continue;
+      const cur = gaps.get(r.query);
+      if (!cur || r.impressions > cur.imp) gaps.set(r.query, { q: r.query, imp: r.impressions, pos: r.position, page: r.page });
+    }
+    const gapList = [...gaps.values()].sort((a, b) => b.imp - a.imp).slice(0, 15);
+    lines.push("## 新規記事の候補（20位より下にしか出ていない検索語。合う記事がまだない可能性が高い）");
+    lines.push(gapList.map((g) => `- ${g.q}: 表示 ${g.imp} / ${g.pos.toFixed(1)}位（いま出ている記事: ${g.page}）`).join("\n") || "- なし");
     lines.push("");
   }
 

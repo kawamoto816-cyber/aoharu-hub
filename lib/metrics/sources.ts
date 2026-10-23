@@ -202,7 +202,7 @@ export async function fetchSearchConsole(days: number): Promise<SourceResult<Gsc
         endDate: ymd(endAdj),
         dimensions: ["page", "query"],
         dimensionFilterGroups: [{ filters: [{ dimension: "page", operator: "contains", expression: "/guide/" }] }],
-        rowLimit: 100,
+        rowLimit: 1000,
       }).catch(() => ({ rows: [] })),
     ]);
 
