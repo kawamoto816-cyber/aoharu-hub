@@ -7,82 +7,15 @@ import { isAdminToken } from "@/lib/metrics/admin-auth";
 export const dynamic = "force-dynamic";
 export const maxDuration = 120;
 
+// 画面の確認はハブ自身と、AIを使わないキャリキャラだけ。
+// AIを使う10アプリは、下の AI_CHECKS (各アプリの /api/health) で「公開されていて、AIも答える」ことまで確かめる。
+// (2026-10: ハブから各アプリのトップ画面を直接取りに行くと、接続待ち10秒で失敗することが多く、誤報になったため)
 const CHECKS: { name: string; url: string; expect: string[] }[] = [
-  {
-    name: "トップ",
-    url: "https://app.bluespring.co.jp/",
-    expect: ["アオハルOS"],
-  },
-  {
-    name: "お試し添削 /tensaku",
-    url: "https://app.bluespring.co.jp/tensaku",
-    expect: ["AIが赤ペンを3本入れます", "無料で3つ指摘してもらう"],
-  },
-  {
-    name: "無料で試す /try",
-    url: "https://app.bluespring.co.jp/try",
-    expect: ["無料"],
-  },
-  {
-    name: "記事一覧 /guide",
-    url: "https://app.bluespring.co.jp/guide",
-    expect: ["/guide/"],
-  },
-  {
-    name: "テンサクン",
-    url: "https://essay.bluespring.co.jp/",
-    expect: ["テンサクン"],
-  },
-  {
-    name: "しぼりゆ",
-    url: "https://reason.bluespring.co.jp/",
-    expect: ["しぼりゆ"],
-  },
-  {
-    name: "メンサツ",
-    url: "https://interview.bluespring.co.jp/",
-    expect: ["メンサツ"],
-  },
-  {
-    name: "キャリキャラ",
-    url: "https://career.bluespring.co.jp/",
-    expect: ["キャリキャラ"],
-  },
-  {
-    name: "16カラー診断",
-    url: "https://color.bluespring.co.jp/",
-    expect: ["16カラー診断"],
-  },
-  {
-    name: "ジコアピ",
-    url: "https://jkap.bluespring.co.jp/",
-    expect: ["ジコアピ"],
-  },
-  {
-    name: "ジココーテー",
-    url: "https://kotei.bluespring.co.jp/",
-    expect: ["ジココーテー"],
-  },
-  {
-    name: "キャリデザ",
-    url: "https://cd.bluespring.co.jp/",
-    expect: ["キャリデザ"],
-  },
-  {
-    name: "コーポレートスコープ",
-    url: "https://corporate-scope.bluespring.co.jp/",
-    expect: ["コーポレートスコープ"],
-  },
-  {
-    name: "キャンパスコープ",
-    url: "https://campus.bluespring.co.jp/",
-    expect: ["キャンパスコープ"],
-  },
-  {
-    name: "EduFit",
-    url: "https://edufit.bluespring.co.jp/",
-    expect: ["EduFit"],
-  },
+  { name: "トップ", url: "https://app.bluespring.co.jp/", expect: ["アオハルOS"] },
+  { name: "お試し添削 /tensaku", url: "https://app.bluespring.co.jp/tensaku", expect: ["AIが赤ペンを3本入れます", "無料で3つ指摘してもらう"] },
+  { name: "無料で試す /try", url: "https://app.bluespring.co.jp/try", expect: ["無料"] },
+  { name: "記事一覧 /guide", url: "https://app.bluespring.co.jp/guide", expect: ["/guide/"] },
+  { name: "キャリキャラ", url: "https://career.bluespring.co.jp/", expect: ["キャリキャラ"] },
 ];
 
 // 各アプリのAIが実際に答えるか (各アプリの /api/health が Gemini に短い質問を1回投げる)。
@@ -96,114 +29,70 @@ const AI_CHECKS: { name: string; origin: string }[] = [
   { name: "ジコアピ", origin: "https://jkap.bluespring.co.jp" },
   { name: "ジココーテー", origin: "https://kotei.bluespring.co.jp" },
   { name: "キャリデザ", origin: "https://cd.bluespring.co.jp" },
-  {
-    name: "コーポレートスコープ",
-    origin: "https://corporate-scope.bluespring.co.jp",
-  },
+  { name: "コーポレートスコープ", origin: "https://corporate-scope.bluespring.co.jp" },
   { name: "キャンパスコープ", origin: "https://campus.bluespring.co.jp" },
   { name: "EduFit", origin: "https://edufit.bluespring.co.jp" },
 ];
 
-// 一度に全部を並行して取りに行くと、名前解決が詰まって後ろのほうが10秒で「fetch failed」になる
-// (2026-10 に実際に起きた)。4件ずつ順に確認する。
-async function inBatches<T, R>(
-  items: T[],
-  size: number,
-  fn: (item: T) => Promise<R>,
-): Promise<R[]> {
+// 一度に全部を並行して取りに行かず、4件ずつ順に確認する
+async function inBatches<T, R>(items: T[], size: number, fn: (item: T) => Promise<R>): Promise<R[]> {
   const out: R[] = [];
-  for (let i = 0; i < items.length; i += size)
-    out.push(...(await Promise.all(items.slice(i, i + size).map(fn))));
+  for (let i = 0; i < items.length; i += size) out.push(...(await Promise.all(items.slice(i, i + size).map(fn))));
   return out;
 }
 
-async function checkAi(token: string) {
-  return inBatches(AI_CHECKS, 4, async (c) => {
+// 失敗したものは、一時的な通信の揺れでないことを確かめるため、少し待って1回だけやり直す
+async function withRetry<T, R extends { ok: boolean }>(items: T[], fn: (item: T) => Promise<R>): Promise<R[]> {
+  const first = await inBatches(items, 4, fn);
+  if (first.every((r) => r.ok)) return first;
+  await new Promise((r) => setTimeout(r, 3000));
+  return Promise.all(first.map((r, i) => (r.ok ? r : fn(items[i]))));
+}
+
+async function checkPage(c: (typeof CHECKS)[number]) {
+  const started = Date.now();
+  try {
+    const res = await fetch(c.url, { cache: "no-store", redirect: "follow", signal: AbortSignal.timeout(20_000) });
+    const html = await res.text();
+    const missing = c.expect.filter((e) => !html.includes(e));
+    const ok = res.ok && missing.length === 0;
+    return { name: c.name, url: c.url, ok, status: res.status, ms: Date.now() - started, missing };
+  } catch (e) {
+    return { name: c.name, url: c.url, ok: false, status: 0, ms: Date.now() - started, missing: [] as string[], error: e instanceof Error ? e.message : String(e) };
+  }
+}
+
+function checkAi(token: string) {
+  return async (c: (typeof AI_CHECKS)[number]) => {
     try {
       const res = await fetch(`${c.origin}/api/health`, {
         cache: "no-store",
         headers: { Authorization: `Bearer ${token}` },
         signal: AbortSignal.timeout(45_000),
       });
-      const body = (await res.json().catch(() => ({}))) as {
-        ok?: boolean;
-        model?: string;
-        error?: string;
-        errors?: unknown;
-      };
-      return {
-        name: `${c.name} のAI`,
-        ok: res.ok && body.ok === true,
-        status: res.status,
-        model: body.model ?? null,
-        detail: body.ok ? undefined : (body.error ?? body.errors),
-      };
+      const body = (await res.json().catch(() => ({}))) as { ok?: boolean; model?: string; error?: string; errors?: unknown };
+      return { name: `${c.name} のAI`, ok: res.ok && body.ok === true, status: res.status, model: body.model ?? null, detail: body.ok ? undefined : (body.error ?? body.errors) };
     } catch (e) {
-      return {
-        name: `${c.name} のAI`,
-        ok: false,
-        status: 0,
-        model: null,
-        detail: e instanceof Error ? e.message : String(e),
-      };
+      return { name: `${c.name} のAI`, ok: false, status: 0, model: null, detail: e instanceof Error ? e.message : String(e) };
     }
-  });
+  };
 }
 
 function isCron(req: Request): boolean {
   const secret = process.env.CRON_SECRET;
-  return (
-    Boolean(secret) && req.headers.get("authorization") === `Bearer ${secret}`
-  );
+  return Boolean(secret) && req.headers.get("authorization") === `Bearer ${secret}`;
 }
 
 export async function GET(req: Request) {
-  if (!isAdminToken(req) && !isCron(req))
-    return NextResponse.json({ error: "forbidden" }, { status: 403 });
+  if (!isAdminToken(req) && !isCron(req)) return NextResponse.json({ error: "forbidden" }, { status: 403 });
 
-  const checkPage = async (c: (typeof CHECKS)[number]) => {
-    const started = Date.now();
-    try {
-      const res = await fetch(c.url, {
-        cache: "no-store",
-        redirect: "follow",
-        signal: AbortSignal.timeout(20_000),
-      });
-      const html = await res.text();
-      const missing = c.expect.filter((e) => !html.includes(e));
-      const ok = res.ok && missing.length === 0;
-      return {
-        name: c.name,
-        url: c.url,
-        ok,
-        status: res.status,
-        ms: Date.now() - started,
-        missing,
-      };
-    } catch (e) {
-      return {
-        name: c.name,
-        url: c.url,
-        ok: false,
-        status: 0,
-        ms: Date.now() - started,
-        missing: [],
-        error: e instanceof Error ? e.message : String(e),
-      };
-    }
-  };
-  // 失敗したものは、一時的な通信の揺れでないことを確かめるため1回だけやり直す
-  const first = await inBatches(CHECKS, 4, checkPage);
-  const results = await Promise.all(
-    first.map((r, i) => (r.ok ? r : checkPage(CHECKS[i]))),
-  );
+  const results = await withRetry(CHECKS, checkPage);
 
   // お試し添削のAIキーが入っているか (入っていないと、広告から来た人が結果を見られない)
   const previewReady = Boolean(process.env.ANTHROPIC_API_KEY);
   const healthToken = process.env.HEALTH_TOKEN;
-  const ai = healthToken ? await checkAi(healthToken) : [];
-  const ok =
-    results.every((r) => r.ok) && ai.every((r) => r.ok) && previewReady;
+  const ai = healthToken ? await withRetry(AI_CHECKS, checkAi(healthToken)) : [];
+  const ok = results.every((r) => r.ok) && ai.every((r) => r.ok) && previewReady;
   return NextResponse.json(
     {
       ok,
