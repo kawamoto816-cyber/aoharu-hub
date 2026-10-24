@@ -13,6 +13,8 @@ const FUNNEL_LABEL: Record<(typeof FUNNEL_EVENTS)[number], string> = {
   guide_cta_click: "記事CTAクリック",
   tensaku_preview_submit: "お試し添削の送信",
   tensaku_preview_result: "お試し添削の結果表示",
+  sign_up: "新規登録の完了",
+  tensaku_full_result: "/tensaku での全文添削",
   begin_checkout: "決済開始",
   purchase: "購入",
 };

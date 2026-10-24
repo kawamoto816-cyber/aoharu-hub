@@ -46,6 +46,8 @@ export const FUNNEL_EVENTS = [
   "guide_cta_click",
   "tensaku_preview_submit",
   "tensaku_preview_result",
+  "sign_up",
+  "tensaku_full_result",
   "begin_checkout",
   "purchase",
 ] as const;

@@ -15,10 +15,13 @@ export function SmartSignUpButton({
   className,
   children,
   analyticsLocation,
+  redirectUrl,
 }: {
   className?: string;
   children: ReactNode;
   analyticsLocation?: string;
+  /** 登録・ログイン後に戻るURL (省略時はトップ) */
+  redirectUrl?: string;
 }) {
   const clerk = useClerk();
 
@@ -30,7 +33,7 @@ export function SmartSignUpButton({
         if (analyticsLocation) {
           trackEvent("sign_up_click", { location: analyticsLocation });
         }
-        openSignUpWithRecovery(clerk);
+        openSignUpWithRecovery(clerk, redirectUrl);
       }}
     >
       {children}

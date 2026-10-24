@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { PreviewForm } from "@/components/tensaku/PreviewForm";
+import { PreviewForm, type Kind } from "@/components/tensaku/PreviewForm";
 import { DemoButton } from "@/components/landing/DemoButton";
 import { zen, klee } from "@/components/landing/fonts";
 
@@ -41,7 +41,12 @@ const FAQ = [
   },
 ];
 
-export default function TensakuPage() {
+const HEAD: Record<Kind, string> = { shibo: "志望理由書", shoronbun: "小論文", jiko: "自己推薦書" };
+
+export default async function TensakuPage({ searchParams }: { searchParams: Promise<{ kind?: string }> }) {
+  // 広告やリンクから ?kind=shoronbun / jiko で来た人には、最初からその書類向けの表示にする
+  const { kind: k } = await searchParams;
+  const kind: Kind = k === "shoronbun" || k === "jiko" ? k : "shibo";
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -61,7 +66,7 @@ export default function TensakuPage() {
               登録なし・無料・30秒
             </p>
             <h1 className="mb-0 mt-4 text-[30px] font-black leading-[1.35] sm:text-[42px]">
-              志望理由書を貼るだけ。
+              {HEAD[kind]}を貼るだけ。
               <br />
               <span className="bg-[linear-gradient(transparent_58%,#FFE45C_58%)]">AIが赤ペンを3本入れます。</span>
             </h1>
@@ -81,7 +86,7 @@ export default function TensakuPage() {
               <DemoButton src="https://bluespring.co.jp/videos/tensakun.mp4" title="テンサクン" app="tensaku_lp" />
             </div>
           </div>
-          <PreviewForm handFont={klee.className} />
+          <PreviewForm handFont={klee.className} initialKind={kind} />
         </div>
       </section>
 

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { SignUpTracker } from "@/components/SignUpTracker";
 import { Geist, Geist_Mono } from "next/font/google";
 import {
   ClerkProvider,
@@ -75,6 +76,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
       >
         <body className="min-h-full flex flex-col bg-white text-slate-900">
+          <SignUpTracker />
           {/* GA4計測タグ(gtag.js): コンバージョン計測(sign_up_click / begin_checkout /
               purchase)の土台。ページの見た目には一切影響しない。 */}
           <Script

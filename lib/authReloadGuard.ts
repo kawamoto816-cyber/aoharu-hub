@@ -43,12 +43,13 @@ function isClerkModalOpen(): boolean {
 }
 
 type ClerkLike = {
-  openSignUp: () => void;
+  openSignUp: (props?: { forceRedirectUrl?: string; signInForceRedirectUrl?: string }) => void;
   user?: unknown;
 };
 
-export function openSignUpWithRecovery(clerk: ClerkLike) {
-  clerk.openSignUp();
+export function openSignUpWithRecovery(clerk: ClerkLike, redirectUrl?: string) {
+  // redirectUrl を渡すと、登録・ログイン後にそのページへ戻る (既定はトップ "/")
+  clerk.openSignUp(redirectUrl ? { forceRedirectUrl: redirectUrl, signInForceRedirectUrl: redirectUrl } : undefined);
 
   window.setTimeout(() => {
     if (isClerkModalOpen()) return; // 正常にモーダルが開いた
