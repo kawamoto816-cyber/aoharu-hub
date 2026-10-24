@@ -11,6 +11,8 @@ const FUNNEL_LABEL: Record<(typeof FUNNEL_EVENTS)[number], string> = {
   share_to_child: "子に送る",
   sign_up_click: "登録クリック",
   guide_cta_click: "記事CTAクリック",
+  tensaku_preview_submit: "お試し添削の送信",
+  tensaku_preview_result: "お試し添削の結果表示",
   begin_checkout: "決済開始",
   purchase: "購入",
 };

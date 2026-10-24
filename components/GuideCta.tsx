@@ -9,7 +9,8 @@ import type { GuideArticle } from "@/lib/guide/types";
 // 2026-10: スマホでは右上の「無料登録」ボタンが非表示で、記事の一番下 (約6,000px先) までCTAがなかったため、
 // 途中と画面下にも置くようにした。
 export const CTA_HREF: Record<GuideArticle["cta"]["app"], string> = {
-  tensakun: APP_URLS.tensakun,
+  // テンサクンの記事は、登録前に3つ指摘が見られる /tensaku へ (スマホでテンサクン本体の画面がはみ出すため、まず結果を見せる)
+  tensakun: "/tensaku",
   shiboriyu: APP_URLS.shiboriyu,
   mensatsu: APP_URLS.mensatsu,
   try: "/try",

@@ -15,6 +15,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${base}/try?for=highschool`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
     { url: `${base}/try?for=student`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
     { url: `${base}/try?for=career`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
+    { url: `${base}/tensaku`, lastModified: now, changeFrequency: "weekly", priority: 0.95 },
     { url: `${base}/parents`, lastModified: now, changeFrequency: "weekly", priority: 0.9 },
     { url: `${base}/guide`, lastModified: now, changeFrequency: "daily", priority: 0.8 },
     ...["shiboriyu", "tensakun", "mensatsu"].map((k) => ({ url: `${base}/tutorial/${k}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.8 })),

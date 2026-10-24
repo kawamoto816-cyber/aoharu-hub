@@ -66,8 +66,8 @@ export function Landing() {
               <SmartSignUpButton analyticsLocation="hero" className={btnPrimary}>
                 無料で添削してみる
               </SmartSignUpButton>
-              <TrackedLink href={APP_URLS.mensatsu} event="try_entry_click" params={{ app: "mensatsu", location: "hero" }} className={btnSecondary}>
-                面接を1問だけ試す
+              <TrackedLink href="/tensaku" event="try_entry_click" params={{ app: "tensaku_preview", location: "hero" }} className={btnSecondary}>
+                登録なしで3つ指摘してもらう
               </TrackedLink>
             </div>
             <p className="mt-4 text-[13px] text-[#5A5D73]">登録だけ・クレジットカード不要／添削は月2本まで無料／いつでも解約</p>
