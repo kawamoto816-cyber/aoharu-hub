@@ -17,6 +17,16 @@ export const CTA_HREF: Record<GuideArticle["cta"]["app"], string> = {
   parents: "/parents",
 };
 
+/** 記事のテーマに合わせて、/tensaku を最初からその書類向けの表示で開く (小論文の記事 → 小論文の添削) */
+export function ctaHref(article: GuideArticle): string {
+  const base = CTA_HREF[article.cta.app];
+  if (article.cta.app !== "tensakun") return base;
+  if (article.topic === "shoronbun") return `${base}?kind=shoronbun`;
+  const words = [article.title, ...article.keywords].join(" ");
+  if (/自己推薦|自己PR|自己ＰＲ/.test(words)) return `${base}?kind=jiko`;
+  return base;
+}
+
 export function GuideCta({ article, variant = "end" }: { article: GuideArticle; variant?: "end" | "inline" }) {
   const { cta } = article;
   const params = { slug: article.slug, app: cta.app, segment: article.segment, place: variant };
@@ -26,7 +36,7 @@ export function GuideCta({ article, variant = "end" }: { article: GuideArticle; 
         <p className="text-sm font-bold text-slate-900">{cta.heading}</p>
         <p className="mt-1.5 text-[13px] leading-relaxed text-slate-600">{cta.text}</p>
         <TrackedLink
-          href={CTA_HREF[cta.app]}
+          href={ctaHref(article)}
           event="guide_cta_click"
           params={params}
           className="mt-3 inline-flex items-center justify-center rounded-lg bg-indigo-600 px-4 py-2 text-xs font-bold text-white transition-colors hover:bg-indigo-500"
@@ -43,7 +53,7 @@ export function GuideCta({ article, variant = "end" }: { article: GuideArticle; 
       <p className="mt-3 text-sm leading-relaxed text-slate-600">{cta.text}</p>
       <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center">
         <TrackedLink
-          href={CTA_HREF[cta.app]}
+          href={ctaHref(article)}
           event="guide_cta_click"
           params={params}
           className="inline-flex items-center justify-center rounded-xl bg-indigo-600 px-6 py-3 text-sm font-bold text-white shadow-sm shadow-indigo-600/20 transition-colors hover:bg-indigo-500"
@@ -62,7 +72,7 @@ export function GuideStickyCta({ article }: { article: GuideArticle }) {
   return (
     <div className="fixed inset-x-0 bottom-0 z-40 border-t border-slate-200 bg-white/95 px-4 py-3 backdrop-blur sm:hidden">
       <TrackedLink
-        href={CTA_HREF[cta.app]}
+        href={ctaHref(article)}
         event="guide_cta_click"
         params={{ slug: article.slug, app: cta.app, segment: article.segment, place: "sticky" }}
         className="flex w-full items-center justify-center rounded-xl bg-indigo-600 px-4 py-3 text-sm font-bold text-white"
