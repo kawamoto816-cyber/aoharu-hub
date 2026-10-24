@@ -4,6 +4,7 @@ import { getSetting, setSetting } from "@/lib/social/store";
 
 // 登録した人を、人の手を介さずに「最初の結果」まで連れていくお知らせメール。
 //   first : 登録から約1日たっても、どのアプリも使っていない人へ「まず1本、添削してみませんか」
+//   (リンク先はスマホでも崩れない /tensaku。テンサクン本体はスマホで画面がはみ出すため)
 //   nudge : 登録から3日たっても、まだ使っていない人へ「書きかけでも大丈夫です」(1回だけ)
 //   quota : 無料プランでテンサクンの今月の2本を使い切った人へ (その月に1回だけ)
 // どのメールにも配信停止のリンクを付ける。停止した人には二度と送らない。
@@ -66,10 +67,13 @@ export function buildEmail(step: Step, userId: string, name: string): { subject:
       text: [
         `${hi}、アオハルOSにご登録いただきありがとうございます。`,
         "",
-        "最初の1本は、書きかけの文章で大丈夫です。テンサクンに貼って「採点する」を押すと、100点満点の点数と、どこを・どう直すかが返ってきます。",
+        "最初の1本は、書きかけの文章で大丈夫です。下のページに貼って「全文を添削して採点する」を押すと、100点満点の点数と、どこを・どう直すかが返ってきます。スマホのままで使えます。",
         "",
-        "▼ テンサクンを開く（無料プランで月2本まで）",
-        "https://essay.bluespring.co.jp",
+        "▼ 志望理由書を添削する（無料プランで月2本まで）",
+        `${BASE}/tensaku?utm_source=email&utm_medium=onboarding&utm_campaign=first`,
+        "",
+        "▼ 小論文を添削する",
+        `${BASE}/tensaku?kind=shoronbun&utm_source=email&utm_medium=onboarding&utm_campaign=first`,
         "",
         "▼ 使う前と後の見本（どんな結果が返ってくるか）",
         `${BASE}/tutorial/tensakun`,
@@ -85,10 +89,10 @@ export function buildEmail(step: Step, userId: string, name: string): { subject:
       text: [
         `${hi}、アオハルOSです。`,
         "",
-        "志望理由書がまだ白紙・書きかけでも大丈夫です。最初の3〜5行だけでも、テンサクンは「伝わりにくい所」と「直す方向」を返します。",
+        "志望理由書がまだ白紙・書きかけでも大丈夫です。最初の3〜5行だけでも、AIが「伝わりにくい所」と「直す方向」を返します。スマホのままで使えます。",
         "",
-        "▼ テンサクンで添削する",
-        "https://essay.bluespring.co.jp",
+        "▼ 書きかけのまま添削する",
+        `${BASE}/tensaku?utm_source=email&utm_medium=onboarding&utm_campaign=nudge`,
         "",
         "何を書けばいいか決まっていない場合は、しぼりゆの質問に答えると、何をどの順で書くかの構成案ができます（パソコンでの利用がおすすめです）。",
         "https://reason.bluespring.co.jp",
@@ -99,13 +103,13 @@ export function buildEmail(step: Step, userId: string, name: string): { subject:
   return {
     subject: "今月の無料添削（2本）を使い切りました",
     text: [
-      `${hi}、アオハルOSです。テンサクンを2本使っていただきありがとうございます。`,
+      `${hi}、アオハルOSです。今月の添削を2本使っていただきありがとうございます。`,
       "",
       "無料プランの添削は来月1日にまた2本使えるようになります。",
       "出願や面接が近く、今月もっと直したい場合は、Pro（月980円・いつでも解約可）で回数の制限なく添削できます。100点の模範解答もProで見られます。",
       "",
       "▼ 料金とプラン",
-      `${BASE}/#pricing`,
+      `${BASE}/?utm_source=email&utm_medium=onboarding&utm_campaign=quota#pricing`,
       footer(userId),
     ].join("\n"),
   };

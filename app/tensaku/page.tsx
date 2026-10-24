@@ -12,12 +12,47 @@ const TITLE = "志望理由書のAI添削｜貼るだけ・登録なしで3つ�
 const DESC =
   "志望理由書・小論文・自己推薦書を貼るだけで、AIが直すべき箇所を3つ指摘します。登録なし・無料。全文の添削・点数・改善のポイントは無料登録（カード不要）で月2本まで。";
 
-export const metadata: Metadata = {
-  title: TITLE,
-  description: DESC,
-  alternates: { canonical: URL },
-  openGraph: { title: TITLE, description: DESC, url: URL },
+type SP = Promise<{ kind?: string }>;
+
+function toKind(k?: string): Kind {
+  return k === "shoronbun" || k === "jiko" ? k : "shibo";
+}
+
+// 書類ごとの文言。広告やメールから ?kind= で来た人に、探していた書類の言葉で話しかける。
+// canonical は常に /tensaku (検索エンジンには1ページとして扱ってもらう)。
+const COPY: Record<Kind, { title: string; desc: string; lead: string; other: string; scoreNote: string }> = {
+  shibo: {
+    title: TITLE,
+    desc: DESC,
+    lead: "「どこが伝わりにくいか」「なぜ評価が下がるか」「どう直すか」を、その場で返します。",
+    other: "小論文・自己推薦書にも使えます。",
+    scoreNote: "結論・具体性・大学で学ぶこととのつながりなどを観点ごとに評価し、100点満点で返します。",
+  },
+  shoronbun: {
+    title: "小論文のAI添削｜貼るだけ・登録なしで3つ指摘｜アオハルOS",
+    desc: "小論文を貼るだけで、AIが直すべき箇所を3つ指摘します。登録なし・無料。結論のぶれ・根拠不足・構成の弱さが分かります。全文の添削と100点満点の採点は無料登録（カード不要）で月2本まで。",
+    lead: "「結論がぶれていないか」「根拠は足りているか」「課題に答えているか」を、その場で返します。",
+    other: "800字前後の小論文に。志望理由書・自己推薦書にも使えます。",
+    scoreNote: "主張の明確さ・根拠・課題への答え方・構成を観点ごとに評価し、100点満点で返します。",
+  },
+  jiko: {
+    title: "自己推薦書・自己PRのAI添削｜貼るだけ・登録なしで3つ指摘｜アオハルOS",
+    desc: "自己推薦書・自己PRを貼るだけで、AIが直すべき箇所を3つ指摘します。登録なし・無料。全文の添削と100点満点の採点は無料登録（カード不要）で月2本まで。",
+    lead: "「強みが伝わるか」「体験で裏付けられているか」「大学とつながっているか」を、その場で返します。",
+    other: "志望理由書・小論文にも使えます。",
+    scoreNote: "強みの明確さ・体験による裏付け・志望先とのつながり・表現を観点ごとに評価し、100点満点で返します。",
+  },
 };
+
+export async function generateMetadata({ searchParams }: { searchParams: SP }): Promise<Metadata> {
+  const c = COPY[toKind((await searchParams).kind)];
+  return {
+    title: c.title,
+    description: c.desc,
+    alternates: { canonical: URL },
+    openGraph: { title: c.title, description: c.desc, url: URL },
+  };
+}
 
 const paper =
   "bg-[#F7F6F1] [background-image:linear-gradient(#E4E2D8_1px,transparent_1px),linear-gradient(90deg,#E4E2D8_1px,transparent_1px)] [background-size:28px_28px]";
@@ -43,10 +78,10 @@ const FAQ = [
 
 const HEAD: Record<Kind, string> = { shibo: "志望理由書", shoronbun: "小論文", jiko: "自己推薦書" };
 
-export default async function TensakuPage({ searchParams }: { searchParams: Promise<{ kind?: string }> }) {
+export default async function TensakuPage({ searchParams }: { searchParams: SP }) {
   // 広告やリンクから ?kind=shoronbun / jiko で来た人には、最初からその書類向けの表示にする
-  const { kind: k } = await searchParams;
-  const kind: Kind = k === "shoronbun" || k === "jiko" ? k : "shibo";
+  const kind = toKind((await searchParams).kind);
+  const c = COPY[kind];
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -71,8 +106,8 @@ export default async function TensakuPage({ searchParams }: { searchParams: Prom
               <span className="bg-[linear-gradient(transparent_58%,#FFE45C_58%)]">AIが赤ペンを3本入れます。</span>
             </h1>
             <p className="mb-0 mt-4 text-[15px] leading-[1.9] text-[#3A3D55] sm:text-[17px]">
-              「どこが伝わりにくいか」「なぜ評価が下がるか」「どう直すか」を、その場で返します。
-              小論文・自己推薦書にも使えます。
+              {c.lead}
+              {c.other}
             </p>
             <ul className="m-0 mt-6 flex list-none flex-col gap-2 p-0 text-[15px]">
               {["登録なしで1日3回まで", "貼った文章は保存しません", "全文の添削・点数・改善のポイントは無料登録で（月2本・カード不要）"].map((t) => (
@@ -94,7 +129,7 @@ export default async function TensakuPage({ searchParams }: { searchParams: Prom
         <h2 className="m-0 text-[24px] font-black sm:text-[30px]">無料登録すると、ここまで返ってきます</h2>
         <div className="mt-6 grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(240px,1fr))]">
           {[
-            ["点数と観点ごとの評価", "結論・具体性・大学との接続などを観点ごとに評価し、100点満点で返します。"],
+            ["点数と観点ごとの評価", c.scoreNote],
             ["すべての指摘と理由", "お試しの3つだけでなく、直したほうがよい箇所をすべて、理由つきで示します。"],
             ["直し方と改善のポイント", "どこを、どの方向に直せば点が上がるかを返します。直して何度でも出し直せます。"],
           ].map(([h, t]) => (
