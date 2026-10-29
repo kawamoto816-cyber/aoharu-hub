@@ -10,6 +10,10 @@ import { useProgress } from "./useProgress";
 // カード1枚：めくる → 図解 → 三択 → 自分の文章で試す。
 // 三択は正解の位置が偏らないよう、カード番号で選択肢の並びを回す。
 const KEYS = ["A", "B", "C"] as const;
+const tryPrimary =
+  "flex min-h-[52px] items-center justify-center rounded-[14px] border-[1.5px] border-[#15172B] bg-[#FFE45C] px-1.5 text-center text-[13px] font-black leading-snug text-[#15172B] no-underline shadow-[0_3px_0_#15172B]";
+const nextPrimary =
+  "flex min-h-[52px] items-center justify-center rounded-[14px] border-[1.5px] border-[#15172B] bg-[#1533B8] px-1.5 text-center text-[15px] font-black text-white no-underline shadow-[0_3px_0_#0B1F7A]";
 
 export function CardPlayer({
   card,
@@ -18,6 +22,9 @@ export function CardPlayer({
   handFont,
   regionPath,
   tryHref,
+  nextHref,
+  nextLabel,
+  chapterEnd,
 }: {
   card: LearnCard;
   total: number;
@@ -25,6 +32,11 @@ export function CardPlayer({
   handFont: string;
   regionPath: string;
   tryHref: string;
+  /** 三択のあとに進む先 (最後のカードは一覧の仕上げのクエスト) */
+  nextHref: string;
+  nextLabel: string;
+  /** 章の最後のカード。ここだけ「自分の文章で試す」を一番目立たせる */
+  chapterEnd: boolean;
 }) {
   const [flipped, setFlipped] = useState(false);
   const [picked, setPicked] = useState<number | null>(null);
@@ -134,20 +146,36 @@ export function CardPlayer({
                 {card.quiz.explanation}
                 {ok && status !== "done" ? " 自分の小論文で試すと、青く「習得」になります。" : ""}
               </p>
+              {/* ふだんは次のカードへ進むのが主役。章の最後のカードだけ、アプリで試すのを主役にする */}
+              {chapterEnd && <p className="m-0 text-[13px] font-black text-[#1533B8]">この章のカードはここまで。章で学んだことを、自分の小論文で試してみましょう。</p>}
               <div className="grid grid-cols-2 gap-2.5">
-                <Link href={regionPath} className="flex min-h-[52px] items-center justify-center rounded-[14px] border-[1.5px] border-[#15172B] bg-white text-sm font-black text-[#15172B] no-underline">
-                  カード一覧へ
-                </Link>
-                <a
-                  href={tryHref}
-                  onClick={() => trackEvent("learn_try_click", { card: card.id })}
-                  className="flex min-h-[52px] items-center justify-center rounded-[14px] border-[1.5px] border-[#15172B] bg-[#FFE45C] px-1.5 text-center text-[13px] font-black leading-snug text-[#15172B] no-underline shadow-[0_3px_0_#15172B]"
-                >
-                  自分の小論文で試す
-                  <br />
-                  （テンサクン）
-                </a>
+                {chapterEnd ? (
+                  <>
+                    <Link href={nextHref} className="flex min-h-[52px] items-center justify-center rounded-[14px] border-[1.5px] border-[#15172B] bg-white px-1.5 text-center text-sm font-black text-[#15172B] no-underline">
+                      {nextLabel}
+                    </Link>
+                    <a href={tryHref} onClick={() => trackEvent("learn_try_click", { card: card.id, place: "chapter_end" })} className={tryPrimary}>
+                      自分の小論文で試す
+                      <br />
+                      （テンサクン）
+                    </a>
+                  </>
+                ) : (
+                  <>
+                    <a href={tryHref} onClick={() => trackEvent("learn_try_click", { card: card.id, place: "card" })} className="flex min-h-[52px] items-center justify-center rounded-[14px] border-[1.5px] border-[#15172B] bg-white px-1.5 text-center text-[13px] font-black leading-snug text-[#15172B] no-underline">
+                      自分の文章で試す
+                      <br />
+                      （テンサクン）
+                    </a>
+                    <Link href={nextHref} onClick={() => trackEvent("learn_next_click", { card: card.id })} className={nextPrimary}>
+                      {nextLabel}
+                    </Link>
+                  </>
+                )}
               </div>
+              <Link href={regionPath} className="self-center text-sm font-bold text-[#1533B8]">
+                カード一覧を見る
+              </Link>
               {!ok && (
                 <button type="button" onClick={() => setPicked(null)} className="min-h-[44px] rounded-xl border-0 bg-transparent text-sm font-bold text-[#1533B8] underline">
                   もう一度答える

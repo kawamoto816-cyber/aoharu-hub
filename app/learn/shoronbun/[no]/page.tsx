@@ -32,6 +32,7 @@ export default async function CardPage({ params }: { params: Promise<{ no: strin
   const prev = card.no > 1 ? card.no - 1 : null;
   const next = card.no < total ? card.no + 1 : null;
   const chapter = SHORONBUN.chapters.find((c) => c.no === card.chapter);
+  const chapterEnd = SHORONBUN.cards.filter((c) => c.chapter === card.chapter).at(-1)?.no === card.no;
 
   return (
     <LearnShell narrow crumbs={[{ href: "/learn", label: "まなぶ" }, { href: "/learn/shoronbun", label: "小論文" }, { label: `No.${card.no}` }]}>
@@ -43,11 +44,15 @@ export default async function CardPage({ params }: { params: Promise<{ no: strin
       </h1>
       <div className="mt-3">
         <CardPlayer
+          key={card.id}
           card={card}
           total={total}
           handFont={klee.className}
           regionPath="/learn/shoronbun"
           tryHref={`/tensaku?kind=shoronbun&learn=${card.id}`}
+          nextHref={next ? `/learn/shoronbun/${next}` : "/learn/shoronbun"}
+          nextLabel={next ? "次のカードへ →" : "仕上げのクエストへ"}
+          chapterEnd={chapterEnd}
           diagram={<Diagram data={card.diagram} title={card.diagramTitle} />}
         />
       </div>

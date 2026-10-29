@@ -248,14 +248,14 @@ export function PreviewForm({ handFont, initialKind = "shibo" }: { handFont: str
       />
 
       <label className="mt-5 block text-sm font-bold" htmlFor="tensaku-text">
-        文章を貼る（{MIN}〜{max}字）
+        文章を書く・貼る（{MIN}〜{max}字）
       </label>
       <textarea
         id="tensaku-text"
         value={text}
         onChange={(e) => setText(e.target.value)}
         rows={9}
-        placeholder="書きかけでも大丈夫です。名前や学校名は書かずに貼ってください。"
+        placeholder="ここに直接書いても、書いたものを貼っても大丈夫です。書きかけや短い文章でも、指摘が返ってきます。名前や学校名は入れずに書いてください。"
         className="mt-2 w-full resize-y rounded-xl border-[1.5px] border-[#C9C7BC] px-4 py-3 text-base leading-[1.9] outline-none focus:border-[#1533B8]"
       />
       <div className="mt-1 flex justify-between text-xs text-[#5A5D73]">
