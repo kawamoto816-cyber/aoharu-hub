@@ -40,9 +40,25 @@ export interface LearnChapter {
   tryText: string;
 }
 
+/** カードで学んだことを試すアプリ (小論文 → テンサクン、面接 → メンサツ) */
+export interface LearnTryApp {
+  name: string;
+  /** これにカードid を足すとアプリを開くURLになる (例: /tensaku?kind=shoronbun&learn=) */
+  hrefBase: string;
+  /** 各カードの三択のあとのボタン */
+  cardLabel: string;
+  /** 章の最後のカードで主役にするボタン */
+  chapterLabel: string;
+  /** 三択に正解したあとの「習得」への案内 */
+  doneHint: string;
+}
+
 export interface LearnRegionTopic {
   key: string;
   label: string;
+  /** 一覧ページのパス (例: /learn/shoronbun) */
+  basePath: string;
+  tryApp: LearnTryApp;
   chapters: LearnChapter[];
   cards: LearnCard[];
   /** 仕上げのクエスト */

@@ -7,6 +7,14 @@ import type { LearnRegionTopic } from "./types";
 export const SHORONBUN: LearnRegionTopic = {
   key: "shoronbun",
   label: "小論文",
+  basePath: "/learn/shoronbun",
+  tryApp: {
+    name: "テンサクン",
+    hrefBase: "/tensaku?kind=shoronbun&learn=",
+    cardLabel: "自分の文章で試す",
+    chapterLabel: "自分の小論文で試す",
+    doneHint: "自分の小論文で試すと、青く「習得」になります。",
+  },
   quest: "自分の小論文を1本、テンサクンで採点してもらう",
   chapters: [
     { no: 1, title: "小論文の土台", summary: "主張と根拠、言い切る書き方", tryText: "序論だけ120字で書いて添削してもらう" },
@@ -343,7 +351,3 @@ export const SHORONBUN: LearnRegionTopic = {
     },
   ],
 };
-
-export function findShoronbunCard(no: number) {
-  return SHORONBUN.cards.find((c) => c.no === no) ?? null;
-}

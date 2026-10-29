@@ -13,7 +13,7 @@ const LOOK = {
   none: { box: "border-[#9A9CB0] bg-white text-[#3A3D55]", chip: "bg-[#EEEDE7] text-[#3A3D55]", label: "まだ" },
 } as const;
 
-export function RegionCards({ topic, basePath }: { topic: LearnRegionTopic; basePath: string }) {
+export function RegionCards({ topic }: { topic: LearnRegionTopic }) {
   const progress = useProgress();
   const nextNo = topic.cards.find((c) => !progress[c.id])?.no ?? null;
   const done = topic.cards.filter((c) => progress[c.id] === "done").length;
@@ -45,7 +45,7 @@ export function RegionCards({ topic, basePath }: { topic: LearnRegionTopic; base
                 const st = progress[c.id] ?? (c.no === nextNo ? "next" : "none");
                 const look = LOOK[st];
                 return (
-                  <Link key={c.id} href={`${basePath}/${c.no}`} className={`flex min-h-[96px] flex-col gap-2 rounded-[14px] border-[1.5px] px-3 py-2.5 no-underline ${look.box}`}>
+                  <Link key={c.id} href={`${topic.basePath}/${c.no}`} className={`flex min-h-[96px] flex-col gap-2 rounded-[14px] border-[1.5px] px-3 py-2.5 no-underline ${look.box}`}>
                     <span className="flex items-center justify-between">
                       <span className="text-[11px] font-black">No.{c.no}</span>
                       <span className={`rounded-full px-2 py-0.5 text-[10px] font-black ${look.chip}`}>{look.label}</span>
@@ -55,7 +55,7 @@ export function RegionCards({ topic, basePath }: { topic: LearnRegionTopic; base
                 );
               })}
           </div>
-          <p className="m-0 mt-2.5 text-[12.5px] font-bold text-[#1533B8]">章の仕上げ：テンサクンで「{ch.tryText}」</p>
+          <p className="m-0 mt-2.5 text-[12.5px] font-bold text-[#1533B8]">章の仕上げ：{topic.tryApp.name}で「{ch.tryText}」</p>
         </section>
       ))}
     </div>

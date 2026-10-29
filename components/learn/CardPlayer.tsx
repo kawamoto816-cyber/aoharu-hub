@@ -2,12 +2,12 @@
 
 import { useState, type ReactNode } from "react";
 import Link from "next/link";
-import type { LearnCard } from "@/lib/learn/types";
+import type { LearnCard, LearnTryApp } from "@/lib/learn/types";
 import { trackEvent } from "@/lib/analytics";
 import { markQuiz } from "@/lib/learn/progress";
 import { useProgress } from "./useProgress";
 
-// カード1枚：めくる → 図解 → 三択 → 自分の文章で試す。
+// カード1枚：めくる → 図解 → 三択 → アプリで試す (小論文はテンサクン、面接はメンサツ)。
 // 三択は正解の位置が偏らないよう、カード番号で選択肢の並びを回す。
 const KEYS = ["A", "B", "C"] as const;
 const tryPrimary =
@@ -17,6 +17,8 @@ const nextPrimary =
 
 export function CardPlayer({
   card,
+  badge,
+  tryApp,
   total,
   diagram,
   handFont,
@@ -27,6 +29,9 @@ export function CardPlayer({
   chapterEnd,
 }: {
   card: LearnCard;
+  /** 表の左上の札 (例: 小論文) */
+  badge: string;
+  tryApp: LearnTryApp;
   total: number;
   diagram: ReactNode;
   handFont: string;
@@ -35,7 +40,7 @@ export function CardPlayer({
   /** 三択のあとに進む先 (最後のカードは一覧の仕上げのクエスト) */
   nextHref: string;
   nextLabel: string;
-  /** 章の最後のカード。ここだけ「自分の文章で試す」を一番目立たせる */
+  /** 章の最後のカード。ここだけ「アプリで試す」を一番目立たせる */
   chapterEnd: boolean;
 }) {
   const [flipped, setFlipped] = useState(false);
@@ -74,7 +79,7 @@ export function CardPlayer({
           <span className={`grid transition-transform duration-[600ms] ease-[cubic-bezier(0.2,0.7,0.2,1)] [transform-style:preserve-3d] ${flipped ? "[transform:rotateY(180deg)]" : ""}`}>
             <span className="flex min-h-[300px] flex-col gap-3.5 rounded-[20px] border-[1.5px] border-[#15172B] bg-[#1533B8] p-6 text-white shadow-[6px_6px_0_#15172B] [backface-visibility:hidden] [grid-area:1/1]">
               <span className="flex items-center justify-between">
-                <span className="rounded-full bg-[#FFE45C] px-2.5 py-0.5 text-xs font-black text-[#15172B]">小論文</span>
+                <span className="rounded-full bg-[#FFE45C] px-2.5 py-0.5 text-xs font-black text-[#15172B]">{badge}</span>
                 <span className="text-xs font-bold">
                   No.{card.no} / {total}
                 </span>
@@ -103,7 +108,7 @@ export function CardPlayer({
           <button type="button" onClick={flip} className="min-h-[56px] rounded-[14px] border-[1.5px] border-[#15172B] bg-[#1533B8] text-[17px] font-black text-white shadow-[0_4px_0_#0B1F7A]">
             めくって図解を見る
           </button>
-          <p className="m-0 text-center text-xs text-[#3A3D55]">めくる → 三択 → 自分の文章で試す で、スキル盤のマスが光ります</p>
+          <p className="m-0 text-center text-xs text-[#3A3D55]">めくる → 三択 → {tryApp.name}で試す で、スキル盤のマスが光ります</p>
         </div>
       )}
 
@@ -144,10 +149,10 @@ export function CardPlayer({
               <p className={`m-0 rounded-xl px-3 py-2.5 text-[13px] font-bold leading-relaxed ${ok ? "bg-[#FFF6C4]" : "bg-[#FFF1EE] text-[#B42318]"}`}>
                 {ok ? "正解！ マスがひとつ黄色に光りました。" : `惜しい！ 答えは ${KEYS[correctPos]}。`}
                 {card.quiz.explanation}
-                {ok && status !== "done" ? " 自分の小論文で試すと、青く「習得」になります。" : ""}
+                {ok && status !== "done" ? ` ${tryApp.doneHint}` : ""}
               </p>
               {/* ふだんは次のカードへ進むのが主役。章の最後のカードだけ、アプリで試すのを主役にする */}
-              {chapterEnd && <p className="m-0 text-[13px] font-black text-[#1533B8]">この章のカードはここまで。章で学んだことを、自分の小論文で試してみましょう。</p>}
+              {chapterEnd && <p className="m-0 text-[13px] font-black text-[#1533B8]">この章のカードはここまで。章で学んだことを、{tryApp.name}で試してみましょう。</p>}
               <div className="grid grid-cols-2 gap-2.5">
                 {chapterEnd ? (
                   <>
@@ -155,17 +160,17 @@ export function CardPlayer({
                       {nextLabel}
                     </Link>
                     <a href={tryHref} onClick={() => trackEvent("learn_try_click", { card: card.id, place: "chapter_end" })} className={tryPrimary}>
-                      自分の小論文で試す
+                      {tryApp.chapterLabel}
                       <br />
-                      （テンサクン）
+                      （{tryApp.name}）
                     </a>
                   </>
                 ) : (
                   <>
                     <a href={tryHref} onClick={() => trackEvent("learn_try_click", { card: card.id, place: "card" })} className="flex min-h-[52px] items-center justify-center rounded-[14px] border-[1.5px] border-[#15172B] bg-white px-1.5 text-center text-[13px] font-black leading-snug text-[#15172B] no-underline">
-                      自分の文章で試す
+                      {tryApp.cardLabel}
                       <br />
-                      （テンサクン）
+                      （{tryApp.name}）
                     </a>
                     <Link href={nextHref} onClick={() => trackEvent("learn_next_click", { card: card.id })} className={nextPrimary}>
                       {nextLabel}
