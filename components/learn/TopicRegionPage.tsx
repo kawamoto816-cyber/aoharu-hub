@@ -18,15 +18,20 @@ export function TopicRegionPage({ topic, region, heading, lead }: { topic: Learn
       </div>
       <RegionCards topic={topic} />
       {/* 最後のカードの「仕上げのクエストへ」は #quest でここへ飛ぶ。飛んできたときは黄色の枠で目立たせる */}
-      <section id="quest" className="mt-10 scroll-mt-6 rounded-[18px] border-[1.5px] border-dashed border-[#15172B] bg-white p-5 target:border-solid target:shadow-[0_0_0_5px_#FFE45C,6px_6px_0_#15172B]">
-        <p className="m-0 text-xs font-black text-[#B42318]">仕上げのクエスト</p>
-        <p className="m-0 mt-1.5 text-[17px] font-black">{topic.quest}</p>
-        <a
-          href={`${topic.tryApp.hrefBase}${questId}`}
-          className="mt-4 inline-flex min-h-[52px] items-center rounded-[14px] border-[1.5px] border-[#15172B] bg-[#FFE45C] px-6 text-base font-black text-[#15172B] no-underline shadow-[0_3px_0_#15172B]"
-        >
-          {topic.tryApp.name}で挑戦する
-        </a>
+      <section id="quest" aria-labelledby="quest-heading" className="group mt-10 scroll-mt-6">
+        <h2 id="quest-heading" className="m-0 text-lg font-black">
+          仕上げのクエスト
+        </h2>
+        <p className="m-0 mt-1 text-[13px] text-[#3A3D55]">20枚で学んだことを、{topic.tryApp.name}でまとめて試します</p>
+        <div className="mt-3 rounded-[18px] border-[1.5px] border-dashed border-[#15172B] bg-white p-5 group-target:border-solid group-target:shadow-[0_0_0_5px_#FFE45C,6px_6px_0_#15172B]">
+          <p className="m-0 text-[17px] font-black">{topic.quest}</p>
+          <a
+            href={`${topic.tryApp.hrefBase}${questId}`}
+            className="mt-4 inline-flex min-h-[52px] items-center rounded-[14px] border-[1.5px] border-[#15172B] bg-[#FFE45C] px-6 text-base font-black text-[#15172B] no-underline shadow-[0_3px_0_#15172B]"
+          >
+            {topic.tryApp.name}で挑戦する
+          </a>
+        </div>
       </section>
     </LearnShell>
   );
