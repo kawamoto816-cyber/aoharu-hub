@@ -42,6 +42,7 @@ export function Landing() {
             <TrackedLink href="/try?for=student" event="segment_click" params={{ segment: "student", location: "lp_nav" }} className="text-[#15172B] hover:text-[#1533B8]">大学生（就活）</TrackedLink>
             <TrackedLink href="/try?for=career" event="segment_click" params={{ segment: "career", location: "lp_nav" }} className="text-[#15172B] hover:text-[#1533B8]">社会人（転職）</TrackedLink>
             <TrackedLink href="/parents" event="segment_click" params={{ segment: "parents", location: "lp_nav" }} className="text-[#15172B] hover:text-[#1533B8]">保護者の方へ</TrackedLink>
+            <TrackedLink href="/learn" event="learn_entry_click" params={{ location: "lp_nav" }} className="font-bold text-[#1533B8] hover:text-[#0E2380]">まなぶ</TrackedLink>
             <a href="#pricing" className="text-[#15172B] hover:text-[#1533B8]">料金</a>
           </nav>
         </div>

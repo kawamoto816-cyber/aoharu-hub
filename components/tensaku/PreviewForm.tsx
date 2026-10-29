@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { SmartSignUpButton } from "@/components/SmartSignUpButton";
 import { trackEvent } from "@/lib/analytics";
+import { learnIdFromLocation, markDone } from "@/lib/learn/progress";
 
 // /tensaku の添削フォーム。
 //   未登録: 貼る → 指摘が3つ返る (お試し) → 全文の添削は無料登録で
@@ -102,6 +103,8 @@ export function PreviewForm({ handFont, initialKind = "shibo" }: { handFont: str
   const [preview, setPreview] = useState<PreviewResult | null>(null);
   const [full, setFull] = useState<FullResult | null>(null);
   const [status, setStatus] = useState<Status | null>(null);
+  // 「まなぶ」のカードから来たとき (?learn=<カードid>)、添削の結果が出たらそのカードを「習得」にする
+  const [learnId, setLearnId] = useState<string | null>(null);
   const topRef = useRef<HTMLDivElement>(null);
 
   // 登録の画面から戻ってきたときに、書いた文章を戻す
@@ -111,6 +114,7 @@ export function PreviewForm({ handFont, initialKind = "shibo" }: { handFont: str
     if (d.text) setText(d.text);
     if (d.target) setTarget(d.target);
     if (d.kind && d.kind in KIND_LABEL) setKind(d.kind);
+    setLearnId(learnIdFromLocation());
     /* eslint-enable react-hooks/set-state-in-effect */
     fetch("/api/tensaku/full", { cache: "no-store" })
       .then((r) => r.json())
@@ -165,6 +169,10 @@ export function PreviewForm({ handFont, initialKind = "shibo" }: { handFont: str
       } else {
         setPreview(json as PreviewResult);
         trackEvent("tensaku_preview_result", { kind });
+        if (learnId) {
+          markDone(learnId);
+          trackEvent("learn_card_done", { card: learnId });
+        }
       }
     } catch {
       setError(ERR.failed);
@@ -198,6 +206,10 @@ export function PreviewForm({ handFont, initialKind = "shibo" }: { handFont: str
       } else {
         setFull(json as FullResult);
         trackEvent("tensaku_full_result", { kind, total: (json as FullResult).total });
+        if (learnId) {
+          markDone(learnId);
+          trackEvent("learn_card_done", { card: learnId });
+        }
         setStatus((s) => (s && !s.unlimited && typeof s.remaining === "number" ? { ...s, remaining: Math.max(0, s.remaining - 1) } : s));
       }
     } catch {
@@ -312,6 +324,12 @@ export function PreviewForm({ handFont, initialKind = "shibo" }: { handFont: str
           </SmartSignUpButton>
           <p className="mb-0 mt-2 text-center text-xs text-[#5A5D73]">登録だけ・カード不要・月2本まで無料。書いた文章は消えません</p>
         </>
+      )}
+
+      {learnId && (preview || full) && (
+        <Link href="/learn/shoronbun" className="mt-5 flex min-h-[48px] items-center justify-center rounded-xl border-[1.5px] border-[#1533B8] bg-[#E6EAFB] text-sm font-black text-[#1533B8] no-underline">
+          スキル盤のマスが青く光りました。カードにもどる →
+        </Link>
       )}
 
       {preview && (
