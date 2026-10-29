@@ -17,7 +17,8 @@ export function TopicRegionPage({ topic, region, heading, lead }: { topic: Learn
         <LearnSync showNudge returnUrl={topic.basePath} />
       </div>
       <RegionCards topic={topic} />
-      <section className="mt-10 rounded-[18px] border-[1.5px] border-dashed border-[#15172B] bg-white p-5">
+      {/* 最後のカードの「仕上げのクエストへ」は #quest でここへ飛ぶ。飛んできたときは黄色の枠で目立たせる */}
+      <section id="quest" className="mt-10 scroll-mt-6 rounded-[18px] border-[1.5px] border-dashed border-[#15172B] bg-white p-5 target:border-solid target:shadow-[0_0_0_5px_#FFE45C,6px_6px_0_#15172B]">
         <p className="m-0 text-xs font-black text-[#B42318]">仕上げのクエスト</p>
         <p className="m-0 mt-1.5 text-[17px] font-black">{topic.quest}</p>
         <a

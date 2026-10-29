@@ -51,7 +51,7 @@ export function TopicCardPage({ topic, no }: { topic: LearnRegionTopic; no: numb
           handFont={klee.className}
           regionPath={base}
           tryHref={`${topic.tryApp.hrefBase}${card.id}`}
-          nextHref={next ? `${base}/${next}` : base}
+          nextHref={next ? `${base}/${next}` : `${base}#quest`}
           nextLabel={next ? "次のカードへ →" : "仕上げのクエストへ"}
           chapterEnd={chapterEnd}
           diagram={<Diagram data={card.diagram} title={card.diagramTitle} />}
@@ -73,7 +73,7 @@ export function TopicCardPage({ topic, no }: { topic: LearnRegionTopic; no: numb
             No.{next} →
           </Link>
         ) : (
-          <Link href={base} className="flex min-h-[48px] items-center justify-center rounded-xl border-[1.5px] border-[#15172B] bg-[#FFE45C] text-sm font-black text-[#15172B] no-underline">
+          <Link href={`${base}#quest`} className="flex min-h-[48px] items-center justify-center rounded-xl border-[1.5px] border-[#15172B] bg-[#FFE45C] text-sm font-black text-[#15172B] no-underline">
             仕上げのクエストへ
           </Link>
         )}
