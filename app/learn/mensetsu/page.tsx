@@ -6,8 +6,8 @@ import { MENSETSU } from "@/lib/learn/mensetsu";
 // メンサツで試して戻ってきたとき (?done=<カードid>) は、そのカードを習得にする。
 
 const URL = "https://app.bluespring.co.jp/learn/mensetsu";
-const TITLE = "面接のコツ20｜カードで覚える答え方・深掘り対策｜総合型選抜・推薦入試｜アオハルOS";
-const DESC = "総合型選抜・推薦入試の面接のコツを20枚のカードで。面接官が見る3つのこと、結論から1分で答える型、「なぜこの大学？」の答え方、深掘り質問への備えまで、図解と三択で身につけます。";
+const TITLE = "面接のコツ20｜カードで覚える答え方・深掘り対策｜推薦入試（総合型・学校推薦型）｜アオハルOS";
+const DESC = "推薦入試（総合型選抜・学校推薦型選抜）の面接のコツを20枚のカードで。面接官が見る3つのこと、結論から1分で答える型、「なぜこの大学？」の答え方、深掘り質問への備えまで、図解と三択で身につけます。";
 
 export const metadata: Metadata = {
   title: TITLE,
