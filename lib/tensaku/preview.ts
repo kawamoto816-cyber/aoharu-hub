@@ -18,7 +18,8 @@ export const DOC_LABEL: Record<DocKind, string> = {
 };
 
 export const MIN_CHARS = 80;
-export const MAX_CHARS = 800;
+// 小論文は1,000〜1,200字の課題も多いため、お試しも1,200字まで受ける (2026-10: 800字だと小論文の人が貼れずに離脱していた)
+export const MAX_CHARS = 1200;
 const PER_IP_PER_DAY = 3;
 
 export interface PreviewPoint {

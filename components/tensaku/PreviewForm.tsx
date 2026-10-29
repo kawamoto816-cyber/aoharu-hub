@@ -14,7 +14,7 @@ import { trackEvent } from "@/lib/analytics";
 export type Kind = "shibo" | "shoronbun" | "jiko";
 const KIND_LABEL: Record<Kind, string> = { shibo: "志望理由書", shoronbun: "小論文", jiko: "自己推薦書・自己PR" };
 const MIN = 80;
-const PREVIEW_MAX = 800;
+const PREVIEW_MAX = 1200; // lib/tensaku/preview.ts の MAX_CHARS と同じ
 const FULL_MAX = 2000;
 const DRAFT_KEY = "tensaku_draft_v1";
 
@@ -97,6 +97,8 @@ export function PreviewForm({ handFont, initialKind = "shibo" }: { handFont: str
   const [text, setText] = useState("");
   const [loading, setLoading] = useState<null | "preview" | "full">(null);
   const [error, setError] = useState<string | null>(null);
+  // お試しの回数上限や字数オーバーで止まった人に、その場で無料登録の入口を出すため
+  const [errorCode, setErrorCode] = useState<string | null>(null);
   const [preview, setPreview] = useState<PreviewResult | null>(null);
   const [full, setFull] = useState<FullResult | null>(null);
   const [status, setStatus] = useState<Status | null>(null);
@@ -130,12 +132,20 @@ export function PreviewForm({ handFont, initialKind = "shibo" }: { handFont: str
   const max = signedIn ? FULL_MAX : PREVIEW_MAX;
   const returnUrl = `/tensaku?kind=${kind}`;
 
+  // 送信前に止めた回も数える (どこで離脱しているかを広告の結果と突き合わせるため)
+  function block(code: "too_short" | "too_long_preview") {
+    setError(ERR[code]);
+    setErrorCode(code);
+    trackEvent("tensaku_preview_blocked", { kind, reason: code, length: len });
+  }
+
   async function runPreview() {
     setError(null);
+    setErrorCode(null);
     setPreview(null);
     setFull(null);
-    if (len < MIN) return setError(ERR.too_short);
-    if (len > PREVIEW_MAX) return setError(ERR.too_long_preview);
+    if (len < MIN) return block("too_short");
+    if (len > PREVIEW_MAX) return block("too_long_preview");
     setLoading("preview");
     trackEvent("tensaku_preview_submit", { kind, length: len });
     try {
@@ -146,14 +156,20 @@ export function PreviewForm({ handFont, initialKind = "shibo" }: { handFont: str
       });
       const json = await res.json();
       if (!res.ok) {
-        setError(ERR[json.error as string] ?? ERR.failed);
-        trackEvent("tensaku_preview_error", { reason: String(json.error ?? res.status) });
+        const code = String(json.error ?? res.status);
+        setError(ERR[code] ?? ERR.failed);
+        setErrorCode(code);
+        trackEvent("tensaku_preview_error", { kind, reason: code });
+        // GA4 の標準レポートで理由まで見られるよう、回数上限とそれ以外を別のイベント名でも送る
+        trackEvent(code === "limit_ip" || code === "limit_daily" ? "tensaku_preview_limit" : "tensaku_preview_fail", { kind, reason: code });
       } else {
         setPreview(json as PreviewResult);
         trackEvent("tensaku_preview_result", { kind });
       }
     } catch {
       setError(ERR.failed);
+      setErrorCode("network");
+      trackEvent("tensaku_preview_fail", { kind, reason: "network" });
     } finally {
       setLoading(null);
     }
@@ -161,6 +177,7 @@ export function PreviewForm({ handFont, initialKind = "shibo" }: { handFont: str
 
   async function runFull() {
     setError(null);
+    setErrorCode(null);
     setPreview(null);
     setFull(null);
     if (len < MIN) return setError(ERR.too_short);
@@ -282,6 +299,19 @@ export function PreviewForm({ handFont, initialKind = "shibo" }: { handFont: str
         <p role="alert" className="mb-0 mt-5 rounded-xl bg-[#FFF1EE] px-4 py-3 text-sm font-bold text-[#B42318]">
           {error}
         </p>
+      )}
+
+      {error && !signedIn && (errorCode === "limit_ip" || errorCode === "limit_daily" || errorCode === "too_long_preview") && (
+        <>
+          <SmartSignUpButton
+            analyticsLocation={`tensaku_${errorCode}`}
+            redirectUrl={returnUrl}
+            className="mt-4 flex min-h-[56px] w-full items-center justify-center rounded-[14px] bg-[#FFE45C] text-[17px] font-black text-[#15172B] shadow-[0_4px_0_#15172B]"
+          >
+            無料登録して、このまま全文を添削してもらう
+          </SmartSignUpButton>
+          <p className="mb-0 mt-2 text-center text-xs text-[#5A5D73]">登録だけ・カード不要・月2本まで無料。書いた文章は消えません</p>
+        </>
       )}
 
       {preview && (
