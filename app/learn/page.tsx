@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { LearnShell } from "@/components/learn/LearnShell";
 import { SkillMap } from "@/components/learn/SkillMap";
+import { LearnSync } from "@/components/learn/LearnSync";
 import { SHORONBUN } from "@/lib/learn/shoronbun";
 
 // /learn: 「まなぶ」のホーム。スキル盤と、次に進むカード。
@@ -33,13 +34,16 @@ export default function LearnHome() {
             図解で覚えて、三択で確かめて、アプリで試す。試したカードはスキル盤で青く光ります。まずは「書く：小論文」の20枚から始められます。
           </p>
           <ul className="m-0 mt-5 list-none space-y-2 p-0 text-[14px]">
-            {["登録なし・無料で全部読める", "進み具合はこの端末に保存されます", "総合型選抜の本の著者が監修"].map((t) => (
+            {["登録なし・無料で全部読める", "無料登録すると、進み具合をアカウントに保存", "総合型選抜の本の著者が監修"].map((t) => (
               <li key={t} className="flex gap-2">
                 <span className="font-black text-[#1533B8]">✓</span>
                 {t}
               </li>
             ))}
           </ul>
+          <div className="mt-5">
+            <LearnSync showNudge returnUrl="/learn" />
+          </div>
           <div className="mt-6 flex flex-wrap gap-3">
             <Link href="/learn/shoronbun" className="inline-flex min-h-[52px] items-center rounded-[14px] border-[1.5px] border-[#15172B] bg-[#1533B8] px-6 text-base font-black text-white no-underline shadow-[0_4px_0_#0B1F7A]">
               小論文のカードを見る

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { LearnShell } from "@/components/learn/LearnShell";
 import { RegionCards } from "@/components/learn/RegionCards";
+import { LearnSync } from "@/components/learn/LearnSync";
 import { SHORONBUN } from "@/lib/learn/shoronbun";
 
 // /learn/shoronbun: 「書く：小論文」の20枚 (5章) と仕上げのクエスト。
@@ -21,6 +22,9 @@ export default function ShoronbunRegion() {
     <LearnShell crumbs={[{ href: "/", label: "アオハルOS" }, { href: "/learn", label: "まなぶ" }, { label: "書く：小論文" }]}>
       <h1 className="m-0 text-[26px] font-black sm:text-[32px]">小論文のカード 20枚</h1>
       <p className="mb-6 mt-2 text-[15px] leading-relaxed text-[#3A3D55]">土台から本番の練習まで、5章で順に進みます。各章の終わりは、テンサクンで自分の文章に試してみましょう。</p>
+      <div className="mb-5">
+        <LearnSync showNudge returnUrl="/learn/shoronbun" />
+      </div>
       <RegionCards topic={SHORONBUN} basePath="/learn/shoronbun" />
       <section className="mt-10 rounded-[18px] border-[1.5px] border-dashed border-[#15172B] bg-white p-5">
         <p className="m-0 text-xs font-black text-[#B42318]">仕上げのクエスト</p>

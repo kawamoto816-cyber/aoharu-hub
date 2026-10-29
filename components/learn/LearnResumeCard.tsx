@@ -4,6 +4,7 @@ import Link from "next/link";
 import { SHORONBUN } from "@/lib/learn/shoronbun";
 import { trackEvent } from "@/lib/analytics";
 import { useProgress } from "./useProgress";
+import { LearnSync } from "./LearnSync";
 
 // マイページ (ログイン後のトップ) に置く「まなぶ」の入口。
 // この端末で進めたカードがあれば、その続きから開けるようにする。
@@ -44,6 +45,7 @@ export function LearnResumeCard() {
           </Link>
         </div>
       </div>
+      <LearnSync />
     </section>
   );
 }

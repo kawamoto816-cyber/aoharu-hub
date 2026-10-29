@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { LearnShell } from "@/components/learn/LearnShell";
 import { CardPlayer } from "@/components/learn/CardPlayer";
+import { LearnSync } from "@/components/learn/LearnSync";
 import { Diagram } from "@/components/learn/Diagram";
 import { klee } from "@/components/landing/fonts";
 import { SHORONBUN, findShoronbunCard } from "@/lib/learn/shoronbun";
@@ -42,6 +43,7 @@ export default async function CardPage({ params }: { params: Promise<{ no: strin
       <h1 className="sr-only">
         {card.title}（小論文のコツ No.{card.no}）
       </h1>
+      <LearnSync />
       <div className="mt-3">
         <CardPlayer
           key={card.id}
