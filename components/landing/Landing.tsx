@@ -37,12 +37,15 @@ export function Landing() {
             <span className="flex h-[34px] w-[34px] items-center justify-center rounded-[10px] bg-[#1533B8] text-lg font-black text-white">ア</span>
             <span className="text-xl font-black tracking-wide">アオハルOS</span>
           </Link>
+          {/* 「まなぶ」はスマホでも見えるよう、対象別メニューとは別にロゴの隣に置く */}
+          <TrackedLink href="/learn" event="learn_entry_click" params={{ location: "lp_nav" }} className="rounded-full border-[1.5px] border-[#15172B] bg-[#FFE45C] px-3.5 py-1 text-sm font-black text-[#15172B] no-underline hover:bg-[#FFD92E]">
+            まなぶ
+          </TrackedLink>
           <nav aria-label="対象別" className="hidden flex-wrap gap-5 text-sm font-medium md:flex">
             <TrackedLink href="/try?for=highschool" event="segment_click" params={{ segment: "highschool", location: "lp_nav" }} className="text-[#15172B] hover:text-[#1533B8]">高校生</TrackedLink>
             <TrackedLink href="/try?for=student" event="segment_click" params={{ segment: "student", location: "lp_nav" }} className="text-[#15172B] hover:text-[#1533B8]">大学生（就活）</TrackedLink>
             <TrackedLink href="/try?for=career" event="segment_click" params={{ segment: "career", location: "lp_nav" }} className="text-[#15172B] hover:text-[#1533B8]">社会人（転職）</TrackedLink>
             <TrackedLink href="/parents" event="segment_click" params={{ segment: "parents", location: "lp_nav" }} className="text-[#15172B] hover:text-[#1533B8]">保護者の方へ</TrackedLink>
-            <TrackedLink href="/learn" event="learn_entry_click" params={{ location: "lp_nav" }} className="font-bold text-[#1533B8] hover:text-[#0E2380]">まなぶ</TrackedLink>
             <a href="#pricing" className="text-[#15172B] hover:text-[#1533B8]">料金</a>
           </nav>
         </div>
@@ -72,6 +75,23 @@ export function Landing() {
               </TrackedLink>
             </div>
             <p className="mt-4 text-[13px] text-[#5A5D73]">登録だけ・クレジットカード不要／添削は月2本まで無料／いつでも解約</p>
+            <TrackedLink
+              href="/learn"
+              event="learn_entry_click"
+              params={{ location: "hero" }}
+              className="mt-6 flex max-w-[30rem] items-center gap-3 rounded-[16px] border-[1.5px] border-[#15172B] bg-white px-4 py-3 text-[#15172B] no-underline shadow-[4px_4px_0_#15172B] hover:bg-[#FFFBE6]"
+            >
+              <span aria-hidden="true" className="flex h-12 w-10 flex-none items-center justify-center rounded-lg border-[1.5px] border-[#15172B] bg-[#1533B8] text-xs font-black text-white">
+                まなぶ
+              </span>
+              <span className="flex min-w-0 flex-col gap-0.5">
+                <span className="text-[15px] font-black">小論文のコツをカードで学ぶ</span>
+                <span className="text-[12.5px] text-[#3A3D55]">めくって図解・三択で確認。20枚、登録なし・無料</span>
+              </span>
+              <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="ml-auto flex-none">
+                <path d="M9 6l6 6-6 6" />
+              </svg>
+            </TrackedLink>
           </div>
 
           {/* 実際の画面 (テンサクンの操作動画から、貼り付け→採点レポートの部分を約20秒に切り出したもの) */}
