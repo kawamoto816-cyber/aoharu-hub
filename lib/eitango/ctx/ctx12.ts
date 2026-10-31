@@ -25,7 +25,7 @@ export const CTX12: { no: number; ctx: string; ja: string }[] = [
   { no: 1123, ctx: "The team still remembers its ___ victory in the national final ten years ago.", ja: "チームは今でも、10年前の全国決勝での輝かしい勝利を覚えている。" },
   { no: 1124, ctx: "Many English learners find it hard to ___ the 'th' sound correctly.", ja: "多くの英語学習者は、「th」の音を正しく発音するのが難しいと感じる。" },
   { no: 1125, ctx: "She wants to study marine ___ and learn more about sea creatures.", ja: "彼女は海洋生物学を学んで、海の生き物についてもっと知りたいと思っている。" },
-  { no: 1126, ctx: "The ___ Court is the highest court in the country.", ja: "最高裁判所はその国で最も上位の裁判所だ。" },
+  { no: 1126, ctx: "The emperor held ___ power, and no one in the land ranked above him.", ja: "皇帝は最高の権力を握っており、国中で彼より上の地位の者はいなかった。" },
   { no: 1127, ctx: "Don't let your mind ___ during the test; focus on each question.", ja: "テスト中は気持ちをそらさず、一つ一つの問題に集中しなさい。" },
   { no: 1128, ctx: "The ball of clay was rolled into a perfect ___.", ja: "粘土の塊は転がされて完全な球になった。" },
   { no: 1129, ctx: "The school will ___ parents by email if classes are canceled.", ja: "授業が休みになる場合、学校は保護者にメールで知らせる。" },

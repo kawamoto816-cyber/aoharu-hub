@@ -1,6 +1,6 @@
 // 英単語2000 ステージ2「文脈」: 空所補充の問題文 (すべて独自)。
 export const CTX02: { no: number; ctx: string; ja: string }[] = [
-  { no: 101, ctx: "The city council voted to ___ the plan for a new park.", ja: "市議会は新しい公園の計画を承認することを可決した。" },
+  { no: 101, ctx: "The city council voted to ___ the plan, so the new park will be built next year.", ja: "市議会がその計画の承認を可決したので、新しい公園は来年造られる。" },
   { no: 102, ctx: "In the game, players can choose a sword or a bow as their ___.", ja: "そのゲームでは、プレイヤーは武器として剣か弓を選べる。" },
   { no: 103, ctx: "Don't touch the ___ wires while the power is still on.", ja: "電源がまだ入っている間は、電線に触らないで。" },
   { no: 104, ctx: "Many young people move to big cities to ___ new jobs.", ja: "多くの若者が新しい仕事を求めて大都市へ移る。" },
@@ -18,7 +18,7 @@ export const CTX02: { no: number; ctx: string; ja: string }[] = [
   { no: 116, ctx: "People all over the world ___ the new year with fireworks.", ja: "世界中の人々が花火で新年を祝う。" },
   { no: 117, ctx: "The factory makes a new ___ that cleans the air in your room.", ja: "その工場は、部屋の空気をきれいにする新しい製品を作っている。" },
   { no: 118, ctx: "Colds are very ___ in winter, so wash your hands often.", ja: "冬は風邪がとてもよくあるので、こまめに手を洗いなさい。" },
-  { no: 119, ctx: "Let's ___ our books by size so the shelf looks neat.", ja: "棚がきれいに見えるように、本を大きさ順に整理しよう。" },
+  { no: 119, ctx: "Let's ___ a team of volunteers to clean the beach every Sunday.", ja: "毎週日曜日に浜辺を掃除するボランティアのチームを組織しよう。" },
   { no: 120, ctx: "The same word can have a different meaning in a different ___.", ja: "同じ語でも、文脈が違えば異なる意味を持つことがある。" },
   { no: 121, ctx: "Wear a helmet so that you don't ___ your head if you fall.", ja: "転んだときに頭をけがしないよう、ヘルメットをかぶりなさい。" },
   { no: 122, ctx: "Let's change the ___ and talk about something more cheerful.", ja: "話題を変えて、もっと明るいことを話そう。" },
@@ -67,7 +67,7 @@ export const CTX02: { no: number; ctx: string; ja: string }[] = [
   { no: 165, ctx: "Eating too much sugar is bad for you, so watch your ___.", ja: "砂糖のとりすぎは体に悪いので、食生活に気をつけなさい。" },
   { no: 166, ctx: "My parents get ___ when I come home late without calling.", ja: "私が電話もせずに遅く帰ると、両親は心配する。" },
   { no: 167, ctx: "The teacher used a red pen to ___ the key points.", ja: "先生は重要な点を強調するのに赤ペンを使った。" },
-  { no: 168, ctx: "Many sports, for ___, soccer and tennis, are played with a ball.", ja: "多くのスポーツ、たとえばサッカーやテニスはボールを使って行われる。" },
+  { no: 168, ctx: "Many sports, for ___ soccer and tennis, are played with a ball.", ja: "多くのスポーツ、たとえばサッカーやテニスはボールを使って行われる。" },
   { no: 169, ctx: "The surgeon will ___ on my father's heart tomorrow morning.", ja: "外科医は明日の朝、父の心臓の手術をする。" },
   { no: 170, ctx: "My ___ for this year is to read fifty books.", ja: "今年の私の目標は、本を50冊読むことだ。" },
   { no: 171, ctx: "Our waiter was very ___ and always spoke kindly to us.", ja: "私たちのウェイターはとても礼儀正しく、いつも親切に話しかけてくれた。" },

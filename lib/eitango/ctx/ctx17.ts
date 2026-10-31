@@ -98,6 +98,6 @@ export const CTX17: { no: number; ctx: string; ja: string }[] = [
   { no: 1696, ctx: "If you stack the blocks too high, the tower will ___ over.", ja: "ブロックを高く積みすぎると、塔は倒れてしまう。" },
   { no: 1697, ctx: "A ___ of locusts destroyed the crops across the whole region.", ja: "イナゴの大発生で、地域全体の作物が壊滅した。" },
   { no: 1698, ctx: "The new train has ___ leather seats and a private room for each guest.", ja: "新しい列車には豪華な革張りの座席と、乗客一人一人の個室がある。" },
-  { no: 1699, ctx: "Her bright smile will ___ to how much she enjoyed the trip.", ja: "彼女の明るい笑顔が、その旅行をどれほど楽しんだかを証明するだろう。" },
+  { no: 1699, ctx: "Her hundreds of happy photos ___ to how much she enjoyed the trip.", ja: "何百枚もの楽しそうな写真が、彼女がその旅行をどれほど楽しんだかを物語っている。" },
   { no: 1700, ctx: "After the shock, it took him a while to recover his mental ___.", ja: "ショックの後、彼が心の落ち着きを取り戻すまでにしばらくかかった。" },
 ];

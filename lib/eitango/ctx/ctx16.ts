@@ -94,7 +94,7 @@ export const CTX16: { no: number; ctx: string; ja: string }[] = [
   { no: 1592, ctx: "His injury ___, he finished the marathon with a big smile.", ja: "けがにもかかわらず、彼は満面の笑みでマラソンを完走した。" },
   { no: 1593, ctx: "It's okay to ___ your friends a little, but don't make them feel bad.", ja: "友達を少しからかうのはいいが、嫌な思いをさせてはいけない。" },
   { no: 1594, ctx: "Customers pay a ___ to get their packages delivered on the same day.", ja: "客は荷物を当日中に届けてもらうために割増料金を払う。" },
-  { no: 1595, ctx: "The letter was marked ___, so only the manager was allowed to open it.", ja: "その手紙には「親展」と書かれていたので、開けてよいのは部長だけだった。" },
+  { no: 1595, ctx: "The letter was marked ___, so only the manager was allowed to open it.", ja: "その手紙には「機密」と書かれていたので、開けてよいのは部長だけだった。" },
   { no: 1596, ctx: "Stay on the marked trail and don't ___ into the woods alone.", ja: "標示のある道から離れず、1人で森の中へそれていかないように。" },
   { no: 1597, ctx: "Health officials worked hard to stop the ___ of measles in the city.", ja: "保健当局は、市内でのはしかの発生を食い止めようと懸命に取り組んだ。" },
   { no: 1598, ctx: "Arguing with him is ___ because he never changes his mind.", ja: "彼は絶対に考えを変えないので、言い争っても無駄だ。" },

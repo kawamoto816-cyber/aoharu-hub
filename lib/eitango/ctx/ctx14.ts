@@ -63,7 +63,7 @@ export const CTX14: { no: number; ctx: string; ja: string }[] = [
   { no: 1361, ctx: "Can you ___ some paper? I forgot to bring my notebook.", ja: "紙を少し分けてくれる？ノートを持ってくるのを忘れたんだ。" },
   { no: 1362, ctx: "Adding a little lemon gives the fish a fresh ___.", ja: "レモンを少し加えると、魚にさわやかな風味が出る。" },
   { no: 1363, ctx: "I have only a ___ memory of the house where I was born.", ja: "生まれた家のことは、ぼんやりとした記憶しかない。" },
-  { no: 1364, ctx: "Even after several failures, she continued to ___ with her experiment.", ja: "何度か失敗した後も、彼女はあきらめずに実験を続けた。" },
+  { no: 1364, ctx: "Even after several failures, she chose to ___ with her experiment until it worked.", ja: "何度か失敗した後も、彼女は成功するまであきらめずに実験をやり通すことにした。" },
   { no: 1365, ctx: "Cut the apple in half and remove the ___ before you slice it.", ja: "リンゴを半分に切り、薄切りにする前に芯を取り除きなさい。" },
   { no: 1366, ctx: "The air we breathe is ___, but we cannot live without it.", ja: "私たちが吸う空気は目に見えないが、それなしでは生きられない。" },
   { no: 1367, ctx: "Teenagers often ___ too much sugar in soft drinks.", ja: "10代の若者は、清涼飲料水で砂糖をとりすぎることが多い。" },

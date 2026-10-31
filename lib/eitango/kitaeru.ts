@@ -76,12 +76,36 @@ export function shuffle<T>(xs: T[], rnd: () => number = Math.random): T[] {
   return a;
 }
 
+// 意味がほぼ同じで、文脈だけでは区別しにくい組 (文脈問題で、おたがいを誤答にしない)
+const NEAR: string[][] = [
+  ["particularly", "especially"],
+  ["imply", "suggest", "indicate"],
+  ["prove", "confirm"],
+  ["consequence", "result", "outcome"],
+  ["suppose", "imagine", "assume"],
+  ["tranquility", "serenity"],
+  ["allegedly", "supposedly"],
+  ["barely", "scarcely", "hardly"],
+  ["drought", "famine"],
+  ["reform", "modify"],
+  ["terrify", "frighten"],
+  ["amuse", "entertain"],
+  ["enormous", "vast", "huge"],
+  ["achieve", "accomplish", "succeed"],
+  ["critical", "vital", "crucial"],
+  ["basic", "fundamental"],
+  ["confident", "certain"],
+  ["one-sided", "biased"],
+];
+const nearOf = (w: string) => NEAR.find((g) => g.includes(w)) ?? [];
+
 /** 文脈問題の4択。同じステージ・同じ品詞の語から。a / an の後ろなら、頭の音が合う語だけにする */
 export function ctxChoices(w: WordEntry, c: CtxEntry, rnd: () => number = Math.random): string[] {
   const stage = STAGE_DATA[Math.ceil(w.no / 100)];
   const before = c.ctx.split("___")[0].trim().split(/\s+/).pop()?.toLowerCase();
   const vowel = (s: string) => /^[aeiou]/i.test(s);
-  const fits = (x: WordEntry) => (before === "an" ? vowel(x.word) : before === "a" ? !vowel(x.word) : true);
+  const near = nearOf(w.word);
+  const fits = (x: WordEntry) => !near.includes(x.word) && (before === "an" ? vowel(x.word) : before === "a" ? !vowel(x.word) : true);
   const pools = [
     stage.filter((x) => x.no !== w.no && x.pos === w.pos && fits(x)),
     Object.values(STAGE_DATA).flat().filter((x) => x.no !== w.no && x.pos === w.pos && fits(x) && Math.abs(x.no - w.no) < 400),
