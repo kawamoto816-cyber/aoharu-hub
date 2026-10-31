@@ -65,6 +65,8 @@ export interface LearnRegionTopic {
   quest: string;
   /** パンくずの「まなぶ」の行き先 (裏面の領域は /learn#ura) */
   homeHref?: string;
+  /** この章までは無料。それより後の章は Pro (ない場合は全部無料) */
+  freeChapters?: number;
 }
 
 export const SUPERVISION = "監修：川本 潤（『総合型選抜のすすめ』『シン・学問のすすめ』著者）";

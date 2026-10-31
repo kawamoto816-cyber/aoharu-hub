@@ -3,6 +3,7 @@ import { RegionCards } from "./RegionCards";
 import { LearnSync } from "./LearnSync";
 import { LearnDoneFromApp } from "./LearnDoneFromApp";
 import type { LearnRegionTopic } from "@/lib/learn/types";
+import { publicTopic } from "@/lib/learn/lock";
 
 // /learn/<領域> の中身 (小論文・面接で共通)。20枚 (5章) と仕上げのクエスト。
 
@@ -16,7 +17,7 @@ export function TopicRegionPage({ topic, region, heading, lead }: { topic: Learn
       <div className="mb-5">
         <LearnSync showNudge returnUrl={topic.basePath} />
       </div>
-      <RegionCards topic={topic} />
+      <RegionCards topic={publicTopic(topic)} />
       {/* 最後のカードの「仕上げのクエストへ」は #quest でここへ飛ぶ。飛んできたときは黄色の枠で目立たせる */}
       <section id="quest" aria-labelledby="quest-heading" className="group mt-10 scroll-mt-6">
         <h2 id="quest-heading" className="m-0 text-lg font-black">

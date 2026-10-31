@@ -7,6 +7,8 @@ import { Diagram } from "./Diagram";
 import { klee } from "@/components/landing/fonts";
 import type { LearnRegionTopic } from "@/lib/learn/types";
 import { findCard } from "@/lib/learn/topics";
+import { isLockedCard, stripCard } from "@/lib/learn/lock";
+import { LockedCard } from "./LockedCard";
 
 // /learn/<領域>/[no] の中身 (小論文・面接で共通)。表・裏・図解・三択と、アプリで試す導線。
 // 本文はサーバーで描くので、検索エンジンにもカードの中身が読める。
@@ -18,7 +20,8 @@ export function topicCardMetadata(topic: LearnRegionTopic, no: number): Metadata
   if (!card) return {};
   const url = `${SITE}${topic.basePath}/${card.no}`;
   const title = `${card.title}｜${topic.label}のコツ No.${card.no}｜アオハルOS`;
-  const description = `${card.front}。${card.back}`.slice(0, 120);
+  // Pro のカードは本文をメタ情報にも出さない
+  const description = isLockedCard(topic, card) ? `${card.front}。${topic.label}のカード（Pro）。` : `${card.front}。${card.back}`.slice(0, 120);
   return { title, description, alternates: { canonical: url }, openGraph: { title, description, url } };
 }
 
@@ -42,20 +45,37 @@ export function TopicCardPage({ topic, no }: { topic: LearnRegionTopic; no: numb
       </h1>
       <LearnSync />
       <div className="mt-3">
-        <CardPlayer
-          key={card.id}
-          card={card}
-          badge={topic.label}
-          tryApp={topic.tryApp}
-          total={total}
-          handFont={klee.className}
-          regionPath={base}
-          tryHref={`${topic.tryApp.hrefBase}${card.id}`}
-          nextHref={next ? `${base}/${next}` : `${base}#quest`}
-          nextLabel={next ? "次のカードへ →" : "仕上げのクエストへ"}
-          chapterEnd={chapterEnd}
-          diagram={<Diagram data={card.diagram} title={card.diagramTitle} />}
-        />
+        {isLockedCard(topic, card) ? (
+          <LockedCard
+            key={card.id}
+            topicKey={topic.key}
+            stub={stripCard(card)}
+            badge={topic.label}
+            tryApp={topic.tryApp}
+            total={total}
+            handFont={klee.className}
+            regionPath={base}
+            tryHref={`${topic.tryApp.hrefBase}${card.id}`}
+            nextHref={next ? `${base}/${next}` : `${base}#quest`}
+            nextLabel={next ? "次のカードへ →" : "仕上げのクエストへ"}
+            chapterEnd={chapterEnd}
+          />
+        ) : (
+          <CardPlayer
+            key={card.id}
+            card={card}
+            badge={topic.label}
+            tryApp={topic.tryApp}
+            total={total}
+            handFont={klee.className}
+            regionPath={base}
+            tryHref={`${topic.tryApp.hrefBase}${card.id}`}
+            nextHref={next ? `${base}/${next}` : `${base}#quest`}
+            nextLabel={next ? "次のカードへ →" : "仕上げのクエストへ"}
+            chapterEnd={chapterEnd}
+            diagram={<Diagram data={card.diagram} title={card.diagramTitle} />}
+          />
+        )}
       </div>
 
       {card.link && (

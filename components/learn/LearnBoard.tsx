@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useSyncExternalStore } from "react";
+import Link from "next/link";
 import { SkillMap, type SkillRegion } from "./SkillMap";
 import { trackEvent } from "@/lib/analytics";
 
@@ -15,6 +16,10 @@ export interface BoardIds {
   talk: string[];
   kyoyo: string[];
   paradigm: string[];
+  kindai: string[];
+  chiseigaku: string[];
+  kokusai: string[];
+  gendai: string[];
 }
 
 function subscribeHash(cb: () => void) {
@@ -37,10 +42,10 @@ export function LearnBoard({ ids }: { ids: BoardIds }) {
   ];
   const ura: SkillRegion[] = [
     { key: "paradigm", name: "知の\nパラダイム", aria: "知のパラダイム", fill: "#F4B860", ink: "#15172B", ang: -90, href: "/learn/paradigm", ids: ids.paradigm },
-    { key: "kindai", name: "近代の\n知", aria: "近代の知（準備中）", fill: "#9AD1F5", ink: "#15172B", ang: -18 },
-    { key: "chiseigaku", name: "地政学", aria: "地政学（準備中）", fill: "#7FC8A9", ink: "#15172B", ang: 54 },
-    { key: "kokusai", name: "国際\n関係", aria: "国際関係のレンズ（準備中）", fill: "#F59E9E", ink: "#15172B", ang: 126 },
-    { key: "gendai", name: "現代の\n論点", aria: "現代の論点（準備中）", fill: "#C9B6F2", ink: "#15172B", ang: 198 },
+    { key: "kindai", name: "近代の\n知", aria: "近代の知", fill: "#9AD1F5", ink: "#15172B", ang: -18, href: "/learn/kindai", ids: ids.kindai },
+    { key: "chiseigaku", name: "地政学", aria: "地政学", fill: "#7FC8A9", ink: "#15172B", ang: 54, href: "/learn/chiseigaku", ids: ids.chiseigaku },
+    { key: "kokusai", name: "国際\n関係", aria: "国際関係のレンズ", fill: "#F59E9E", ink: "#15172B", ang: 126, href: "/learn/kokusai", ids: ids.kokusai },
+    { key: "gendai", name: "現代の\n論点", aria: "現代の論点", fill: "#C9B6F2", ink: "#15172B", ang: 198, href: "/learn/gendai", ids: ids.gendai },
   ];
 
   function flip() {
@@ -71,8 +76,16 @@ export function LearnBoard({ ids }: { ids: BoardIds }) {
           {back ? "表面にもどる" : "裏面を見る（難関校アドバンスト）"}
         </button>
         <p className="m-0 text-center text-[12px] text-[#3A3D55]">
-          {back ? "旧帝大・早慶・国際教養大・APU・海外トップ校を目指す人へ。地政学や知の枠組みを体系で学びます。" : "めくると、難関校向けの「知のパラダイム」「地政学」などが待っています。"}
+          {back ? "旧帝大・早慶・国際教養大・APU・海外トップ校を目指す人へ。入口の「知のパラダイム」と各領域の第1章は無料、その先はProです。" : "めくると、難関校向けの「知のパラダイム」「地政学」などが待っています。"}
         </p>
+        {back && (
+          <Link
+            href="/learn/library"
+            className="mt-2 inline-flex min-h-[48px] items-center rounded-[14px] border-[1.5px] border-[#15172B] bg-[#FFF4DE] px-6 text-sm font-black text-[#15172B] no-underline shadow-[0_3px_0_#15172B]"
+          >
+            知の図書館へ（名著30冊を図解で）
+          </Link>
+        )}
       </div>
     </section>
   );

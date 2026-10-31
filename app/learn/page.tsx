@@ -10,10 +10,14 @@ import { JIBUN } from "@/lib/learn/jibun";
 import { DAIGAKU } from "@/lib/learn/daigaku";
 import { KYOYO } from "@/lib/learn/kyoyo";
 import { PARADIGM } from "@/lib/learn/paradigm";
+import { KINDAI } from "@/lib/learn/kindai";
+import { CHISEIGAKU } from "@/lib/learn/chiseigaku";
+import { KOKUSAI } from "@/lib/learn/kokusai";
+import { GENDAI } from "@/lib/learn/gendai";
 
 // /learn: 「まなぶ」のホーム。スキル盤と、次に進むカード。
 // 表は5つの領域 (自分を知る・志望校を知る・書く・話す・教養・時事) の各20枚。
-// 裏面 (難関校アドバンスト) はいま「知のパラダイム」20枚を公開している。
+// 裏面 (難関校アドバンスト) は5領域100枚と知の図書館。入口の「知のパラダイム」と各領域の第1章は無料、その先は Pro。
 
 const URL = "https://app.bluespring.co.jp/learn";
 const TITLE = "まなぶ｜総合型選抜・推薦入試のスキルをカードで習得｜アオハルOS";
@@ -79,6 +83,10 @@ export default function LearnHome() {
             talk: MENSETSU.cards.map((c) => c.id),
             kyoyo: KYOYO.cards.map((c) => c.id),
             paradigm: PARADIGM.cards.map((c) => c.id),
+            kindai: KINDAI.cards.map((c) => c.id),
+            chiseigaku: CHISEIGAKU.cards.map((c) => c.id),
+            kokusai: KOKUSAI.cards.map((c) => c.id),
+            gendai: GENDAI.cards.map((c) => c.id),
           }}
         />
       </div>

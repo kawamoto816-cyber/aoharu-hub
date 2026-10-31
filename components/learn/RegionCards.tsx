@@ -34,8 +34,9 @@ export function RegionCards({ topic }: { topic: LearnRegionTopic }) {
 
       {topic.chapters.map((ch) => (
         <section key={ch.no} aria-labelledby={`ch-${ch.no}`}>
-          <h2 id={`ch-${ch.no}`} className="m-0 text-lg font-black">
+          <h2 id={`ch-${ch.no}`} className="m-0 flex items-center gap-2 text-lg font-black">
             第{ch.no}章　{ch.title}
+            {topic.freeChapters !== undefined && ch.no > topic.freeChapters && <span className="rounded-full bg-[#15172B] px-2 py-0.5 text-[10px] font-black text-[#FFE45C]">Pro</span>}
           </h2>
           <p className="m-0 mt-1 text-[13px] text-[#3A3D55]">{ch.summary}</p>
           <div className="mt-3 grid grid-cols-2 gap-2.5 sm:grid-cols-4">

@@ -7,6 +7,7 @@ import { CheckoutIntentHandler } from "@/components/CheckoutIntentHandler";
 import { CheckoutSuccessTracker } from "@/components/CheckoutSuccessTracker";
 import { Landing } from "@/components/landing/Landing";
 import { LearnResumeCard } from "@/components/learn/LearnResumeCard";
+import { resumeTopics } from "@/lib/learn/topics";
 import { ApplicationBoard } from "@/components/ApplicationBoard";
 import { listApplications, type Application } from "@/lib/applications/store";
 import { ParentShareCard } from "@/components/ParentShareCard";
@@ -83,7 +84,7 @@ function Hub({
         マイページ
       </h1>
 
-      <LearnResumeCard />
+      <LearnResumeCard topics={resumeTopics()} />
 
       <ApplicationBoard applications={applications} />
 
