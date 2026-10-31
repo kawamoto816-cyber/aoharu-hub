@@ -11,8 +11,8 @@ import { AMAZON_DISCLOSURE } from "@/lib/library/amazon";
 // 入門の10冊は裏 (図解・使い方) まで無料、残り20冊の裏は Pro。
 
 const URL = "https://app.bluespring.co.jp/learn/library";
-const TITLE = "知の図書館｜難関校の小論文・面接のための名著30冊を図解で｜アオハルOS";
-const DESC = "プラトン、デカルト、ホッブズ、ルソー、スミス、ミル、ダーウィン、福沢諭吉、クーンから、カント、マルクス、ウェーバー、ケインズ、アーレント、ロールズ、サイードまで。難関校の小論文・面接で使える名著30冊を、一言の要約・問い・図解・使い方で。入門の10冊は無料。";
+const TITLE = "知の図書館｜名著30冊を図解で｜アオハルOS";
+const DESC = "プラトン、デカルト、ホッブズ、ルソー、スミス、ミル、ダーウィン、福沢諭吉、クーンから、カント、マルクス、ウェーバー、ケインズ、アーレント、ロールズ、サイードまで。考えることの土台になる名著30冊を、一言の要約・問い・図解・使い方で。入門の10冊は無料。";
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -28,10 +28,10 @@ export default function LibraryHome() {
   const books = BOOKS.map(publicBook);
   return (
     <LearnShell homeHref="/learn/apply#ura" crumbs={[{ href: "/learn", label: "まなぶ" }, { href: "/learn/apply#ura", label: "知のアドバンス" }, { label: "知の図書館" }]}>
-      <p className="m-0 text-xs font-black text-[#3A3D55]">裏面・難関校アドバンスト</p>
+      <p className="m-0 text-xs font-black text-[#3A3D55]">知のアドバンス</p>
       <h1 className="m-0 mt-1 text-[26px] font-black sm:text-[32px]">知の図書館</h1>
       <p className="mb-0 mt-2 text-[15px] leading-relaxed text-[#3A3D55]">
-        難関校の小論文・面接・口頭試問で使える名著30冊を、1冊1枚の「本のカード」にしました。表は一言の要約とその本が立てた問い、裏は主張の図解と、小論文や面接での使い方です。入門の書架の10冊は裏まで無料、ほかの20冊の裏はProで読めます。
+        考えることの土台になる名著30冊を、1冊1枚の「本のカード」にしました。表は一言の要約とその本が立てた問い、裏は主張の図解と、小論文や面接での使い方です。入門の書架の10冊は裏まで無料、ほかの20冊の裏はProで読めます。
       </p>
 
       <h2 className="mb-0 mt-8 text-lg font-black">書架の地図</h2>

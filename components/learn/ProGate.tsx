@@ -10,7 +10,7 @@ export function ProGate({ state, returnUrl, location, what }: { state: "signed_o
       <p className="m-0 inline-block rounded-full bg-[#15172B] px-2.5 py-0.5 text-[11px] font-black text-[#FFE45C]">Pro</p>
       <p className="m-0 mt-2 text-[16px] font-black leading-snug">この{what}の続きは、Proで読めます</p>
       <p className="m-0 mt-1.5 text-[13px] leading-relaxed text-[#3A3D55]">
-        裏面（難関校アドバンスト）は、入口の「知のパラダイム」と各領域の第1章、図書館の入門の10冊までが無料です。Proにすると、裏面のカード全部と図書館の全冊の解説が読め、テンサクンの添削も回数を気にせず使えます。
+        知のアドバンスは、入口の「知のパラダイム」と各領域の第1章、図書館の入門の10冊までが無料です。Proにすると、裏面のカード全部と図書館の全冊の解説が読め、テンサクンの添削も回数を気にせず使えます。
       </p>
       {state === "signed_out" ? (
         <>

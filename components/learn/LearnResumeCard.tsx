@@ -7,7 +7,7 @@ import { LearnSync } from "./LearnSync";
 
 // マイページ (ログイン後のトップ) に置く「まなぶ」の入口。
 // 領域ごと (自分を知る・志望校を知る・志望理由書・小論文・面接・教養時事) に1行ずつ、進めたカードがあればその続きから開けるようにする。
-const REGION: Record<string, string> = { jibun: "自分を知る", daigaku: "志望校を知る", shiboriyusho: "書く", shoronbun: "書く", mensetsu: "話す", kyoyo: "教養・時事", paradigm: "裏面・難関校", kindai: "裏面・難関校", chiseigaku: "裏面・難関校", kokusai: "裏面・難関校", gendai: "裏面・難関校" };
+const REGION: Record<string, string> = { jibun: "自分を知る", daigaku: "志望校を知る", shiboriyusho: "書く", shoronbun: "書く", mensetsu: "話す", kyoyo: "教養・時事", paradigm: "知のアドバンス", kindai: "知のアドバンス", chiseigaku: "知のアドバンス", kokusai: "知のアドバンス", gendai: "知のアドバンス" };
 
 // 本文がブラウザに渡らないよう、サーバー側で題と id だけにしたもの (resumeTopics) を受けとる。
 export interface ResumeTopic {
@@ -65,9 +65,9 @@ export function LearnResumeCard({ topics }: { topics: ResumeTopic[] }) {
         {uraStarted.length === 0 && (
           <li className="flex flex-wrap items-center gap-3 rounded-xl border-[1.5px] border-[#15172B] bg-[#FFF4DE] px-4 py-3">
             <div className="min-w-0 flex-1">
-              <p className="m-0 text-xs font-bold text-slate-600">裏面・難関校アドバンスト</p>
+              <p className="m-0 text-xs font-bold text-slate-600">知のアドバンス</p>
               <p className="m-0 mt-0.5 text-[15px] font-black text-slate-900">知のパラダイム・地政学・国際関係・知の図書館</p>
-              <p className="m-0 mt-0.5 text-xs text-slate-600">旧帝大・早慶・国際教養大・APU・海外トップ校を目指す人へ。入口の20枚は無料です。</p>
+              <p className="m-0 mt-0.5 text-xs text-slate-600">さらなる知の森へ。ものの見方と古典を、カードで深めます。入口の20枚は無料です。</p>
             </div>
             <Link
               href="/learn/apply#ura"

@@ -79,7 +79,7 @@ export function LearnBoard({ ids }: { ids: BoardIds }) {
           {back ? "表面にもどる" : "裏面を見る（アドバンスト）"}
         </button>
         <p className="m-0 text-center text-[12px] text-[#3A3D55]">
-          {back ? "さらなる知の森へ" : "めくると、難関校向けの「知のパラダイム」「地政学」などが待っています。"}
+          {back ? "さらなる知の森へ" : "めくると、「知のパラダイム」「地政学」など、さらなる知の森が広がっています。"}
         </p>
         {back && (
           <Link

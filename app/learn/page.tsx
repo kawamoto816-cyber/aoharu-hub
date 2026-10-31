@@ -12,7 +12,7 @@ import { LegacyHashRedirect } from "@/components/learn/LegacyHashRedirect";
 
 const URL = "https://app.bluespring.co.jp/learn";
 const TITLE = "アオハルラーン｜覚えて、鍛えて、教えろ。中学・高校の学びと入試の力を無料で｜アオハルOS";
-const DESC = "学校の教科（中学数学 計算50段）、選ばれる力（総合型選抜・推薦入試の6分野カード）、知のアドバンス（難関校向けの知のパラダイム・地政学・知の図書館）。カードで覚え、ドリルで鍛え、AIのアプリで教えるように使う。登録なし・無料。";
+const DESC = "学校の教科（中学数学 計算50段）、選ばれる力（総合型選抜・推薦入試の6分野カード）、知のアドバンス（知のパラダイム・地政学・知の図書館）。カードで覚え、ドリルで鍛え、AIのアプリで教えるように使う。登録なし・無料。";
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -106,7 +106,7 @@ export default function LearnHub() {
           <h2 id="shelf-advance" className="m-0 mt-0.5 text-[22px] font-black">
             知のアドバンス
           </h2>
-          <p className="m-0 mt-1 text-[14px] leading-relaxed text-[#3A3D55]">さらなる知の森へ。旧帝大・早慶・国際教養大・APU・海外トップ校をめざす人のための上級の階。入口の「知のパラダイム」と各領域の第1章、図書館の10冊は無料です。</p>
+          <p className="m-0 mt-1 text-[14px] leading-relaxed text-[#3A3D55]">さらなる知の森へ。ものの見方そのものを問い直し、古典とともに考えを深める上級の階です。入口の「知のパラダイム」と各領域の第1章、図書館の10冊は無料です。</p>
           <ul className="m-0 mt-4 flex list-none flex-wrap gap-2 p-0">
             {advance.map((t) => (
               <li key={t.key}>
