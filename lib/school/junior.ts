@@ -781,6 +781,7 @@ export const SUBJECTS: SchoolSubject[] = [
         "units": [
           {
             "id": "j-sci-1-shokubutsu-bunrui",
+            "href": "/learn/chu-rika#j-sci-1-shokubutsu-bunrui",
             "name": "植物の分類",
             "engines": [
               "覚える"
@@ -788,6 +789,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-sci-1-dobutsu-bunrui",
+            "href": "/learn/chu-rika#j-sci-1-dobutsu-bunrui",
             "name": "動物の分類",
             "engines": [
               "覚える"
@@ -795,6 +797,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-sci-1-busshitsu",
+            "href": "/learn/chu-rika#j-sci-1-busshitsu",
             "name": "身のまわりの物質",
             "engines": [
               "覚える"
@@ -802,6 +805,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-sci-1-kitai",
+            "href": "/learn/chu-rika#j-sci-1-kitai",
             "name": "気体の性質",
             "engines": [
               "覚える"
@@ -809,6 +813,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-sci-1-suiyoeki",
+            "href": "/learn/chu-rika#j-sci-1-suiyoeki",
             "name": "水溶液の性質",
             "engines": [
               "覚える",
@@ -817,6 +822,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-sci-1-jotai",
+            "href": "/learn/chu-rika#j-sci-1-jotai",
             "name": "状態変化",
             "engines": [
               "覚える",
@@ -825,6 +831,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-sci-1-hikari",
+            "href": "/learn/chu-rika#j-sci-1-hikari",
             "name": "光の性質",
             "engines": [
               "覚える",
@@ -833,6 +840,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-sci-1-oto",
+            "href": "/learn/chu-rika#j-sci-1-oto",
             "name": "音の性質",
             "engines": [
               "覚える",
@@ -841,6 +849,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-sci-1-chikara",
+            "href": "/learn/chu-rika#j-sci-1-chikara",
             "name": "力のはたらき",
             "engines": [
               "覚える",
@@ -849,6 +858,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-sci-1-kazan",
+            "href": "/learn/chu-rika#j-sci-1-kazan",
             "name": "火山と火成岩",
             "engines": [
               "覚える"
@@ -856,6 +866,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-sci-1-jishin",
+            "href": "/learn/chu-rika#j-sci-1-jishin",
             "name": "地震",
             "engines": [
               "覚える",
@@ -864,6 +875,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-sci-1-chiso",
+            "href": "/learn/chu-rika#j-sci-1-chiso",
             "name": "地層と大地の変化",
             "engines": [
               "覚える"
@@ -876,6 +888,7 @@ export const SUBJECTS: SchoolSubject[] = [
         "units": [
           {
             "id": "j-sci-2-genshi",
+            "href": "/learn/chu-rika#j-sci-2-genshi",
             "name": "物質の成り立ち（原子・分子）",
             "engines": [
               "覚える"
@@ -883,6 +896,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-sci-2-kagaku-henka",
+            "href": "/learn/chu-rika#j-sci-2-kagaku-henka",
             "name": "化学変化",
             "engines": [
               "覚える",
@@ -891,6 +905,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-sci-2-shitsuryo",
+            "href": "/learn/chu-rika#j-sci-2-shitsuryo",
             "name": "化学変化と質量",
             "engines": [
               "覚える",
@@ -899,6 +914,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-sci-2-saibo",
+            "href": "/learn/chu-rika#j-sci-2-saibo",
             "name": "生物と細胞",
             "engines": [
               "覚える"
@@ -906,6 +922,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-sci-2-shokubutsu",
+            "href": "/learn/chu-rika#j-sci-2-shokubutsu",
             "name": "植物の体のつくりとはたらき",
             "engines": [
               "覚える"
@@ -913,6 +930,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-sci-2-dobutsu",
+            "href": "/learn/chu-rika#j-sci-2-dobutsu",
             "name": "動物の体のつくりとはたらき",
             "engines": [
               "覚える"
@@ -920,6 +938,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-sci-2-shigeki",
+            "href": "/learn/chu-rika#j-sci-2-shigeki",
             "name": "刺激と反応",
             "engines": [
               "覚える"
@@ -927,6 +946,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-sci-2-denryu",
+            "href": "/learn/chu-rika#j-sci-2-denryu",
             "name": "電流と電圧（回路）",
             "engines": [
               "覚える",
@@ -935,6 +955,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-sci-2-jikai",
+            "href": "/learn/chu-rika#j-sci-2-jikai",
             "name": "電流と磁界",
             "engines": [
               "覚える",
@@ -943,6 +964,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-sci-2-seidenki",
+            "href": "/learn/chu-rika#j-sci-2-seidenki",
             "name": "静電気と電流",
             "engines": [
               "覚える"
@@ -950,6 +972,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-sci-2-kisho",
+            "href": "/learn/chu-rika#j-sci-2-kisho",
             "name": "気象の観測",
             "engines": [
               "覚える",
@@ -958,6 +981,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-sci-2-tenki",
+            "href": "/learn/chu-rika#j-sci-2-tenki",
             "name": "天気の変化",
             "engines": [
               "覚える"
@@ -965,6 +989,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-sci-2-nihon-kisho",
+            "href": "/learn/chu-rika#j-sci-2-nihon-kisho",
             "name": "日本の気象",
             "engines": [
               "覚える"
@@ -977,6 +1002,7 @@ export const SUBJECTS: SchoolSubject[] = [
         "units": [
           {
             "id": "j-sci-3-ion",
+            "href": "/learn/chu-rika#j-sci-3-ion",
             "name": "水溶液とイオン",
             "engines": [
               "覚える"
@@ -984,6 +1010,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-sci-3-denchi",
+            "href": "/learn/chu-rika#j-sci-3-denchi",
             "name": "化学変化と電池",
             "engines": [
               "覚える"
@@ -991,6 +1018,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-sci-3-chuwa",
+            "href": "/learn/chu-rika#j-sci-3-chuwa",
             "name": "酸・アルカリと中和",
             "engines": [
               "覚える",
@@ -999,6 +1027,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-sci-3-saibo-bunretsu",
+            "href": "/learn/chu-rika#j-sci-3-saibo-bunretsu",
             "name": "生物の成長と細胞分裂",
             "engines": [
               "覚える"
@@ -1006,6 +1035,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-sci-3-iden",
+            "href": "/learn/chu-rika#j-sci-3-iden",
             "name": "遺伝の規則性",
             "engines": [
               "覚える",
@@ -1014,6 +1044,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-sci-3-shinka",
+            "href": "/learn/chu-rika#j-sci-3-shinka",
             "name": "生物の進化",
             "engines": [
               "覚える"
@@ -1021,6 +1052,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-sci-3-suiatsu",
+            "href": "/learn/chu-rika#j-sci-3-suiatsu",
             "name": "水圧と浮力",
             "engines": [
               "覚える",
@@ -1029,6 +1061,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-sci-3-goryoku",
+            "href": "/learn/chu-rika#j-sci-3-goryoku",
             "name": "力の合成と分解",
             "engines": [
               "覚える",
@@ -1037,6 +1070,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-sci-3-undo",
+            "href": "/learn/chu-rika#j-sci-3-undo",
             "name": "物体の運動",
             "engines": [
               "覚える",
@@ -1045,6 +1079,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-sci-3-shigoto",
+            "href": "/learn/chu-rika#j-sci-3-shigoto",
             "name": "仕事とエネルギー",
             "engines": [
               "覚える",
@@ -1053,6 +1088,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-sci-3-tentai",
+            "href": "/learn/chu-rika#j-sci-3-tentai",
             "name": "天体の動き",
             "engines": [
               "覚える",
@@ -1061,6 +1097,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-sci-3-taiyokei",
+            "href": "/learn/chu-rika#j-sci-3-taiyokei",
             "name": "太陽系と宇宙",
             "engines": [
               "覚える"
@@ -1068,6 +1105,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-sci-3-seitaikei",
+            "href": "/learn/chu-rika#j-sci-3-seitaikei",
             "name": "自然界のつながり（生態系）",
             "engines": [
               "覚える"
@@ -1075,6 +1113,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-sci-3-kagaku-gijutsu",
+            "href": "/learn/chu-rika#j-sci-3-kagaku-gijutsu",
             "name": "エネルギーと科学技術",
             "engines": [
               "覚える"
@@ -1093,6 +1132,7 @@ export const SUBJECTS: SchoolSubject[] = [
         "units": [
           {
             "id": "j-soc-geo-sekai-sugata",
+            "href": "/learn/chu-shakai#j-soc-geo-sekai-sugata",
             "name": "世界の姿",
             "engines": [
               "覚える"
@@ -1100,6 +1140,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-soc-geo-nihon-sugata",
+            "href": "/learn/chu-shakai#j-soc-geo-nihon-sugata",
             "name": "日本の姿",
             "engines": [
               "覚える"
@@ -1107,6 +1148,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-soc-geo-seikatsu",
+            "href": "/learn/chu-shakai#j-soc-geo-seikatsu",
             "name": "世界の人々の生活と環境",
             "engines": [
               "覚える"
@@ -1114,6 +1156,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-soc-geo-asia",
+            "href": "/learn/chu-shakai#j-soc-geo-asia",
             "name": "アジア州",
             "engines": [
               "覚える"
@@ -1121,6 +1164,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-soc-geo-europe",
+            "href": "/learn/chu-shakai#j-soc-geo-europe",
             "name": "ヨーロッパ州",
             "engines": [
               "覚える"
@@ -1128,6 +1172,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-soc-geo-africa",
+            "href": "/learn/chu-shakai#j-soc-geo-africa",
             "name": "アフリカ州",
             "engines": [
               "覚える"
@@ -1135,6 +1180,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-soc-geo-north-america",
+            "href": "/learn/chu-shakai#j-soc-geo-north-america",
             "name": "北アメリカ州",
             "engines": [
               "覚える"
@@ -1142,6 +1188,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-soc-geo-south-america",
+            "href": "/learn/chu-shakai#j-soc-geo-south-america",
             "name": "南アメリカ州",
             "engines": [
               "覚える"
@@ -1149,6 +1196,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-soc-geo-oceania",
+            "href": "/learn/chu-shakai#j-soc-geo-oceania",
             "name": "オセアニア州",
             "engines": [
               "覚える"
@@ -1156,6 +1204,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-soc-geo-chiiki-chosa",
+            "href": "/learn/chu-shakai#j-soc-geo-chiiki-chosa",
             "name": "身近な地域の調査",
             "engines": [
               "覚える"
@@ -1163,6 +1212,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-soc-geo-nihon-tokushoku",
+            "href": "/learn/chu-shakai#j-soc-geo-nihon-tokushoku",
             "name": "日本の地域的特色",
             "engines": [
               "覚える"
@@ -1170,6 +1220,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-soc-geo-kyushu",
+            "href": "/learn/chu-shakai#j-soc-geo-kyushu",
             "name": "九州地方",
             "engines": [
               "覚える"
@@ -1177,6 +1228,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-soc-geo-chugoku-shikoku",
+            "href": "/learn/chu-shakai#j-soc-geo-chugoku-shikoku",
             "name": "中国・四国地方",
             "engines": [
               "覚える"
@@ -1184,6 +1236,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-soc-geo-kinki",
+            "href": "/learn/chu-shakai#j-soc-geo-kinki",
             "name": "近畿地方",
             "engines": [
               "覚える"
@@ -1191,6 +1244,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-soc-geo-chubu",
+            "href": "/learn/chu-shakai#j-soc-geo-chubu",
             "name": "中部地方",
             "engines": [
               "覚える"
@@ -1198,6 +1252,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-soc-geo-kanto",
+            "href": "/learn/chu-shakai#j-soc-geo-kanto",
             "name": "関東地方",
             "engines": [
               "覚える"
@@ -1205,6 +1260,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-soc-geo-tohoku",
+            "href": "/learn/chu-shakai#j-soc-geo-tohoku",
             "name": "東北地方",
             "engines": [
               "覚える"
@@ -1212,6 +1268,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-soc-geo-hokkaido",
+            "href": "/learn/chu-shakai#j-soc-geo-hokkaido",
             "name": "北海道地方",
             "engines": [
               "覚える"
@@ -1224,6 +1281,7 @@ export const SUBJECTS: SchoolSubject[] = [
         "units": [
           {
             "id": "j-soc-hist-toraekata",
+            "href": "/learn/chu-shakai#j-soc-hist-toraekata",
             "name": "歴史の捉え方",
             "engines": [
               "覚える"
@@ -1231,6 +1289,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-soc-hist-bunmei",
+            "href": "/learn/chu-shakai#j-soc-hist-bunmei",
             "name": "人類の出現と文明のおこり",
             "engines": [
               "覚える"
@@ -1238,6 +1297,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-soc-hist-nihon-naritachi",
+            "href": "/learn/chu-shakai#j-soc-hist-nihon-naritachi",
             "name": "日本の成り立ち（縄文・弥生・古墳）",
             "engines": [
               "覚える"
@@ -1245,6 +1305,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-soc-hist-kodai-kokka",
+            "href": "/learn/chu-shakai#j-soc-hist-kodai-kokka",
             "name": "古代国家の成立（飛鳥・奈良）",
             "engines": [
               "覚える"
@@ -1252,6 +1313,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-soc-hist-heian",
+            "href": "/learn/chu-shakai#j-soc-hist-heian",
             "name": "平安時代",
             "engines": [
               "覚える"
@@ -1259,6 +1321,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-soc-hist-kamakura",
+            "href": "/learn/chu-shakai#j-soc-hist-kamakura",
             "name": "武家政治の始まり（鎌倉時代）",
             "engines": [
               "覚える"
@@ -1266,6 +1329,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-soc-hist-muromachi",
+            "href": "/learn/chu-shakai#j-soc-hist-muromachi",
             "name": "室町時代",
             "engines": [
               "覚える"
@@ -1273,6 +1337,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-soc-hist-tenka-toitsu",
+            "href": "/learn/chu-shakai#j-soc-hist-tenka-toitsu",
             "name": "ヨーロッパとの出会いと全国統一",
             "engines": [
               "覚える"
@@ -1280,6 +1345,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-soc-hist-edo-seiritsu",
+            "href": "/learn/chu-shakai#j-soc-hist-edo-seiritsu",
             "name": "江戸幕府の成立",
             "engines": [
               "覚える"
@@ -1287,6 +1353,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-soc-hist-edo-tenkai",
+            "href": "/learn/chu-shakai#j-soc-hist-edo-tenkai",
             "name": "産業の発達と幕府政治の変化",
             "engines": [
               "覚える"
@@ -1294,6 +1361,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-soc-hist-kaikoku",
+            "href": "/learn/chu-shakai#j-soc-hist-kaikoku",
             "name": "欧米の近代化と開国",
             "engines": [
               "覚える"
@@ -1301,6 +1369,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-soc-hist-meiji-ishin",
+            "href": "/learn/chu-shakai#j-soc-hist-meiji-ishin",
             "name": "明治維新",
             "engines": [
               "覚える"
@@ -1308,6 +1377,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-soc-hist-rikken",
+            "href": "/learn/chu-shakai#j-soc-hist-rikken",
             "name": "立憲国家の成立と日清・日露戦争",
             "engines": [
               "覚える"
@@ -1315,6 +1385,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-soc-hist-taisho",
+            "href": "/learn/chu-shakai#j-soc-hist-taisho",
             "name": "第一次世界大戦と大正デモクラシー",
             "engines": [
               "覚える"
@@ -1322,6 +1393,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-soc-hist-sekai-taisen",
+            "href": "/learn/chu-shakai#j-soc-hist-sekai-taisen",
             "name": "世界恐慌と第二次世界大戦",
             "engines": [
               "覚える"
@@ -1329,6 +1401,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-soc-hist-sengo",
+            "href": "/learn/chu-shakai#j-soc-hist-sengo",
             "name": "戦後の日本と民主化",
             "engines": [
               "覚える"
@@ -1336,6 +1409,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-soc-hist-gendai",
+            "href": "/learn/chu-shakai#j-soc-hist-gendai",
             "name": "冷戦後の世界と現代の日本",
             "engines": [
               "覚える"
@@ -1348,6 +1422,7 @@ export const SUBJECTS: SchoolSubject[] = [
         "units": [
           {
             "id": "j-soc-civ-gendai-shakai",
+            "href": "/learn/chu-shakai#j-soc-civ-gendai-shakai",
             "name": "現代社会の特色",
             "engines": [
               "覚える"
@@ -1355,6 +1430,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-soc-civ-bunka",
+            "href": "/learn/chu-shakai#j-soc-civ-bunka",
             "name": "現代社会の文化",
             "engines": [
               "覚える"
@@ -1362,6 +1438,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-soc-civ-goi",
+            "href": "/learn/chu-shakai#j-soc-civ-goi",
             "name": "対立と合意・効率と公正",
             "engines": [
               "覚える"
@@ -1369,6 +1446,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-soc-civ-kenpo",
+            "href": "/learn/chu-shakai#j-soc-civ-kenpo",
             "name": "日本国憲法の基本原理",
             "engines": [
               "覚える"
@@ -1376,6 +1454,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-soc-civ-jinken",
+            "href": "/learn/chu-shakai#j-soc-civ-jinken",
             "name": "基本的人権",
             "engines": [
               "覚える"
@@ -1383,6 +1462,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-soc-civ-senkyo",
+            "href": "/learn/chu-shakai#j-soc-civ-senkyo",
             "name": "民主政治と選挙",
             "engines": [
               "覚える"
@@ -1390,6 +1470,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-soc-civ-kokkai",
+            "href": "/learn/chu-shakai#j-soc-civ-kokkai",
             "name": "国会",
             "engines": [
               "覚える"
@@ -1397,6 +1478,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-soc-civ-naikaku",
+            "href": "/learn/chu-shakai#j-soc-civ-naikaku",
             "name": "内閣",
             "engines": [
               "覚える"
@@ -1404,6 +1486,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-soc-civ-saibansho",
+            "href": "/learn/chu-shakai#j-soc-civ-saibansho",
             "name": "裁判所と三権分立",
             "engines": [
               "覚える"
@@ -1411,6 +1494,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-soc-civ-chiho",
+            "href": "/learn/chu-shakai#j-soc-civ-chiho",
             "name": "地方自治",
             "engines": [
               "覚える"
@@ -1418,6 +1502,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-soc-civ-shohi",
+            "href": "/learn/chu-shakai#j-soc-civ-shohi",
             "name": "消費生活と経済",
             "engines": [
               "覚える"
@@ -1425,6 +1510,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-soc-civ-shijo",
+            "href": "/learn/chu-shakai#j-soc-civ-shijo",
             "name": "市場経済と価格",
             "engines": [
               "覚える"
@@ -1432,6 +1518,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-soc-civ-kigyo",
+            "href": "/learn/chu-shakai#j-soc-civ-kigyo",
             "name": "生産と企業・労働",
             "engines": [
               "覚える"
@@ -1439,6 +1526,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-soc-civ-kinyu",
+            "href": "/learn/chu-shakai#j-soc-civ-kinyu",
             "name": "金融",
             "engines": [
               "覚える"
@@ -1446,6 +1534,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-soc-civ-zaisei",
+            "href": "/learn/chu-shakai#j-soc-civ-zaisei",
             "name": "財政と税",
             "engines": [
               "覚える"
@@ -1453,6 +1542,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-soc-civ-shakai-hosho",
+            "href": "/learn/chu-shakai#j-soc-civ-shakai-hosho",
             "name": "社会保障",
             "engines": [
               "覚える"
@@ -1460,6 +1550,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-soc-civ-kokusai",
+            "href": "/learn/chu-shakai#j-soc-civ-kokusai",
             "name": "国際社会と国際連合",
             "engines": [
               "覚える"
@@ -1467,6 +1558,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-soc-civ-chikyu",
+            "href": "/learn/chu-shakai#j-soc-civ-chikyu",
             "name": "地球規模の課題",
             "engines": [
               "覚える"

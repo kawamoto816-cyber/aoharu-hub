@@ -16,6 +16,7 @@ import { STEPS } from "@/lib/math/steps";
 import { STAGES as WORD_STAGES } from "@/lib/eitango/stages";
 import { STEPS as SANSU_STEPS } from "@/lib/sansu/steps";
 import { STEPS as KOUSUU_STEPS } from "@/lib/kousuu/steps";
+import { TERM_SET_KEYS } from "@/lib/terms";
 
 // 検索エンジン向けサイトマップ。入口ページを追加したらここに足す。
 // /guide の記事は静的記事とDBの記事の両方を載せる (取り込んだ記事が当日中に見つかるように)。
@@ -61,8 +62,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${base}/learn/kanji`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
     ...[1, 2, 3, 4, 5, 6].map((g) => ({ url: `${base}/learn/kanji/${g}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
     { url: `${base}/learn/todofuken`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
-    { url: `${base}/learn/rika`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
-    { url: `${base}/learn/shakai`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
+    ...TERM_SET_KEYS.map((k) => ({ url: `${base}/learn/${k}`, lastModified: now, changeFrequency: "weekly" as const, priority: 0.7 })),
     { url: `${base}/learn/kotowaza`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
     { url: `${base}/learn/kousuu`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
     ...KOUSUU_STEPS.map((st) => ({ url: `${base}/learn/kousuu/${st.no}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),

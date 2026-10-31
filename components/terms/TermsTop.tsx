@@ -1,16 +1,16 @@
 import { LearnShell } from "@/components/learn/LearnShell";
 import { TermTodayLoader } from "./TermLoaders";
-import { TERM_SETS, unitGrade, unitName } from "@/lib/terms";
+import { TERM_SETS, setGroups, termCount, unitGroup, unitName, type TermSetKey } from "@/lib/terms";
 
 // /learn/rika・/learn/shakai の中身 (サーバー側)。今日の修行と、学年・単元ごとの語句の一覧 (各単元から修行に入れる)。
 
-export function TermsTop({ setKey, lead }: { setKey: "rika" | "shakai"; lead: string }) {
+export function TermsTop({ setKey, lead }: { setKey: TermSetKey; lead: string }) {
   const set = TERM_SETS[setKey];
-  const grades = [...new Set(set.units.map((u) => unitGrade(u.unit)))];
-  const total = set.units.reduce((n, u) => n + u.items.length, 0);
+  const grades = setGroups(set);
+  const total = termCount(set);
   return (
     <LearnShell crumbs={[{ href: "/", label: "アオハルOS" }, { href: "/learn", label: "まなぶ" }, { href: "/learn/school", label: "学校の教科" }, { label: `${set.name}の重要語句` }]}>
-      <p className="m-0 text-xs font-black tracking-wider text-[#1533B8]">{setKey === "rika" ? "理科" : "社会"}　小3〜小6</p>
+      <p className="m-0 text-xs font-black tracking-wider text-[#1533B8]">{set.eyebrow}</p>
       <h1 className="m-0 mt-1 text-[26px] font-black sm:text-[32px]">
         {set.name}の重要語句<span className="ml-2 text-[15px] font-bold text-[#3A3D55]">{total}語</span>
       </h1>
@@ -24,10 +24,10 @@ export function TermsTop({ setKey, lead }: { setKey: "rika" | "shakai"; lead: st
         </h2>
         {grades.map((g) => (
           <div key={g} className="mt-5">
-            <h3 className="m-0 text-[17px] font-black">{g}年生</h3>
+            <h3 className="m-0 text-[17px] font-black">{g}</h3>
             <div className="mt-2 grid gap-2">
               {set.units
-                .filter((u) => unitGrade(u.unit) === g)
+                .filter((u) => unitGroup(u.unit) === g)
                 .map((u) => (
                   <details key={u.unit} id={u.unit} className="scroll-mt-4 rounded-[14px] border-[1.5px] border-[#15172B] bg-white p-3">
                     <summary className="flex cursor-pointer flex-wrap items-center gap-2 text-[15px] font-black">
