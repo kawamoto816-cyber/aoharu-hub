@@ -8,6 +8,7 @@ import { ENG_KO2 } from "./data/eng_ko2";
 import { KOBUN } from "./data/kobun";
 import { KANBUN } from "./data/kanbun";
 import { KOKUGO_CHU } from "./data/kokugo_chu";
+import { SUGAKU_KO1 } from "./data/sugaku_ko1";
 import { KOKUGO_SHO1 } from "./data/kokugo_sho1";
 import { KOKUGO_SHO2 } from "./data/kokugo_sho2";
 import { KOKUGO_SHO3 } from "./data/kokugo_sho3";
@@ -49,7 +50,7 @@ export type DrillSetKey =
   | "kokugo-ko"
   | "eigo-ko"
   | "rika-keisan"
-  | "joho-enshu";
+  | "joho-enshu" | "sugaku-ko";
 
 export interface DrillSet {
   key: DrillSetKey;
@@ -163,6 +164,13 @@ export const DRILL_SETS: Record<DrillSetKey, DrillSet> = {
     eyebrow: "情報　情報Ⅰ",
     lead: "データ量と圧縮、アルゴリズム、共通テスト用プログラム表記、モデル化とシミュレーション、データの活用。",
     units: [...JOHO_KO1],
+  },
+  "sugaku-ko": {
+    key: "sugaku-ko",
+    name: "高校数学の図形・データ・証明",
+    eyebrow: "数学　数学Ⅰ・A・Ⅱ・B・C",
+    lead: "集合と命題、データの分析、条件付き確率、図形の性質、点と直線・円・軌跡、帰納法、推定・検定、ベクトルと図形、媒介変数表示まで。計算は「計算88段」で。",
+    units: SUGAKU_KO1,
   },
   kanbun: {
     key: "kanbun",
