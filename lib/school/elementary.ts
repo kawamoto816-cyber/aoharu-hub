@@ -322,7 +322,7 @@ export const SUBJECTS: SchoolSubject[] = [
       {
         title: "小4",
         units: [
-          { id: "e-social-4-todofuken", name: "47都道府県", engines: ["覚える"] },
+          { id: "e-social-4-todofuken", name: "47都道府県", engines: ["覚える"], href: "/learn/todofuken" },
           { id: "e-social-4-ken", name: "県の様子", engines: ["覚える"] },
           { id: "e-social-4-mizu", name: "水はどこから（飲料水）", engines: ["覚える"] },
           { id: "e-social-4-gomi", name: "ごみのしょりと利用", engines: ["覚える"] },
