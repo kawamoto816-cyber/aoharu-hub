@@ -121,6 +121,17 @@ jobs:
         run: |
           code=$(curl -sS -o shorts.json -w '%{http_code}' --max-time 290 -H "Authorization: Bearer $CRON_SECRET" "https://app.bluespring.co.jp/internal/shorts/publish") || true
           echo "HTTP $code"; cat shorts.json || true; echo
+      # 登録した人へのお知らせメールも同じ理由で抜ける。18:10 の定時実行が毎日6〜7時間遅れて深夜に動き、
+      # 時間外として何も送れていなかった (2026-10-24〜30)。どのジョブで起動しても1回試みる
+      # (同じ人に同じお知らせは1回だけ・日本時間9〜20時台だけ送る、はサーバー側で守る)。
+      - name: Onboarding emails (piggyback)
+        if: always() && steps.pick.outputs.job != 'onboarding'
+        continue-on-error: true
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          code=$(curl -sS -o onboarding.json -w '%{http_code}' --max-time 120 -H "Authorization: Bearer $CRON_SECRET" "https://app.bluespring.co.jp/internal/onboarding/run") || true
+          echo "HTTP $code"; cat onboarding.json || true; echo
       - name: Alert on failure
         if: failure()
         env:
