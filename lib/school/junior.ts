@@ -27,6 +27,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-ja-1-bunpo-tani",
+            "href": "/learn/kokubunpo-chu/j-ja-1-bunpo-tani",
             "name": "文法：言葉の単位",
             "engines": [
               "覚える"
@@ -34,6 +35,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-ja-1-bunpo-seibun",
+            "href": "/learn/kokubunpo-chu/j-ja-1-bunpo-seibun",
             "name": "文法：文の成分と文節の関係",
             "engines": [
               "覚える"
@@ -41,6 +43,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-ja-1-bunpo-hinshi",
+            "href": "/learn/kokubunpo-chu/j-ja-1-bunpo-hinshi",
             "name": "文法：品詞の分類",
             "engines": [
               "覚える"
@@ -48,6 +51,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-ja-1-kobun",
+            "href": "/learn/kokubunpo-chu/j-ja-1-kobun",
             "name": "古文の基礎（歴史的仮名遣い）",
             "engines": [
               "覚える"
@@ -55,6 +59,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-ja-1-kanbun",
+            "href": "/learn/kokubunpo-chu/j-ja-1-kanbun",
             "name": "漢文の基礎（訓読・故事成語）",
             "engines": [
               "覚える"
@@ -117,6 +122,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-ja-2-bunpo-yogen",
+            "href": "/learn/kokubunpo-chu/j-ja-2-bunpo-yogen",
             "name": "文法：用言の活用",
             "engines": [
               "覚える",
@@ -125,6 +131,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-ja-2-bunpo-fuzoku",
+            "href": "/learn/kokubunpo-chu/j-ja-2-bunpo-fuzoku",
             "name": "文法：助詞・助動詞",
             "engines": [
               "覚える",
@@ -133,6 +140,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-ja-2-keigo",
+            "href": "/learn/kokubunpo-chu/j-ja-2-keigo",
             "name": "敬語",
             "engines": [
               "覚える",
@@ -211,6 +219,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-ja-3-bunpo",
+            "href": "/learn/kokubunpo-chu/j-ja-3-bunpo",
             "name": "文法の総まとめ",
             "engines": [
               "覚える",
@@ -482,6 +491,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-en-1-be",
+            "href": "/learn/eibunpo-chu/j-en-1-be",
             "name": "be動詞",
             "engines": [
               "覚える",
@@ -490,6 +500,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-en-1-ippan",
+            "href": "/learn/eibunpo-chu/j-en-1-ippan",
             "name": "一般動詞",
             "engines": [
               "覚える",
@@ -498,6 +509,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-en-1-meishi",
+            "href": "/learn/eibunpo-chu/j-en-1-meishi",
             "name": "名詞の複数形と冠詞",
             "engines": [
               "覚える",
@@ -506,6 +518,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-en-1-daimeishi",
+            "href": "/learn/eibunpo-chu/j-en-1-daimeishi",
             "name": "代名詞",
             "engines": [
               "覚える",
@@ -514,6 +527,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-en-1-gimonshi",
+            "href": "/learn/eibunpo-chu/j-en-1-gimonshi",
             "name": "疑問詞",
             "engines": [
               "覚える",
@@ -522,6 +536,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-en-1-meirei",
+            "href": "/learn/eibunpo-chu/j-en-1-meirei",
             "name": "命令文",
             "engines": [
               "覚える",
@@ -530,6 +545,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-en-1-can",
+            "href": "/learn/eibunpo-chu/j-en-1-can",
             "name": "助動詞 can",
             "engines": [
               "覚える",
@@ -538,6 +554,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-en-1-shinkokei",
+            "href": "/learn/eibunpo-chu/j-en-1-shinkokei",
             "name": "現在進行形",
             "engines": [
               "覚える",
@@ -546,6 +563,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-en-1-kakokei",
+            "href": "/learn/eibunpo-chu/j-en-1-kakokei",
             "name": "過去形",
             "engines": [
               "覚える",
@@ -580,6 +598,7 @@ export const SUBJECTS: SchoolSubject[] = [
         "units": [
           {
             "id": "j-en-2-kako-shinko",
+            "href": "/learn/eibunpo-chu/j-en-2-kako-shinko",
             "name": "過去進行形",
             "engines": [
               "覚える",
@@ -588,6 +607,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-en-2-mirai",
+            "href": "/learn/eibunpo-chu/j-en-2-mirai",
             "name": "未来の表現（will・be going to）",
             "engines": [
               "覚える",
@@ -596,6 +616,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-en-2-jodoshi",
+            "href": "/learn/eibunpo-chu/j-en-2-jodoshi",
             "name": "助動詞（must・have to・should など）",
             "engines": [
               "覚える",
@@ -604,6 +625,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-en-2-setsuzokushi",
+            "href": "/learn/eibunpo-chu/j-en-2-setsuzokushi",
             "name": "接続詞",
             "engines": [
               "覚える",
@@ -612,6 +634,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-en-2-there",
+            "href": "/learn/eibunpo-chu/j-en-2-there",
             "name": "There is / There are",
             "engines": [
               "覚える",
@@ -620,6 +643,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-en-2-futeishi",
+            "href": "/learn/eibunpo-chu/j-en-2-futeishi",
             "name": "不定詞",
             "engines": [
               "覚える",
@@ -628,6 +652,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-en-2-domeishi",
+            "href": "/learn/eibunpo-chu/j-en-2-domeishi",
             "name": "動名詞",
             "engines": [
               "覚える",
@@ -636,6 +661,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-en-2-bunkei",
+            "href": "/learn/eibunpo-chu/j-en-2-bunkei",
             "name": "文型（SVOO・SVOC）",
             "engines": [
               "覚える",
@@ -644,6 +670,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-en-2-hikaku",
+            "href": "/learn/eibunpo-chu/j-en-2-hikaku",
             "name": "比較",
             "engines": [
               "覚える",
@@ -652,6 +679,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-en-2-ukemi",
+            "href": "/learn/eibunpo-chu/j-en-2-ukemi",
             "name": "受け身",
             "engines": [
               "覚える",
@@ -686,6 +714,7 @@ export const SUBJECTS: SchoolSubject[] = [
         "units": [
           {
             "id": "j-en-3-kanryo",
+            "href": "/learn/eibunpo-chu/j-en-3-kanryo",
             "name": "現在完了",
             "engines": [
               "覚える",
@@ -694,6 +723,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-en-3-kanryo-shinko",
+            "href": "/learn/eibunpo-chu/j-en-3-kanryo-shinko",
             "name": "現在完了進行形",
             "engines": [
               "覚える",
@@ -702,6 +732,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-en-3-futeishi",
+            "href": "/learn/eibunpo-chu/j-en-3-futeishi",
             "name": "不定詞の発展（It is ~ for … to など）",
             "engines": [
               "覚える",
@@ -710,6 +741,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-en-3-bunshi",
+            "href": "/learn/eibunpo-chu/j-en-3-bunshi",
             "name": "分詞の後置修飾",
             "engines": [
               "覚える",
@@ -718,6 +750,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-en-3-kankei",
+            "href": "/learn/eibunpo-chu/j-en-3-kankei",
             "name": "関係代名詞",
             "engines": [
               "覚える",
@@ -726,6 +759,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-en-3-kansetsu",
+            "href": "/learn/eibunpo-chu/j-en-3-kansetsu",
             "name": "間接疑問文",
             "engines": [
               "覚える",
@@ -734,6 +768,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-en-3-katei",
+            "href": "/learn/eibunpo-chu/j-en-3-katei",
             "name": "仮定法",
             "engines": [
               "覚える",
