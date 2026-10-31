@@ -73,7 +73,7 @@ export function SkillMap({ selfIds, schoolIds, writeIds, talkIds, kyoyoIds }: { 
       })}
 
       <div className="absolute left-1/2 top-1/2 flex aspect-square w-[25%] -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center rounded-full bg-[#15172B] text-white shadow-[0_0_0_6px_#FFE45C]">
-        <span className="text-[11px] font-bold">総合型選抜</span>
+        <span className="text-[11px] font-bold">推薦入試</span>
         <span className="text-[15px] font-black">合格力</span>
         <span className="text-xs font-bold text-[#FFE45C]">{percent}%</span>
       </div>
