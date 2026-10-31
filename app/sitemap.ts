@@ -60,6 +60,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${base}/learn/sansu`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
     ...SANSU_STEPS.map((st) => ({ url: `${base}/learn/sansu/${st.no}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
     { url: `${base}/learn/eitango`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
+    { url: `${base}/learn/eitango/kitaeru`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
     ...WORD_STAGES.filter((s) => s.open).map((s) => ({ url: `${base}/learn/eitango/${s.no}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
     ...BOOKS.map((b) => ({ url: `${base}/learn/library/${b.id}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.5 })),
     { url: `${base}/learn/shiboriyusho`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },

@@ -53,6 +53,15 @@ export function EitangoHome() {
         </p>
       </section>
 
+      <Link href="/learn/eitango/kitaeru" className="mt-4 flex items-center gap-3 rounded-[16px] border-[1.5px] border-[#15172B] bg-white p-4 text-[#15172B] no-underline shadow-[3px_3px_0_#15172B]">
+        <span className="rounded-md bg-[#1533B8] px-2 py-1 text-[12px] font-black text-white">②鍛える</span>
+        <span className="min-w-0 flex-1">
+          <span className="block text-[16px] font-black">瞬発（60秒）と 文脈（空所補充）</span>
+          <span className="block text-[12.5px] text-[#3A3D55]">覚えた単語を、入試で使える力に</span>
+        </span>
+        <span aria-hidden="true" className="text-[18px] font-black">→</span>
+      </Link>
+
       <section aria-labelledby="stages-h" className="mt-8">
         <h2 id="stages-h" className="m-0 text-[20px] font-black">
           20ステージ

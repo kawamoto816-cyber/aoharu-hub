@@ -49,7 +49,7 @@ function rows(): Row[] {
       tint: "bg-white",
       cells: [
         { items: [{ label: "英語：英単語2000", href: "/learn/eitango", sub: "高校英語・忘れかけたころに復習" }], note: `公開中 ${school.oboeru.open} / ${school.oboeru.total} 単元` },
-        { items: [{ label: "算数：計算63段", href: "/learn/sansu", sub: "小学算数・その場で採点" }, { label: "数学：計算50段", href: "/learn/math", sub: "中学数学・その場で採点" }], note: `公開中 ${school.kitaeru.open} / ${school.kitaeru.total} 単元` },
+        { items: [{ label: "算数：計算63段", href: "/learn/sansu", sub: "小学算数・その場で採点" }, { label: "英単語2000：鍛える", href: "/learn/eitango/kitaeru", sub: "60秒の瞬発・文脈の空所補充" }, { label: "数学：計算50段", href: "/learn/math", sub: "中学数学・その場で採点" }], note: `公開中 ${school.kitaeru.open} / ${school.kitaeru.total} 単元` },
         OSHIERU,
       ],
     },

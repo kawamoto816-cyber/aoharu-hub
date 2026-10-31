@@ -52,6 +52,14 @@ export default async function StagePage({ params }: { params: Promise<{ stage: s
         このステージを学ぶ
       </a>
       <p className="m-0 mt-2 text-[12.5px] text-[#3A3D55]">このステージの復習と、まだ見ていない単語が出てきます。</p>
+      <div className="mt-3 flex max-w-[420px] gap-2">
+        <a href={`/learn/eitango/kitaeru/play?mode=shun&stage=${s.no}`} className="flex min-h-[44px] flex-1 items-center justify-center rounded-[12px] border-[1.5px] border-[#15172B] bg-white text-[14px] font-black text-[#15172B] no-underline">
+          鍛える：瞬発
+        </a>
+        <a href={`/learn/eitango/kitaeru/play?mode=ctx&stage=${s.no}`} className="flex min-h-[44px] flex-1 items-center justify-center rounded-[12px] border-[1.5px] border-[#15172B] bg-white text-[14px] font-black text-[#15172B] no-underline">
+          鍛える：文脈
+        </a>
+      </div>
 
       <ol className="m-0 mt-6 grid list-none gap-2 p-0 lg:grid-cols-2">
         {words.map((w) => (
