@@ -1,7 +1,7 @@
 import { parseExpr } from "../math/parse";
 import { formatCoef, formatFrac, formatPoly } from "../math/format";
 import { cAdd, cDiv, cKey, cMul, cNeg, coef, fAdd, fDiv, fMul, fSub, frac, gcd, monoKey, pAdd, pConst, pMul, pNum, pSubst, parseMonoKey, poly, splitSquare, type Coef, type Frac, type Poly } from "../math/value";
-import { cNum, intersect, type Bound, type Field, type SolSet } from "./check";
+import { cNum, formatComplex, intersect, type Bound, type Field, type SolSet } from "./check";
 import { STEP_COUNT } from "./steps";
 
 // 高校数学 計算○段それぞれの問題の作り方。答えは問題と同じ数から計算する (表示と答えが食い違わないように)。
@@ -26,7 +26,26 @@ export interface Problem {
   show?: string[];
   /** 自己テスト用：方程式 (解を代入して確かめる) */
   equations?: string[];
+  /** 自己テスト用：答え (1つ目の欄) を数値で確かめる手がかり */
+  verify?: Verify;
 }
+
+/** 自己テストで答えを数値で確かめる方法 (式は lib/kousuu/expr で読める書き方) */
+export type Verify =
+  /** f を微分したもの */
+  | { deriv: string }
+  /** 微分すると f になるもの (不定積分) */
+  | { anti: string }
+  /** ∫[a,b] f dx */
+  | { integral: [string, string, string] }
+  /** f の極限 [式, 文字, 行き先 ("inf" か値)] */
+  | { limit: [string, string, string] }
+  /** y=f(x) の x=a における接線 */
+  | { tangent: [string, string] }
+  /** 数列の初めの項 (n=1, 2, …) */
+  | { seq: number[] }
+  /** f の逆関数 */
+  | { inverse: string };
 
 // ---- 乱数 ----
 export type Rand = () => number;
@@ -227,6 +246,97 @@ function factorProblem(show: string): Problem {
   const value = parseExpr(show);
   return { lead: "因数分解", q: formatPoly(value), fields: [{ kind: "factor", value }], show: [show] };
 }
+
+// ---- 数学B・Ⅲ・C ----
+const realF = (value: string): Field => ({ kind: "real", value });
+const funcF = (value: string, v = "x", upToConst = false): Field => (upToConst ? { kind: "func", value, v, upToConst } : { kind: "func", value, v });
+/** 符号つきの項をつなぐ (各項は先頭に - があってもよい、空の項は飛ばす) */
+function J(ts: string[]): string {
+  let s = "";
+  for (const t of ts) {
+    if (!t) continue;
+    s += s && !t.startsWith("-") ? `+${t}` : t;
+  }
+  return s || "0";
+}
+/** 有理数の係数つきの項 (符号は先頭に。v が数で始まるときは · をはさむ) */
+function TF(c: Frac | number, v: string): string {
+  const f = typeof c === "number" ? frac(c) : c;
+  if (f.n === 0) return "";
+  const a = { n: Math.abs(f.n), d: f.d };
+  const sign = f.n < 0 ? "-" : "";
+  if (!v) return sign + fs(a);
+  if (a.n === 1 && a.d === 1) return sign + v;
+  return `${sign}${fs(a)}${/^([\d.]|\([-\d])/.test(v) ? "·" : ""}${v}`;
+}
+/** 等比数列の項 m·r^(n-1) の書き方 */
+function geomShow(m: number | Frac, q: Frac): string {
+  const mf = typeof m === "number" ? frac(m) : m;
+  const base = q.d === 1 && q.n > 0 ? `${q.n}` : `(${fs(q)})`;
+  if (q.d === 1 && q.n > 0 && mf.d === 1 && mf.n === q.n) return `${q.n}^n`;
+  if (q.d === 1 && q.n > 0 && mf.d === 1 && mf.n === -q.n) return `-${q.n}^n`;
+  return TF(mf, `${base}^(n-1)`);
+}
+/** 数列の最初の項を、漸化式どおりに順に計算する */
+function iterate(a1: number, next: (a: number, n: number) => number, count = 10): number[] {
+  const out = [a1];
+  while (out.length < count) out.push(next(out[out.length - 1], out.length));
+  return out;
+}
+/** 1次式の書き方 (例 2x+1) */
+const lin = (a: number, b: number, v = "x") => L([
+  [a, v],
+  [b, ""],
+]);
+/** π の有理数倍 (例 (9π)/4) */
+const piStr = (f: Frac) => angStr(f);
+/** n の多項式 (係数は有理数) */
+function polyN(cs: Frac[]): Poly {
+  let p: Poly = new Map();
+  cs.forEach((c, e) => {
+    if (c.n !== 0) p = pAdd(p, poly(coef(c), e ? { n: e } : {}));
+  });
+  return p;
+}
+/** Σ[k=1,n] k^e を n の多項式の係数 (定数項から) で */
+const SUMS: Frac[][] = [
+  [frac(0), frac(1)],
+  [frac(0), frac(1, 2), frac(1, 2)],
+  [frac(0), frac(1, 6), frac(1, 2), frac(1, 3)],
+  [frac(0), frac(0), frac(1, 4), frac(1, 2), frac(1, 4)],
+];
+function sumPoly(cs: number[]): Poly {
+  // cs[e] は k^e の係数
+  const out: Frac[] = [frac(0), frac(0), frac(0), frac(0), frac(0)];
+  cs.forEach((c, e) => SUMS[e].forEach((s, i) => (out[i] = fAdd(out[i], fMul(frac(c), s)))));
+  return polyN(out);
+}
+/** 2つのベクトルの組を、なす角を変えずに並べかえる (座標の入れかえ・符号・倍) */
+function shuffleVecs(rnd: Rand, a: number[], b: number[]): [number[], number[]] {
+  const idx = a.map((_, i) => i);
+  for (let i = idx.length - 1; i > 0; i--) {
+    const j = Math.floor(rnd() * (i + 1));
+    [idx[i], idx[j]] = [idx[j], idx[i]];
+  }
+  const sg = a.map(() => (rnd() < 0.5 ? 1 : -1));
+  const s1 = pick(rnd, [1, 1, 2]);
+  const s2 = pick(rnd, [1, 1, 2]);
+  const tr = (v: number[], s: number) => idx.map((k, i) => v[k] * sg[i] * s);
+  return rnd() < 0.5 ? [tr(a, s1), tr(b, s2)] : [tr(b, s2), tr(a, s1)];
+}
+const dot = (a: number[], b: number[]) => a.reduce((s, x, i) => s + x * b[i], 0);
+const vecStr = (v: number[]) => `(${v.join(", ")})`;
+/** z を何乗かする */
+function cxPow(z: Cx, n: number): Cx {
+  let w: Cx = cx(1, 0);
+  for (let i = 0; i < n; i++) w = cxMul(w, z);
+  return w;
+}
+/** 角 (度) を 0〜360 に */
+const deg360 = (d: number) => ((d % 360) + 360) % 360;
+/** 標準正規分布 P(0≤Z≤u) の表 (1万分の1単位) */
+const ZTABLE: Record<string, number> = { "0.5": 1915, "1": 3413, "1.5": 4332, "2": 4772 };
+const dec = (k: number) => String(k / 10000);
 
 // ---- 段 ----
 type Gen = (rnd: Rand) => Problem;
@@ -1606,6 +1716,1066 @@ const GENS: Record<number, Gen> = {
     const a = R(r, -3, -1);
     const b = R(r, 0, 2);
     return { q: `∫[${a},${b}](${s})dx`, fields: [nf(integ(parseExpr(s), a, b))] };
+  },
+  // ===== 数学B 数列 =====
+  59: (r) => {
+    const a = NZ(r, -9, 12);
+    const d = NZ(r, -6, 7);
+    const an = (n: number) => a + (n - 1) * d;
+    const k = R(r, 0, 3);
+    if (k === 0) return { lead: `初項 ${a}、公差 ${d} の等差数列 {a_n} の一般項`, q: "", fields: [exprF(parseExpr(lin(d, a - d, "n")))], labels: ["a_n ="] };
+    if (k === 1) {
+      const m = R(r, 10, 40);
+      return { lead: `初項 ${a}、公差 ${d} の等差数列の第 ${m} 項`, q: "", fields: [nf(an(m))] };
+    }
+    if (k === 2) {
+      const p = R(r, 2, 6);
+      const q = p + R(r, 2, 8);
+      return { lead: `第 ${p} 項が ${an(p)}、第 ${q} 項が ${an(q)} である等差数列の初項と公差`, q: "", fields: [nf(a), nf(d)], labels: ["初項", "公差"] };
+    }
+    const m = R(r, 8, 40);
+    return { lead: `初項 ${a}、公差 ${d} の等差数列で、${an(m)} は第何項か`, q: "", fields: [nf(m)], labels: ["第"], suffix: ["項"] };
+  },
+  60: (r) => {
+    const k = R(r, 0, 2);
+    if (k === 2) {
+      const a = NZ(r, -5, 5);
+      const q = pick(r, [2, 3, -2, -3]);
+      if (Math.abs(a * q ** 4) > 2000) return GENS[60](r);
+      return { lead: `第 2 項が ${a * q}、第 5 項が ${a * q ** 4} である等比数列の初項と公比 (公比は実数)`, q: "", fields: [nf(a), nf(q)], labels: ["初項", "公比"] };
+    }
+    const [q, as] = pick(r, [
+      [frac(2), [1, 3, 5, -1, -3, 7]],
+      [frac(3), [1, 2, -2, 4, 5]],
+      [frac(-2), [1, 3, -1, 5]],
+      [frac(-3), [1, 2, -1]],
+      [frac(1, 2), [64, 32, 48, 96, 80]],
+      [frac(-1, 2), [32, 64, 96]],
+      [frac(1, 3), [81, 162, 243]],
+    ] as [Frac, number[]][]);
+    const a = pick(r, as);
+    const terms = iterate(a, (x) => (x * q.n) / q.d);
+    if (k === 0) return { lead: `初項 ${a}、公比 ${fs(q)} の等比数列 {a_n} の一般項`, q: "", fields: [funcF(geomShow(a, q), "n")], labels: ["a_n ="], verify: { seq: terms } };
+    for (;;) {
+      const m = R(r, 3, 8);
+      const v = fMul(frac(a), fPow(q, m - 1));
+      if (Math.abs(v.n) > 20000) continue;
+      return { lead: `初項 ${a}、公比 ${fs(q)} の等比数列の第 ${m} 項`, q: "", fields: [nf(v)] };
+    }
+  },
+  61: (r) => {
+    const k = R(r, 0, 3);
+    if (k === 0) {
+      const a = NZ(r, -10, 15);
+      const d = NZ(r, -5, 6);
+      const n = R(r, 8, 30);
+      return { lead: `初項 ${a}、公差 ${d} の等差数列の、初項から第 ${n} 項までの和`, q: "", fields: [nf(frac(n * (2 * a + (n - 1) * d), 2))] };
+    }
+    if (k === 1) {
+      const a = R(r, 1, 9);
+      const d = R(r, 2, 7);
+      const n = R(r, 6, 25);
+      const last = a + (n - 1) * d;
+      return { lead: "和を求める", q: `${a}+${a + d}+${a + 2 * d}+…+${last}`, fields: [nf(frac(n * (a + last), 2))] };
+    }
+    if (k === 2) {
+      const q = pick(r, [frac(2), frac(3), frac(-2), frac(1, 2), frac(2)]);
+      const a = q.d === 2 ? pick(r, [64, 32, 96, 128]) : pick(r, [1, 2, 3, 5, -1]);
+      const n = R(r, 4, q.n === 3 ? 6 : 8);
+      const S = fDiv(fMul(frac(a), fSub(frac(1), fPow(q, n))), fSub(frac(1), q));
+      return { lead: `初項 ${a}、公比 ${fs(q)} の等比数列の、初項から第 ${n} 項までの和`, q: "", fields: [nf(S)] };
+    }
+    const a = NZ(r, -6, 8);
+    const d = NZ(r, -4, 5);
+    const sums = iterate(a, (s, n) => s + a + n * d);
+    return { lead: `初項 ${a}、公差 ${d} の等差数列の、初項から第 n 項までの和 S_n`, q: "", fields: [funcF(formatPoly(polyN([frac(0), fSub(frac(a), frac(d, 2)), frac(d, 2)])), "n")], labels: ["S_n ="], verify: { seq: sums } };
+  },
+  62: (r) => {
+    const forms: (() => [string, (k: number) => number, number, number])[] = [
+      () => {
+        const p = NZ(r, -4, 5);
+        const q = R(r, -5, 5);
+        return [`(${lin(p, q, "k")})`, (k) => p * k + q, R(r, 1, 3) === 1 ? R(r, 2, 5) : 1, R(r, 8, 20)];
+      },
+      () => ["k^2", (k) => k * k, 1, R(r, 4, 12)],
+      () => ["k(k+1)", (k) => k * (k + 1), 1, R(r, 3, 10)],
+      () => {
+        const b = NZ(r, -3, 3);
+        return [`(k^2${T(b, "k")})`, (k) => k * k + b * k, 1, R(r, 4, 10)];
+      },
+      () => ["k^3", (k) => k ** 3, 1, R(r, 3, 8)],
+      () => ["2^k", (k) => 2 ** k, 1, R(r, 3, 9)],
+      () => ["3^(k-1)", (k) => 3 ** (k - 1), 1, R(r, 3, 7)],
+      () => ["(2k-1)", (k) => 2 * k - 1, 1, R(r, 8, 25)],
+    ];
+    const [body, f, m, N] = pick(r, forms)();
+    let s = 0;
+    for (let k = m; k <= N; k++) s += f(k);
+    return { lead: "和を求める", q: `Σ[k=${m},${N}]${body}`, fields: [nf(s)] };
+  },
+  63: (r) => {
+    const forms: (() => [string, (k: number) => number, string])[] = [
+      () => {
+        const p = NZ(r, -4, 5);
+        const q = R(r, -6, 6);
+        return [`(${lin(p, q, "k")})`, (k) => p * k + q, formatPoly(sumPoly([q, p]))];
+      },
+      () => ["k^2", (k) => k * k, "1/6n(n+1)(2n+1)"],
+      () => ["k^3", (k) => k ** 3, "1/4n^2(n+1)^2"],
+      () => ["k(k+1)", (k) => k * (k + 1), "1/3n(n+1)(n+2)"],
+      () => {
+        const a = pick(r, [1, 2, 3, -1, 6]);
+        const b = R(r, -4, 4);
+        const c = R(r, -3, 3);
+        return [`(${L([[a, "k^2"], [b, "k"], [c, ""]])})`, (k) => a * k * k + b * k + c, formatPoly(sumPoly([c, b, a]))];
+      },
+      () => pick(r, [
+        ["2^k", (k: number) => 2 ** k, "2^(n+1)-2"],
+        ["2^(k-1)", (k: number) => 2 ** (k - 1), "2^n-1"],
+        ["3^(k-1)", (k: number) => 3 ** (k - 1), "(3^n-1)/2"],
+        ["2·3^(k-1)", (k: number) => 2 * 3 ** (k - 1), "3^n-1"],
+        ["4^(k-1)", (k: number) => 4 ** (k - 1), "(4^n-1)/3"],
+      ] as [string, (k: number) => number, string][]),
+    ];
+    const [body, f, show] = pick(r, forms)();
+    const sums = iterate(f(1), (s, n) => s + f(n + 1));
+    return { lead: "和を n の式で表す", q: `Σ[k=1,n]${body}`, fields: [funcF(show, "n")], verify: { seq: sums } };
+  },
+  64: (r) => {
+    const A = R(r, -3, 5);
+    let b: (k: number) => number;
+    let show: string;
+    if (r() < 0.7) {
+      const p = NZ(r, -3, 4);
+      const q = R(r, -3, 4);
+      b = (k) => p * k + q;
+      show = formatPoly(polyN([frac(A - q), fSub(frac(q), frac(p, 2)), frac(p, 2)]));
+    } else {
+      const [c, q] = pick(r, [
+        [1, 2],
+        [2, 2],
+        [3, 2],
+        [2, 3],
+        [4, 3],
+        [6, 3],
+      ] as const);
+      const m = c / (q - 1);
+      b = (k) => c * q ** (k - 1);
+      show = J([geomShow(m, frac(q)), TF(A - m, "")]);
+    }
+    const terms = iterate(A, (a, n) => a + b(n));
+    return { lead: `数列 ${terms.slice(0, 5).join(", ")}, … の一般項 (階差数列を使う)`, q: "", fields: [funcF(show, "n")], labels: ["a_n ="], verify: { seq: terms } };
+  },
+  65: (r) => {
+    const A = NZ(r, -4, 6);
+    const k = R(r, 0, 3);
+    let rhs: string;
+    let next: (a: number, n: number) => number;
+    let show: string;
+    if (k === 0) {
+      const d = NZ(r, -5, 6);
+      rhs = `a_n${T(d, "")}`;
+      next = (a) => a + d;
+      show = lin(d, A - d, "n");
+    } else if (k === 1) {
+      const q = pick(r, [2, 3, -2, 4, -3]);
+      rhs = `${T(q, "a_n", true)}`;
+      next = (a) => q * a;
+      show = geomShow(A, frac(q));
+    } else if (k === 2) {
+      const p = pick(r, [2, 3, -2, 2, 3, 4]);
+      let al = NZ(r, -4, 4);
+      if (al === A) al = A + 1 === 0 ? A + 2 : A + 1;
+      const q = al * (1 - p);
+      rhs = `${T(p, "a_n", true)}${T(q, "")}`;
+      next = (a) => p * a + q;
+      show = J([geomShow(A - al, frac(p)), TF(al, "")]);
+    } else {
+      const p = NZ(r, -3, 4);
+      const q = R(r, -3, 4);
+      rhs = `a_n${T(p, "n")}${T(q, "")}`;
+      next = (a, n) => a + p * n + q;
+      show = formatPoly(polyN([frac(A - q), fSub(frac(q), frac(p, 2)), frac(p, 2)]));
+    }
+    const terms = iterate(A, next);
+    return { lead: `a_1=${A}, a_(n+1)=${rhs} で定められる数列 {a_n} の一般項`, q: "", fields: [funcF(show, "n")], labels: ["a_n ="], verify: { seq: terms } };
+  },
+  // ===== 数学B 統計的な推測 =====
+  66: (r) => {
+    const xs = pick(r, [
+      [0, 1, 2],
+      [1, 2, 3],
+      [0, 1, 2, 3],
+      [1, 2, 3, 4],
+      [-1, 0, 1],
+      [-1, 0, 1, 2],
+      [0, 2, 4],
+      [-2, 0, 2],
+    ]);
+    const D = pick(r, [4, 5, 6, 8, 10, 12].filter((d) => d >= xs.length + 1));
+    const w = xs.map(() => 1);
+    for (let i = xs.length; i < D; i++) w[R(r, 0, xs.length - 1)]++;
+    const E = frac(xs.reduce((s, x, i) => s + x * w[i], 0), D);
+    const E2 = frac(xs.reduce((s, x, i) => s + x * x * w[i], 0), D);
+    const V = fSub(E2, fMul(E, E));
+    const q = `X : ${xs.join(", ")}\nP : ${w.map((x) => fs(frac(x, D))).join(", ")}`;
+    if (r() < 0.6) return { lead: "確率変数 X の確率分布が次のとき、期待値と分散", q, fields: [nf(E), nf(V)], labels: ["E(X) =", "V(X) ="] };
+    const a = pick(r, [2, 3, -2, 5, -1]);
+    const b = NZ(r, -5, 5);
+    const Y = lin(a, b, "X");
+    return { lead: `確率変数 X の確率分布が次のとき、Y=${Y} の期待値と分散`, q, fields: [nf(fAdd(fMul(frac(a), E), frac(b))), nf(fMul(frac(a * a), V))], labels: ["E(Y) =", "V(Y) ="] };
+  },
+  67: (r) => {
+    const k = R(r, 0, 2);
+    if (k === 1) {
+      const [p, ev] = pick(r, [
+        [frac(1, 6), "1の目"],
+        [frac(1, 3), "3の倍数の目"],
+        [frac(1, 2), "偶数の目"],
+        [frac(1, 6), "6の目"],
+      ] as [Frac, string][]);
+      const n = p.d * pick(r, [3, 5, 6, 10, 15, 20, 30, 50]);
+      const V = fMul(frac(n), fMul(p, fSub(frac(1), p)));
+      return { lead: `1個のさいころを ${n} 回投げて、${ev}が出る回数を X とするとき`, q: "", fields: [nf(fMul(frac(n), p)), num(sq(V))], labels: ["E(X) =", "σ(X) ="] };
+    }
+    if (k === 2) {
+      const n = pick(r, [4, 6, 8, 10, 16, 20, 36, 50, 100]);
+      return { lead: `硬貨を ${n} 枚投げて、表が出る枚数を X とするとき`, q: "", fields: [nf(frac(n, 2)), nf(frac(n, 4))], labels: ["E(X) =", "V(X) ="] };
+    }
+    const p = pick(r, [frac(1, 2), frac(1, 3), frac(1, 4), frac(1, 5), frac(1, 6), frac(2, 3), frac(3, 4), frac(2, 5), frac(1, 10)]);
+    const n = p.d * pick(r, [2, 3, 4, 5, 6, 8, 10, 12, 15, 20, 25, 30, 40, 50]);
+    const V = fMul(frac(n), fMul(p, fSub(frac(1), p)));
+    return { lead: `確率変数 X が二項分布 B(${n}, ${fs(p)}) にしたがうとき`, q: "", fields: [nf(fMul(frac(n), p)), nf(V), num(sq(V))], labels: ["E(X) =", "V(X) =", "σ(X) ="] };
+  },
+  68: (r) => {
+    const k = R(r, 0, 2);
+    const zOf = (s: number) => {
+      const cs: number[] = [];
+      for (let t = -12; t <= 12; t++) if (t !== 0 && Number.isInteger((t / 4) * s)) cs.push(t / 4);
+      return pick(r, cs);
+    };
+    if (k === 0) {
+      const s = pick(r, [2, 4, 5, 8, 10, 12, 15, 20]);
+      const m = 5 * R(r, 6, 34);
+      const z = zOf(s);
+      return { lead: `確率変数 X が正規分布 N(${m}, ${s}^2) にしたがうとき、X=${m + z * s} を標準化した値 (Z=(X-m)/σ)`, q: "", fields: [realF(String(z))], labels: ["Z ="] };
+    }
+    if (k === 1) {
+      const [n, p, m, s] = pick(r, [
+        [100, frac(1, 2), 50, 5],
+        [400, frac(1, 2), 200, 10],
+        [36, frac(1, 2), 18, 3],
+        [64, frac(1, 2), 32, 4],
+        [144, frac(1, 2), 72, 6],
+        [72, frac(1, 3), 24, 4],
+        [162, frac(1, 3), 54, 6],
+        [450, frac(1, 3), 150, 10],
+        [180, frac(1, 6), 30, 5],
+        [720, frac(1, 6), 120, 10],
+        [48, frac(1, 4), 12, 3],
+        [192, frac(1, 4), 48, 6],
+      ] as [number, Frac, number, number][]);
+      const z = zOf(s);
+      return { lead: `X が二項分布 B(${n}, ${fs(p)}) にしたがうとき、X を正規分布で近似する。平均 m、標準偏差 σ と、X=${m + z * s} を標準化した値 Z`, q: "", fields: [nf(m), nf(s), realF(String(z))], labels: ["m =", "σ =", "Z ="] };
+    }
+    const s = pick(r, [2, 4, 6, 8, 10, 12, 20]);
+    const m = 5 * R(r, 6, 34);
+    const us = ["0.5", "1", "1.5", "2"];
+    const xAt = (u: string) => m + Number(u) * s;
+    const [u1, u2] = two(r, us);
+    const forms: [string, number, string[]][] = [
+      [`P(X≥${xAt(u1)})`, 5000 - ZTABLE[u1], [u1]],
+      [`P(X≤${xAt(u1)})`, 5000 + ZTABLE[u1], [u1]],
+      [`P(X≤${m - Number(u1) * s})`, 5000 - ZTABLE[u1], [u1]],
+      [`P(${m - Number(u1) * s}≤X≤${xAt(u2)})`, ZTABLE[u1] + ZTABLE[u2], [u1, u2]],
+      [`P(${xAt(Number(u1) < Number(u2) ? u1 : u2)}≤X≤${xAt(Number(u1) < Number(u2) ? u2 : u1)})`, Math.abs(ZTABLE[u2] - ZTABLE[u1]), [u1, u2]],
+    ];
+    const [q, v, used] = pick(r, forms);
+    const table = [...used].sort((a, b) => Number(a) - Number(b)).map((u) => `P(0≤Z≤${u})=${dec(ZTABLE[u])}`).join(", ");
+    return { lead: `X が正規分布 N(${m}, ${s}^2) にしたがうとき、次の確率。ただし ${table} とする`, q, fields: [realF(dec(v))] };
+  },
+  // ===== 数学Ⅲ 関数 =====
+  69: (r) => {
+    const k = R(r, 0, 2);
+    if (k === 0) {
+      if (r() < 0.5) {
+        const a = NZ(r, -3, 4);
+        const p = NZ(r, -4, 4);
+        let b = R(r, -6, 6);
+        if (b === -a * p) b++;
+        return { lead: "漸近線を求める (x= の形と y= の形の2本)", q: `y=(${lin(a, b)})/(${lin(1, -p)})`, fields: [nf(p), nf(a)], labels: ["x =", "y ="] };
+      }
+      const c = NZ(r, -6, 6);
+      const p = R(r, -4, 4);
+      const d = NZ(r, -5, 5);
+      return { lead: "漸近線を求める (x= の形と y= の形の2本)", q: `y=${c}/${p === 0 ? "x" : `(${lin(1, -p)})`}${T(d, "")}`, fields: [nf(p), nf(d)], labels: ["x =", "y ="] };
+    }
+    if (k === 1) {
+      for (;;) {
+        const c = R(r, -3, 3);
+        const x0 = R(r, -c, 6 - c);
+        const s = R(r, -8, -c - 1);
+        const a = x0 + s + 2 * c;
+        const b = c * c - x0 * s;
+        if (a === 0 || x0 === s) continue;
+        return { lead: "方程式を解く", q: `√(${lin(a, b)})=${lin(1, c)}`, fields: [nf(x0)], labels: ["x ="] };
+      }
+    }
+    const a = NZ(r, -3, 3);
+    const b = NZ(r, -6, 6);
+    const x0 = coef(frac(-b, a));
+    const sol: SolSet = a > 0 ? { parts: [{ lo: { c: x0, closed: true } }] } : { parts: [{ hi: { c: x0, closed: true } }] };
+    return { lead: "定義域を求める", q: `y=√(${lin(a, b)})`, fields: [ineqF(sol)] };
+  },
+  70: (r) => {
+    const k = R(r, 0, 3);
+    const a = NZ(r, -3, 3);
+    const b = NZ(r, -5, 5);
+    const fS = lin(a, b);
+    const F = parseExpr(fS);
+    if (k === 0) {
+      const quad = r() < 0.6;
+      const c = R(r, -4, 4);
+      const p = NZ(r, -3, 3);
+      const gS = quad ? L([[1, "x^2"], [c, ""]]) : lin(p, c);
+      const G = parseExpr(gS);
+      const gf = quad ? pAdd(pMul(F, F), pNum(c)) : pAdd(pMul(pNum(p), F), pNum(c));
+      const fg = pAdd(pMul(pNum(a), G), pNum(b));
+      const first = r() < 0.5;
+      return { lead: `f(x)=${fS}, g(x)=${gS} のとき`, q: "", fields: [exprF(first ? gf : fg)], labels: [first ? "(g∘f)(x) =" : "(f∘g)(x) ="] };
+    }
+    if (k === 1) {
+      if (Math.abs(a) === 1) return GENS[70](r);
+      return { lead: `f(x)=${fS} の逆関数`, q: "", fields: [exprF(pAdd(poly(coef(frac(1, a)), { x: 1 }), pNum(frac(-b, a))))], labels: ["f^(-1)(x) ="] };
+    }
+    if (k === 2) {
+      for (;;) {
+        const A = NZ(r, -3, 4);
+        const B = R(r, -5, 5);
+        const D = NZ(r, -4, 4);
+        if (A * D - B === 0 || gcd(gcd(A, B), D) !== 1) continue;
+        const f = `(${lin(A, B)})/(${lin(1, D)})`;
+        const top = lin(-D, B);
+        const inv = /^-?\d+$/.test(top) ? `${top}/(${lin(1, -A)})` : `(${top})/(${lin(1, -A)})`;
+        return { lead: `f(x)=${f} の逆関数`, q: "", fields: [funcF(inv)], labels: ["f^(-1)(x) ="], verify: { inverse: f } };
+      }
+    }
+    const c = NZ(r, -5, 5);
+    return { lead: `f(x)=√(${lin(1, -c)}) の逆関数 (定義域にも注意)`, q: "", fields: [exprF(parseExpr(L([[1, "x^2"], [c, ""]])))], labels: ["f^(-1)(x) ="], suffix: ["(x≥0)"] };
+  },
+  // ===== 数学Ⅲ 極限 =====
+  71: (r) => {
+    const k = R(r, 0, 3);
+    if (k === 0) {
+      const a = NZ(r, -4, 5);
+      const d = NZ(r, -3, 4);
+      const P = L([[a, "n^2"], [R(r, -5, 5), "n"], [R(r, -5, 5), ""]]);
+      const Q = L([[d, "n^2"], [R(r, -5, 5), "n"], [NZ(r, -5, 5), ""]]);
+      if (r() < 0.25) {
+        const P1 = lin(NZ(r, -4, 5), R(r, -5, 5), "n");
+        const src = `(${P1})/(${Q})`;
+        return { lead: "極限を求める", q: `lim[n→∞]${src}`, fields: [nf(0)], verify: { limit: [src, "n", "inf"] } };
+      }
+      const src = `(${P})/(${Q})`;
+      return { lead: "極限を求める", q: `lim[n→∞]${src}`, fields: [nf(frac(a, d))], verify: { limit: [src, "n", "inf"] } };
+    }
+    if (k === 1) {
+      const a = NZ(r, -6, 6);
+      if (r() < 0.6) {
+        const src = `√(n^2${T(a, "n")})-n`;
+        return { lead: "極限を求める", q: `lim[n→∞](${src})`, fields: [nf(frac(a, 2))], verify: { limit: [src, "n", "inf"] } };
+      }
+      const b = NZ(r, -6, 6);
+      if (a === b) return GENS[71](r);
+      const src = `√(n^2${T(a, "n")})-√(n^2${T(b, "n")})`;
+      return { lead: "極限を求める", q: `lim[n→∞](${src})`, fields: [nf(frac(a - b, 2))], verify: { limit: [src, "n", "inf"] } };
+    }
+    if (k === 2) {
+      const [A, B] = pick(r, [
+        [3, 2],
+        [4, 3],
+        [5, 2],
+        [4, 1],
+        [5, 3],
+        [3, 1],
+      ] as const);
+      const bT = (c: number) => (B === 1 ? TF(c, "") : TF(c, `${B}^n`));
+      if (r() < 0.5) {
+        const src = `(${J([`${A}^(n+1)`, bT(NZ(r, -3, 3))])})/(${J([`${A}^n`, bT(R(r, 1, 3))])})`;
+        return { lead: "極限を求める", q: `lim[n→∞]${src}`, fields: [nf(A)], verify: { limit: [src, "n", "inf"] } };
+      }
+      const p = NZ(r, -3, 4);
+      const d = R(r, 1, 3);
+      const src = `(${J([TF(p, `${A}^n`), bT(NZ(r, -3, 3))])})/(${J([TF(d, `${A}^n`), bT(-1)])})`;
+      return { lead: "極限を求める", q: `lim[n→∞]${src}`, fields: [nf(frac(p, d))], verify: { limit: [src, "n", "inf"] } };
+    }
+    const q = pick(r, [frac(1, 2), frac(1, 3), frac(-1, 2), frac(2, 3), frac(-1, 3), frac(1, 4), frac(3, 4)]);
+    const a = NZ(r, -4, 6);
+    const S = fDiv(frac(a), fSub(frac(1), q));
+    return { lead: "無限等比級数の和", q: `Σ[n=1,∞]${a === 1 ? "" : a === -1 ? "-" : a}(${fs(q)})^(n-1)`, fields: [nf(S)] };
+  },
+  72: (r) => {
+    const k = R(r, 0, 3);
+    if (k === 0) {
+      const a = NZ(r, -3, 3);
+      if (r() < 0.35) {
+        const e = pick(r, [2, 3]);
+        const src = `(x^${e}${T(-(a ** e), "")})/(${lin(1, -a)})`;
+        return { lead: "極限を求める", q: `lim[x→${a}]${src}`, fields: [nf(e * a ** (e - 1))], verify: { limit: [src, "x", String(a)] } };
+      }
+      let b = NZ(r, -4, 4);
+      let c = NZ(r, -4, 4);
+      if (b === a) b = a + 1;
+      if (c === a || c === b) c = a + (b === a + 2 ? 3 : 2);
+      const N = formatPoly(parseExpr(`(x${T(-a, "")})(x${T(-b, "")})`));
+      const D = formatPoly(parseExpr(`(x${T(-a, "")})(x${T(-c, "")})`));
+      const src = `(${N})/(${D})`;
+      return { lead: "極限を求める", q: `lim[x→${a}]${src}`, fields: [nf(frac(a - b, a - c))], verify: { limit: [src, "x", String(a)] } };
+    }
+    if (k === 1) {
+      const a = R(r, 1, 5);
+      let b = R(r, 1, 5);
+      if (b === a) b = a === 5 ? 1 : a + 1;
+      const ax = a === 1 ? "x" : `${a}x`;
+      const bx = b === 1 ? "x" : `${b}x`;
+      const forms: [string, Frac][] = [
+        [`(sin${ax})/${b === 1 ? "x" : `(${bx})`}`, frac(a, b)],
+        [`(sin${ax})/(sin${bx})`, frac(a, b)],
+        [`(tan${ax})/${b === 1 ? "x" : `(${bx})`}`, frac(a, b)],
+        [`(1-cos${a === 1 ? " x" : ax})/x^2`, frac(a * a, 2)],
+        [`x/(sin${ax})`, frac(1, a)],
+      ];
+      const [src, v] = pick(r, forms);
+      const q = src.replace("/x^2", "/(x^2)");
+      return { lead: "極限を求める", q: `lim[x→0]${q}`, fields: [nf(v)], verify: { limit: [q, "x", "0"] } };
+    }
+    if (k === 2) {
+      const a = pick(r, [1, 2, 3, -1, 2]);
+      const ax = a === 1 ? "x" : a === -1 ? "-x" : `${a}x`;
+      const eS = a === 1 ? "e" : a === -1 ? "1/e" : `e^${a}`;
+      const forms: [string, string, Field][] = [
+        [`(e^(${ax})-1)/x`, "0", nf(a)],
+        [`(log(1+${ax}))/x`.replace("+-", "-"), "0", nf(a)],
+        [`(1+${ax})^(1/x)`.replace("+-", "-"), "0", realF(eS)],
+        [`(1+${a}/x)^x`.replace("+-", "-"), "inf", realF(eS)],
+      ];
+      const [src, to, f] = pick(r, forms);
+      return { lead: "極限を求める", q: `lim[x→${to === "inf" ? "∞" : 0}]${src}`, fields: [f], verify: { limit: [src, "x", to] } };
+    }
+    const a = NZ(r, -6, 6);
+    const src = `√(x^2${T(a, "x")})-x`;
+    return { lead: "極限を求める", q: `lim[x→∞](${src})`, fields: [nf(frac(a, 2))], verify: { limit: [src, "x", "inf"] } };
+  },
+  // ===== 数学Ⅲ 微分 =====
+  73: (r) => {
+    const k = R(r, 0, 3);
+    if (k === 0) {
+      const A = L([[1, "x^2"], [NZ(r, -4, 4), ""]]);
+      const B = r() < 0.5 ? lin(NZ(r, -3, 3), NZ(r, -5, 5)) : L([[1, "x^2"], [NZ(r, -3, 3), "x"], [R(r, -3, 3), ""]]);
+      const f = `(${A})(${B})`;
+      return { lead: "導関数を求める (積の微分)", q: `f(x)=${f}`, fields: [exprF(deriv(parseExpr(f)))], labels: ["f'(x) ="], verify: { deriv: f } };
+    }
+    if (k === 1) {
+      for (;;) {
+        const c = pick(r, [1, 1, 2, 3]);
+        const d = NZ(r, -5, 5);
+        if (gcd(c, d) !== 1) continue;
+        const P = r() < 0.5 ? parseExpr(lin(NZ(r, -3, 4), R(r, -5, 5))) : parseExpr(L([[1, "x^2"], [R(r, -3, 3), "x"], [R(r, -3, 3), ""]]));
+        const Q = parseExpr(lin(c, d));
+        if (at(P, frac(-d, c)).size === 0) continue;
+        const N = pAdd(pMul(deriv(P), Q), cNegP(pMul(P, deriv(Q))));
+        const Ns = formatPoly(N);
+        const top = N.size === 1 && N.has("") ? Ns : `(${Ns})`;
+        const f = `(${formatPoly(P)})/(${formatPoly(Q)})`;
+        return { lead: "導関数を求める (商の微分)", q: `f(x)=${f}`, fields: [funcF(`${top}/((${formatPoly(Q)})^2)`)], labels: ["f'(x) ="], verify: { deriv: f } };
+      }
+    }
+    if (k === 2) {
+      const a = R(r, 1, 4);
+      const p = NZ(r, -3, 3);
+      const q = R(r, -4, 4);
+      const P = parseExpr(lin(p, q));
+      const Q = parseExpr(`x^2+${a}`);
+      const N = pAdd(pMul(deriv(P), Q), cNegP(pMul(P, deriv(Q))));
+      const f = `(${formatPoly(P)})/(x^2+${a})`;
+      return { lead: "導関数を求める (商の微分)", q: `f(x)=${f}`, fields: [funcF(`(${formatPoly(N)})/((x^2+${a})^2)`)], labels: ["f'(x) ="], verify: { deriv: f } };
+    }
+    const forms: [string, string][] = [
+      ["1/x", "-1/(x^2)"],
+      ["1/(x^2)", "-2/(x^3)"],
+      ["1/(x^3)", "-3/(x^4)"],
+      ["x√x", "3/2√x"],
+      ["√x", "1/(2√x)"],
+      ["1/√x", "-1/(2x√x)"],
+      ["x^2√x", "5/2x√x"],
+    ];
+    const [f, ans] = pick(r, forms);
+    return { lead: "導関数を求める", q: `f(x)=${f}`, fields: [funcF(ans)], labels: ["f'(x) ="], verify: { deriv: f } };
+  },
+  74: (r) => {
+    const k = R(r, 0, 4);
+    let f: string;
+    let ans: string;
+    if (k === 0) {
+      const a = R(r, 2, 3);
+      const b = NZ(r, -5, 5);
+      const n = R(r, 3, 6);
+      f = `(${lin(a, b)})^${n}`;
+      ans = `${n * a}(${lin(a, b)})^${n - 1}`;
+    } else if (k === 1) {
+      const c = NZ(r, -4, 4);
+      const n = R(r, 2, 5);
+      f = `(x^2${T(c, "")})^${n}`;
+      ans = `${2 * n}x(x^2${T(c, "")})${n - 1 === 1 ? "" : `^${n - 1}`}`;
+    } else if (k === 2) {
+      const a = R(r, 1, 4);
+      const b = NZ(r, -1, 5);
+      const g = gcd(a, 2);
+      const top = a / g;
+      const den = 2 / g;
+      f = `√(${lin(a, b)})`;
+      ans = `${top}/${den === 1 ? "" : "("}${den === 1 ? "" : den}√(${lin(a, b)})${den === 1 ? "" : ")"}`;
+    } else if (k === 3) {
+      const c = R(r, 1, 6);
+      f = `√(x^2${T(c, "")})`;
+      ans = `x/√(x^2${T(c, "")})`;
+    } else {
+      const a = R(r, 1, 3);
+      const b = NZ(r, -5, 5);
+      const n = R(r, 1, 3);
+      const l = lin(a, b);
+      f = n === 1 ? `1/(${l})` : `1/((${l})^${n})`;
+      ans = `-${n * a}/((${l})^${n + 1})`;
+    }
+    return { lead: "導関数を求める (合成関数の微分)", q: `f(x)=${f}`, fields: [funcF(ans)], labels: ["f'(x) ="], verify: { deriv: f } };
+  },
+  75: (r) => {
+    const a = R(r, 1, 4);
+    const ax = a === 1 ? " x" : `${a}x`;
+    const forms: (() => [string, string])[] = [
+      () => {
+        const k = pick(r, [1, 2, 3, -1, -2]);
+        const b = r() < 0.5 ? 0 : NZ(r, -3, 3);
+        const arg = b ? `(${lin(a, b)})` : ax;
+        return r() < 0.5 ? [TF(k, `sin${arg}`), TF(k * a, `cos${arg}`)] : [TF(k, `cos${arg}`), TF(-k * a, `sin${arg}`)];
+      },
+      () => [`tan${ax}`, `${a}/(cos^2 ${a === 1 ? "x" : ax})`],
+      () =>
+        pick(r, [
+          ["x sin x", "sin x+x cos x"],
+          ["x cos x", "cos x-x sin x"],
+          ["x^2sin x", "2x sin x+x^2cos x"],
+          ["x^2cos x", "2x cos x-x^2sin x"],
+        ] as [string, string][]),
+      () =>
+        pick(r, [
+          ["sin^2 x", "2sin x cos x"],
+          ["cos^2 x", "-2sin x cos x"],
+          ["sin x cos x", "cos2x"],
+          ["sin^3 x", "3sin^2 x cos x"],
+          ["cos^3 x", "-3cos^2 x sin x"],
+          ["sin(x^2)", "2x cos(x^2)"],
+          ["cos(x^2)", "-2x sin(x^2)"],
+        ] as [string, string][]),
+      () => {
+        const k = NZ(r, -3, 3);
+        const m = NZ(r, -3, 3);
+        const b = R(r, 1, 3);
+        const bx = b === 1 ? " x" : `${b}x`;
+        return [J([TF(k, `sin${ax}`), TF(m, `cos${bx}`)]), J([TF(k * a, `cos${ax}`), TF(-m * b, `sin${bx}`)])];
+      },
+    ];
+    const [f, ans] = pick(r, forms)();
+    return { lead: "導関数を求める", q: `f(x)=${f}`, fields: [funcF(ans)], labels: ["f'(x) ="], verify: { deriv: f } };
+  },
+  76: (r) => {
+    const forms: (() => [string, string, string?])[] = [
+      () => {
+        const a = pick(r, [2, 3, -1, -2, 4]);
+        const ax = a === -1 ? "-x" : `${a}x`;
+        return [`e^(${ax})`, TF(a, `e^(${ax})`)];
+      },
+      () =>
+        pick(r, [
+          ["xe^x", "(x+1)e^x"],
+          ["x^2e^x", "(x^2+2x)e^x"],
+          ["xe^(-x)", "(1-x)e^(-x)"],
+          ["e^(x^2)", "2xe^(x^2)"],
+          ["e^x sin x", "e^x(sin x+cos x)"],
+          ["e^x cos x", "e^x(cos x-sin x)"],
+        ] as [string, string][]),
+      () => {
+        const a = R(r, 1, 3);
+        const b = R(r, 1, 5);
+        return [`log(${lin(a, b)})`, `${a}/(${lin(a, b)})`];
+      },
+      () => {
+        const c = R(r, 1, 5);
+        return [`log(x^2+${c})`, `2x/(x^2+${c})`];
+      },
+      () =>
+        pick(r, [
+          ["x log x", "log x+1"],
+          ["(log x)/x", "(1-log x)/(x^2)"],
+          ["x^2log x", "2x log x+x"],
+          ["(log x)^2", "(2log x)/x"],
+          ["2^x", "2^x log 2"],
+          ["3^x", "3^x log 3"],
+          ["log_2 x", "1/(x log 2)", "log x/log 2"],
+          ["log_3 x", "1/(x log 3)", "log x/log 3"],
+        ] as [string, string, string?][]),
+    ];
+    const [f, ans, src] = pick(r, forms)();
+    return { lead: "導関数を求める", q: `f(x)=${f}`, fields: [funcF(ans)], labels: ["f'(x) ="], verify: { deriv: src ?? f } };
+  },
+  77: (r) => {
+    const forms: (() => [string, string, string])[] = [
+      () =>
+        pick(r, [
+          ["e^x", "0", "x+1"],
+          ["e^x", "1", "ex"],
+          ["e^x", "2", "e^2x-e^2"],
+          ["e^(2x)", "0", "2x+1"],
+          ["e^(-x)", "0", "-x+1"],
+          ["log x", "1", "x-1"],
+          ["log x", "e", "x/e"],
+          ["log x", "e^2", "x/(e^2)+1"],
+          ["sin x", "0", "x"],
+          ["sin x", "π", "-x+π"],
+          ["cos x", "π/2", "-x+π/2"],
+          ["tan x", "π/4", "2x+1-π/2"],
+          ["xe^x", "1", "2ex-e"],
+          ["x log x", "e", "2x-e"],
+          ["x log x", "1", "x-1"],
+        ] as [string, string, string][]),
+      () => {
+        const a = R(r, 1, 4);
+        return ["√x", String(a * a), formatPoly(parseExpr(`1/${2 * a}x+${a}/2`))];
+      },
+      () => {
+        const a = NZ(r, -3, 3);
+        return ["1/x", String(a), formatPoly(pAdd(poly(coef(frac(-1, a * a)), { x: 1 }), pNum(frac(2, a))))];
+      },
+    ];
+    const [f, a, ans] = pick(r, forms)();
+    return { lead: `曲線 y=${f} 上の x=${a} の点における接線の方程式`, q: "", fields: [funcF(ans)], labels: ["y ="], verify: { tangent: [f, a] } };
+  },
+  // ===== 数学Ⅲ 積分 =====
+  78: (r) => {
+    const specials: (() => [string, string])[] = [
+      () => {
+        const k = R(r, 1, 4);
+        return [k === 1 ? "1/x" : `${k}/x`, TF(k, "log|x|")];
+      },
+      () => {
+        const k = R(r, 1, 3);
+        return [`${k}/(x^2)`, `-${k}/x`];
+      },
+      () => pick(r, [["√x", "2/3x√x"], ["1/√x", "2√x"]] as [string, string][]),
+      () => {
+        const k = R(r, 1, 3);
+        return [TF(k, "e^x"), TF(k, "e^x")];
+      },
+      () => {
+        const a = pick(r, [2, 3, -1, -2]);
+        const ax = a === -1 ? "-x" : `${a}x`;
+        return [`e^(${ax})`, TF(frac(1, a), `e^(${ax})`)];
+      },
+      () => pick(r, [["sin x", "-cos x"], ["cos x", "sin x"], ["1/(cos^2 x)", "tan x"], ["2^x", "2^x/(log 2)"], ["3^x", "3^x/(log 3)"]] as [string, string][]),
+      () => {
+        const a = R(r, 2, 4);
+        return r() < 0.5 ? [`sin${a}x`, TF(frac(-1, a), `cos${a}x`)] : [`cos${a}x`, TF(frac(1, a), `sin${a}x`)];
+      },
+      () => {
+        const a = R(r, 1, 3);
+        const b = NZ(r, -4, 4);
+        return [`1/(${lin(a, b)})`, TF(frac(1, a), `log|${lin(a, b)}|`)];
+      },
+    ];
+    const [sf, sF] = pick(r, specials)();
+    if (r() < 0.45) return { lead: "不定積分を求める (C は積分定数)", q: `∫${sf} dx`, fields: [funcF(sF, "x", true)], verify: { anti: sf } };
+    const n = R(r, 1, 3);
+    const k = NZ(r, -4, 4) * (n + 1);
+    const pf = TF(k, n === 1 ? "x" : `x^${n}`);
+    const pF = TF(frac(k, n + 1), `x^${n + 1}`);
+    const f = J([pf, sf]);
+    return { lead: "不定積分を求める (C は積分定数)", q: `∫(${f})dx`, fields: [funcF(J([pF, sF]), "x", true)], verify: { anti: f } };
+  },
+  79: (r) => {
+    if (r() < 0.35) {
+      for (;;) {
+        const [a0, b0] = two(r, [0, 30, 45, 60, 90, 120, 135, 150, 180]);
+        const [a, b] = a0 < b0 ? [a0, b0] : [b0, a0];
+        const fn = r() < 0.5 ? "sin" : "cos";
+        const v = fn === "sin" ? cSub(cosDeg(a), cosDeg(b)) : cSub(sinDeg(b), sinDeg(a));
+        if (v.size === 0) continue;
+        const A = angStr(frac(a, 180));
+        const B = angStr(frac(b, 180));
+        return { lead: "定積分を求める", q: `∫[${A},${B}]${fn} x dx`, fields: [num(v)], verify: { integral: [`${fn} x`, A, B] } };
+      }
+    }
+    const forms: (() => [string, string, string, Field])[] = [
+      () => pick(r, [
+        ["1/x", "1", "e", nf(1)],
+        ["1/x", "1", "e^2", nf(2)],
+        ["1/x", "e", "e^3", nf(2)],
+        ["1/x", "1", "2", realF("log 2")],
+        ["1/x", "1", "3", realF("log 3")],
+        ["1/x", "1", "4", realF("2log 2")],
+        ["1/x", "2", "6", realF("log 3")],
+        ["e^x", "0", "1", realF("e-1")],
+        ["e^x", "0", "2", realF("e^2-1")],
+        ["e^x", "-1", "1", realF("e-1/e")],
+        ["e^x", "0", "log 2", nf(1)],
+        ["e^x", "0", "log 3", nf(2)],
+        ["e^(2x)", "0", "1", realF("(e^2-1)/2")],
+        ["e^(-x)", "0", "1", realF("1-1/e")],
+        ["1/(cos^2 x)", "0", "π/4", nf(1)],
+        ["1/(cos^2 x)", "0", "π/3", num(coef(1, 3))],
+        ["1/(cos^2 x)", "π/6", "π/3", num(coef(frac(2, 3), 3))],
+      ] as [string, string, string, Field][]),
+      () => {
+        const a = R(r, 0, 2);
+        const b = a + R(r, 1, 2);
+        return ["√x", String(a * a), String(b * b), nf(frac(2 * (b ** 3 - a ** 3), 3))];
+      },
+      () => {
+        const a = R(r, 1, 3);
+        const b = a + R(r, 1, 3);
+        return ["1/(x^2)", String(a), String(b), nf(fSub(frac(1, a), frac(1, b)))];
+      },
+    ];
+    const [f, A, B, fld] = pick(r, forms)();
+    return { lead: "定積分を求める", q: `∫[${A},${B}]${f} dx`, fields: [fld], verify: { integral: [f, A, B] } };
+  },
+  80: (r) => {
+    const forms: (() => [string, string, string, Field])[] = [
+      () => {
+        const k = pick(r, [1, 2, 2]);
+        const c = R(r, 1, 3);
+        const m = R(r, 1, 2);
+        const n = R(r, 1, 3);
+        const v = fMul(frac(k, 2 * (n + 1)), frac((m * m + c) ** (n + 1) - c ** (n + 1)));
+        return [`${k === 1 ? "" : k}x(x^2+${c})^${n}`, "0", String(m), nf(v)];
+      },
+      () => {
+        const a = R(r, 1, 3);
+        const b = NZ(r, -2, 2);
+        const n = R(r, 2, 4);
+        return [`(${lin(a, b)})^${n}`, "0", "1", nf(frac((a + b) ** (n + 1) - b ** (n + 1), a * (n + 1)))];
+      },
+      () => {
+        const n = R(r, 1, 4);
+        const pw = n === 1 ? "" : `^${n}`;
+        return r() < 0.5 ? [`sin${pw} x cos x`, "0", "π/2", nf(frac(1, n + 1))] : [`cos${pw} x sin x`, "0", "π/2", nf(frac(1, n + 1))];
+      },
+      () =>
+        pick(r, [
+          ["xe^(x^2)", "0", "1", realF("(e-1)/2")],
+          ["2xe^(x^2)", "0", "1", realF("e-1")],
+          ["x/(x^2+1)", "0", "1", realF("1/2log 2")],
+          ["2x/(x^2+1)", "0", "1", realF("log 2")],
+          ["x/(x^2+1)", "0", "√3", realF("log 2")],
+          ["2x/(x^2+1)", "0", "√2", realF("log 3")],
+          ["(log x)/x", "1", "e", nf(frac(1, 2))],
+          ["(log x)/x", "1", "e^2", nf(2)],
+          ["((log x)^2)/x", "1", "e", nf(frac(1, 3))],
+        ] as [string, string, string, Field][]),
+      () => {
+        const a = R(r, 1, 4);
+        return [`√(${a * a}-x^2)`, "0", String(a), realF(piStr(frac(a * a, 4)))];
+      },
+      () =>
+        pick(r, [
+          ["1/(1+x^2)", "0", "1", realF("π/4")],
+          ["1/(1+x^2)", "0", "√3", realF("π/3")],
+          ["1/(1+x^2)", "-1", "1", realF("π/2")],
+          ["1/(1+x^2)", "1", "√3", realF("π/12")],
+          ["1/(4+x^2)", "0", "2", realF("π/8")],
+        ] as [string, string, string, Field][]),
+    ];
+    const [f, A, B, fld] = pick(r, forms)();
+    return { lead: "定積分を求める (置換積分)", q: `∫[${A},${B}]${f} dx`, fields: [fld], verify: { integral: [f, A, B] } };
+  },
+  81: (r) => {
+    if (r() < 0.55) {
+      const [f, A, B, fld] = pick(r, [
+        ["xe^x", "0", "1", nf(1)],
+        ["xe^x", "0", "2", realF("e^2+1")],
+        ["xe^x", "0", "3", realF("2e^3+1")],
+        ["xe^(-x)", "0", "1", realF("1-2/e")],
+        ["xe^(2x)", "0", "1", realF("(e^2+1)/4")],
+        ["log x", "1", "e", nf(1)],
+        ["log x", "1", "e^2", realF("e^2+1")],
+        ["x log x", "1", "e", realF("(e^2+1)/4")],
+        ["x^2log x", "1", "e", realF("(2e^3+1)/9")],
+        ["x sin x", "0", "π", realF("π")],
+        ["x sin x", "0", "π/2", nf(1)],
+        ["x cos x", "0", "π/2", realF("π/2-1")],
+        ["x cos x", "0", "π", nf(-2)],
+        ["x sin2x", "0", "π/2", realF("π/4")],
+      ] as [string, string, string, Field][]);
+      return { lead: "定積分を求める (部分積分)", q: `∫[${A},${B}]${f} dx`, fields: [fld], verify: { integral: [f, A, B] } };
+    }
+    const [f, F] = pick(r, [
+      ["xe^x", "(x-1)e^x"],
+      ["xe^(2x)", "1/4(2x-1)e^(2x)"],
+      ["xe^(3x)", "1/9(3x-1)e^(3x)"],
+      ["xe^(-x)", "-(x+1)e^(-x)"],
+      ["x^2e^x", "(x^2-2x+2)e^x"],
+      ["x sin x", "-x cos x+sin x"],
+      ["x sin2x", "-1/2x cos2x+1/4sin2x"],
+      ["x cos x", "x sin x+cos x"],
+      ["x cos2x", "1/2x sin2x+1/4cos2x"],
+      ["log x", "x log x-x"],
+      ["x log x", "1/2x^2log x-1/4x^2"],
+      ["x^2log x", "1/3x^3log x-1/9x^3"],
+    ] as [string, string][]);
+    return { lead: "不定積分を求める (部分積分、C は積分定数)", q: `∫${f} dx`, fields: [funcF(F, "x", true)], verify: { anti: f } };
+  },
+  82: (r) => {
+    const forms: (() => [string, Field, [string, string, string], string])[] = [
+      () =>
+        pick(r, [
+          ["曲線 y=sin x (0≤x≤π) と x 軸で囲まれた部分の面積", nf(2), ["sin x", "0", "π"], "S ="],
+          ["曲線 y=cos x (-π/2≤x≤π/2) と x 軸で囲まれた部分の面積", nf(2), ["cos x", "-π/2", "π/2"], "S ="],
+          ["曲線 y=e^x と x 軸、y 軸、直線 x=1 で囲まれた部分の面積", realF("e-1"), ["e^x", "0", "1"], "S ="],
+          ["曲線 y=e^x と x 軸、y 軸、直線 x=2 で囲まれた部分の面積", realF("e^2-1"), ["e^x", "0", "2"], "S ="],
+          ["曲線 y=1/x と x 軸、2直線 x=1, x=e で囲まれた部分の面積", nf(1), ["1/x", "1", "e"], "S ="],
+          ["曲線 y=1/x と x 軸、2直線 x=1, x=e^2 で囲まれた部分の面積", nf(2), ["1/x", "1", "e^2"], "S ="],
+          ["曲線 y=1/x と x 軸、2直線 x=1, x=3 で囲まれた部分の面積", realF("log 3"), ["1/x", "1", "3"], "S ="],
+          ["曲線 y=log x と x 軸、直線 x=e で囲まれた部分の面積", nf(1), ["log x", "1", "e"], "S ="],
+          ["曲線 y=√x と直線 y=x で囲まれた部分の面積", nf(frac(1, 6)), ["√x-x", "0", "1"], "S ="],
+          ["曲線 y=√x と直線 y=x/2 で囲まれた部分の面積", nf(frac(4, 3)), ["√x-x/2", "0", "4"], "S ="],
+          ["2曲線 y=sin x, y=cos x (π/4≤x≤(5π)/4) で囲まれた部分の面積", num(coef(2, 2)), ["sin x-cos x", "π/4", "5π/4"], "S ="],
+          ["曲線 y=e^x と y 軸、直線 y=e で囲まれた部分の面積", nf(1), ["e-e^x", "0", "1"], "S ="],
+          ["曲線 y=x^2 (0≤x≤1) と x 軸、直線 x=1 で囲まれた部分を x 軸のまわりに1回転してできる立体の体積", realF("π/5"), ["π*x^4", "0", "1"], "V ="],
+          ["曲線 y=sin x (0≤x≤π) と x 軸で囲まれた部分を x 軸のまわりに1回転してできる立体の体積", realF("π^2/2"), ["π*(sin x)^2", "0", "π"], "V ="],
+          ["曲線 y=e^x と x 軸、y 軸、直線 x=1 で囲まれた部分を x 軸のまわりに1回転してできる立体の体積", realF("π(e^2-1)/2"), ["π*e^(2x)", "0", "1"], "V ="],
+          ["曲線 y=1/x と x 軸、2直線 x=1, x=2 で囲まれた部分を x 軸のまわりに1回転してできる立体の体積", realF("π/2"), ["π/(x^2)", "1", "2"], "V ="],
+        ] as [string, Field, [string, string, string], string][]),
+      () => {
+        const [a, b] = two(r, [2, 3, 4, 5]);
+        return [`楕円 x^2/${a * a}+y^2/${b * b}=1 の面積`, realF(piStr(frac(a * b))), [`2*${b}*√(1-x^2/${a * a})`, String(-a), String(a)], "S ="];
+      },
+      () => {
+        const a = R(r, 1, 4);
+        return [`曲線 y=√x と x 軸、直線 x=${a} で囲まれた部分を x 軸のまわりに1回転してできる立体の体積`, realF(piStr(frac(a * a, 2))), ["π*x", "0", String(a)], "V ="];
+      },
+      () => {
+        const a = R(r, 1, 3);
+        return [`円 x^2+y^2=${a * a} を x 軸のまわりに1回転してできる球の体積`, realF(piStr(frac(4 * a ** 3, 3))), [`π*(${a * a}-x^2)`, String(-a), String(a)], "V ="];
+      },
+    ];
+    const [lead, fld, iv, lab] = pick(r, forms)();
+    return { lead, q: "", fields: [fld], labels: [lab], verify: { integral: iv } };
+  },
+  // ===== 数学C ベクトル =====
+  83: (r) => {
+    const v = () => [NZ(r, -4, 5), R(r, -4, 5)];
+    const a = v();
+    const b = v();
+    const head = `vec a=${vecStr(a)}, vec b=${vecStr(b)} のとき`;
+    const k = R(r, 0, 3);
+    if (k <= 1) {
+      const p = NZ(r, -3, 3);
+      const q = NZ(r, -3, 3);
+      const c = [p * a[0] + q * b[0], p * a[1] + q * b[1]];
+      const name = L([
+        [p, "vec a"],
+        [q, "vec b"],
+      ]);
+      if (k === 0) return { lead: `${head}、${name} の成分`, q: "", fields: [nf(c[0]), nf(c[1])], labels: [`${name} =`], layout: "point" };
+      if ((c[0] === 0 && c[1] === 0) || c[0] ** 2 + c[1] ** 2 > 300) return GENS[83](r);
+      return { lead: `${head}、|${name}|`, q: "", fields: [num(sq(c[0] ** 2 + c[1] ** 2))], labels: [`|${name}| =`] };
+    }
+    if (k === 2) {
+      const [b1, b2] = [NZ(r, -4, 5), NZ(r, -4, 5)];
+      const t = NZ(r, -3, 3);
+      return { lead: `vec a=(x, ${t * b2}) と vec b=${vecStr([b1, b2])} が平行になる x`, q: "", fields: [nf(t * b1)], labels: ["x ="] };
+    }
+    const [p, q, h] = pick(r, [
+      [3, 4, 5],
+      [5, 12, 13],
+      [8, 15, 17],
+      [6, 8, 10],
+    ] as const);
+    const s = pick(r, [1, 2]);
+    let u: number[] = r() < 0.5 ? [p, q] : [q, p];
+    u = u.map((x) => x * (r() < 0.5 ? 1 : -1));
+    return { lead: `vec a=${vecStr(u.map((x) => x * s))} と同じ向きの単位ベクトルの成分`, q: "", fields: [nf(frac(u[0], h)), nf(frac(u[1], h))], labels: ["e ="], layout: "point" };
+  },
+  84: (r) => {
+    const k = R(r, 0, 3);
+    if (k === 0) {
+      const a = [NZ(r, -4, 5), R(r, -4, 5)];
+      const b = [R(r, -4, 5), NZ(r, -4, 5)];
+      return { lead: `vec a=${vecStr(a)}, vec b=${vecStr(b)} の内積`, q: "", fields: [nf(dot(a, b))], labels: ["vec a·vec b ="] };
+    }
+    if (k === 1) {
+      const [a0, b0, d0] = pick(r, [
+        [[1, 0], [1, 1], 45],
+        [[2, 1], [1, 3], 45],
+        [[3, 1], [1, 2], 45],
+        [[1, 2], [-1, 3], 45],
+        [[2, 1], [-1, 2], 90],
+        [[3, 1], [-1, 3], 90],
+        [[1, 2], [-4, 2], 90],
+      ] as [number[], number[], number][]);
+      const neg = r() < 0.35;
+      const [a, b1] = shuffleVecs(r, a0, b0);
+      const b = neg ? b1.map((x) => -x) : b1;
+      return { lead: `vec a=${vecStr(a)}, vec b=${vecStr(b)} のなす角 θ (0°≤θ≤180°)`, q: "", fields: [nf(neg ? 180 - d0 : d0)], labels: ["θ ="], suffix: ["°"] };
+    }
+    const p = R(r, 1, 5);
+    const q = R(r, 1, 5);
+    if (k === 2) {
+      const th = pick(r, [30, 45, 60, 90, 120, 135, 150]);
+      const s = cMul(coef(p * q), cosDeg(th));
+      if (r() < 0.5) return { lead: `|vec a|=${p}, |vec b|=${q}, vec a·vec b=${formatCoef(s)} のとき、vec a と vec b のなす角 θ (0°≤θ≤180°)`, q: "", fields: [nf(th)], labels: ["θ ="], suffix: ["°"] };
+      return { lead: `|vec a|=${p}, |vec b|=${q} で、vec a と vec b のなす角が ${th}° のときの内積`, q: "", fields: [num(s)], labels: ["vec a·vec b ="] };
+    }
+    const s = R(r, -(p * q) + 1, p * q - 1);
+    const m = pick(r, [1, 1, 2, 3]);
+    const n = pick(r, [1, -1, 2, -2]);
+    const val = m * m * p * p + n * n * q * q + 2 * m * n * s;
+    if (val > 300) return GENS[84](r);
+    const name = L([
+      [m, "vec a"],
+      [n, "vec b"],
+    ]);
+    return { lead: `|vec a|=${p}, |vec b|=${q}, vec a·vec b=${s} のとき`, q: "", fields: [num(sq(val))], labels: [`|${name}| =`] };
+  },
+  85: (r) => {
+    const v = () => [R(r, -4, 4), R(r, -4, 4), NZ(r, -4, 4)];
+    const k = R(r, 0, 3);
+    if (k === 0) {
+      const a = v();
+      const b = v();
+      const p = NZ(r, -3, 3);
+      const q = NZ(r, -3, 3);
+      const name = L([
+        [p, "vec a"],
+        [q, "vec b"],
+      ]);
+      return { lead: `vec a=${vecStr(a)}, vec b=${vecStr(b)} のとき、${name} の成分`, q: "", fields: a.map((x, i) => nf(p * x + q * b[i])), labels: [`${name} =`], layout: "point" };
+    }
+    if (k === 1) {
+      const A = v();
+      const B = v();
+      const d = A.map((x, i) => B[i] - x);
+      if (r() < 0.5 && dot(d, d) > 0) return { lead: `2点 A${vecStr(A)}, B${vecStr(B)} 間の距離`, q: "", fields: [num(sq(dot(d, d)))], labels: ["AB ="] };
+      const a = v();
+      return { lead: `vec a=${vecStr(a)} の大きさ`, q: "", fields: [num(sq(dot(a, a)))], labels: ["|vec a| ="] };
+    }
+    if (k === 2) {
+      const a = v();
+      const b = v();
+      return { lead: `vec a=${vecStr(a)}, vec b=${vecStr(b)} の内積`, q: "", fields: [nf(dot(a, b))], labels: ["vec a·vec b ="] };
+    }
+    const [a0, b0, d0] = pick(r, [
+      [[1, 1, 0], [1, 0, 1], 60],
+      [[1, 0, 1], [0, 1, 1], 60],
+      [[2, 1, -1], [1, -1, -2], 60],
+      [[1, -1, 0], [0, 1, -1], 120],
+      [[1, 1, 0], [-1, 0, 1], 120],
+      [[1, 0, 0], [1, 1, 0], 45],
+      [[0, 0, 1], [1, 0, 1], 45],
+      [[1, 2, 2], [2, 1, -2], 90],
+      [[1, 1, 1], [1, -1, 0], 90],
+    ] as [number[], number[], number][]);
+    const neg = r() < 0.3;
+    const [a, b1] = shuffleVecs(r, a0, b0);
+    const b = neg ? b1.map((x) => -x) : b1;
+    return { lead: `vec a=${vecStr(a)}, vec b=${vecStr(b)} のなす角 θ (0°≤θ≤180°)`, q: "", fields: [nf(neg ? 180 - d0 : d0)], labels: ["θ ="], suffix: ["°"] };
+  },
+  // ===== 数学C 複素数平面 =====
+  86: (r) => {
+    const k = R(r, 0, 2);
+    if (k === 0) {
+      const d = pick(r, [0, 30, 45, 60, 90, 120, 135, 150, 180, 210, 225, 240, 270, 300, 315, 330]);
+      const m = R(r, 1, 3);
+      const rr = d % 90 === 0 ? coef(m) : d % 45 === 0 ? coef(m, 2) : coef(2 * m);
+      const z = formatComplex(cMul(rr, cosDeg(d)), cMul(rr, sinDeg(d)));
+      return { lead: `z=${z} を極形式 r(cosθ+i sinθ) で表したときの r と θ (0≤θ<2π)`, q: "", fields: [num(rr), realF(angStr(frac(d, 180)))], labels: ["r =", "θ ="] };
+    }
+    if (k === 1) {
+      const angs = [30, 45, 60, 90, 120, 135, 150];
+      const [a, b] = two(r, angs);
+      const r1 = R(r, 1, 4);
+      const r2 = R(r, 1, 3);
+      const pol = (m: number, d: number) => `${m === 1 ? "" : m}(cos ${angStr(frac(d, 180))}+i sin ${angStr(frac(d, 180))})`;
+      const head = `z_1=${pol(r1, a)}, z_2=${pol(r2, b)} のとき`;
+      if (r() < 0.6) return { lead: `${head}、z_1z_2 の絶対値と偏角 θ (0≤θ<2π)`, q: "", fields: [nf(r1 * r2), realF(angStr(frac(deg360(a + b), 180)))], labels: ["|z_1z_2| =", "θ ="] };
+      return { lead: `${head}、z_1/z_2 の絶対値と偏角 θ (0≤θ<2π)`, q: "", fields: [nf(frac(r1, r2)), realF(angStr(frac(deg360(a - b), 180)))], labels: ["|z_1/z_2| =", "θ ="] };
+    }
+    const z1 = [R(r, -4, 4), R(r, -4, 4)];
+    const z2 = [R(r, -4, 4), R(r, -4, 4)];
+    if (z1[0] === z2[0] && z1[1] === z2[1]) return GENS[86](r);
+    const d = [z1[0] - z2[0], z1[1] - z2[1]];
+    return { lead: `複素数平面上の2点 ${cxS(z1[0], z1[1])}, ${cxS(z2[0], z2[1])} 間の距離`, q: "", fields: [num(sq(dot(d, d)))] };
+  },
+  87: (r) => {
+    const forms: (() => [string, Cx, number])[] = [
+      () => {
+        const [a, b] = pick(r, [
+          [1, 1],
+          [1, -1],
+          [-1, 1],
+          [-1, -1],
+        ] as const);
+        return [cxS(a, b), cx(a, b), 12];
+      },
+      () => {
+        const [ra, rb] = pick(r, [
+          [coef(1), coef(1, 3)],
+          [coef(1, 3), coef(1)],
+          [coef(-1), coef(1, 3)],
+          [coef(1, 3), coef(-1)],
+          [coef(1), coef(-1, 3)],
+          [coef(-1, 3), coef(1)],
+        ] as [Coef, Coef][]);
+        return [formatComplex(ra, rb), { re: ra, im: rb }, 9];
+      },
+      () => {
+        const d = pick(r, [30, 45, 60, 120, 135, 150]);
+        const z = { re: cosDeg(d), im: sinDeg(d) };
+        const A = angStr(frac(d, 180));
+        return [`cos ${A}+i sin ${A}`, z, 16];
+      },
+    ];
+    const [zs, z, nmax] = pick(r, forms)();
+    const n = R(r, 2, nmax);
+    const w = cxPow(z, n);
+    return { lead: "ド・モアブルの定理で計算する", q: `(${zs})^${n}`, fields: [cxF(w)] };
+  },
+  // ===== 数学C 二次曲線 =====
+  88: (r) => {
+    const k = R(r, 0, 2);
+    if (k === 0) {
+      const p = NZ(r, -4, 4);
+      const yx = r() < 0.5;
+      const eq = yx ? `y^2=${4 * p}x` : `x^2=${4 * p}y`;
+      if (r() < 0.65) return { lead: `放物線 ${eq} の焦点`, q: "", fields: yx ? [nf(p), nf(0)] : [nf(0), nf(p)], labels: ["焦点"], layout: "point" };
+      return { lead: `放物線 ${eq} の準線の方程式`, q: "", fields: [nf(-p)], labels: [yx ? "x =" : "y ="] };
+    }
+    const [a, b] = two(r, [1, 2, 3, 4, 5, 6]);
+    const den = (n: number, v: string) => (n === 1 ? `${v}^2` : `${v}^2/${n * n}`);
+    if (k === 1) {
+      const std = r() < 0.6;
+      const g = gcd(b * b, a * a);
+      const eq = std ? `${den(a, "x")}+${den(b, "y")}=1` : `${L([[(b * b) / g, "x^2"], [(a * a) / g, "y^2"]])}=${(a * a * b * b) / g}`;
+      const c = sq(Math.abs(a * a - b * b));
+      if (r() < 0.25) return { lead: `楕円 ${eq} の長軸の長さ`, q: "", fields: [nf(2 * Math.max(a, b))] };
+      return { lead: `楕円 ${eq} の焦点のうち、${a > b ? "x" : "y"} 座標が正のもの`, q: "", fields: a > b ? [num(c), nf(0)] : [nf(0), num(c)], labels: ["焦点"], layout: "point" };
+    }
+    const minus = r() < 0.3;
+    const eq = `${den(a, "x")}-${den(b, "y")}=${minus ? -1 : 1}`;
+    const c = sq(a * a + b * b);
+    const t = R(r, 0, 2);
+    if (t === 0) return { lead: `双曲線 ${eq} の焦点のうち、${minus ? "y" : "x"} 座標が正のもの`, q: "", fields: minus ? [nf(0), num(c)] : [num(c), nf(0)], labels: ["焦点"], layout: "point" };
+    if (t === 1) return { lead: `双曲線 ${eq} の漸近線のうち、傾きが正のものの傾き`, q: "", fields: [nf(frac(b, a))] };
+    return { lead: `双曲線 ${eq} の頂点のうち、${minus ? "y" : "x"} 座標が正のもの`, q: "", fields: minus ? [nf(0), nf(b)] : [nf(a), nf(0)], labels: ["頂点"], layout: "point" };
   },
 };
 

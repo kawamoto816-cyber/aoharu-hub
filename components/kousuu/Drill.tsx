@@ -55,7 +55,18 @@ export function Drill({ step, onRestart }: { step: KousuuStep; onRestart: () => 
     if (kinds.has("expr") || kinds.has("factor")) {
       const letters = new Set(problems.flatMap((p) => [...`${p.q}${p.lead ?? ""}`.matchAll(/[abxyz]/g)].map((m) => m[0])));
       for (const v of ["x", "y", "z", "a", "b"]) if (letters.has(v)) k.push(v);
+      if (fields.some((f) => f.kind === "expr" && [...f.value.keys()].some((key) => key.includes("n")))) k.push("n");
       k.push("^", "(", ")");
+    }
+    if (kinds.has("real") || kinds.has("func")) {
+      const shows = fields.map((f) => (f.kind === "real" || f.kind === "func" ? f.value : "")).join(" ");
+      for (const f of fields) if (f.kind === "func") k.push(f.v);
+      k.push("^", "(", ")", "√", "π", "e");
+      if (shows.includes("log")) k.push("log");
+      if (shows.includes("|")) k.push("|");
+      if (shows.includes("sin")) k.push("sin");
+      if (shows.includes("cos")) k.push("cos");
+      if (fields.some((f) => f.kind === "func" && f.upToConst)) k.push("C");
     }
     if (kinds.has("complex")) k.push("i");
     if (kinds.has("ineq")) {
@@ -134,6 +145,11 @@ export function Drill({ step, onRestart }: { step: KousuuStep; onRestart: () => 
           <li>
             書き方の例：分数は <code>3/4</code>、√ は <code>2√3</code>、指数は <code>x^2</code>、不等式は <code>-2&lt;x≤5</code> や <code>x&lt;-1, 3&lt;x</code>。答えは約分・有理化した形で。
           </li>
+          {problems.some((p) => p.fields.some((f) => f.kind === "real" || f.kind === "func")) && (
+            <li>
+              π は <code>π</code>（<code>pi</code> でも可）、自然対数は <code>log x</code>、指数は <code>e^(2x)</code> や <code>3·2^(n-1)</code>、三角関数は <code>sin3x</code>・<code>x cos x</code>。分母が式のときは <code>1/(x+1)</code> のようにかっこでくくる。不定積分には <code>+C</code> をつける。
+            </li>
+          )}
         </ul>
         {rec && (
           <p className="m-0 mt-3 text-[12.5px] font-bold text-[#1533B8]">
@@ -288,7 +304,7 @@ export function Drill({ step, onRestart }: { step: KousuuStep; onRestart: () => 
               <>
                 {val.trim() && j?.v !== "ok" && f.kind !== "digits" && (
                   <div className="mt-1 pl-1 text-[15px] text-[#3A3D55]">
-                    <KousuuText src={f.kind === "ineq" ? val.replace(/\s+/g, "") : normalize(val)} />
+                    <KousuuText src={f.kind === "ineq" ? val.replace(/\s+/g, "") : f.kind === "real" || f.kind === "func" ? val.trim().replace(/pi/g, "π") : normalize(val)} />
                   </div>
                 )}
                 {j?.v === "form" && <p className="m-0 mt-1 text-[12.5px] font-bold text-[#B54708]">形をなおそう：{j.msg ?? "値は合っています。いちばん簡単な形にしよう。"}</p>}
@@ -320,17 +336,24 @@ export function Drill({ step, onRestart }: { step: KousuuStep; onRestart: () => 
                   {point ? (
                     <div className="mt-2">
                       <div className="flex flex-wrap items-center gap-1.5 text-[18px] font-bold">
-                        {pr.labels?.[0] && <span className="mr-1 text-[16px]">{pr.labels[0]}</span>}
+                        {pr.labels?.[0] && (
+                          <span className="mr-1 text-[16px]">
+                            <KousuuText src={pr.labels[0]} />
+                          </span>
+                        )}
                         <span>(</span>
-                        {field(0)}
-                        {mark(0)}
-                        <span>,</span>
-                        {field(1)}
-                        {mark(1)}
+                        {pr.fields.map((_, fi) => (
+                          <span key={fi} className="contents">
+                            {fi > 0 && <span>,</span>}
+                            {field(fi)}
+                            {mark(fi)}
+                          </span>
+                        ))}
                         <span>)</span>
                       </div>
-                      {notes(0)}
-                      {notes(1)}
+                      {pr.fields.map((_, fi) => (
+                        <div key={fi}>{notes(fi)}</div>
+                      ))}
                     </div>
                   ) : (
                     <div className="mt-2 flex flex-col gap-2">

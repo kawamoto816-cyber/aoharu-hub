@@ -2,6 +2,7 @@ import { normalize, tryParse } from "../math/parse";
 import { formatCoef, formatPoly } from "../math/format";
 import { judge as mathJudge } from "../math/check";
 import { cAdd, cKey, cNeg, gcd, isSquareFree, pConst, pDegree, pEq, pKey, pNeg, parseMonoKey, type Coef, type Poly } from "../math/value";
+import { evalNode, formIssue, hasTopC, mentionsC, prep, tryNode, type Node } from "./expr";
 
 // 高校数学 計算○段の採点。値が合っているかに加えて「答えの形」も確かめる (満点主義)。
 //   ok      … 正解
@@ -43,7 +44,11 @@ export type Field =
   /** 不等式の解 (v は文字) */
   | { kind: "ineq"; value: SolSet; v: string }
   /** n進法の数字の並び */
-  | { kind: "digits"; value: string };
+  | { kind: "digits"; value: string }
+  /** π・e・log を含む数 (value は正解の書き方。値をくらべて採点する) */
+  | { kind: "real"; value: string }
+  /** 関数・数列の式 (v は文字。いくつかの点で値をくらべる)。upToConst なら不定積分 (+C を書く) */
+  | { kind: "func"; value: string; v: string; upToConst?: boolean };
 
 export const ALL_REAL = "すべての実数";
 export const NO_SOL = "解なし";
@@ -425,6 +430,70 @@ function judgeDigits(input: string, value: string): Judged {
   return WRONG;
 }
 
+// ---- π・e・関数を含む式 ----
+
+/** 値をくらべる点 (数列の文字 n は自然数、それ以外は実数) */
+const XS = [-5.3, -4.6, -3.7, -2.6, -1.7, -1.1, -0.45, 0.35, 0.7, 1.3, 1.9, 2.45, 3.3, 4.1, 5.2];
+const NS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+export const pointsOf = (v: string) => (v === "n" ? NS : XS);
+
+const close = (a: number, b: number) => Math.abs(a - b) <= 1e-8 * Math.max(1, Math.abs(a), Math.abs(b));
+
+const refCache = new Map<string, Node>();
+function refNode(src: string, vars: string[]): Node {
+  const key = `${vars.join("")}|${src}`;
+  let n = refCache.get(key);
+  if (!n) {
+    n = tryNode(src, vars) ?? undefined;
+    if (!n) throw new Error(`bad answer src ${src}`);
+    refCache.set(key, n);
+  }
+  return n;
+}
+
+function judgeReal(input: string, value: string): Judged {
+  if (!prep(input)) return INVALID;
+  const n = tryNode(input);
+  if (!n) return { v: "invalid", msg: "式として読めませんでした。π は π、自然対数は log、分数は 3/4 のように書こう。" };
+  const got = evalNode(n);
+  const want = evalNode(refNode(value, []));
+  if (!Number.isFinite(got) || !close(got, want)) return WRONG;
+  const f = formIssue(n);
+  return f ? { v: "form", msg: f } : OK;
+}
+
+function judgeFunc(input: string, value: string, v: string, upToConst?: boolean): Judged {
+  if (!prep(input)) return INVALID;
+  const n = tryNode(input, [v], !!upToConst);
+  if (!n) return { v: "invalid", msg: `式として読めませんでした。文字は ${v}、かけ算の記号は省いてよい (2${v}${v === "x" ? "、x sin x" : ""})。分母が式なら 1/(${v}+1) のようにかっこでくくろう。` };
+  const ref = refNode(value, [v]);
+  let diff: number | null = null;
+  let matched = 0;
+  let missing = 0;
+  for (const p of pointsOf(v)) {
+    const want = evalNode(ref, { [v]: p });
+    if (!Number.isFinite(want)) continue;
+    const got = evalNode(n, { [v]: p, C: 0 });
+    if (!Number.isFinite(got)) {
+      missing++;
+      continue;
+    }
+    if (upToConst) {
+      if (diff === null) diff = got - want;
+      else if (!close(got - diff, want)) return WRONG;
+    } else if (!close(got, want)) return WRONG;
+    matched++;
+  }
+  if (matched < 3) return WRONG;
+  if (missing) {
+    if (value.includes("|")) return { v: "form", msg: "log の中が負になるところでも成り立つように、絶対値をつけよう (例 log|x|、log|2x+1|)。" };
+    return WRONG;
+  }
+  if (upToConst && !hasTopC(n)) return { v: "form", msg: mentionsC(n) ? "積分定数 C は、最後に +C と書こう。" : "値は合っています。積分定数 C をつけよう (例 x^2+C)。" };
+  const f = formIssue(n);
+  return f ? { v: "form", msg: f } : OK;
+}
+
 // ---- まとめ ----
 
 export function judgeField(f: Field, input: string): Judged {
@@ -441,6 +510,10 @@ export function judgeField(f: Field, input: string): Judged {
       return judgeIneq(input, f.value, f.v);
     case "digits":
       return judgeDigits(input, f.value);
+    case "real":
+      return judgeReal(input, f.value);
+    case "func":
+      return judgeFunc(input, f.value, f.v, f.upToConst);
   }
 }
 
@@ -477,5 +550,9 @@ export function fieldText(f: Field): string {
       return formatSol(f.value, f.v);
     case "digits":
       return f.value;
+    case "real":
+      return f.value;
+    case "func":
+      return f.upToConst ? `${f.value}+C` : f.value;
   }
 }

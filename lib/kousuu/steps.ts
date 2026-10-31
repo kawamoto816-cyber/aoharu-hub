@@ -3,12 +3,15 @@
 // target は10問あたりの目標時間 (分、仮の値)。prev は、つまずいたときに戻る段。
 // hint は2回続けて間違えたときに出すヒントカード (考え方 + 例)。
 
-export type Subject = "1" | "A" | "2";
+export type Subject = "1" | "A" | "2" | "B" | "3" | "C";
 
 export const SUBJECTS: { key: Subject; name: string }[] = [
   { key: "1", name: "数学Ⅰ" },
   { key: "A", name: "数学A" },
   { key: "2", name: "数学Ⅱ" },
+  { key: "B", name: "数学B" },
+  { key: "3", name: "数学Ⅲ" },
+  { key: "C", name: "数学C" },
 ];
 
 export interface KousuuUnit {
@@ -45,6 +48,22 @@ export const UNITS: KousuuUnit[] = [
   { key: "sankakukansu", title: "三角関数", subject: "2" },
   { key: "bibun", title: "微分", subject: "2" },
   { key: "sekibun", title: "積分", subject: "2" },
+  { key: "suretsu", title: "数列", subject: "B" },
+  { key: "sigma", title: "いろいろな数列（Σ・階差）", subject: "B" },
+  { key: "zenka", title: "漸化式", subject: "B" },
+  { key: "bunpu", title: "確率分布", subject: "B" },
+  { key: "nikou", title: "二項分布と正規分布", subject: "B" },
+  { key: "kansu3", title: "分数関数・無理関数", subject: "3" },
+  { key: "gyaku", title: "合成関数・逆関数", subject: "3" },
+  { key: "kyokugen", title: "極限", subject: "3" },
+  { key: "bibun3", title: "微分法", subject: "3" },
+  { key: "bibunoyo", title: "微分法の応用", subject: "3" },
+  { key: "sekibun3", title: "積分法", subject: "3" },
+  { key: "sekibunoyo", title: "積分法の応用", subject: "3" },
+  { key: "vector", title: "平面上のベクトル", subject: "C" },
+  { key: "kukan", title: "空間のベクトル", subject: "C" },
+  { key: "fukusoheimen", title: "複素数平面", subject: "C" },
+  { key: "nijikyokusen", title: "二次曲線", subject: "C" },
 ];
 
 export const STEPS: KousuuStep[] = [
@@ -122,6 +141,50 @@ export const STEPS: KousuuStep[] = [
   // 積分
   { no: 57, unit: "sekibun", title: "定積分", example: "∫[1,3](x^2-2x)dx", target: 5, prev: [54], hint: "xⁿ の不定積分は xⁿ⁺¹/(n+1)。F(b)−F(a) を計算する。", hintSteps: ["∫[1,3](x^2-2x)dx", "[1/3x^3-x^2] を 1 から 3", "(9-9)-(1/3-1)=2/3"] },
   { no: 58, unit: "sekibun", title: "定積分と面積", example: "∫[1,3](x-1)(x-3)dx", target: 7, prev: [57], hint: "∫[α,β](x−α)(x−β)dx=−(β−α)³/6。放物線と x 軸で囲まれた面積は、x 軸より下なら −∫ をとる。", hintSteps: ["∫[1,3](x-1)(x-3)dx", "-(3-1)^3/6", "-4/3"] },
+  // 数学B 数列
+  { no: 59, unit: "suretsu", title: "等差数列", example: "初項 5、公差 3 の一般項 a_n", target: 5, prev: [], hint: "初項 a、公差 d の等差数列の一般項は a_n=a+(n−1)d。2つの項がわかっていれば、項の番号の差で公差を出す。", hintSteps: ["初項 5、公差 3", "a_n=5+(n-1)×3", "a_n=3n+2"] },
+  { no: 60, unit: "suretsu", title: "等比数列", example: "初項 3、公比 2 の一般項 a_n", target: 5, prev: [59, 46], hint: "初項 a、公比 r の等比数列の一般項は a_n=ar^(n−1)。a_5÷a_2=r³ のように、項の比で公比を出す。", hintSteps: ["初項 3、公比 2", "a_n=3×2^(n-1)", "a_n=3·2^(n-1)"] },
+  { no: 61, unit: "suretsu", title: "等差数列・等比数列の和", example: "1+4+7+…+31", target: 6, prev: [59, 60], hint: "等差数列の和は S_n=n(初項+末項)/2=n{2a+(n−1)d}/2。等比数列の和は S_n=a(1−rⁿ)/(1−r) (r≠1)。項の数 n を先に確かめる。", hintSteps: ["1+4+7+…+31", "31=1+(n-1)×3 → n=11", "11×(1+31)/2=176"] },
+  // いろいろな数列
+  { no: 62, unit: "sigma", title: "Σの計算（数値）", example: "Σ[k=1,10](2k+1)", target: 6, prev: [61], hint: "Σk=n(n+1)/2、Σk²=n(n+1)(2n+1)/6、Σk³={n(n+1)/2}²、Σc=cn。Σ(ak+b)=aΣk+Σb のように分けてから公式を使う。", hintSteps: ["Σ[k=1,10](2k+1)", "2×(10×11)/2+10", "120"] },
+  { no: 63, unit: "sigma", title: "Σの計算（n の式）", example: "Σ[k=1,n](3k-1)", target: 7, prev: [62], hint: "公式に k の代わりに n を入れたまま計算する。Σk²、Σk³ だけなら 1/6n(n+1)(2n+1) のように因数分解した形でよい。Σ2^k は等比数列の和。", hintSteps: ["Σ[k=1,n](3k-1)", "3×1/2n(n+1)-n", "3/2n^2+1/2n"] },
+  { no: 64, unit: "sigma", title: "階差数列", example: "1, 2, 5, 10, 17, … の一般項", target: 7, prev: [63], hint: "となりどうしの差 b_n=a_(n+1)−a_n を求める。n≥2 のとき a_n=a_1+Σ[k=1,n-1]b_k。最後に n=1 でも成り立つか確かめる。", hintSteps: ["1, 2, 5, 10, 17 → 差は 1, 3, 5, 7 (b_n=2n-1)", "a_n=1+Σ[k=1,n-1](2k-1)=1+(n-1)^2", "a_n=n^2-2n+2"] },
+  // 漸化式
+  { no: 65, unit: "zenka", title: "漸化式", example: "a_1=1, a_(n+1)=2a_n+1", target: 8, prev: [64, 60], hint: "a_(n+1)=a_n+d は等差、a_(n+1)=ra_n は等比。a_(n+1)=pa_n+q は α=pα+q となる α を求め、a_(n+1)−α=p(a_n−α) と変形して等比数列にする。a_(n+1)=a_n+(n の式) は階差数列。", hintSteps: ["a_1=1, a_(n+1)=2a_n+1 → α=2α+1 → α=-1", "a_(n+1)+1=2(a_n+1)、a_1+1=2", "a_n+1=2·2^(n-1) → a_n=2^n-1"] },
+  // 確率分布
+  { no: 66, unit: "bunpu", title: "確率分布の期待値・分散", example: "X : 0, 1, 2 / P : 1/4, 1/2, 1/4", target: 7, prev: [33], hint: "E(X)=Σ x×P、V(X)=E(X²)−{E(X)}²。Y=aX+b なら E(Y)=aE(X)+b、V(Y)=a²V(X)。", hintSteps: ["E(X)=0×1/4+1×1/2+2×1/4=1", "E(X^2)=0+1/2+4/4=3/2", "V(X)=3/2-1^2=1/2"] },
+  // 二項分布と正規分布
+  { no: 67, unit: "nikou", title: "二項分布の平均・分散", example: "B(100, 1/5) の E(X), V(X), σ(X)", target: 5, prev: [66, 35], hint: "X が二項分布 B(n, p) にしたがうとき E(X)=np、V(X)=np(1−p)、σ(X)=√V(X)。", hintSteps: ["B(100, 1/5)", "E=100×1/5=20、V=100×1/5×4/5=16", "σ=√16=4"] },
+  { no: 68, unit: "nikou", title: "正規分布の標準化", example: "N(50, 10^2) で X=65 の Z", target: 6, prev: [67], hint: "X が N(m, σ²) にしたがうとき Z=(X−m)/σ は標準正規分布 N(0, 1) にしたがう。二項分布 B(n, p) は m=np、σ=√(np(1−p)) の正規分布で近似できる。確率は P(0≤Z≤u) の表と、左右対称 (片側 0.5) を使う。", hintSteps: ["N(50, 10^2)、X=65", "Z=(65-50)/10", "Z=1.5"] },
+  // 数学Ⅲ 関数
+  { no: 69, unit: "kansu3", title: "分数関数・無理関数", example: "y=(2x+1)/(x-1) の漸近線", target: 6, prev: [17], hint: "y=k/(x−p)+q の漸近線は x=p と y=q。(ax+b)/(x−p) は割り算して k/(x−p)+a の形にする。無理方程式は両辺を2乗して解き、もとの式に代入して確かめる (√ は 0 以上)。", hintSteps: ["y=(2x+1)/(x-1)", "=2+3/(x-1)", "漸近線 x=1, y=2"] },
+  { no: 70, unit: "gyaku", title: "合成関数・逆関数", example: "f(x)=2x+3 の逆関数", target: 6, prev: [69], hint: "(g∘f)(x)=g(f(x))。逆関数は y=f(x) を x について解き、x と y を入れかえる。もとの関数の値域が逆関数の定義域になる。", hintSteps: ["y=2x+3", "x=(y-3)/2", "f^(-1)(x)=(x-3)/2"] },
+  // 極限
+  { no: 71, unit: "kyokugen", title: "数列の極限", example: "lim[n→∞](2n^2+1)/(n^2-3n)", target: 6, prev: [62], hint: "分母の最高次の項 (n² や 3ⁿ) で分母・分子を割る。√ の差は分子を有理化する。|r|<1 なら rⁿ→0。無限等比級数は |r|<1 のとき a/(1−r)。", hintSteps: ["lim[n→∞](2n^2+1)/(n^2-3n)", "分母分子を n^2 で割る → (2+1/n^2)/(1-3/n)", "2"] },
+  { no: 72, unit: "kyokugen", title: "関数の極限", example: "lim[x→0](sin3x)/x", target: 7, prev: [71, 51], hint: "0/0 の形は約分してから代入する。lim[x→0](sinx)/x=1 を使えるように (sin3x)/(3x) をつくる。(1−cosx)/x²=1/2、(e^x−1)/x=1、(1+x)^(1/x)→e。", hintSteps: ["lim[x→0](sin3x)/x", "=lim 3×(sin3x)/(3x)", "3×1=3"] },
+  // 微分法
+  { no: 73, unit: "bibun3", title: "積・商の微分", example: "f(x)=(x^2)/(x+1)", target: 7, prev: [54], hint: "{f(x)g(x)}'=f'g+fg'、{f/g}'=(f'g−fg')/g²。(xⁿ)'=nxⁿ⁻¹ は n が負の数・分数でも使える (√x=x^(1/2))。", hintSteps: ["f(x)=(x^2)/(x+1)", "f'(x)=(2x(x+1)-x^2×1)/((x+1)^2)", "(x^2+2x)/((x+1)^2)"] },
+  { no: 74, unit: "bibun3", title: "合成関数の微分", example: "f(x)=(2x+1)^5", target: 6, prev: [73], hint: "{f(g(x))}'=f'(g(x))×g'(x)。外側を微分してから、中身の微分をかける。{√u}'=u'/(2√u)。", hintSteps: ["f(x)=(2x+1)^5", "5(2x+1)^4×2", "10(2x+1)^4"] },
+  { no: 75, unit: "bibun3", title: "三角関数の微分", example: "f(x)=x sin x", target: 6, prev: [74], hint: "(sinx)'=cosx、(cosx)'=−sinx、(tanx)'=1/cos²x。sin3x は合成関数として 3cos3x。", hintSteps: ["f(x)=x sin x", "1×sin x+x×cos x", "sin x+x cos x"] },
+  { no: 76, unit: "bibun3", title: "指数・対数関数の微分", example: "f(x)=xe^x", target: 6, prev: [74], hint: "(eˣ)'=eˣ、(log x)'=1/x、(aˣ)'=aˣ log a、(log_a x)'=1/(x log a)。{log f(x)}'=f'(x)/f(x)。", hintSteps: ["f(x)=xe^x", "1×e^x+x×e^x", "(x+1)e^x"] },
+  // 微分法の応用
+  { no: 77, unit: "bibunoyo", title: "接線の方程式（いろいろな関数）", example: "y=e^x 上の x=1 の点の接線", target: 7, prev: [75, 76, 55], hint: "x=a の点での接線は y−f(a)=f'(a)(x−a)。e や π はそのまま文字のように残してよい。", hintSteps: ["y=e^x、x=1 → f(1)=e、f'(1)=e", "y-e=e(x-1)", "y=ex"] },
+  // 積分法
+  { no: 78, unit: "sekibun3", title: "不定積分（いろいろな関数）", example: "∫(3x^2+1/x)dx", target: 7, prev: [57, 76], hint: "∫xⁿdx=xⁿ⁺¹/(n+1)、∫1/x dx=log|x|、∫eˣdx=eˣ、∫sinx dx=−cosx、∫cosx dx=sinx、∫1/cos²x dx=tanx。∫f(ax+b)dx=(1/a)F(ax+b)。最後に +C。", hintSteps: ["∫(3x^2+1/x)dx", "3×1/3x^3+log|x|", "x^3+log|x|+C"] },
+  { no: 79, unit: "sekibun3", title: "定積分（いろいろな関数）", example: "∫[0,π/2]sin x dx", target: 7, prev: [78], hint: "不定積分 F(x) を求めて F(b)−F(a)。log e=1、log 1=0、e⁰=1、三角関数の値を確かめる。", hintSteps: ["∫[1,e]1/x dx", "[log x] を 1 から e", "log e-log 1=1"] },
+  { no: 80, unit: "sekibun3", title: "置換積分", example: "∫[0,1]2x(x^2+1)^3 dx", target: 8, prev: [79, 74], hint: "中身を t とおき、dx を dt に、積分区間も t の範囲に直す。f(g(x))g'(x) の形なら t=g(x)。√(a²−x²) は x=a sinθ、1/(a²+x²) は x=a tanθ。", hintSteps: ["∫[0,1]2x(x^2+1)^3 dx、t=x^2+1", "dt=2xdx、x:0→1 で t:1→2 → ∫[1,2]t^3dt", "[t^4/4] を 1 から 2 = 15/4"] },
+  { no: 81, unit: "sekibun3", title: "部分積分", example: "∫[0,1]xe^x dx", target: 8, prev: [79], hint: "∫f(x)g'(x)dx=f(x)g(x)−∫f'(x)g(x)dx。x は微分する側 (f) に、eˣ・sinx・cosx は積分する側 (g') に。log x は log x×1 とみて log x を微分する側に。", hintSteps: ["∫[0,1]xe^x dx", "[xe^x] を 0 から 1 −∫[0,1]e^x dx", "e-(e-1)=1"] },
+  // 積分法の応用
+  { no: 82, unit: "sekibunoyo", title: "面積・体積", example: "y=sin x (0≤x≤π) と x 軸で囲まれた面積", target: 8, prev: [79, 58], hint: "面積は (上の式)−(下の式) を積分する。x 軸のまわりの回転体の体積は V=π∫[a,b]y^2dx。楕円 x²/a²+y²/b²=1 の面積は πab。", hintSteps: ["S=∫[0,π]sin x dx", "[-cos x] を 0 から π", "1+1=2"] },
+  // 数学C ベクトル
+  { no: 83, unit: "vector", title: "ベクトルの成分と大きさ", example: "vec a=(2, 1), vec b=(-1, 3) のとき 2vec a-vec b", target: 5, prev: [], hint: "成分ごとにたしたり、何倍かしたりする。vec a=(a_1, a_2) の大きさは |vec a|=√(a_1^2+a_2^2)。平行なら vec a=k vec b。単位ベクトルは vec a/|vec a|。", hintSteps: ["vec a=(2, 1), vec b=(-1, 3)", "2vec a-vec b=(4-(-1), 2-3)", "(5, -1)"] },
+  { no: 84, unit: "vector", title: "内積となす角", example: "vec a=(1, 2), vec b=(3, 1) のなす角", target: 7, prev: [83, 25], hint: "vec a·vec b=a_1b_1+a_2b_2=|vec a||vec b|cosθ。cosθ=(vec a·vec b)/(|vec a||vec b|)。|vec a+vec b|^2=|vec a|^2+2vec a·vec b+|vec b|^2。", hintSteps: ["vec a·vec b=3+2=5、|vec a|=√5、|vec b|=√10", "cosθ=5/(√5×√10)=1/√2", "θ=45°"] },
+  { no: 85, unit: "kukan", title: "空間ベクトル", example: "vec a=(1, 2, -1), vec b=(2, 0, 3) の内積", target: 7, prev: [84], hint: "平面と同じで、成分が3つになる。|vec a|=√(a_1^2+a_2^2+a_3^2)、vec a·vec b=a_1b_1+a_2b_2+a_3b_3、2点間の距離は差の大きさ。", hintSteps: ["vec a=(1, 1, 0), vec b=(1, 0, 1)", "vec a·vec b=1、|vec a|=|vec b|=√2", "cosθ=1/2 → θ=60°"] },
+  // 複素数平面
+  { no: 86, unit: "fukusoheimen", title: "複素数平面と極形式", example: "z=1+√3i の極形式", target: 6, prev: [42, 51], hint: "z=a+bi の絶対値は r=|z|=√(a²+b²)、偏角 θ は cosθ=a/r、sinθ=b/r となる角。積は絶対値をかけて偏角をたす、商は絶対値をわって偏角をひく。", hintSteps: ["z=1+√3i", "r=√(1+3)=2、cosθ=1/2、sinθ=√3/2", "r=2、θ=π/3"] },
+  { no: 87, unit: "fukusoheimen", title: "ド・モアブルの定理", example: "(1+i)^8", target: 7, prev: [86], hint: "(cosθ+i sinθ)ⁿ=cos nθ+i sin nθ。まず極形式 r(cosθ+i sinθ) にして、rⁿ(cos nθ+i sin nθ) を計算する。", hintSteps: ["1+i=√2(cos π/4+i sin π/4)", "(1+i)^8=(√2)^8(cos2π+i sin2π)", "16"] },
+  // 二次曲線
+  { no: 88, unit: "nijikyokusen", title: "二次曲線（焦点・頂点・漸近線）", example: "x^2/25+y^2/9=1 の焦点", target: 6, prev: [17], hint: "放物線 y²=4px の焦点は (p, 0)、準線は x=−p。楕円 x²/a²+y²/b²=1 (a>b) の焦点は (±√(a²−b²), 0)。双曲線 x²/a²−y²/b²=1 の焦点は (±√(a²+b²), 0)、漸近線は y=±(b/a)x。", hintSteps: ["x^2/25+y^2/9=1 (a=5, b=3)", "√(25-9)=4", "焦点 (4, 0), (-4, 0)"] },
 ];
 
 export const STEP_COUNT = STEPS.length;

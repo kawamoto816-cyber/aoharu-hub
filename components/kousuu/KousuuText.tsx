@@ -4,6 +4,8 @@ import type { ReactNode } from "react";
 //   a/b → 分数 (縦に重ねる)、(…)/n → 分子がかっこの中身の分数、x/(…) → 分母がかっこの中身の分数
 //   ^2 ^-3 ^(2/3) ^x → 指数、_2 → 添え字 (log_2 8)、_(2) → n進法の添え字、√12 √(…) → 根号
 //   5P3 5C3 → 順列・組合せ、∫[a,b] → 定積分、sin cos tan log → 立体、π はそのまま、文字は斜体
+//   Σ[k=1,n] → 和の記号 (下と上に範囲)、lim[n→∞] → 極限 (下に行き先)、∫ だけなら不定積分の記号
+//   vec a・vec(AB) → ベクトル (上に矢印)、a_n a_(n+1) → 数列の添え字 (かっこの中が数字だけなら n進法としてかっこを残す)
 //   - → −、* → ×。日本語などはそのまま。改行は行を分ける。
 
 type Kind = "atom" | "op" | "text";
@@ -93,6 +95,45 @@ function render(src: string, keyBase: string): ReactNode[] {
         "atom",
       );
       i += m[0].length;
+    } else if ((m = rest.match(/^Σ\[([^,\]]+),([^\]]+)\]/))) {
+      push(
+        <span key={key()} className="mr-[0.1em] inline-flex flex-col items-center align-middle leading-none">
+          <span className="text-[0.55em]">{render(m[2], key())}</span>
+          <span className="text-[1.35em] leading-[1.05]">Σ</span>
+          <span className="text-[0.55em]">{render(m[1], key())}</span>
+        </span>,
+        "atom",
+      );
+      i += m[0].length;
+    } else if ((m = rest.match(/^lim\[([^\]]+)\]/))) {
+      push(
+        <span key={key()} className="mr-[0.2em] inline-flex flex-col items-center align-middle leading-none">
+          <span>lim</span>
+          <span className="mt-[0.1em] whitespace-nowrap text-[0.55em]">{render(m[1], key())}</span>
+        </span>,
+        "atom",
+      );
+      i += m[0].length;
+    } else if (c === "∫") {
+      push(
+        <span key={key()} className="mr-[0.1em] text-[1.45em] leading-none">
+          ∫
+        </span>,
+        "atom",
+      );
+      i++;
+    } else if ((m = rest.match(/^vec(?: ([a-zA-Z0-9])|\(([^()]+)\))/))) {
+      const name = m[1] ?? m[2];
+      push(
+        <span key={key()} className="inline-flex flex-col items-center align-middle leading-none">
+          <span className="text-[0.6em] leading-[0.8]" aria-hidden="true">
+            →
+          </span>
+          <i className="px-[0.02em] font-serif">{name}</i>
+        </span>,
+        "atom",
+      );
+      i += m[0].length;
     } else if (FUNCS.some((f) => rest.startsWith(f))) {
       push(
         <span key={key()} className="mr-[0.12em]">
@@ -161,8 +202,12 @@ function render(src: string, keyBase: string): ReactNode[] {
       let j = i + 1;
       if (src[j] === "(") {
         const e = matchParen(src, j);
-        sub = src.slice(j, e + 1);
+        const inner = src.slice(j + 1, e);
+        sub = /^\d+$/.test(inner) ? src.slice(j, e + 1) : render(inner, key());
         j = e + 1;
+      } else if (/[a-zA-Z]/.test(src[j] ?? "")) {
+        sub = <i className="font-serif">{src[j]}</i>;
+        j++;
       } else {
         while (j < src.length && /\d/.test(src[j])) j++;
         sub = src.slice(i + 1, j);
