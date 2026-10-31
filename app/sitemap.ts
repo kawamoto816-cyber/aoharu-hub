@@ -69,6 +69,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       ...s.units.map((u) => ({ url: `${base}/learn/${s.key}/${u.unit}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
     ]),
     { url: `${base}/learn/kotowaza`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
+    { url: `${base}/learn/kobun-tango`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
     { url: `${base}/learn/kousuu`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
     ...KOUSUU_STEPS.map((st) => ({ url: `${base}/learn/kousuu/${st.no}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
     { url: `${base}/learn/sansu`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },

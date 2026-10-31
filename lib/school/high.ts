@@ -25,7 +25,7 @@ export const SUBJECTS: SchoolSubject[] = [
           { id: "h-jpn-bunka-kindai", name: "近代以降の文学を読む", engines: ["鍛える"], href: "/learn/kokugo-ko/h-jpn-bunka-kindai" },
           { id: "h-jpn-bunka-shiika", name: "詩歌を読む（詩・短歌・俳句）", engines: ["覚える", "鍛える"], href: "/learn/kokugo-ko/h-jpn-bunka-shiika" },
           { id: "h-jpn-bunka-kobun-nyumon", name: "古文入門（歴史的仮名遣い）", engines: ["覚える"], href: "/learn/kobun/h-jpn-bunka-kobun-nyumon" },
-          { id: "h-jpn-bunka-kobun-tango", name: "古文単語", engines: ["覚える"], href: "/learn/kokugo-ko/h-jpn-bunka-kobun-tango" },
+          { id: "h-jpn-bunka-kobun-tango", name: "古文単語", engines: ["覚える"], href: "/learn/kobun-tango" },
           { id: "h-jpn-bunka-yogen", name: "用言の活用", engines: ["覚える", "鍛える"], href: "/learn/kobun/h-jpn-bunka-yogen" },
           { id: "h-jpn-bunka-jodoshi", name: "助動詞", engines: ["覚える", "鍛える"], href: "/learn/kobun/h-jpn-bunka-jodoshi" },
           { id: "h-jpn-bunka-kobun-dokkai", name: "古文を読む（説話・物語・随筆）", engines: ["鍛える"], href: "/learn/kokugo-ko/h-jpn-bunka-kobun-dokkai" },
