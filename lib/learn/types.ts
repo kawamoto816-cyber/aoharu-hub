@@ -63,6 +63,8 @@ export interface LearnRegionTopic {
   cards: LearnCard[];
   /** 仕上げのクエスト */
   quest: string;
+  /** パンくずの「まなぶ」の行き先 (裏面の領域は /learn#ura) */
+  homeHref?: string;
 }
 
 export const SUPERVISION = "監修：川本 潤（『総合型選抜のすすめ』『シン・学問のすすめ』著者）";

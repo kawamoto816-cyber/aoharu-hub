@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { LearnShell } from "@/components/learn/LearnShell";
-import { SkillMap } from "@/components/learn/SkillMap";
+import { LearnBoard } from "@/components/learn/LearnBoard";
 import { LearnSync } from "@/components/learn/LearnSync";
 import { SHORONBUN } from "@/lib/learn/shoronbun";
 import { MENSETSU } from "@/lib/learn/mensetsu";
@@ -9,9 +9,11 @@ import { SHIBORIYUSHO } from "@/lib/learn/shiboriyusho";
 import { JIBUN } from "@/lib/learn/jibun";
 import { DAIGAKU } from "@/lib/learn/daigaku";
 import { KYOYO } from "@/lib/learn/kyoyo";
+import { PARADIGM } from "@/lib/learn/paradigm";
 
 // /learn: 「まなぶ」のホーム。スキル盤と、次に進むカード。
-// 5つの領域 (自分を知る・志望校を知る・書く・話す・教養・時事) の各20枚を公開している。
+// 表は5つの領域 (自分を知る・志望校を知る・書く・話す・教養・時事) の各20枚。
+// 裏面 (難関校アドバンスト) はいま「知のパラダイム」20枚を公開している。
 
 const URL = "https://app.bluespring.co.jp/learn";
 const TITLE = "まなぶ｜総合型選抜・推薦入試のスキルをカードで習得｜アオハルOS";
@@ -69,9 +71,16 @@ export default function LearnHome() {
             </Link>
           </div>
         </div>
-        <section aria-label="スキル盤" className="rounded-[20px] border-[1.5px] border-[#15172B] bg-white/70 p-3 shadow-[6px_6px_0_#15172B]">
-          <SkillMap selfIds={JIBUN.cards.map((c) => c.id)} schoolIds={DAIGAKU.cards.map((c) => c.id)} writeIds={[...SHIBORIYUSHO.cards, ...SHORONBUN.cards].map((c) => c.id)} talkIds={MENSETSU.cards.map((c) => c.id)} kyoyoIds={KYOYO.cards.map((c) => c.id)} />
-        </section>
+        <LearnBoard
+          ids={{
+            self: JIBUN.cards.map((c) => c.id),
+            school: DAIGAKU.cards.map((c) => c.id),
+            write: [...SHIBORIYUSHO.cards, ...SHORONBUN.cards].map((c) => c.id),
+            talk: MENSETSU.cards.map((c) => c.id),
+            kyoyo: KYOYO.cards.map((c) => c.id),
+            paradigm: PARADIGM.cards.map((c) => c.id),
+          }}
+        />
       </div>
     </LearnShell>
   );

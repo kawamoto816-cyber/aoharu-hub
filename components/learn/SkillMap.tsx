@@ -3,11 +3,10 @@
 import Link from "next/link";
 import { useProgress } from "./useProgress";
 
-// スキル盤：中央の「合格力」から5つの領域がつながる。カードを覚える・試すとマスが光る。
-// 5つの領域すべて (自分を知る・志望校を知る・書く〈志望理由書・小論文〉・話す〈面接〉・教養・時事) を開いている。
-// 「書く」は札が2つあるので、押すと /learn のカード一覧 (#topics) へ飛ぶ。
+// スキル盤：中央の力から5つの領域がつながる。カードを覚える・試すとマスが光る。
+// 表 (推薦入試の合格力) と裏 (難関校向けの知の力) で同じ部品を使う。href のない領域は準備中として見せる。
 
-interface Region {
+export interface SkillRegion {
   key: string;
   name: string;
   aria: string;
@@ -18,20 +17,13 @@ interface Region {
   ids?: string[];
 }
 
-export function SkillMap({ selfIds, schoolIds, writeIds, talkIds, kyoyoIds }: { selfIds: string[]; schoolIds: string[]; writeIds: string[]; talkIds: string[]; kyoyoIds: string[] }) {
+export function SkillMap({ regions, centerTop, centerName }: { regions: SkillRegion[]; centerTop: string; centerName: string }) {
   const progress = useProgress();
-  const regions: Region[] = [
-    { key: "jibun", name: "自分を\n知る", aria: "自分を知る", fill: "#FFE45C", ink: "#15172B", ang: -90, href: "/learn/jibun", ids: selfIds },
-    { key: "shibo", name: "志望校を\n知る", aria: "志望校を知る", fill: "#BFE3D0", ink: "#15172B", ang: -18, href: "/learn/daigaku", ids: schoolIds },
-    { key: "hanasu", name: "話す", aria: "話す：面接", fill: "#D9341F", ink: "#FFFFFF", ang: 54, href: "/learn/mensetsu", ids: talkIds },
-    { key: "kyoyo", name: "教養・\n時事", aria: "教養・時事", fill: "#D8D2F5", ink: "#15172B", ang: 126, href: "/learn/kyoyo", ids: kyoyoIds },
-    { key: "kaku", name: "書く", aria: "書く：志望理由書・小論文", fill: "#1533B8", ink: "#FFFFFF", ang: 198, href: "/learn#topics", ids: writeIds },
-  ];
 
   // 中央の％は、公開している領域のカードのうち「習得」にした割合
-  const allIds = [...selfIds, ...schoolIds, ...writeIds, ...talkIds, ...kyoyoIds];
+  const allIds = regions.flatMap((r) => r.ids ?? []);
   const done = allIds.filter((id) => progress[id] === "done").length;
-  const percent = Math.round((done / allIds.length) * 100);
+  const percent = allIds.length ? Math.round((done / allIds.length) * 100) : 0;
   const learnedIn = (ids?: string[]) => (ids ? ids.filter((id) => progress[id]).length : 0);
 
   // 位置は百分率 (正方形の盤の中心 50%,50%)
@@ -73,8 +65,8 @@ export function SkillMap({ selfIds, schoolIds, writeIds, talkIds, kyoyoIds }: { 
       })}
 
       <div className="absolute left-1/2 top-1/2 flex aspect-square w-[25%] -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center rounded-full bg-[#15172B] text-white shadow-[0_0_0_6px_#FFE45C]">
-        <span className="text-[11px] font-bold">推薦入試</span>
-        <span className="text-[15px] font-black">合格力</span>
+        <span className="text-[11px] font-bold">{centerTop}</span>
+        <span className="text-[15px] font-black">{centerName}</span>
         <span className="text-xs font-bold text-[#FFE45C]">{percent}%</span>
       </div>
 
@@ -90,8 +82,8 @@ export function SkillMap({ selfIds, schoolIds, writeIds, talkIds, kyoyoIds }: { 
         const cls = "absolute flex aspect-square w-[21%] -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center gap-0.5 whitespace-pre-line rounded-full border-[1.5px] text-center no-underline";
         const inner = (
           <>
-            <span className="text-[13px] font-black leading-tight">{r.name}</span>
-            <span className="text-[11px] font-bold">{r.ids ? `${learnedIn(r.ids)} / ${r.ids.length}` : "準備中"}</span>
+            <span className={`${r.name.split("\n").some((l) => l.length > 4) ? "text-[11px]" : "text-[13px]"} font-black leading-tight`}>{r.name}</span>
+            <span className="text-[11px] font-bold">{r.href && r.ids ? `${learnedIn(r.ids)} / ${r.ids.length}` : "準備中"}</span>
           </>
         );
         return r.href ? (

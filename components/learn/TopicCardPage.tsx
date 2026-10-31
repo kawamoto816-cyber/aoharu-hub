@@ -33,7 +33,7 @@ export function TopicCardPage({ topic, no }: { topic: LearnRegionTopic; no: numb
   const chapterEnd = topic.cards.filter((c) => c.chapter === card.chapter).at(-1)?.no === card.no;
 
   return (
-    <LearnShell narrow crumbs={[{ href: "/learn", label: "まなぶ" }, { href: base, label: topic.label }, { label: `No.${card.no}` }]}>
+    <LearnShell narrow crumbs={[{ href: topic.homeHref ?? "/learn", label: "まなぶ" }, { href: base, label: topic.label }, { label: `No.${card.no}` }]}>
       <p className="m-0 text-xs font-bold text-[#3A3D55]">
         第{card.chapter}章　{chapter?.title}
       </p>
