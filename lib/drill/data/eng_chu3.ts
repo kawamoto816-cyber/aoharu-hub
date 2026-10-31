@@ -135,7 +135,7 @@ export const ENG_CHU3: DrillUnit[] = [
     points: [
       "関係代名詞は名詞（先行詞）を後ろから説明する。人には who、物・動物には which、that はどちらにも使える。",
       "主格：関係代名詞のすぐあとに動詞が続く。例：I have a friend who lives in Kobe.",
-      "目的格：関係代名詞のあとに主語＋動詞が続く。that・which を使い、省略できる。例：This is the book (that) I bought.",
+      "目的格：関係代名詞のあとに主語＋動詞が続く。人なら that（who）、物なら that・which を使い、省略できる。例：This is the book (that) I bought.",
       "主格の関係代名詞のあとの動詞は、先行詞の数に合わせる。例：the girls who are singing",
     ],
     qs: [

@@ -172,7 +172,7 @@ export const EIGO_CHU1: DrillUnit[] = [
       { q: "I ___ a lot of pictures during my trip last summer.", c: ["took", "made", "did", "played"], a: 0, ex: "「写真をとる」は take a picture。過去なので took。" },
       { q: "nervous の意味は？", c: ["うれしい", "緊張して", "ねむい", "おこって"], a: 1, ex: "nervous は「緊張して、不安で」。おこっては angry。" },
       { q: "「くもりの」は英語で？", c: ["rainy", "snowy", "cloudy", "windy"], a: 2, ex: "くもりの は cloudy。rainy は雨の、windy は風の強い。" },
-      { q: "We ___ for the bus for twenty minutes yesterday.", c: ["stayed", "looked", "stopped", "waited"], a: 3, ex: "「〜を待つ」は wait for 〜。過去なので waited。" },
+      { q: "We ___ for the bus for twenty minutes yesterday.", c: ["stayed", "rode", "stopped", "waited"], a: 3, ex: "「〜を待つ」は wait for 〜。過去なので waited。" },
       { q: "Did you ___ the news? — Yes, I heard it this morning.", c: ["hear", "here", "hair", "heard"], a: 0, ex: "Did のあとは動詞の原形 hear。here は「ここ」。" },
       { q: "「（〜を）忘れる」は英語で？", c: ["remember", "forget", "borrow", "believe"], a: 1, ex: "忘れるは forget。remember は「覚えている、思い出す」。" },
       { q: "borrow の意味は？", c: ["貸す", "返す", "借りる", "買う"], a: 2, ex: "borrow は「借りる」。「貸す」は lend。" },

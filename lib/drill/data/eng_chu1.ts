@@ -158,7 +158,7 @@ export const ENG_CHU1: DrillUnit[] = [
       { q: "What ___ you do on Sundays? — I play baseball.", c: ["are", "do", "does", "is"], a: 1, ex: "主語 you で一般動詞 do があるので do を使う。" },
       { q: "Where ___ your father work?", c: ["do", "is", "does", "are"], a: 2, ex: "your father は3人称単数で一般動詞なので does。" },
       { q: "How many ___ do you have? — I have two.", c: ["brother", "a brother", "brothers'", "brothers"], a: 3, ex: "How many のあとは複数形の名詞。" },
-      { q: "___ is the weather today? — It's sunny.", c: ["How", "What", "Who", "Which"], a: 0, ex: "天気は How is the weather? でたずねる。" },
+      { q: "___ is the weather today? — It's sunny.", c: ["How", "Where", "Who", "Which"], a: 0, ex: "天気は How is the weather? でたずねる。" },
       { q: "___ is my cap? — It's on the chair.", c: ["What", "Where", "When", "Who"], a: 1, ex: "「いすの上」と場所を答えているので where。" },
       { q: "What ___ is it today? — It's Monday.", c: ["time", "date", "day", "month"], a: 2, ex: "曜日は What day でたずねる。" },
       { q: "Which is your bike, this one or that one? — ___ one is mine.", c: ["These", "Those", "It", "This"], a: 3, ex: "one は単数なので this one。these は複数のとき。" },
