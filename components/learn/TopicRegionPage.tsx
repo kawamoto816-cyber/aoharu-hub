@@ -9,7 +9,7 @@ import type { LearnRegionTopic } from "@/lib/learn/types";
 export function TopicRegionPage({ topic, region, heading, lead }: { topic: LearnRegionTopic; region: string; heading: string; lead: string }) {
   const questId = `${topic.key}-quest`;
   return (
-    <LearnShell crumbs={[{ href: "/", label: "アオハルOS" }, { href: "/learn", label: "まなぶ" }, { label: `${region}：${topic.label}` }]}>
+    <LearnShell crumbs={[{ href: "/", label: "アオハルOS" }, { href: "/learn", label: "まなぶ" }, { label: region === topic.label ? region : `${region}：${topic.label}` }]}>
       <LearnDoneFromApp topicKey={topic.key} cardIds={topic.cards.map((c) => c.id)} />
       <h1 className="m-0 text-[26px] font-black sm:text-[32px]">{heading}</h1>
       <p className="mb-6 mt-2 text-[15px] leading-relaxed text-[#3A3D55]">{lead}</p>
