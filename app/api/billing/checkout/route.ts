@@ -36,22 +36,27 @@ export async function POST(req: Request) {
       );
     }
 
+    // payer: "parent" は、本人が保護者に送る支払いリンク。保護者が開いて支払うので、
+    // 本人のメールアドレスは入れず (保護者が自分のアドレスを入れる)、支払い後は保護者向けのお礼ページへ戻す。
+    const forParent = body?.payer === "parent";
+
     const origin = new URL(req.url).origin;
-    const user = await currentUser();
+    const user = forParent ? null : await currentUser();
     const userEmail = user?.emailAddresses?.[0]?.emailAddress;
 
     // {CHECKOUT_SESSION_ID} はStripeがCheckout完了後のリダイレクト時に実際のセッションIDへ
     // 置換してくれるプレースホルダ。GA4のpurchaseイベントをリロード等で二重計測しないための
     // トランザクションIDとして使う。
-    const successUrl =
-      `${origin}/?checkout=success&plan=${plan}` +
-      `&value=${PLAN_VALUE_JPY[plan]}&session_id={CHECKOUT_SESSION_ID}`;
+    const successUrl = forParent
+      ? `${origin}/parents/thanks?plan=${plan}`
+      : `${origin}/?checkout=success&plan=${plan}` +
+        `&value=${PLAN_VALUE_JPY[plan]}&session_id={CHECKOUT_SESSION_ID}`;
 
     const session = await createCheckoutSession({
       userId,
       plan,
       successUrl,
-      cancelUrl: `${origin}/?checkout=cancel`,
+      cancelUrl: forParent ? `${origin}/parents` : `${origin}/?checkout=cancel`,
       userEmail,
     });
 

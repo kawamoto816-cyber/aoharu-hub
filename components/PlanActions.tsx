@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useState } from "react";
+import { trackEvent } from "@/lib/analytics";
 
 type LoadingAction = "pro" | "max" | "portal" | null;
 
@@ -19,6 +20,7 @@ export function PlanActions({ plan }: { plan: "free" | "pro" | "max" }) {
       if (!res.ok || !data?.url) {
         throw new Error(data?.error || `リクエストに失敗しました (HTTP ${res.status})`);
       }
+      trackEvent("begin_checkout", { currency: "JPY", value: target === "pro" ? 980 : 2980, plan: target, location: "mypage" });
       window.location.href = data.url;
     } catch (err: any) {
       alert(`手続きの開始に失敗しました。\n詳細: ${err.message}`);

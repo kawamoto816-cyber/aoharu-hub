@@ -89,7 +89,8 @@ function Hub({
 
       <ParentShareCard shareUrl={shareUrl} />
 
-      <section className="mt-10 rounded-2xl border border-slate-200 bg-slate-50/60 p-6 sm:p-8">
+      {/* メールや添削画面の「料金とプラン」(/#pricing) は、ログイン中はここへ飛ぶ */}
+      <section id="pricing" className="mt-10 scroll-mt-20 rounded-2xl border border-slate-200 bg-slate-50/60 p-6 sm:p-8">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
             <p className="text-xs font-bold text-slate-500">現在のプラン</p>

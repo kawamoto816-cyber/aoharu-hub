@@ -5,6 +5,7 @@ import Link from "next/link";
 import { SmartSignUpButton } from "@/components/SmartSignUpButton";
 import { trackEvent } from "@/lib/analytics";
 import { learnIdFromLocation, markDone } from "@/lib/learn/progress";
+import { UpgradeActions } from "@/components/billing/UpgradeActions";
 
 // /tensaku の添削フォーム。
 //   未登録: 貼る → 指摘が3つ返る (お試し) → 全文の添削は無料登録で
@@ -297,13 +298,7 @@ export function PreviewForm({ handFont, initialKind = "shibo" }: { handFont: str
         <div className="mt-4 rounded-xl border-[1.5px] border-[#15172B] bg-[#FFF6C4] p-4 text-sm leading-[1.8]">
           <p className="m-0 font-bold">今月の無料添削（2本）を使い切りました。</p>
           <p className="mb-0 mt-1">来月1日にまた2本使えます。出願や面接が近いなら、Pro（月980円・いつでも解約可）で回数の制限なく添削できます。</p>
-          <Link
-            href="/#pricing"
-            onClick={() => trackEvent("tensaku_upgrade_click", { location: "quota" })}
-            className="mt-3 inline-flex min-h-[44px] items-center rounded-xl bg-[#15172B] px-5 font-bold text-white"
-          >
-            Proを見る →
-          </Link>
+          <UpgradeActions location="tensaku_quota" />
         </div>
       )}
 
