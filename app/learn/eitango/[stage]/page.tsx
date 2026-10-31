@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { LearnShell } from "@/components/learn/LearnShell";
 import { SpeakButton } from "@/components/eitango/Speak";
+import { wordAudio, exAudio } from "@/lib/eitango/audio";
 import { STAGES } from "@/lib/eitango/stages";
 import { STAGE_DATA } from "@/lib/eitango/data";
 
@@ -58,11 +59,14 @@ export default async function StagePage({ params }: { params: Promise<{ stage: s
             <div className="flex items-center gap-2">
               <span className="w-10 flex-none text-[11.5px] font-bold text-[#5A5D73]">{w.no}</span>
               <span className="font-serif text-[20px] font-bold">{w.word}</span>
-              <SpeakButton text={w.word} size={28} />
+              <SpeakButton text={w.word} audio={wordAudio(w.no)} size={28} />
               <span className="ml-auto rounded-full border border-[#15172B] px-1.5 text-[11px] font-black">{w.pos}</span>
             </div>
             <p className="m-0 mt-1 pl-12 text-[15px] font-black">{w.ja}</p>
-            <p className="m-0 mt-1 pl-12 font-serif text-[14px] leading-relaxed">{w.ex}</p>
+            <p className="m-0 mt-1 flex items-start gap-2 pl-12 font-serif text-[14px] leading-relaxed">
+              <span className="min-w-0 flex-1">{w.ex}</span>
+              <SpeakButton text={w.ex} audio={exAudio(w.no)} label="例文を聞く" size={26} />
+            </p>
             <p className="m-0 pl-12 text-[12.5px] text-[#3A3D55]">{w.exJa}</p>
             {w.note && <p className="m-0 mt-1 pl-12 text-[12px] text-[#3A3D55]">{w.note}</p>}
           </li>

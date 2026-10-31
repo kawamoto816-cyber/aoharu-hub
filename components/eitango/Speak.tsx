@@ -23,6 +23,7 @@ function score(v: SpeechSynthesisVoice): number {
   if (/natural|neural|enhanced|premium|online/.test(name)) sc += 60;
   if (lang === "en-us") sc += 30;
   else if (lang === "en-gb" || lang === "en-au" || lang === "en-ca") sc += 10;
+  if (name.startsWith("google")) sc -= 50; // Chrome のネット経由の声は、続けて鳴らすと途中で機械的な声に切り替わる
   if (/compact|novelty|whisper|bad news|bells|boing|bubbles|cellos|zarvox|trinoids|albert|fred|junior|ralph|grandpa|eddy|reed|rocko/.test(name)) sc -= 200;
   return sc;
 }
@@ -45,7 +46,34 @@ if (typeof window !== "undefined" && window.speechSynthesis) {
   pickVoice();
 }
 
-export function speak(text: string) {
+let current: HTMLAudioElement | null = null;
+
+/** 音声ファイル (Google の読み上げで前もって作ったネイティブの声) があればそれを、なければブラウザの読み上げを使う */
+export function speak(text: string, audio?: string) {
+  if (audio) {
+    try {
+      current?.pause();
+      const a = new Audio(`/audio/eitango/${audio}.mp3`);
+      current = a;
+      let fellBack = false;
+      const fallback = () => {
+        if (fellBack || current !== a) return;
+        fellBack = true;
+        speakTts(text);
+      };
+      a.addEventListener("error", fallback);
+      a.play().catch((e: unknown) => {
+        if ((e as Error)?.name !== "AbortError") fallback();
+      });
+      return;
+    } catch {
+      /* 下のブラウザの読み上げへ */
+    }
+  }
+  speakTts(text);
+}
+
+function speakTts(text: string) {
   try {
     const s = window.speechSynthesis;
     if (!s) return;
@@ -62,11 +90,11 @@ export function speak(text: string) {
   }
 }
 
-export function SpeakButton({ text, label = "発音を聞く", size = 36 }: { text: string; label?: string; size?: number }) {
+export function SpeakButton({ text, audio, label = "発音を聞く", size = 36 }: { text: string; audio?: string; label?: string; size?: number }) {
   return (
     <button
       type="button"
-      onClick={() => speak(text)}
+      onClick={() => speak(text, audio)}
       aria-label={`${label}：${text}`}
       className="inline-flex flex-none items-center justify-center rounded-full border-[1.5px] border-[#15172B] bg-white text-[#15172B]"
       style={{ width: size, height: size }}

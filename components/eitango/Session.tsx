@@ -3,6 +3,7 @@
 import { useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { SpeakButton, speak } from "./Speak";
+import { wordAudio, exAudio } from "@/lib/eitango/audio";
 import { buildSession, distractors, type Mode, type SessionItem } from "@/lib/eitango/session";
 import { findWord } from "@/lib/eitango/stages";
 import { recordAnswer, readWords } from "@/lib/eitango/progress";
@@ -28,14 +29,14 @@ function Card({ w }: { w: WordEntry }) {
     <div className="rounded-[18px] border-[1.5px] border-[#15172B] bg-white p-5 shadow-[4px_4px_0_#15172B]">
       <div className="flex items-center gap-3">
         <p className="m-0 font-serif text-[34px] font-bold leading-none">{w.word}</p>
-        <SpeakButton text={w.word} />
+        <SpeakButton text={w.word} audio={wordAudio(w.no)} />
         <span className="ml-auto rounded-full border-[1.5px] border-[#15172B] px-2 py-0.5 text-[12px] font-black">{w.pos}</span>
       </div>
       <p className="m-0 mt-3 text-[20px] font-black">{w.ja}</p>
       <div className="mt-4 rounded-xl bg-[#F7F6F1] p-3">
         <p className="m-0 flex items-start gap-2 font-serif text-[16px] leading-relaxed">
           <span className="min-w-0 flex-1">{w.ex}</span>
-          <SpeakButton text={w.ex} label="例文を聞く" size={30} />
+          <SpeakButton text={w.ex} audio={exAudio(w.no)} label="例文を聞く" size={30} />
         </p>
         <p className="m-0 mt-1 text-[13.5px] text-[#3A3D55]">{w.exJa}</p>
       </div>
@@ -104,7 +105,7 @@ export function Session({ stage, extra }: { stage?: number; extra?: boolean }) {
     }
     if (!ok) setQueue((q) => [...q, { no: w.no, mode: "choice" }]);
     setPhase({ kind: "feedback", ok, given });
-    if (ok) speak(w.word);
+    if (ok) speak(w.word, wordAudio(w.no));
   }
 
   function next() {
@@ -142,7 +143,7 @@ export function Session({ stage, extra }: { stage?: number; extra?: boolean }) {
           <p className="m-0 text-[12px] font-black text-[#1533B8]">意味はどれ？</p>
           <div className="mt-2 flex items-center gap-3">
             <p className="m-0 font-serif text-[32px] font-bold">{w.word}</p>
-            <SpeakButton text={w.word} />
+            <SpeakButton text={w.word} audio={wordAudio(w.no)} />
           </div>
           <div className="mt-4 grid gap-2">
             {options.map((o, i) => (
