@@ -13,6 +13,7 @@ import { KOKUSAI } from "@/lib/learn/kokusai";
 import { GENDAI } from "@/lib/learn/gendai";
 import { BOOKS } from "@/lib/library/books";
 import { STEPS } from "@/lib/math/steps";
+import { STAGES as WORD_STAGES } from "@/lib/eitango/stages";
 
 // 検索エンジン向けサイトマップ。入口ページを追加したらここに足す。
 // /guide の記事は静的記事とDBの記事の両方を載せる (取り込んだ記事が当日中に見つかるように)。
@@ -55,6 +56,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${base}/learn/school`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
     { url: `${base}/learn/math`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
     ...STEPS.map((st) => ({ url: `${base}/learn/math/${st.no}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
+    { url: `${base}/learn/eitango`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
+    ...WORD_STAGES.filter((s) => s.open).map((s) => ({ url: `${base}/learn/eitango/${s.no}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
     ...BOOKS.map((b) => ({ url: `${base}/learn/library/${b.id}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.5 })),
     { url: `${base}/learn/shiboriyusho`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
     ...SHIBORIYUSHO.cards.map((c) => ({ url: `${base}/learn/shiboriyusho/${c.no}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),

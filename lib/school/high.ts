@@ -174,7 +174,7 @@ export const SUBJECTS: SchoolSubject[] = [
       {
         title: "語彙",
         units: [
-          { id: "h-eng-vocab-2000", name: "英単語2000", engines: ["覚える"] },
+          { id: "h-eng-vocab-2000", name: "英単語2000", engines: ["覚える"], href: "/learn/eitango" },
           { id: "h-eng-vocab-jukugo", name: "英熟語", engines: ["覚える"] },
           { id: "h-eng-vocab-kaiwa", name: "会話表現", engines: ["覚える"] },
           { id: "h-eng-vocab-hatsuon", name: "発音・アクセント", engines: ["覚える"] },

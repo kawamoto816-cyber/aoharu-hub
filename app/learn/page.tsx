@@ -7,14 +7,14 @@ import { schoolCounts } from "@/lib/school";
 
 // /learn: アオハルラーンの入口。
 // 横軸 = 学びの段階 (①覚える → ②鍛える → ③教える)、縦軸 = 棚 (SCHOOL・APPLY・ADVANCE) の 3×3 の表で見せる。
-//   SCHOOL  学校の教科 (いまは中学数学 計算50段)
+//   SCHOOL  学校の教科 (中学数学 計算50段・英単語2000)
 //   APPLY   選ばれる力 (総合型選抜・推薦入試・就活。スキル盤とカード、11のアプリ) → /learn/apply
 //   ADVANCE 知のアドバンス (裏面と知の図書館) → /learn/apply#ura
 // まだないマスは「準備中」として点線で見せる (③教えるは「オシエル」。全単元の覚える・鍛えるがそろってから作る)。
 
 const URL = "https://app.bluespring.co.jp/learn";
 const TITLE = "アオハルラーン｜覚えて、鍛えて、教えろ。中学・高校の学びと入試の力を無料で｜アオハルOS";
-const DESC = "①覚える ②鍛える ③教える の3段階で、学校の教科（中学数学 計算50段）、選ばれる力（総合型選抜・推薦入試のカードとAIアプリ）、知のアドバンス（知のパラダイム・地政学・知の図書館）を学ぶ。登録なし・無料。";
+const DESC = "①覚える ②鍛える ③教える の3段階で、学校の教科（中学数学 計算50段・英単語2000）、選ばれる力（総合型選抜・推薦入試のカードとAIアプリ）、知のアドバンス（知のパラダイム・地政学・知の図書館）を学ぶ。登録なし・無料。";
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -48,7 +48,7 @@ function rows(): Row[] {
       cta: { label: "教科の地図を開く", href: "/learn/school" },
       tint: "bg-white",
       cells: [
-        { items: [], note: `公開中 ${school.oboeru.open} / ${school.oboeru.total} 単元` },
+        { items: [{ label: "英語：英単語2000", href: "/learn/eitango", sub: "高校英語・忘れかけたころに復習" }], note: `公開中 ${school.oboeru.open} / ${school.oboeru.total} 単元` },
         { items: [{ label: "数学：計算50段", href: "/learn/math", sub: "中学数学・その場で採点" }], note: `公開中 ${school.kitaeru.open} / ${school.kitaeru.total} 単元` },
         OSHIERU,
       ],
