@@ -20,7 +20,11 @@ export async function GET(req: Request) {
   if (hour < 9 || hour > 20) return NextResponse.json({ ok: true, skipped: "outside_hours", hourJst: hour });
   try {
     const r = await runOnboarding();
-    return NextResponse.json({ ok: r.errors.length === 0, ...r }, { headers: { "Cache-Control": "no-store" } });
+    // 実行結果は公開リポジトリの GitHub Actions ログに残るので、誰に送ったか (ユーザーID) は返さず件数だけにする
+    const sent: Record<string, number> = {};
+    for (const s of r.sent) sent[s.step] = (sent[s.step] ?? 0) + 1;
+    const errors = r.errors.map((e) => e.replace(/^user_[A-Za-z0-9]+: /, ""));
+    return NextResponse.json({ ok: r.errors.length === 0, dryRun: r.dryRun, checked: r.checked, sent, skipped: r.skipped, errors }, { headers: { "Cache-Control": "no-store" } });
   } catch (e) {
     return NextResponse.json({ ok: false, error: e instanceof Error ? e.message : String(e) }, { status: 500 });
   }
