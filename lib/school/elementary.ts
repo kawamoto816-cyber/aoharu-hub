@@ -11,7 +11,7 @@ export const SUBJECTS: SchoolSubject[] = [
       {
         title: "小1",
         units: [
-          { id: "e-japanese-1-kanji", name: "1年の漢字（80字）", engines: ["覚える", "鍛える"] },
+          { id: "e-japanese-1-kanji", name: "1年の漢字（80字）", engines: ["覚える", "鍛える"], href: "/learn/kanji/1" },
           { id: "e-japanese-1-hiragana", name: "ひらがな", engines: ["覚える", "鍛える"] },
           { id: "e-japanese-1-katakana", name: "かたかな", engines: ["覚える", "鍛える"] },
           { id: "e-japanese-1-kana-on", name: "のばす音・ねじれた音・つまる音", engines: ["覚える", "鍛える"] },
@@ -27,7 +27,7 @@ export const SUBJECTS: SchoolSubject[] = [
       {
         title: "小2",
         units: [
-          { id: "e-japanese-2-kanji", name: "2年の漢字（160字）", engines: ["覚える", "鍛える"] },
+          { id: "e-japanese-2-kanji", name: "2年の漢字（160字）", engines: ["覚える", "鍛える"], href: "/learn/kanji/2" },
           { id: "e-japanese-2-katakana", name: "かたかなで書く言葉", engines: ["覚える", "鍛える"] },
           { id: "e-japanese-2-nakama", name: "なかまの言葉", engines: ["覚える"] },
           { id: "e-japanese-2-hantai", name: "反対の意味の言葉", engines: ["覚える"] },
@@ -43,7 +43,7 @@ export const SUBJECTS: SchoolSubject[] = [
       {
         title: "小3",
         units: [
-          { id: "e-japanese-3-kanji", name: "3年の漢字（200字）", engines: ["覚える", "鍛える"] },
+          { id: "e-japanese-3-kanji", name: "3年の漢字（200字）", engines: ["覚える", "鍛える"], href: "/learn/kanji/3" },
           { id: "e-japanese-3-romaji", name: "ローマ字", engines: ["覚える", "鍛える"] },
           { id: "e-japanese-3-jisho", name: "国語辞典の使い方", engines: ["覚える", "鍛える"] },
           { id: "e-japanese-3-hen-tsukuri", name: "漢字の部首（へんとつくり）", engines: ["覚える"] },
@@ -62,7 +62,7 @@ export const SUBJECTS: SchoolSubject[] = [
       {
         title: "小4",
         units: [
-          { id: "e-japanese-4-kanji", name: "4年の漢字（202字）", engines: ["覚える", "鍛える"] },
+          { id: "e-japanese-4-kanji", name: "4年の漢字（202字）", engines: ["覚える", "鍛える"], href: "/learn/kanji/4" },
           { id: "e-japanese-4-kanji-jiten", name: "漢字辞典の使い方", engines: ["覚える", "鍛える"] },
           { id: "e-japanese-4-okurigana", name: "送りがな", engines: ["覚える", "鍛える"] },
           { id: "e-japanese-4-kanyoku", name: "慣用句", engines: ["覚える"] },
@@ -80,7 +80,7 @@ export const SUBJECTS: SchoolSubject[] = [
       {
         title: "小5",
         units: [
-          { id: "e-japanese-5-kanji", name: "5年の漢字（193字）", engines: ["覚える", "鍛える"] },
+          { id: "e-japanese-5-kanji", name: "5年の漢字（193字）", engines: ["覚える", "鍛える"], href: "/learn/kanji/5" },
           { id: "e-japanese-5-keigo", name: "敬語", engines: ["覚える", "鍛える"] },
           { id: "e-japanese-5-wago", name: "和語・漢語・外来語", engines: ["覚える"] },
           { id: "e-japanese-5-jukugo", name: "熟語の成り立ち", engines: ["覚える", "鍛える"] },
@@ -98,7 +98,7 @@ export const SUBJECTS: SchoolSubject[] = [
       {
         title: "小6",
         units: [
-          { id: "e-japanese-6-kanji", name: "6年の漢字（191字）", engines: ["覚える", "鍛える"] },
+          { id: "e-japanese-6-kanji", name: "6年の漢字（191字）", engines: ["覚える", "鍛える"], href: "/learn/kanji/6" },
           { id: "e-japanese-6-kana-yurai", name: "仮名の由来", engines: ["覚える"] },
           { id: "e-japanese-6-kotoba-henka", name: "時代による言葉の変化", engines: ["覚える"] },
           { id: "e-japanese-6-yojijukugo", name: "四字熟語", engines: ["覚える"] },
