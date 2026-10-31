@@ -58,15 +58,15 @@ export function LearnBoard({ ids }: { ids: BoardIds }) {
   }
 
   return (
-    <section id="ura" aria-label={back ? "スキル盤（裏面：難関校向け）" : "スキル盤"} className="scroll-mt-6">
+    <section id="ura" aria-label={back ? "スキル盤（裏面：知のアドバンス）" : "スキル盤"} className="scroll-mt-6">
       <div className="[perspective:1600px]">
         <div className={`relative transition-transform duration-700 [transform-style:preserve-3d] ${back ? "[transform:rotateY(180deg)]" : ""}`}>
           <div aria-hidden={back} className={`rounded-[20px] border-[1.5px] border-[#15172B] bg-white/70 p-3 shadow-[6px_6px_0_#15172B] [backface-visibility:hidden] ${back ? "invisible" : ""}`}>
             <SkillMap regions={front} centerTop="推薦入試" centerName="合格力" />
           </div>
           <div aria-hidden={!back} className={`absolute inset-0 rounded-[20px] border-[1.5px] border-[#15172B] bg-[#FFF4DE] p-3 shadow-[6px_6px_0_#15172B] [backface-visibility:hidden] [transform:rotateY(180deg)] ${back ? "" : "invisible"}`}>
-            <p className="m-0 text-center text-[12px] font-black text-[#15172B]">裏面：難関校アドバンスト</p>
-            <SkillMap regions={ura} centerTop="難関校" centerName="知の力" />
+            <p className="m-0 text-center text-[12px] font-black text-[#15172B]">裏面：知のアドバンス</p>
+            <SkillMap regions={ura} centerTop="最高峰" centerName="知の力" />
           </div>
         </div>
       </div>
@@ -79,7 +79,7 @@ export function LearnBoard({ ids }: { ids: BoardIds }) {
           {back ? "表面にもどる" : "裏面を見る（アドバンスト）"}
         </button>
         <p className="m-0 text-center text-[12px] text-[#3A3D55]">
-          {back ? "旧帝大・早慶・国際教養大・APU・海外トップ校を目指す人へ。入口の「知のパラダイム」と各領域の第1章は無料、その先はProです。" : "めくると、難関校向けの「知のパラダイム」「地政学」などが待っています。"}
+          {back ? "さらなる知の森へ" : "めくると、難関校向けの「知のパラダイム」「地政学」などが待っています。"}
         </p>
         {back && (
           <Link
