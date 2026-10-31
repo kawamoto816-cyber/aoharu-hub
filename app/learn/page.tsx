@@ -73,6 +73,9 @@ export default function LearnHome() {
             <Link href="/learn/kyoyo" className="inline-flex min-h-[52px] items-center rounded-[14px] border-[1.5px] border-[#15172B] bg-[#D8D2F5] px-6 text-base font-black text-[#15172B] no-underline shadow-[0_4px_0_#15172B]">
               教養・時事のカード
             </Link>
+            <Link href="/learn/math" className="inline-flex min-h-[52px] items-center rounded-[14px] border-[1.5px] border-[#15172B] bg-white px-6 text-base font-black text-[#15172B] no-underline shadow-[0_4px_0_#1533B8]">
+              数学：計算50段（鍛える）
+            </Link>
           </div>
         </div>
         <LearnBoard
