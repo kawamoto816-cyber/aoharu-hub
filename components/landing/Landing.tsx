@@ -86,7 +86,7 @@ export function Landing() {
               </span>
               <span className="flex min-w-0 flex-col gap-0.5">
                 <span className="text-[15px] font-black">合格に必要な力を、カードで学ぶ</span>
-                <span className="text-[12.5px] text-[#3A3D55]">自分を知る・志望校・志望理由書・小論文・面接　各20枚、登録なし・無料</span>
+                <span className="text-[12.5px] text-[#3A3D55]">自分を知る・志望校・志望理由書・小論文・面接・時事　各20枚、登録なし・無料</span>
               </span>
               <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="ml-auto flex-none">
                 <path d="M9 6l6 6-6 6" />

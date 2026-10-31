@@ -5,6 +5,7 @@ import { MENSETSU } from "@/lib/learn/mensetsu";
 import { SHIBORIYUSHO } from "@/lib/learn/shiboriyusho";
 import { JIBUN } from "@/lib/learn/jibun";
 import { DAIGAKU } from "@/lib/learn/daigaku";
+import { KYOYO } from "@/lib/learn/kyoyo";
 
 // 検索エンジン向けサイトマップ。入口ページを追加したらここに足す。
 // /guide の記事は静的記事とDBの記事の両方を載せる (取り込んだ記事が当日中に見つかるように)。
@@ -30,6 +31,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...JIBUN.cards.map((c) => ({ url: `${base}/learn/jibun/${c.no}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
     { url: `${base}/learn/daigaku`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
     ...DAIGAKU.cards.map((c) => ({ url: `${base}/learn/daigaku/${c.no}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
+    { url: `${base}/learn/kyoyo`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
+    ...KYOYO.cards.map((c) => ({ url: `${base}/learn/kyoyo/${c.no}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
     { url: `${base}/learn/shiboriyusho`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
     ...SHIBORIYUSHO.cards.map((c) => ({ url: `${base}/learn/shiboriyusho/${c.no}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
     { url: `${base}/learn/mensetsu`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },

@@ -28,7 +28,7 @@ export interface LearnCard {
     answer: 0 | 1 | 2;
     explanation: string;
   };
-  /** ほかの領域へのつながり (例: 教養・時事) */
+  /** ほかの領域へのつながり。regionKey は /learn/ のあとのパス (例: kyoyo, shoronbun/19) */
   link?: { label: string; regionKey: string };
 }
 

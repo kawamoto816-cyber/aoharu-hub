@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useProgress } from "./useProgress";
 
 // スキル盤：中央の「合格力」から5つの領域がつながる。カードを覚える・試すとマスが光る。
-// いま開いているのは「自分を知る」「志望校を知る」「書く（志望理由書・小論文）」「話す（面接）」で、ほかの領域は準備中として見せる。
+// 5つの領域すべて (自分を知る・志望校を知る・書く〈志望理由書・小論文〉・話す〈面接〉・教養・時事) を開いている。
 // 「書く」は札が2つあるので、押すと /learn のカード一覧 (#topics) へ飛ぶ。
 
 interface Region {
@@ -18,18 +18,18 @@ interface Region {
   ids?: string[];
 }
 
-export function SkillMap({ selfIds, schoolIds, writeIds, talkIds }: { selfIds: string[]; schoolIds: string[]; writeIds: string[]; talkIds: string[] }) {
+export function SkillMap({ selfIds, schoolIds, writeIds, talkIds, kyoyoIds }: { selfIds: string[]; schoolIds: string[]; writeIds: string[]; talkIds: string[]; kyoyoIds: string[] }) {
   const progress = useProgress();
   const regions: Region[] = [
     { key: "jibun", name: "自分を\n知る", aria: "自分を知る", fill: "#FFE45C", ink: "#15172B", ang: -90, href: "/learn/jibun", ids: selfIds },
     { key: "shibo", name: "志望校を\n知る", aria: "志望校を知る", fill: "#BFE3D0", ink: "#15172B", ang: -18, href: "/learn/daigaku", ids: schoolIds },
     { key: "hanasu", name: "話す", aria: "話す：面接", fill: "#D9341F", ink: "#FFFFFF", ang: 54, href: "/learn/mensetsu", ids: talkIds },
-    { key: "kyoyo", name: "教養・\n時事", aria: "教養・時事（準備中）", fill: "#D8D2F5", ink: "#15172B", ang: 126 },
+    { key: "kyoyo", name: "教養・\n時事", aria: "教養・時事", fill: "#D8D2F5", ink: "#15172B", ang: 126, href: "/learn/kyoyo", ids: kyoyoIds },
     { key: "kaku", name: "書く", aria: "書く：志望理由書・小論文", fill: "#1533B8", ink: "#FFFFFF", ang: 198, href: "/learn#topics", ids: writeIds },
   ];
 
   // 中央の％は、公開している領域のカードのうち「習得」にした割合
-  const allIds = [...selfIds, ...schoolIds, ...writeIds, ...talkIds];
+  const allIds = [...selfIds, ...schoolIds, ...writeIds, ...talkIds, ...kyoyoIds];
   const done = allIds.filter((id) => progress[id] === "done").length;
   const percent = Math.round((done / allIds.length) * 100);
   const learnedIn = (ids?: string[]) => (ids ? ids.filter((id) => progress[id]).length : 0);

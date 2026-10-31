@@ -4,9 +4,10 @@ import { SHIBORIYUSHO } from "./shiboriyusho";
 import { JIBUN } from "./jibun";
 import { DAIGAKU } from "./daigaku";
 import { MENSETSU } from "./mensetsu";
+import { KYOYO } from "./kyoyo";
 
 // 公開している「まなぶ」の領域。スキル盤・マイページ・サイトマップはここから作る。
-export const TOPICS: LearnRegionTopic[] = [JIBUN, DAIGAKU, SHIBORIYUSHO, SHORONBUN, MENSETSU];
+export const TOPICS: LearnRegionTopic[] = [JIBUN, DAIGAKU, SHIBORIYUSHO, SHORONBUN, MENSETSU, KYOYO];
 
 export function findCard(topic: LearnRegionTopic, no: number) {
   return topic.cards.find((c) => c.no === no) ?? null;

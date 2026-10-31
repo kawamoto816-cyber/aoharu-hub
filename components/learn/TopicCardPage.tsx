@@ -58,7 +58,14 @@ export function TopicCardPage({ topic, no }: { topic: LearnRegionTopic; no: numb
         />
       </div>
 
-      {card.link && <p className="mb-0 mt-5 text-center text-[13px] font-bold text-[#3A3D55]">この先：{card.link.label}</p>}
+      {card.link && (
+        <p className="mb-0 mt-5 text-center text-[13px] font-bold text-[#3A3D55]">
+          この先：
+          <Link href={`/learn/${card.link.regionKey}`} className="text-[#1533B8]">
+            {card.link.label}
+          </Link>
+        </p>
+      )}
 
       <nav aria-label="前後のカード" className="mt-8 grid grid-cols-2 gap-2.5">
         {prev ? (

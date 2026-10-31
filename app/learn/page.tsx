@@ -8,13 +8,14 @@ import { MENSETSU } from "@/lib/learn/mensetsu";
 import { SHIBORIYUSHO } from "@/lib/learn/shiboriyusho";
 import { JIBUN } from "@/lib/learn/jibun";
 import { DAIGAKU } from "@/lib/learn/daigaku";
+import { KYOYO } from "@/lib/learn/kyoyo";
 
 // /learn: 「まなぶ」のホーム。スキル盤と、次に進むカード。
-// いまは「書く（志望理由書・小論文）」と「話す（面接）」の各20枚を公開している。
+// 5つの領域 (自分を知る・志望校を知る・書く・話す・教養・時事) の各20枚を公開している。
 
 const URL = "https://app.bluespring.co.jp/learn";
 const TITLE = "まなぶ｜総合型選抜・推薦入試のスキルをカードで習得｜アオハルOS";
-const DESC = "総合型選抜・推薦入試で必要な力を、カードをめくって図解で覚え、三択で確かめ、AIアプリで試して身につけます。いまは自分を知る・志望校を知る・志望理由書・小論文・面接の各20枚。登録なし・無料。";
+const DESC = "総合型選抜・推薦入試で必要な力を、カードをめくって図解で覚え、三択で確かめ、AIアプリで試して身につけます。自分を知る・志望校を知る・志望理由書・小論文・面接・教養・時事の各20枚。登録なし・無料。";
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -34,7 +35,7 @@ export default function LearnHome() {
             <span className="bg-[linear-gradient(transparent_58%,#FFE45C_58%)]">合格に必要な力</span>を集めよう。
           </h1>
           <p className="mb-0 mt-4 text-[15px] leading-[1.9] text-[#3A3D55]">
-            図解で覚えて、三択で確かめて、アプリで試す。試したカードはスキル盤で青く光ります。いまは「自分を知る」「志望校を知る」「書く：志望理由書」「書く：小論文」「話す：面接」の各20枚を公開しています。
+            図解で覚えて、三択で確かめて、アプリで試す。試したカードはスキル盤で青く光ります。「自分を知る」「志望校を知る」「書く：志望理由書」「書く：小論文」「話す：面接」「教養・時事」の各20枚があります。
           </p>
           <ul className="m-0 mt-5 list-none space-y-2 p-0 text-[14px]">
             {["登録なし・無料で全部読める", "無料登録すると、進み具合をアカウントに保存", "総合型選抜の本の著者が監修"].map((t) => (
@@ -63,10 +64,13 @@ export default function LearnHome() {
             <Link href="/learn/mensetsu" className="inline-flex min-h-[52px] items-center rounded-[14px] border-[1.5px] border-[#15172B] bg-[#D9341F] px-6 text-base font-black text-white no-underline shadow-[0_4px_0_#15172B]">
               面接のカード
             </Link>
+            <Link href="/learn/kyoyo" className="inline-flex min-h-[52px] items-center rounded-[14px] border-[1.5px] border-[#15172B] bg-[#D8D2F5] px-6 text-base font-black text-[#15172B] no-underline shadow-[0_4px_0_#15172B]">
+              教養・時事のカード
+            </Link>
           </div>
         </div>
         <section aria-label="スキル盤" className="rounded-[20px] border-[1.5px] border-[#15172B] bg-white/70 p-3 shadow-[6px_6px_0_#15172B]">
-          <SkillMap selfIds={JIBUN.cards.map((c) => c.id)} schoolIds={DAIGAKU.cards.map((c) => c.id)} writeIds={[...SHIBORIYUSHO.cards, ...SHORONBUN.cards].map((c) => c.id)} talkIds={MENSETSU.cards.map((c) => c.id)} />
+          <SkillMap selfIds={JIBUN.cards.map((c) => c.id)} schoolIds={DAIGAKU.cards.map((c) => c.id)} writeIds={[...SHIBORIYUSHO.cards, ...SHORONBUN.cards].map((c) => c.id)} talkIds={MENSETSU.cards.map((c) => c.id)} kyoyoIds={KYOYO.cards.map((c) => c.id)} />
         </section>
       </div>
     </LearnShell>

@@ -331,7 +331,7 @@ export const SHORONBUN: LearnRegionTopic = {
         answer: 1,
         explanation: "事実を取り違えると、主張全体の信頼が崩れます。意見を立てるのは、事実を確かめてからです。",
       },
-      link: { label: "教養・時事の領域へ（準備中）", regionKey: "kyoyo" },
+      link: { label: "教養・時事のカードへ", regionKey: "kyoyo" },
     },
     {
       no: 20,
