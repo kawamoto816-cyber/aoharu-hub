@@ -26,7 +26,7 @@ const LEVEL = ["", "入門", "標準", "挑戦"];
 export default function LibraryHome() {
   const books = BOOKS.map(publicBook);
   return (
-    <LearnShell crumbs={[{ href: "/", label: "アオハルOS" }, { href: "/learn#ura", label: "まなぶ" }, { label: "知の図書館" }]}>
+    <LearnShell homeHref="/learn#ura" crumbs={[{ href: "/", label: "アオハルOS" }, { href: "/learn#ura", label: "まなぶ" }, { label: "知の図書館" }]}>
       <p className="m-0 text-xs font-black text-[#3A3D55]">裏面・難関校アドバンスト</p>
       <h1 className="m-0 mt-1 text-[26px] font-black sm:text-[32px]">知の図書館</h1>
       <p className="mb-0 mt-2 text-[15px] leading-relaxed text-[#3A3D55]">

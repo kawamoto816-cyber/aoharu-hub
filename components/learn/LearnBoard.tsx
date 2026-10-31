@@ -51,6 +51,9 @@ export function LearnBoard({ ids }: { ids: BoardIds }) {
   function flip() {
     const next = !back;
     setChosen(next);
+    // めくった面を URL (#ura) に残す。裏のカードへ進んでからブラウザの「戻る」で帰ってきても裏が開く
+    const url = next ? `${window.location.pathname}${window.location.search}#ura` : `${window.location.pathname}${window.location.search}`;
+    window.history.replaceState(window.history.state, "", url);
     trackEvent("learn_board_flip", { side: next ? "ura" : "omote" });
   }
 
@@ -73,7 +76,7 @@ export function LearnBoard({ ids }: { ids: BoardIds }) {
           onClick={flip}
           className="min-h-[48px] rounded-[14px] border-[1.5px] border-[#15172B] bg-[#15172B] px-6 text-sm font-black text-white shadow-[0_3px_0_#F4B860]"
         >
-          {back ? "表面にもどる" : "裏面を見る（難関校アドバンスト）"}
+          {back ? "表面にもどる" : "裏面を見る（アドバンスト）"}
         </button>
         <p className="m-0 text-center text-[12px] text-[#3A3D55]">
           {back ? "旧帝大・早慶・国際教養大・APU・海外トップ校を目指す人へ。入口の「知のパラダイム」と各領域の第1章は無料、その先はProです。" : "めくると、難関校向けの「知のパラダイム」「地政学」などが待っています。"}

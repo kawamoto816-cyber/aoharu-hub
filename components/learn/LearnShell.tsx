@@ -9,7 +9,7 @@ import { SUPERVISION } from "@/lib/learn/types";
 const paper =
   "bg-[#F7F6F1] [background-image:linear-gradient(#E4E2D8_1px,transparent_1px),linear-gradient(90deg,#E4E2D8_1px,transparent_1px)] [background-size:28px_28px]";
 
-export function LearnShell({ crumbs, children, narrow = false }: { crumbs: { href?: string; label: string }[]; children: ReactNode; narrow?: boolean }) {
+export function LearnShell({ crumbs, children, narrow = false, homeHref = "/learn" }: { crumbs: { href?: string; label: string }[]; children: ReactNode; narrow?: boolean; homeHref?: string }) {
   return (
     <main className={`${zen.className} ${paper} min-h-screen flex-1 text-[#15172B]`}>
       <header className="border-b border-[#E4E2D8] bg-[#F7F6F1]/95">
@@ -18,7 +18,7 @@ export function LearnShell({ crumbs, children, narrow = false }: { crumbs: { hre
             <span className="flex h-[30px] w-[30px] items-center justify-center rounded-[9px] bg-[#1533B8] text-base font-black text-white">ア</span>
             <span className="text-lg font-black">アオハルOS</span>
           </Link>
-          <Link href="/learn" className="rounded-full border-[1.5px] border-[#15172B] bg-[#FFE45C] px-3 py-1 text-sm font-black text-[#15172B] no-underline">
+          <Link href={homeHref} className="rounded-full border-[1.5px] border-[#15172B] bg-[#FFE45C] px-3 py-1 text-sm font-black text-[#15172B] no-underline">
             まなぶ
           </Link>
         </div>
