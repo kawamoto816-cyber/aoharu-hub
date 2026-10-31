@@ -51,6 +51,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${base}/learn/gendai`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
     ...GENDAI.cards.map((c) => ({ url: `${base}/learn/gendai/${c.no}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
     { url: `${base}/learn/library`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
+    { url: `${base}/learn/apply`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
     { url: `${base}/learn/math`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
     ...STEPS.map((st) => ({ url: `${base}/learn/math/${st.no}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
     ...BOOKS.map((b) => ({ url: `${base}/learn/library/${b.id}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.5 })),

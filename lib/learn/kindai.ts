@@ -9,7 +9,7 @@ export const KINDAI: LearnRegionTopic = {
   key: "kindai",
   label: "近代の知",
   basePath: "/learn/kindai",
-  homeHref: "/learn#ura",
+  homeHref: "/learn/apply#ura",
   freeChapters: 1,
   tryApp: {
     name: "テンサクン",

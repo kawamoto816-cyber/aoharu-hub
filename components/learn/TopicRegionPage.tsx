@@ -7,10 +7,10 @@ import { publicTopic } from "@/lib/learn/lock";
 
 // /learn/<領域> の中身 (小論文・面接で共通)。20枚 (5章) と仕上げのクエスト。
 
-export function TopicRegionPage({ topic, region, heading, lead }: { topic: LearnRegionTopic; region: string; heading: string; lead: string }) {
+export function TopicRegionPage({ topic, heading, lead }: { topic: LearnRegionTopic; /** 以前のパンくず用 (いまは使わない) */ region?: string; heading: string; lead: string }) {
   const questId = `${topic.key}-quest`;
   return (
-    <LearnShell homeHref={topic.homeHref} crumbs={[{ href: "/", label: "アオハルOS" }, { href: topic.homeHref ?? "/learn", label: "まなぶ" }, { label: region === topic.label ? region : `${region}：${topic.label}` }]}>
+    <LearnShell homeHref={topic.homeHref ?? "/learn/apply"} crumbs={[{ href: "/learn", label: "まなぶ" }, { href: topic.homeHref ?? "/learn/apply", label: topic.homeHref ? "知のアドバンス" : "選ばれる力" }, { label: topic.label }]}>
       <LearnDoneFromApp topicKey={topic.key} cardIds={topic.cards.map((c) => c.id)} />
       <h1 className="m-0 text-[26px] font-black sm:text-[32px]">{heading}</h1>
       <p className="mb-6 mt-2 text-[15px] leading-relaxed text-[#3A3D55]">{lead}</p>

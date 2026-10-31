@@ -29,7 +29,7 @@ export function LearnResumeCard({ topics }: { topics: ResumeTopic[] }) {
     <section className="mt-8 rounded-2xl border-[1.5px] border-[#15172B] bg-[#FFFBE6] p-5 shadow-[4px_4px_0_#15172B] sm:p-6">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <p className="m-0 text-base font-black text-slate-900">まなぶ：カードで合格に必要な力を集める</p>
-        <Link href="/learn" className="text-sm font-bold text-[#1533B8]">
+        <Link href="/learn/apply" className="text-sm font-bold text-[#1533B8]">
           スキル盤を見る
         </Link>
       </div>
@@ -70,7 +70,7 @@ export function LearnResumeCard({ topics }: { topics: ResumeTopic[] }) {
               <p className="m-0 mt-0.5 text-xs text-slate-600">旧帝大・早慶・国際教養大・APU・海外トップ校を目指す人へ。入口の20枚は無料です。</p>
             </div>
             <Link
-              href="/learn#ura"
+              href="/learn/apply#ura"
               onClick={() => trackEvent("learn_entry_click", { location: "mypage", topic: "ura" })}
               className="inline-flex min-h-[44px] items-center rounded-xl border-[1.5px] border-[#15172B] bg-[#15172B] px-4 text-sm font-black text-white no-underline"
             >

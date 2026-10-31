@@ -7,7 +7,7 @@ import { trackEvent } from "@/lib/analytics";
 
 // /learn のスキル盤。表は推薦入試全般の「合格力」(5領域・120枚)、
 // 裏は難関校 (旧帝大などの難関国公立・早慶・国際教養大・APU・海外トップ校) 向けの「知の力」。
-// 「裏面を見る」でカードのようにめくる。/learn#ura で来たときは最初から裏を見せる。
+// 「裏面を見る」でカードのようにめくる。/learn/apply#ura で来たときは最初から裏を見せる。
 
 export interface BoardIds {
   self: string[];
@@ -38,7 +38,7 @@ export function LearnBoard({ ids }: { ids: BoardIds }) {
     { key: "shibo", name: "志望校を\n知る", aria: "志望校を知る", fill: "#BFE3D0", ink: "#15172B", ang: -18, href: "/learn/daigaku", ids: ids.school },
     { key: "hanasu", name: "話す", aria: "話す：面接", fill: "#D9341F", ink: "#FFFFFF", ang: 54, href: "/learn/mensetsu", ids: ids.talk },
     { key: "kyoyo", name: "教養・\n時事", aria: "教養・時事", fill: "#D8D2F5", ink: "#15172B", ang: 126, href: "/learn/kyoyo", ids: ids.kyoyo },
-    { key: "kaku", name: "書く", aria: "書く：志望理由書・小論文", fill: "#1533B8", ink: "#FFFFFF", ang: 198, href: "/learn#topics", ids: ids.write },
+    { key: "kaku", name: "書く", aria: "書く：志望理由書・小論文", fill: "#1533B8", ink: "#FFFFFF", ang: 198, href: "/learn/apply#topics", ids: ids.write },
   ];
   const ura: SkillRegion[] = [
     { key: "paradigm", name: "知の\nパラダイム", aria: "知のパラダイム", fill: "#F4B860", ink: "#15172B", ang: -90, href: "/learn/paradigm", ids: ids.paradigm },

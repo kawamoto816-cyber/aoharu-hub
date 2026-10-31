@@ -10,7 +10,7 @@ export const KOKUSAI: LearnRegionTopic = {
   key: "kokusai",
   label: "国際関係のレンズ",
   basePath: "/learn/kokusai",
-  homeHref: "/learn#ura",
+  homeHref: "/learn/apply#ura",
   freeChapters: 1,
   tryApp: {
     name: "テンサクン",

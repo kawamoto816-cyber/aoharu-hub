@@ -29,7 +29,7 @@ export function resumeTopics() {
     label: t.label,
     basePath: t.basePath,
     tryAppName: t.tryApp.name,
-    ura: t.homeHref === "/learn#ura",
+    ura: t.homeHref === "/learn/apply#ura",
     cards: t.cards.map((c) => ({ id: c.id, no: c.no, title: c.title })),
   }));
 }

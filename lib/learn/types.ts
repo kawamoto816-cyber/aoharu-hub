@@ -63,7 +63,7 @@ export interface LearnRegionTopic {
   cards: LearnCard[];
   /** 仕上げのクエスト */
   quest: string;
-  /** パンくずの「まなぶ」の行き先 (裏面の領域は /learn#ura) */
+  /** パンくずの「まなぶ」の行き先 (裏面の領域は /learn/apply#ura) */
   homeHref?: string;
   /** この章までは無料。それより後の章は Pro (ない場合は全部無料) */
   freeChapters?: number;

@@ -42,7 +42,7 @@ export default async function BookPage({ params }: { params: Promise<{ id: strin
   const next = BOOKS[i + 1];
 
   return (
-    <LearnShell narrow homeHref="/learn#ura" crumbs={[{ href: "/learn#ura", label: "まなぶ" }, { href: "/learn/library", label: "知の図書館" }, { label: book.title }]}>
+    <LearnShell narrow homeHref="/learn/apply#ura" crumbs={[{ href: "/learn", label: "まなぶ" }, { href: "/learn/library", label: "知の図書館" }, { label: book.title }]}>
       <article>
         <div className="rounded-[20px] border-[1.5px] border-[#15172B] bg-[#FFF4DE] p-5 shadow-[6px_6px_0_#15172B]">
           <p className="m-0 flex items-center justify-between text-[11px] font-black text-[#3A3D55]">

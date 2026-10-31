@@ -1,27 +1,18 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { LearnShell } from "@/components/learn/LearnShell";
-import { LearnBoard } from "@/components/learn/LearnBoard";
-import { LearnSync } from "@/components/learn/LearnSync";
-import { SHORONBUN } from "@/lib/learn/shoronbun";
-import { MENSETSU } from "@/lib/learn/mensetsu";
-import { SHIBORIYUSHO } from "@/lib/learn/shiboriyusho";
-import { JIBUN } from "@/lib/learn/jibun";
-import { DAIGAKU } from "@/lib/learn/daigaku";
-import { KYOYO } from "@/lib/learn/kyoyo";
-import { PARADIGM } from "@/lib/learn/paradigm";
-import { KINDAI } from "@/lib/learn/kindai";
-import { CHISEIGAKU } from "@/lib/learn/chiseigaku";
-import { KOKUSAI } from "@/lib/learn/kokusai";
-import { GENDAI } from "@/lib/learn/gendai";
+import { TOPICS } from "@/lib/learn/topics";
+import { LegacyHashRedirect } from "@/components/learn/LegacyHashRedirect";
 
-// /learn: 「まなぶ」のホーム。スキル盤と、次に進むカード。
-// 表は5つの領域 (自分を知る・志望校を知る・書く・話す・教養・時事) の各20枚。
-// 裏面 (難関校アドバンスト) は5領域100枚と知の図書館。入口の「知のパラダイム」と各領域の第1章は無料、その先は Pro。
+// /learn: アオハルラーンの入口。3つの棚を並べる。
+//   SCHOOL  学校の教科 (数学など。いまは中学数学 計算50段)
+//   APPLY   選ばれる力 (総合型選抜・推薦入試・就活。スキル盤とカード) → /learn/apply
+//   ADVANCE 知のアドバンス (いまの裏面と知の図書館) → /learn/apply#ura
+// 学び方は「覚える・鍛える・教える」の3つのエンジン。
 
 const URL = "https://app.bluespring.co.jp/learn";
-const TITLE = "まなぶ｜総合型選抜・推薦入試のスキルをカードで習得｜アオハルOS";
-const DESC = "総合型選抜・推薦入試で必要な力を、カードをめくって図解で覚え、三択で確かめ、AIアプリで試して身につけます。自分を知る・志望校を知る・志望理由書・小論文・面接・教養・時事の各20枚。登録なし・無料。";
+const TITLE = "アオハルラーン｜覚えて、鍛えて、教えろ。中学・高校の学びと入試の力を無料で｜アオハルOS";
+const DESC = "学校の教科（中学数学 計算50段）、選ばれる力（総合型選抜・推薦入試の6分野カード）、知のアドバンス（難関校向けの知のパラダイム・地政学・知の図書館）。カードで覚え、ドリルで鍛え、AIのアプリで教えるように使う。登録なし・無料。";
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -30,68 +21,110 @@ export const metadata: Metadata = {
   openGraph: { title: TITLE, description: DESC, url: URL },
 };
 
-export default function LearnHome() {
+const ENGINES = [
+  { name: "覚える", game: "技や呪文を覚える", how: "図解のカードと三択で、知識をためる" },
+  { name: "鍛える", game: "修行・レベル上げ", how: "ドリルをその場で採点。満点まで解き直す" },
+  { name: "教える", game: "師匠として技を伝える", how: "自分の言葉で書き、話し、AIに見てもらう" },
+] as const;
+
+const SCHOOL_SOON = ["日本史", "世界史", "地理", "百人一首", "ことわざ・慣用句", "英単語"];
+
+const chip = "inline-flex min-h-[40px] items-center rounded-[12px] border-[1.5px] px-3 text-[13.5px] font-black no-underline";
+
+export default function LearnHub() {
+  const apply = TOPICS.filter((t) => !t.homeHref);
+  const advance = TOPICS.filter((t) => t.homeHref);
   return (
     <LearnShell crumbs={[{ href: "/", label: "アオハルOS" }, { label: "まなぶ" }]}>
-      <div className="grid gap-8 lg:grid-cols-[1fr_1fr] lg:items-center">
-        <div>
-          <h1 className="m-0 text-[28px] font-black leading-snug sm:text-[36px]">
-            カードをめくって、
-            <br />
-            <span className="bg-[linear-gradient(transparent_58%,#FFE45C_58%)]">合格に必要な力</span>を集めよう。
-          </h1>
-          <p className="mb-0 mt-4 text-[15px] leading-[1.9] text-[#3A3D55]">
-            図解で覚えて、三択で確かめて、アプリで試す。試したカードはスキル盤で青く光ります。「自分を知る」「志望校を知る」「書く：志望理由書」「書く：小論文」「話す：面接」「教養・時事」の各20枚があります。
-          </p>
-          <ul className="m-0 mt-5 list-none space-y-2 p-0 text-[14px]">
-            {["登録なし・無料で全部読める", "無料登録すると、進み具合をアカウントに保存", "総合型選抜の本の著者が監修"].map((t) => (
-              <li key={t} className="flex gap-2">
-                <span className="font-black text-[#1533B8]">✓</span>
-                {t}
+      <LegacyHashRedirect />
+      <p className="m-0 text-xs font-black tracking-wider text-[#1533B8]">AOHARU LEARN　アオハルラーン</p>
+      <h1 className="m-0 mt-1 text-[30px] font-black leading-snug sm:text-[40px]">
+        覚えて、鍛えて、<span className="bg-[linear-gradient(transparent_58%,#FFE45C_58%)]">教えろ。</span>
+      </h1>
+      <p className="mb-0 mt-3 max-w-[680px] text-[15px] leading-[1.9] text-[#3A3D55]">
+        勉強を、攻略サイトを見ながら自分でクリアしていくゲームのように。カードで覚え、ドリルで鍛え、最後は人に教えられるところまで。登録なし・無料で使えます。
+      </p>
+
+      <ul className="m-0 mt-6 grid list-none gap-3 p-0 sm:grid-cols-3">
+        {ENGINES.map((e) => (
+          <li key={e.name} className="rounded-[16px] border-[1.5px] border-[#15172B] bg-white px-4 py-3">
+            <p className="m-0 text-[18px] font-black">{e.name}</p>
+            <p className="m-0 mt-0.5 text-[12px] font-bold text-[#1533B8]">{e.game}</p>
+            <p className="m-0 mt-1 text-[13px] leading-relaxed text-[#3A3D55]">{e.how}</p>
+          </li>
+        ))}
+      </ul>
+
+      <div className="mt-10 flex flex-col gap-6">
+        <section aria-labelledby="shelf-school" className="rounded-[20px] border-[1.5px] border-[#15172B] bg-white p-5 shadow-[6px_6px_0_#15172B] sm:p-6">
+          <p className="m-0 text-xs font-black tracking-wider text-[#1533B8]">SCHOOL</p>
+          <h2 id="shelf-school" className="m-0 mt-0.5 text-[22px] font-black">
+            学校の教科
+          </h2>
+          <p className="m-0 mt-1 text-[14px] leading-relaxed text-[#3A3D55]">中学・高校の教科を、覚える・鍛えるで攻略する棚。まずは数学から。</p>
+          <Link href="/learn/math" className="mt-4 flex flex-wrap items-center gap-3 rounded-[16px] border-[1.5px] border-[#15172B] bg-[#FFFBE6] px-4 py-3 text-[#15172B] no-underline shadow-[3px_3px_0_#15172B]">
+            <span className="rounded-full bg-[#15172B] px-2.5 py-0.5 text-[11px] font-black text-[#FFE45C]">鍛える</span>
+            <span className="flex min-w-0 flex-1 flex-col">
+              <span className="text-[16px] font-black">数学：中学数学 計算50段</span>
+              <span className="text-[12.5px] text-[#3A3D55]">正負の数から二次方程式まで。その場で採点、満点まで解き直し</span>
+            </span>
+            <span aria-hidden="true" className="text-lg font-black">→</span>
+          </Link>
+          <p className="m-0 mt-4 text-[12px] font-bold text-[#3A3D55]">準備中（覚える）</p>
+          <ul className="m-0 mt-1.5 flex list-none flex-wrap gap-2 p-0">
+            {SCHOOL_SOON.map((s) => (
+              <li key={s} className={`${chip} border-dashed border-[#9A9CB0] text-[#5A5D73]`}>
+                {s}
               </li>
             ))}
           </ul>
-          <div className="mt-5">
-            <LearnSync showNudge returnUrl="/learn" />
-          </div>
-          <div id="topics" className="mt-6 flex scroll-mt-6 flex-wrap gap-3">
-            <Link href="/learn/jibun" className="inline-flex min-h-[52px] items-center rounded-[14px] border-[1.5px] border-[#15172B] bg-white px-6 text-base font-black text-[#15172B] no-underline shadow-[0_4px_0_#15172B]">
-              自分を知るカード
-            </Link>
-            <Link href="/learn/daigaku" className="inline-flex min-h-[52px] items-center rounded-[14px] border-[1.5px] border-[#15172B] bg-[#BFE3D0] px-6 text-base font-black text-[#15172B] no-underline shadow-[0_4px_0_#15172B]">
-              志望校を知るカード
-            </Link>
-            <Link href="/learn/shiboriyusho" className="inline-flex min-h-[52px] items-center rounded-[14px] border-[1.5px] border-[#15172B] bg-[#FFE45C] px-6 text-base font-black text-[#15172B] no-underline shadow-[0_4px_0_#15172B]">
-              志望理由書のカード
-            </Link>
-            <Link href="/learn/shoronbun" className="inline-flex min-h-[52px] items-center rounded-[14px] border-[1.5px] border-[#15172B] bg-[#1533B8] px-6 text-base font-black text-white no-underline shadow-[0_4px_0_#0B1F7A]">
-              小論文のカード
-            </Link>
-            <Link href="/learn/mensetsu" className="inline-flex min-h-[52px] items-center rounded-[14px] border-[1.5px] border-[#15172B] bg-[#D9341F] px-6 text-base font-black text-white no-underline shadow-[0_4px_0_#15172B]">
-              面接のカード
-            </Link>
-            <Link href="/learn/kyoyo" className="inline-flex min-h-[52px] items-center rounded-[14px] border-[1.5px] border-[#15172B] bg-[#D8D2F5] px-6 text-base font-black text-[#15172B] no-underline shadow-[0_4px_0_#15172B]">
-              教養・時事のカード
-            </Link>
-            <Link href="/learn/math" className="inline-flex min-h-[52px] items-center rounded-[14px] border-[1.5px] border-[#15172B] bg-white px-6 text-base font-black text-[#15172B] no-underline shadow-[0_4px_0_#1533B8]">
-              数学：計算50段（鍛える）
-            </Link>
-          </div>
-        </div>
-        <LearnBoard
-          ids={{
-            self: JIBUN.cards.map((c) => c.id),
-            school: DAIGAKU.cards.map((c) => c.id),
-            write: [...SHIBORIYUSHO.cards, ...SHORONBUN.cards].map((c) => c.id),
-            talk: MENSETSU.cards.map((c) => c.id),
-            kyoyo: KYOYO.cards.map((c) => c.id),
-            paradigm: PARADIGM.cards.map((c) => c.id),
-            kindai: KINDAI.cards.map((c) => c.id),
-            chiseigaku: CHISEIGAKU.cards.map((c) => c.id),
-            kokusai: KOKUSAI.cards.map((c) => c.id),
-            gendai: GENDAI.cards.map((c) => c.id),
-          }}
-        />
+        </section>
+
+        <section aria-labelledby="shelf-apply" className="rounded-[20px] border-[1.5px] border-[#15172B] bg-white p-5 shadow-[6px_6px_0_#15172B] sm:p-6">
+          <p className="m-0 text-xs font-black tracking-wider text-[#1533B8]">APPLY</p>
+          <h2 id="shelf-apply" className="m-0 mt-0.5 text-[22px] font-black">
+            選ばれる力
+          </h2>
+          <p className="m-0 mt-1 text-[14px] leading-relaxed text-[#3A3D55]">総合型選抜・推薦入試、その先の就職活動。点数ではなく「人」を見る選考で選ばれるための棚。カードで覚え、テンサクン・メンサツで教えるように書き、話す。</p>
+          <ul className="m-0 mt-4 flex list-none flex-wrap gap-2 p-0">
+            {apply.map((t) => (
+              <li key={t.key}>
+                <Link href={t.basePath} className={`${chip} border-[#15172B] bg-white text-[#15172B]`}>
+                  {t.label}
+                  <span className="ml-1.5 text-[11px] font-bold text-[#5A5D73]">{t.cards.length}枚</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+          <Link href="/learn/apply" className="mt-4 inline-flex min-h-[52px] items-center rounded-[14px] border-[1.5px] border-[#15172B] bg-[#1533B8] px-6 text-[15px] font-black text-white no-underline shadow-[0_4px_0_#0B1F7A]">
+            スキル盤を開く →
+          </Link>
+        </section>
+
+        <section aria-labelledby="shelf-advance" className="rounded-[20px] border-[1.5px] border-[#15172B] bg-[#FFF4DE] p-5 shadow-[6px_6px_0_#15172B] sm:p-6">
+          <p className="m-0 text-xs font-black tracking-wider text-[#1533B8]">ADVANCE</p>
+          <h2 id="shelf-advance" className="m-0 mt-0.5 text-[22px] font-black">
+            知のアドバンス
+          </h2>
+          <p className="m-0 mt-1 text-[14px] leading-relaxed text-[#3A3D55]">さらなる知の森へ。旧帝大・早慶・国際教養大・APU・海外トップ校をめざす人のための上級の階。入口の「知のパラダイム」と各領域の第1章、図書館の10冊は無料です。</p>
+          <ul className="m-0 mt-4 flex list-none flex-wrap gap-2 p-0">
+            {advance.map((t) => (
+              <li key={t.key}>
+                <Link href={t.basePath} className={`${chip} border-[#15172B] bg-white text-[#15172B]`}>
+                  {t.label}
+                </Link>
+              </li>
+            ))}
+            <li>
+              <Link href="/learn/library" className={`${chip} border-[#15172B] bg-[#15172B] text-white`}>
+                知の図書館（名著30冊）
+              </Link>
+            </li>
+          </ul>
+          <Link href="/learn/apply#ura" className="mt-4 inline-flex min-h-[52px] items-center rounded-[14px] border-[1.5px] border-[#15172B] bg-[#15172B] px-6 text-[15px] font-black text-white no-underline shadow-[0_4px_0_#F4B860]">
+            裏面のスキル盤を開く →
+          </Link>
+        </section>
       </div>
     </LearnShell>
   );

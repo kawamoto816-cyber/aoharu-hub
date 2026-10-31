@@ -10,7 +10,7 @@ export const GENDAI: LearnRegionTopic = {
   key: "gendai",
   label: "現代の論点",
   basePath: "/learn/gendai",
-  homeHref: "/learn#ura",
+  homeHref: "/learn/apply#ura",
   freeChapters: 1,
   tryApp: {
     name: "テンサクン",

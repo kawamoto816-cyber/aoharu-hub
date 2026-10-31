@@ -10,7 +10,7 @@ export const CHISEIGAKU: LearnRegionTopic = {
   key: "chiseigaku",
   label: "地政学",
   basePath: "/learn/chiseigaku",
-  homeHref: "/learn#ura",
+  homeHref: "/learn/apply#ura",
   freeChapters: 1,
   tryApp: {
     name: "テンサクン",

@@ -9,7 +9,7 @@ export const PARADIGM: LearnRegionTopic = {
   key: "paradigm",
   label: "知のパラダイム",
   basePath: "/learn/paradigm",
-  homeHref: "/learn#ura",
+  homeHref: "/learn/apply#ura",
   tryApp: {
     name: "テンサクン",
     hrefBase: "/tensaku?kind=shoronbun&learn=",
