@@ -3,6 +3,7 @@ import Link from "next/link";
 import { LearnShell } from "@/components/learn/LearnShell";
 import { LegacyHashRedirect } from "@/components/learn/LegacyHashRedirect";
 import { TOPICS } from "@/lib/learn/topics";
+import { schoolCounts } from "@/lib/school";
 
 // /learn: アオハルラーンの入口。
 // 横軸 = 学びの段階 (①覚える → ②鍛える → ③教える)、縦軸 = 棚 (SCHOOL・APPLY・ADVANCE) の 3×3 の表で見せる。
@@ -35,6 +36,7 @@ type Row = { key: string; en: string; title: string; lead: string; cta?: { label
 const OSHIERU: Cell = { items: [], soon: ["オシエル"], note: "AIの弟子に教える。全単元の①②がそろったら開講" };
 
 function rows(): Row[] {
+  const school = schoolCounts();
   const apply = TOPICS.filter((t) => !t.homeHref);
   const advance = TOPICS.filter((t) => t.homeHref);
   return [
@@ -42,11 +44,12 @@ function rows(): Row[] {
       key: "school",
       en: "SCHOOL",
       title: "学校の教科",
-      lead: "中学・高校の教科を攻略する",
+      lead: `小・中・高の全${school.total}単元（公開中 ${school.open}）`,
+      cta: { label: "教科の地図を開く", href: "/learn/school" },
       tint: "bg-white",
       cells: [
-        { items: [], soon: ["日本史", "世界史", "地理", "百人一首", "ことわざ・慣用句", "英単語"] },
-        { items: [{ label: "数学：計算50段", href: "/learn/math", sub: "その場で採点・満点まで解き直し" }] },
+        { items: [], note: `公開中 ${school.oboeru.open} / ${school.oboeru.total} 単元` },
+        { items: [{ label: "数学：計算50段", href: "/learn/math", sub: "中学数学・その場で採点" }], note: `公開中 ${school.kitaeru.open} / ${school.kitaeru.total} 単元` },
         OSHIERU,
       ],
     },
@@ -143,9 +146,9 @@ function CellView({ cell, stage }: { cell: Cell; stage: (typeof STAGES)[number] 
               </li>
             ))}
           </ul>
-          <p className="m-0 mt-2 text-[11.5px] font-bold text-[#5A5D73]">{cell.note ?? "準備中"}</p>
         </>
       )}
+      {(cell.note || cell.soon) && <p className="m-0 mt-2 text-[11.5px] font-bold text-[#5A5D73]">{cell.note ?? "準備中"}</p>}
     </div>
   );
 }
