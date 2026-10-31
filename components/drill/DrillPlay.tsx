@@ -55,7 +55,7 @@ function Game({ unit, qs, onRestart }: { unit: string; qs: DrillQ[]; onRestart: 
           <div className="mt-4 grid gap-2">
             <p className="m-0 text-[13px] font-black text-[#D9341F]">まちがえた問題</p>
             {miss.map((q) => (
-              <div key={q.q} className="rounded-lg bg-[#F7F6F1] p-3 text-[14px] leading-relaxed">
+              <div key={q.q} className="whitespace-pre-line rounded-lg bg-[#F7F6F1] p-3 text-[14px] leading-relaxed">
                 <p className="m-0">
                   <Blank q={q.q} fill={q.c[q.a]} state="ok" />
                 </p>
@@ -83,7 +83,7 @@ function Game({ unit, qs, onRestart }: { unit: string; qs: DrillQ[]; onRestart: 
         <span>正解 {ok}</span>
       </div>
       <div className={card}>
-        <p className="m-0 text-[18px] font-bold leading-relaxed">
+        <p className={`m-0 whitespace-pre-line leading-relaxed ${cur.q.q.length > 80 ? "text-[16px] font-medium" : "text-[18px] font-bold"}`}>
           <Blank q={cur.q.q} fill={answered ? cur.q.c[cur.q.a] : undefined} state={answered ? (right ? "ok" : "ng") : undefined} />
         </p>
         <div className="mt-4 grid gap-2 sm:grid-cols-2">

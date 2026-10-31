@@ -12,6 +12,7 @@ export const SUBJECTS: SchoolSubject[] = [
         "units": [
           {
             "id": "j-ja-1-kanji",
+            "href": "/learn/kokugo-chu/j-ja-1-kanji",
             "name": "漢字の読み書き",
             "engines": [
               "覚える",
@@ -20,6 +21,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-ja-1-goi",
+            "href": "/learn/kokugo-chu/j-ja-1-goi",
             "name": "語句・語彙",
             "engines": [
               "覚える"
@@ -67,6 +69,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-ja-1-monogatari",
+            "href": "/learn/kokugo-chu/j-ja-1-monogatari",
             "name": "物語を読む",
             "engines": [
               "鍛える"
@@ -74,6 +77,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-ja-1-setsumei",
+            "href": "/learn/kokugo-chu/j-ja-1-setsumei",
             "name": "説明的な文章を読む",
             "engines": [
               "鍛える"
@@ -81,6 +85,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-ja-1-shi",
+            "href": "/learn/kokugo-chu/j-ja-1-shi",
             "name": "詩を読む",
             "engines": [
               "鍛える"
@@ -88,6 +93,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-ja-1-kaku",
+            "href": "/learn/kokugo-chu/j-ja-1-kaku",
             "name": "説明・報告の文章を書く",
             "engines": [
               "鍛える"
@@ -95,6 +101,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-ja-1-hanasu",
+            "href": "/learn/kokugo-chu/j-ja-1-hanasu",
             "name": "話す・聞く",
             "engines": [
               "鍛える"
@@ -107,6 +114,7 @@ export const SUBJECTS: SchoolSubject[] = [
         "units": [
           {
             "id": "j-ja-2-kanji",
+            "href": "/learn/kokugo-chu/j-ja-2-kanji",
             "name": "漢字の読み書き",
             "engines": [
               "覚える",
@@ -115,6 +123,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-ja-2-goi",
+            "href": "/learn/kokugo-chu/j-ja-2-goi",
             "name": "語句・語彙",
             "engines": [
               "覚える"
@@ -149,6 +158,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-ja-2-kobun",
+            "href": "/learn/kokugo-chu/j-ja-2-kobun",
             "name": "古文を読む",
             "engines": [
               "覚える",
@@ -157,6 +167,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-ja-2-kanshi",
+            "href": "/learn/kokugo-chu/j-ja-2-kanshi",
             "name": "漢詩を読む",
             "engines": [
               "覚える"
@@ -164,6 +175,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-ja-2-tanka",
+            "href": "/learn/kokugo-chu/j-ja-2-tanka",
             "name": "短歌を読む",
             "engines": [
               "鍛える"
@@ -171,6 +183,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-ja-2-shosetsu",
+            "href": "/learn/kokugo-chu/j-ja-2-shosetsu",
             "name": "小説を読む",
             "engines": [
               "鍛える"
@@ -178,6 +191,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-ja-2-setsumei",
+            "href": "/learn/kokugo-chu/j-ja-2-setsumei",
             "name": "説明的な文章を読む",
             "engines": [
               "鍛える"
@@ -185,6 +199,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-ja-2-ikenbun",
+            "href": "/learn/kokugo-chu/j-ja-2-ikenbun",
             "name": "意見文を書く",
             "engines": [
               "鍛える"
@@ -192,6 +207,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-ja-2-hanasu",
+            "href": "/learn/kokugo-chu/j-ja-2-hanasu",
             "name": "話す・聞く",
             "engines": [
               "鍛える"
@@ -204,6 +220,7 @@ export const SUBJECTS: SchoolSubject[] = [
         "units": [
           {
             "id": "j-ja-3-kanji",
+            "href": "/learn/kokugo-chu/j-ja-3-kanji",
             "name": "漢字の読み書き",
             "engines": [
               "覚える",
@@ -212,6 +229,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-ja-3-goi",
+            "href": "/learn/kokugo-chu/j-ja-3-goi",
             "name": "語句・語彙",
             "engines": [
               "覚える"
@@ -228,6 +246,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-ja-3-kobun",
+            "href": "/learn/kokugo-chu/j-ja-3-kobun",
             "name": "古文を読む（和歌・紀行文）",
             "engines": [
               "覚える",
@@ -236,6 +255,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-ja-3-kanbun",
+            "href": "/learn/kokugo-chu/j-ja-3-kanbun",
             "name": "漢文を読む",
             "engines": [
               "覚える",
@@ -244,6 +264,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-ja-3-haiku",
+            "href": "/learn/kokugo-chu/j-ja-3-haiku",
             "name": "俳句を読む",
             "engines": [
               "鍛える"
@@ -251,6 +272,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-ja-3-shosetsu",
+            "href": "/learn/kokugo-chu/j-ja-3-shosetsu",
             "name": "小説を読む",
             "engines": [
               "鍛える"
@@ -258,6 +280,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-ja-3-ronsetsu",
+            "href": "/learn/kokugo-chu/j-ja-3-ronsetsu",
             "name": "論説的な文章を読む",
             "engines": [
               "鍛える"
@@ -265,6 +288,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-ja-3-hihyo",
+            "href": "/learn/kokugo-chu/j-ja-3-hihyo",
             "name": "批評文を書く",
             "engines": [
               "鍛える"
@@ -272,6 +296,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-ja-3-hanasu",
+            "href": "/learn/kokugo-chu/j-ja-3-hanasu",
             "name": "話す・聞く（話し合い・討論）",
             "engines": [
               "鍛える"
@@ -314,6 +339,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-math-1-hirei",
+            "href": "/learn/sugaku-chu/j-math-1-hirei",
             "name": "比例と反比例",
             "engines": [
               "鍛える"
@@ -321,6 +347,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-math-1-heimen",
+            "href": "/learn/sugaku-chu/j-math-1-heimen",
             "name": "平面図形",
             "engines": [
               "覚える",
@@ -329,6 +356,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-math-1-kukan",
+            "href": "/learn/sugaku-chu/j-math-1-kukan",
             "name": "空間図形",
             "engines": [
               "覚える",
@@ -337,6 +365,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-math-1-data",
+            "href": "/learn/sugaku-chu/j-math-1-data",
             "name": "データの活用",
             "engines": [
               "覚える",
@@ -374,6 +403,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-math-2-heiko-godo",
+            "href": "/learn/sugaku-chu/j-math-2-heiko-godo",
             "name": "平行と合同",
             "engines": [
               "覚える",
@@ -382,6 +412,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-math-2-sankaku-shikaku",
+            "href": "/learn/sugaku-chu/j-math-2-sankaku-shikaku",
             "name": "三角形と四角形（証明）",
             "engines": [
               "覚える",
@@ -390,6 +421,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-math-2-kakuritsu",
+            "href": "/learn/sugaku-chu/j-math-2-kakuritsu",
             "name": "確率",
             "engines": [
               "鍛える"
@@ -397,6 +429,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-math-2-hakohige",
+            "href": "/learn/sugaku-chu/j-math-2-hakohige",
             "name": "データの分布（箱ひげ図）",
             "engines": [
               "覚える",
@@ -442,6 +475,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-math-3-sojii",
+            "href": "/learn/sugaku-chu/j-math-3-sojii",
             "name": "相似な図形",
             "engines": [
               "覚える",
@@ -450,6 +484,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-math-3-en",
+            "href": "/learn/sugaku-chu/j-math-3-en",
             "name": "円",
             "engines": [
               "覚える",
@@ -458,6 +493,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-math-3-sanheiho",
+            "href": "/learn/sugaku-chu/j-math-3-sanheiho",
             "name": "三平方の定理",
             "engines": [
               "鍛える"
@@ -465,6 +501,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-math-3-hyohon",
+            "href": "/learn/sugaku-chu/j-math-3-hyohon",
             "name": "標本調査",
             "engines": [
               "覚える",
@@ -484,6 +521,7 @@ export const SUBJECTS: SchoolSubject[] = [
         "units": [
           {
             "id": "j-en-1-onsei",
+            "href": "/learn/eigo-chu/j-en-1-onsei",
             "name": "アルファベットと発音",
             "engines": [
               "覚える"
@@ -572,6 +610,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-en-1-tango",
+            "href": "/learn/eigo-chu/j-en-1-tango",
             "name": "英単語",
             "engines": [
               "覚える"
@@ -579,6 +618,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-en-1-eisakubun",
+            "href": "/learn/eigo-chu/j-en-1-eisakubun",
             "name": "英作文",
             "engines": [
               "鍛える"
@@ -586,6 +626,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-en-1-listening",
+            "href": "/learn/eigo-chu/j-en-1-listening",
             "name": "リスニング",
             "engines": [
               "鍛える"
@@ -688,6 +729,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-en-2-tango",
+            "href": "/learn/eigo-chu/j-en-2-tango",
             "name": "英単語",
             "engines": [
               "覚える"
@@ -695,6 +737,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-en-2-eisakubun",
+            "href": "/learn/eigo-chu/j-en-2-eisakubun",
             "name": "英作文",
             "engines": [
               "鍛える"
@@ -702,6 +745,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-en-2-listening",
+            "href": "/learn/eigo-chu/j-en-2-listening",
             "name": "リスニング",
             "engines": [
               "鍛える"
@@ -777,6 +821,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-en-3-tango",
+            "href": "/learn/eigo-chu/j-en-3-tango",
             "name": "英単語",
             "engines": [
               "覚える"
@@ -784,6 +829,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-en-3-eisakubun",
+            "href": "/learn/eigo-chu/j-en-3-eisakubun",
             "name": "英作文",
             "engines": [
               "鍛える"
@@ -791,6 +837,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-en-3-listening",
+            "href": "/learn/eigo-chu/j-en-3-listening",
             "name": "リスニング",
             "engines": [
               "鍛える"
@@ -798,6 +845,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-en-3-chobun",
+            "href": "/learn/eigo-chu/j-en-3-chobun",
             "name": "長文読解",
             "engines": [
               "鍛える"
