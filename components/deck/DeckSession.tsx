@@ -109,7 +109,7 @@ export function DeckSession({ deck, group, extra }: { deck: DeckDef; group?: str
                 key={o}
                 type="button"
                 onClick={() => answer(o === quiz.answer, o)}
-                className={`flex items-center justify-center rounded-[12px] border-[1.5px] border-[#15172B] bg-white px-3 font-bold text-[#15172B] ${quiz.big ? "min-h-[76px] font-serif text-[36px]" : "min-h-[52px] text-[17px]"}`}
+                className={`flex items-center rounded-[12px] border-[1.5px] border-[#15172B] bg-white px-3 font-bold text-[#15172B] ${quiz.big ? "min-h-[76px] justify-center font-serif text-[36px]" : o.length > 14 ? "min-h-[52px] justify-start py-2 text-left text-[15px] leading-snug" : "min-h-[52px] justify-center text-[17px]"}`}
               >
                 {o}
               </button>

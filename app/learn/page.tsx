@@ -48,7 +48,7 @@ function rows(): Row[] {
       cta: { label: "教科の地図を開く", href: "/learn/school" },
       tint: "bg-white",
       cells: [
-        { items: [{ label: "国語：小学校の漢字1026字", href: "/learn/kanji", sub: "読み・書きを4択で" }, { label: "社会：47都道府県", href: "/learn/todofuken", sub: "県庁所在地・地方・特徴" }, { label: "英語：英単語2000", href: "/learn/eitango", sub: "高校英語・忘れかけたころに復習" }], note: `公開中 ${school.oboeru.open} / ${school.oboeru.total} 単元` },
+        { items: [{ label: "国語：小学校の漢字1026字", href: "/learn/kanji", sub: "読み・書きを4択で" }, { label: "社会：47都道府県", href: "/learn/todofuken", sub: "県庁所在地・地方・特徴" }, { label: "理科：重要語句", href: "/learn/rika", sub: "小3〜小6・単元ごと" }, { label: "社会：重要語句", href: "/learn/shakai", sub: "小3〜小6・単元ごと" }, { label: "国語：ことわざ・慣用句", href: "/learn/kotowaza", sub: "故事成語・四字熟語も" }, { label: "英語：英単語2000", href: "/learn/eitango", sub: "高校英語・忘れかけたころに復習" }], note: `公開中 ${school.oboeru.open} / ${school.oboeru.total} 単元` },
         { items: [{ label: "算数：計算63段", href: "/learn/sansu", sub: "小学算数・その場で採点" }, { label: "英単語2000：鍛える", href: "/learn/eitango/kitaeru", sub: "60秒の瞬発・文脈の空所補充" }, { label: "数学：計算50段", href: "/learn/math", sub: "中学数学・その場で採点" }, { label: "数学：計算58段", href: "/learn/kousuu", sub: "高校数学Ⅰ・A・Ⅱ" }], note: `公開中 ${school.kitaeru.open} / ${school.kitaeru.total} 単元` },
         OSHIERU,
       ],
