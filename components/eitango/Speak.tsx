@@ -1,16 +1,61 @@
 "use client";
 
-// 英単語・例文をブラウザの読み上げで発音する (音声ファイルは使わない)。読み上げできない環境ではボタンを出さない。
+// 英単語・例文をブラウザの読み上げで発音する (音声ファイルは使わない)。
+// 端末ごとに入っている声がちがうので、聞き取りやすい米国英語の女性の声を名前で選ぶ。
+// 自然な声 (Natural / Neural / Enhanced / Premium) を先に、見つからなければ女性の声、最後に米国英語の声。
+
+const FEMALE = [
+  "Microsoft Ava", "Microsoft Jenny", "Microsoft Aria", "Microsoft Emma", "Microsoft Michelle",
+  "Google US English",
+  "Samantha", "Ava", "Allison", "Susan", "Zoe", "Nicky", "Joelle", "Karen", "Moira", "Tessa", "Serena", "Kate",
+  "Microsoft Zira", "female",
+];
+
+let chosen: SpeechSynthesisVoice | null | undefined;
+
+function score(v: SpeechSynthesisVoice): number {
+  const name = v.name.toLowerCase();
+  const lang = v.lang.replace("_", "-").toLowerCase();
+  if (!lang.startsWith("en")) return -1;
+  let sc = 0;
+  const i = FEMALE.findIndex((f) => name.includes(f.toLowerCase()));
+  if (i >= 0) sc += 100 - i;
+  if (/natural|neural|enhanced|premium|online/.test(name)) sc += 60;
+  if (lang === "en-us") sc += 30;
+  else if (lang === "en-gb" || lang === "en-au" || lang === "en-ca") sc += 10;
+  if (/compact|novelty|whisper|bad news|bells|boing|bubbles|cellos|zarvox|trinoids|albert|fred|junior|ralph|grandpa|eddy|reed|rocko/.test(name)) sc -= 200;
+  return sc;
+}
+
+function pickVoice(): SpeechSynthesisVoice | null {
+  if (chosen !== undefined) return chosen;
+  const voices = window.speechSynthesis?.getVoices() ?? [];
+  if (voices.length === 0) return null; // まだ読み込み中。次の呼び出しで選び直す
+  chosen = [...voices].sort((a, b) => score(b) - score(a))[0] ?? null;
+  if (chosen && score(chosen) < 0) chosen = null;
+  return chosen;
+}
+
+if (typeof window !== "undefined" && window.speechSynthesis) {
+  // 声の一覧はあとから届くことがある (Chrome)。届いたら選び直す
+  window.speechSynthesis.addEventListener?.("voiceschanged", () => {
+    chosen = undefined;
+    pickVoice();
+  });
+  pickVoice();
+}
+
 export function speak(text: string) {
   try {
     const s = window.speechSynthesis;
     if (!s) return;
     s.cancel();
     const u = new SpeechSynthesisUtterance(text);
-    u.lang = "en-US";
-    u.rate = 0.9;
-    const v = s.getVoices().find((x) => /^en(-|_)US/i.test(x.lang)) ?? s.getVoices().find((x) => /^en/i.test(x.lang));
+    const v = pickVoice();
     if (v) u.voice = v;
+    u.lang = v?.lang ?? "en-US";
+    u.rate = /\s/.test(text) ? 0.95 : 0.85; // 単語は少しゆっくり、例文はなめらかに
+    u.pitch = 1.05;
     s.speak(u);
   } catch {
     /* 読み上げできない環境では何もしない */

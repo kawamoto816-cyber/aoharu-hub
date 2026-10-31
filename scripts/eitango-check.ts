@@ -31,7 +31,10 @@ for (const st of stages) {
   const data = STAGE_DATA[st];
   if (!data) continue;
   const expected = WORDLIST.filter((w) => w.stage === st);
-  if (data.length !== expected.length) console.log(`stage ${st}: 語数 ${data.length} / ${expected.length}`), bad++;
+  if (data.length !== expected.length) {
+    console.log(`stage ${st}: 語数 ${data.length} / ${expected.length}`);
+    bad++;
+  }
   data.forEach((e, i) => {
     const x = expected[i];
     const flag = (m: string) => {
