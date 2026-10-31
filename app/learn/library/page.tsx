@@ -5,6 +5,7 @@ import { LibraryMap } from "@/components/library/LibraryMap";
 import { BOOKS } from "@/lib/library/books";
 import { publicBook } from "@/lib/library/books-index";
 import { FIELD_LABEL, type LibraryField } from "@/lib/library/types";
+import { AMAZON_DISCLOSURE } from "@/lib/library/amazon";
 
 // /learn/library: 知の図書館。名著30冊を書架の地図 (時代×分野) と分野ごとの一覧で見せる。
 // 入門の10冊は裏 (図解・使い方) まで無料、残り20冊の裏は Pro。
@@ -66,6 +67,7 @@ export default function LibraryHome() {
           </section>
         );
       })}
+      <p className="mb-0 mt-10 text-center text-[11px] text-[#5A5D73]">各本のページから、Amazonで原典を探せます（PR）。{AMAZON_DISCLOSURE}</p>
     </LearnShell>
   );
 }

@@ -4,6 +4,8 @@ import Link from "next/link";
 import { LearnShell } from "@/components/learn/LearnShell";
 import { BookBack } from "@/components/library/BookBack";
 import { LockedBook } from "@/components/library/LockedBook";
+import { BuyOnAmazon } from "@/components/library/BuyOnAmazon";
+import { amazonBookUrl } from "@/lib/library/amazon";
 import { klee } from "@/components/landing/fonts";
 import { BOOKS } from "@/lib/library/books";
 import { findBook } from "@/lib/library/books-index";
@@ -75,6 +77,7 @@ export default async function BookPage({ params }: { params: Promise<{ id: strin
             ))}
           </p>
         )}
+        <BuyOnAmazon bookId={book.id} title={book.title} href={amazonBookUrl(book)} />
       </article>
 
       <nav aria-label="前後の本" className="mt-8 grid grid-cols-2 gap-2.5">
