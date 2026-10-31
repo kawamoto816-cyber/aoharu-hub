@@ -4,7 +4,8 @@ import Link from "next/link";
 import { useProgress } from "./useProgress";
 
 // スキル盤：中央の「合格力」から5つの領域がつながる。カードを覚える・試すとマスが光る。
-// いま開いているのは「書く（小論文）」と「話す（面接）」で、ほかの領域は準備中として見せる。
+// いま開いているのは「書く（志望理由書・小論文）」と「話す（面接）」で、ほかの領域は準備中として見せる。
+// 「書く」は札が2つあるので、押すと /learn のカード一覧 (#topics) へ飛ぶ。
 
 interface Region {
   key: string;
@@ -24,7 +25,7 @@ export function SkillMap({ writeIds, talkIds }: { writeIds: string[]; talkIds: s
     { key: "shibo", name: "志望校を\n知る", aria: "志望校を知る（準備中）", fill: "#BFE3D0", ink: "#15172B", ang: -18 },
     { key: "hanasu", name: "話す", aria: "話す：面接", fill: "#D9341F", ink: "#FFFFFF", ang: 54, href: "/learn/mensetsu", ids: talkIds },
     { key: "kyoyo", name: "教養・\n時事", aria: "教養・時事（準備中）", fill: "#D8D2F5", ink: "#15172B", ang: 126 },
-    { key: "kaku", name: "書く", aria: "書く：小論文", fill: "#1533B8", ink: "#FFFFFF", ang: 198, href: "/learn/shoronbun", ids: writeIds },
+    { key: "kaku", name: "書く", aria: "書く：志望理由書・小論文", fill: "#1533B8", ink: "#FFFFFF", ang: 198, href: "/learn#topics", ids: writeIds },
   ];
 
   // 中央の％は、公開している領域のカードのうち「習得」にした割合

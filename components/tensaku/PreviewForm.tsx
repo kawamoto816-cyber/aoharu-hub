@@ -322,7 +322,7 @@ export function PreviewForm({ handFont, initialKind = "shibo" }: { handFont: str
       )}
 
       {learnId && (preview || full) && (
-        <Link href="/learn/shoronbun" className="mt-5 flex min-h-[48px] items-center justify-center rounded-xl border-[1.5px] border-[#1533B8] bg-[#E6EAFB] text-sm font-black text-[#1533B8] no-underline">
+        <Link href={`/learn/${learnId.split("-")[0]}`} className="mt-5 flex min-h-[48px] items-center justify-center rounded-xl border-[1.5px] border-[#1533B8] bg-[#E6EAFB] text-sm font-black text-[#1533B8] no-underline">
           スキル盤のマスが青く光りました。カードにもどる →
         </Link>
       )}

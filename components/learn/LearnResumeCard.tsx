@@ -8,7 +8,7 @@ import { LearnSync } from "./LearnSync";
 
 // マイページ (ログイン後のトップ) に置く「まなぶ」の入口。
 // 領域ごと (小論文・面接) に1行ずつ、進めたカードがあればその続きから開けるようにする。
-const REGION: Record<string, string> = { shoronbun: "書く", mensetsu: "話す" };
+const REGION: Record<string, string> = { shiboriyusho: "書く", shoronbun: "書く", mensetsu: "話す" };
 
 export function LearnResumeCard() {
   const progress = useProgress();
