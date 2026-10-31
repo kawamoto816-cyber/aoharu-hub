@@ -7,8 +7,8 @@ import { useProgress } from "./useProgress";
 import { LearnSync } from "./LearnSync";
 
 // マイページ (ログイン後のトップ) に置く「まなぶ」の入口。
-// 領域ごと (自分を知る・志望理由書・小論文・面接) に1行ずつ、進めたカードがあればその続きから開けるようにする。
-const REGION: Record<string, string> = { jibun: "自分を知る", shiboriyusho: "書く", shoronbun: "書く", mensetsu: "話す" };
+// 領域ごと (自分を知る・志望校を知る・志望理由書・小論文・面接) に1行ずつ、進めたカードがあればその続きから開けるようにする。
+const REGION: Record<string, string> = { jibun: "自分を知る", daigaku: "志望校を知る", shiboriyusho: "書く", shoronbun: "書く", mensetsu: "話す" };
 
 export function LearnResumeCard() {
   const progress = useProgress();
