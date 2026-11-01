@@ -46,7 +46,7 @@ export const E_MATH_6_NARABEKATA: Lecture = {
         columns: [{ title: "Aをふくむ組", tone: "blue" }, { title: "Bをふくむ組" }, { title: "Cをふくむ組", tone: "yellow" }],
         rows: [
           { cells: ["AB", "BC", "CD"] },
-          { cells: ["AC", "BD", "（BCはもう数えた）"] },
+          { cells: ["AC", "BD", "（AC・BCはもう数えた）"] },
           { cells: ["AD", "（ABはもう数えた）", ""] },
         ],
         note: "前の列で数えた組はとばす。3＋2＋1＝6通り。",

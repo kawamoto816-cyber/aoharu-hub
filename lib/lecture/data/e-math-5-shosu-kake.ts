@@ -7,7 +7,7 @@ export const E_MATH_5_SHOSU_KAKE: Lecture = {
   sections: [
     {
       heading: "2.3mでも、式は 80×2.3",
-      body: "1mの代金が80円なら、2mは80×2、3mは80×3です。2.3mのときも同じように{{80×2.3}}と表します。数直線をならべると、長さが2.3mのところに代金があり、2mと3mの間の184円になります。",
+      body: "1mの代金が80円なら、2mは80×2、3mは80×3です。2.3mのときも同じように{{80×2.3}}と表します。線分図にすると、2.3m分の代金は、2mと3mの間の184円になります。",
       figure: {
         type: "area",
         kind: "bar",
@@ -81,7 +81,7 @@ export const E_MATH_5_SHOSU_KAKE: Lecture = {
     { q: "1m150円のリボンを0.6m買うと、何円ですか。", a: "90円", why: "150×0.6＝90。1mより短いので150円より安くなります。" },
   ],
   next: [
-    { label: "計算の段で「小数のかけ算」を練習する", href: "/learn/sansu/44" },
+    { label: "計算のだんで「小数のかけ算」を練習する", href: "/learn/sansu/44" },
     { label: "ふりかえり：小数×整数（図解）", href: "/learn/lecture/e-math-4-shosu-kakewari" },
     { label: "次の単元：小数のわり算（図解）", href: "/learn/lecture/e-math-5-shosu-wari" },
   ],

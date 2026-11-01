@@ -18,7 +18,7 @@ export const E_SOCIAL_3_CHIZU: Lecture = {
           { label: "南", sub: "地図の下", tone: "red" },
           { label: "西", sub: "地図の左", tone: "blue" },
         ],
-        note: "東と西の間の向きを入れた8つの向きを、八ほういという。",
+        note: "北と東の間の「北東」のような向きも入れた8つの向きを、八ほういという。",
       },
     },
     {
@@ -43,14 +43,14 @@ export const E_SOCIAL_3_CHIZU: Lecture = {
       figure: {
         type: "compare",
         title: "地図記号の形のわけ",
-        columns: [{ title: "地図記号", tone: "navy" }, { title: "形のもと", tone: "yellow" }],
+        columns: [{ title: "地図記号の形", tone: "navy" }, { title: "形のもと", tone: "yellow" }],
         rows: [
           { label: "田", cells: ["Ⅱ", "いねをかったあとの形"] },
           { label: "畑", cells: ["Ｖ", "めが出たふたばの形"] },
           { label: "学校", cells: ["文", "「文」の字"] },
-          { label: "工場", cells: ["⚙", "きかいの歯車"] },
-          { label: "神社", cells: ["⛩", "とりいの形"] },
-          { label: "寺", cells: ["卍", "ぶっきょうで使うまんじ"] },
+          { label: "工場", cells: ["歯車の形", "工場のきかいの歯車"] },
+          { label: "神社", cells: ["とりいを前から見た形", "神社の入り口に立つとりい"] },
+          { label: "寺", cells: ["まんじの形", "ぶっきょうで使うしるし「まんじ」"] },
         ],
       },
     },
@@ -120,7 +120,7 @@ export const E_SOCIAL_3_CHIZU: Lecture = {
   ],
   next: [
     { label: "用語カード「地図の見方」でおぼえる", href: "/learn/shakai#e-social-3-chizu" },
-    { label: "次の単元「市の様子」", href: "/learn/shakai#e-social-3-machi" },
+    { label: "次のたんげん「市の様子」", href: "/learn/shakai#e-social-3-machi" },
     { label: "中学のレクチャー「地いきの調べ方」", href: "/learn/lecture/j-soc-geo-chiiki-chosa" },
   ],
 };

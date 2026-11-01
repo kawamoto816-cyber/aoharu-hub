@@ -33,7 +33,7 @@ export const E_SOCIAL_3_MACHI: Lecture = {
         rows: [
           { label: "多いもの", cells: ["店・ビル・マンション", "田・畑・森林"] },
           { label: "人や車", cells: ["とても多い", "少ない"] },
-          { label: "土地", cells: ["平らでせまい所に集まる", "広くひらけている"] },
+          { label: "土地", cells: ["たて物がぎっしりならぶ", "広くひらけている"] },
         ],
       },
     },

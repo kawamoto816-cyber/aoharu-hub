@@ -76,8 +76,8 @@ export const E_SCIENCE_3_DENKI: Lecture = {
     { q: "わりばしをはさむと、明かりはつきますか。", a: "つかない", why: "木は電気を通しません。" },
   ],
   next: [
-    { label: "用語カード「電気の通り道」で覚える・鍛える", href: "/learn/rika#e-science-3-denki" },
-    { label: "つぎの単元「じしゃくのせいしつ」", href: "/learn/lecture/e-science-3-jishaku" },
+    { label: "用語カード「電気の通り道」でおぼえる・きたえる", href: "/learn/rika#e-science-3-denki" },
+    { label: "つぎのたんげん「じしゃくのせいしつ」", href: "/learn/lecture/e-science-3-jishaku" },
     { label: "4年「電流のはたらき」（用語カード）", href: "/learn/rika#e-science-4-denryu" },
   ],
 };

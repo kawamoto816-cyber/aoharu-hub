@@ -3,7 +3,7 @@ import type { Lecture } from "../types";
 export const E_SCIENCE_6_KANKYO: Lecture = {
   unit: "e-science-6-kankyo",
   title: "生き物は、食べ物・空気・水を通してつながっている",
-  hook: "メダカのえさがなくても、池のメダカは生きていけます。池の水の中に、目に見えないほど小さな食べ物があるからです。生き物どうしや、生き物と空気・水のつながりを知ると、わたしたちのくらしが環境にどう関わっているかが見えてきます。",
+  hook: "メダカのえさがなくても、池のメダカは生きていけます。池の水の中に、目に見えないほど小さな食べ物があるからです。生き物どうしや、生き物と空気・水のつながりを知ると、わたしたちのくらしがかんきょうにどう関わっているかが見えてきます。",
   sections: [
     {
       heading: "食べる・食べられるのつながり",
@@ -78,7 +78,7 @@ export const E_SCIENCE_6_KANKYO: Lecture = {
       },
     },
     {
-      heading: "人のくらしと環境",
+      heading: "人のくらしとかんきょう",
       body: "人は電気をつくったり車を走らせたりするために、石油や石炭などを燃やしています。燃やすと二酸化炭素が出て、森林が減ると取り入れられる量も減ります。空気中の二酸化炭素などが増えると、地球全体の気温が上がる{{地球温暖化}}につながると考えられています。そこで、使うエネルギーを減らしたり、木を植えたりする取り組みが進められています。",
       figure: {
         type: "cause",
@@ -103,7 +103,7 @@ export const E_SCIENCE_6_KANKYO: Lecture = {
     { q: "海や川の水が蒸発し、空で冷やされてできるものは何ですか。", a: "雲", why: "水蒸気が冷やされて、小さな水のつぶになったもの。" },
   ],
   next: [
-    { label: "用語カード「生き物と環境」で覚える", href: "/learn/rika#e-science-6-kankyo" },
+    { label: "用語カード「生き物とかんきょう」で覚える", href: "/learn/rika#e-science-6-kankyo" },
     { label: "ひとつ前「植物のつくりとはたらき」", href: "/learn/rika#e-science-6-shokubutsu" },
     { label: "中3「自然界のつながり（生態系）」", href: "/learn/chu-rika#j-sci-3-seitaikei" },
   ],

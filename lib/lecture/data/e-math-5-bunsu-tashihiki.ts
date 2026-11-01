@@ -119,7 +119,7 @@ export const E_MATH_5_BUNSU_TASHIHIKI: Lecture = {
     { q: "1/6＋1/2 を計算しましょう。", a: "2/3", why: "1/6＋3/6＝4/6。4と6を2でわって約分すると2/3。" },
   ],
   next: [
-    { label: "計算の段で「分数のたし算・ひき算」を練習する", href: "/learn/sansu/47" },
+    { label: "計算のだんで「分母がちがう分数のたし算」を練習する", href: "/learn/sansu/49" },
     { label: "公倍数・公約数の「倍数と約数」（図解）", href: "/learn/lecture/e-math-5-baisu-yakusu" },
     { label: "6年「分数のかけ算」（図解）", href: "/learn/lecture/e-math-6-bunsu-kake" },
   ],

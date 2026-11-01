@@ -36,7 +36,7 @@ export const E_SCIENCE_4_SUGATA: Lecture = {
         title: "水を熱したときの様子",
         steps: [
           { label: "熱しはじめる", sub: "小さなあわが出る" },
-          { label: "湯気が出はじめる", sub: "水面から白いけむり" },
+          { label: "湯気が出はじめる", sub: "水面の上が白く見える" },
           { label: "ふっとうする", sub: "大きなあわがさかんに出る", tone: "red" },
           { label: "温度が上がらない", sub: "約100℃のまま", tone: "yellow" },
         ],

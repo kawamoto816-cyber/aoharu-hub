@@ -18,7 +18,7 @@ export const E_MATH_6_HIREI_HANPIREI: Lecture = {
           { label: "3倍", cells: ["3", "240"] },
           { label: "4倍", cells: ["4", "320"] },
         ],
-        note: "どの列でも y÷x＝80。",
+        note: "どの行でも y÷x＝80。",
       },
     },
     {

@@ -116,8 +116,8 @@ export const E_SCIENCE_6_SUIYOEKI: Lecture = {
     },
   ],
   next: [
-    { label: "用語カード「水溶液の性質」で覚える", href: "/learn/rika#e-science-6-suiyoeki" },
+    { label: "用語カード「水よう液の性質」で覚える", href: "/learn/rika#e-science-6-suiyoeki" },
     { label: "前の学年の単元「もののとけ方」", href: "/learn/rika#e-science-5-tokekata" },
-    { label: "中学のレクチャー「水溶液」", href: "/learn/lecture/j-sci-1-suiyoeki" },
+    { label: "中学のレクチャー「水よう液」", href: "/learn/lecture/j-sci-1-suiyoeki" },
   ],
 };

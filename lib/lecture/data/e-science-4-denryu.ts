@@ -36,7 +36,7 @@ export const E_SCIENCE_4_DENRYU: Lecture = {
           { label: "電流", cells: ["1このときより大きい", "1このときとほぼ同じ"] },
           { label: "モーター", cells: ["速く回る", "1こと同じくらい"] },
           { label: "豆電球", cells: ["明るくつく", "1こと同じくらい"] },
-          { label: "電池の長さ", cells: ["早くなくなる", "長持ちする"] },
+          { label: "電池のもち", cells: ["早くなくなる", "長持ちする"] },
         ],
       },
     },

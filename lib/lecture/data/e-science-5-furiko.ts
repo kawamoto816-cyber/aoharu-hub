@@ -86,7 +86,7 @@ export const E_SCIENCE_5_FURIKO: Lecture = {
   ],
   next: [
     { label: "用語カード「ふりこのきまり」で覚える", href: "/learn/rika#e-science-5-furiko" },
-    { label: "つぎの単元「電流がつくる磁力（電磁石）」", href: "/learn/rika#e-science-5-denjishaku" },
+    { label: "つぎの単元「電流がつくるじ力（電じ石）」", href: "/learn/rika#e-science-5-denjishaku" },
     { label: "6年「てこのはたらき」", href: "/learn/rika#e-science-6-teko" },
   ],
 };

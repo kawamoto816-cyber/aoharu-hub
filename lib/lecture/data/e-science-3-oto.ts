@@ -3,7 +3,7 @@ import type { Lecture } from "../types";
 export const E_SCIENCE_3_OTO: Lecture = {
   unit: "e-science-3-oto",
   title: "音は、物がふるえて出る",
-  hook: "たいこをたたくと、さわった手にびりびりとした感じがします。音が出ている物は、いつもふるえています。音のしくみがわかると、楽器や糸電話のふしぎがとけます。",
+  hook: "たいこをたたくと、さわった手にびりびりとした感じがします。音が出ている物は、いつもふるえています。音のしくみがわかると、がっきや糸電話のふしぎがとけます。",
   sections: [
     {
       heading: "音が出る物は、ふるえている",
@@ -63,8 +63,8 @@ export const E_SCIENCE_3_OTO: Lecture = {
     { q: "糸電話の糸のとちゅうを指でつまむと、声はどうなりますか。", a: "聞こえにくくなる", why: "糸のふるえが止まり、つたわらなくなるからです。" },
   ],
   next: [
-    { label: "用語カード「音のせいしつ」で覚える", href: "/learn/rika#e-science-3-oto" },
-    { label: "まえの単元「光のせいしつ」", href: "/learn/lecture/e-science-3-hikari" },
-    { label: "中学1年の「音」の図解レクチャー", href: "/learn/lecture/j-sci-1-oto" },
+    { label: "用語カード「音のせいしつ」でおぼえる", href: "/learn/rika#e-science-3-oto" },
+    { label: "まえのたんげん「光のせいしつ」", href: "/learn/lecture/e-science-3-hikari" },
+    { label: "中学1年の「音」の図かいレクチャー", href: "/learn/lecture/j-sci-1-oto" },
   ],
 };

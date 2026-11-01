@@ -82,7 +82,7 @@ export const E_MATH_5_HEIKIN: Lecture = {
     { q: "5日間で本を 12、0、8、10、5ページ読みました。1日平均何ページですか。", a: "7ページ", why: "0ページの日も入れて、35÷5＝7。" },
   ],
   next: [
-    { label: "計算の段で「平均」を練習する", href: "/learn/sansu/54" },
+    { label: "計算のだんで「平均」を練習する", href: "/learn/sansu/54" },
     { label: "次の単元：単位量あたりの大きさ（図解）", href: "/learn/lecture/e-math-5-tanni" },
     { label: "「平均」を使う6年「データの調べ方」（ドリル）", href: "/learn/sansu-zukei/e-math-6-data" },
   ],

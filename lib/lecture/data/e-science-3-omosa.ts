@@ -75,8 +75,8 @@ export const E_SCIENCE_3_OMOSA: Lecture = {
     { q: "はかりを使う前に、はりが何をさしているかたしかめますか。", a: "0", why: "0からずれていると、正しい重さが読めません。" },
   ],
   next: [
-    { label: "用語カード「物と重さ」で覚える・鍛える", href: "/learn/rika#e-science-3-omosa" },
-    { label: "算数3年「重さ」の図解レクチャー", href: "/learn/lecture/e-math-3-omosa" },
+    { label: "用語カード「物と重さ」でおぼえる・きたえる", href: "/learn/rika#e-science-3-omosa" },
+    { label: "算数3年「重さ」の図かいレクチャー", href: "/learn/lecture/e-math-3-omosa" },
     { label: "算数3年「重さ」のドリル", href: "/learn/sansu-zukei/e-math-3-omosa" },
   ],
 };

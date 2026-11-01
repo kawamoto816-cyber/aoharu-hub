@@ -76,8 +76,8 @@ export const E_SCIENCE_3_HIKARI: Lecture = {
     { q: "虫めがねで黒い紙をこがすには、光を集めた所を大きくしますか、小さくしますか。", a: "小さくする", why: "小さいほど、明るく、あつくなります。" },
   ],
   next: [
-    { label: "用語カード「光のせいしつ」で覚える・鍛える", href: "/learn/rika#e-science-3-hikari" },
-    { label: "つぎの単元「音のせいしつ」", href: "/learn/lecture/e-science-3-oto" },
-    { label: "中学1年の「光」の図解レクチャー", href: "/learn/lecture/j-sci-1-hikari" },
+    { label: "用語カード「光のせいしつ」でおぼえる・きたえる", href: "/learn/rika#e-science-3-hikari" },
+    { label: "つぎのたんげん「音のせいしつ」", href: "/learn/lecture/e-science-3-oto" },
+    { label: "中学1年の「光」の図かいレクチャー", href: "/learn/lecture/j-sci-1-hikari" },
   ],
 };

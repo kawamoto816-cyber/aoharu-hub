@@ -86,8 +86,8 @@ export const E_SCIENCE_3_JISHAKU: Lecture = {
     { q: "アルミかんは、じしゃくにつきますか。", a: "つかない", why: "アルミニウムは鉄ではないからです。" },
   ],
   next: [
-    { label: "用語カード「じしゃくのせいしつ」で覚える・鍛える", href: "/learn/rika#e-science-3-jishaku" },
-    { label: "まえの単元「電気の通り道」", href: "/learn/lecture/e-science-3-denki" },
-    { label: "中学2年「電流とじかい」の図解レクチャー", href: "/learn/lecture/j-sci-2-jikai" },
+    { label: "用語カード「じしゃくのせいしつ」でおぼえる・きたえる", href: "/learn/rika#e-science-3-jishaku" },
+    { label: "まえのたんげん「電気の通り道」", href: "/learn/lecture/e-science-3-denki" },
+    { label: "中学2年「電流とじかい」の図かいレクチャー", href: "/learn/lecture/j-sci-2-jikai" },
   ],
 };

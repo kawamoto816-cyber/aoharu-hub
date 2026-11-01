@@ -73,7 +73,7 @@ export const E_SCIENCE_6_SHOKUBUTSU: Lecture = {
   ],
   next: [
     { label: "用語カード「植物のつくりとはたらき」で覚える", href: "/learn/rika#e-science-6-shokubutsu" },
-    { label: "つぎの単元「生き物と環境」", href: "/learn/rika#e-science-6-kankyo" },
+    { label: "つぎの単元「生き物とかんきょう」", href: "/learn/rika#e-science-6-kankyo" },
     { label: "中2「植物の体のつくりとはたらき」", href: "/learn/chu-rika#j-sci-2-shokubutsu" },
   ],
 };

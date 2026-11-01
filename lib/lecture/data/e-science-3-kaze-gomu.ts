@@ -95,6 +95,6 @@ export const E_SCIENCE_3_KAZE_GOMU: Lecture = {
   next: [
     { label: "ことばのカードでおぼえる「風とゴムの力のはたらき」", href: "/learn/rika#e-science-3-kaze-gomu" },
     { label: "前に読む「こん虫の育ち方」", href: "/learn/lecture/e-science-3-konchu" },
-    { label: "次の学習「光のせいしつ」", href: "/learn/rika#e-science-3-hikari" },
+    { label: "次に読む「光のせいしつ」", href: "/learn/lecture/e-science-3-hikari" },
   ],
 };

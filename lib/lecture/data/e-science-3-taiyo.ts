@@ -69,8 +69,8 @@ export const E_SCIENCE_3_TAIYO: Lecture = {
     { q: "昼、地面の温度が高いのは、日なたと日かげのどちらですか。", a: "日なた", why: "日光が当たって、地面があたためられるからです。" },
   ],
   next: [
-    { label: "用語カード「太陽と地面の様子」で覚える", href: "/learn/rika#e-science-3-taiyo" },
-    { label: "3年「光のせいしつ」の図解レクチャー", href: "/learn/lecture/e-science-3-hikari" },
+    { label: "用語カード「太陽と地面の様子」でおぼえる", href: "/learn/rika#e-science-3-taiyo" },
+    { label: "3年「光のせいしつ」の図かいレクチャー", href: "/learn/lecture/e-science-3-hikari" },
     { label: "4年「月と星」（用語カード）", href: "/learn/rika#e-science-4-tsuki-hoshi" },
   ],
 };

@@ -87,7 +87,7 @@ export const E_MATH_5_BUNSU_SHOSU: Lecture = {
     { q: "0.09を分数で表しましょう。", a: "9/100", why: "0.01が9こ分なので9/100。" },
   ],
   next: [
-    { label: "計算の段で「分数と小数」を練習する", href: "/learn/sansu/51" },
+    { label: "計算のだんで「分数と小数」を練習する", href: "/learn/sansu/51" },
     { label: "ふりかえり 4年「かぶん数と帯分数」（図解）", href: "/learn/lecture/e-math-4-bunsu" },
     { label: "次の単元：分数のたし算とひき算（図解）", href: "/learn/lecture/e-math-5-bunsu-tashihiki" },
   ],
