@@ -51,7 +51,7 @@ export const J_SCI_1_HIKARI: Lecture = {
         ],
         ranges: [
           { from: 0, to: 1, label: "虚像", openFrom: true, openTo: true, tone: "red" },
-          { from: 1, to: 2, label: "大きい実像", openFrom: true, tone: "yellow" },
+          { from: 1, to: 2, label: "大きい実像", openFrom: true, openTo: true, tone: "yellow" },
           { from: 2, to: 4, label: "小さい実像", openFrom: true, tone: "blue" },
         ],
         note: "ちょうど焦点に置くと像はできない。2倍の位置では同じ大きさの実像。",

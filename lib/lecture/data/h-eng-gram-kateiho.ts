@@ -68,13 +68,13 @@ export const H_ENG_GRAM_KATEIHO: Lecture = {
   ],
   mistakes: [
     { wrong: "If I am you, I would wait.", right: "If I were you, I would wait.", why: "今の事実とちがう仮定なので、if 節は過去形。be動詞は were を使います。" },
-    { wrong: "If I had known, I would help you.", right: "If I had known, I would have helped you.", why: "「あのとき知っていたら手伝ったのに」と主節も過去の話なら would have ＋過去分詞です。" },
+    { wrong: "「あのとき知っていたら手伝ったのに」を If I had known, I would help you. とする", right: "If I had known, I would have helped you.", why: "主節も過去の話なので would have ＋過去分詞です。would help だと「（今）手伝うのに」になります。" },
     { wrong: "I wish I can swim.", right: "I wish I could swim.", why: "I wish のあとは仮定法。今の願望は can を過去形 could にします。" },
   ],
   check: [
     { q: "If I ___ (have) a car, I would drive you home.", a: "had", why: "今の事実（車がない）の反対なので仮定法過去。" },
     { q: "If you had left earlier, you ___ (catch) the train.", a: "would have caught", why: "if 節が had ＋過去分詞で過去の仮定。主節は would have ＋過去分詞。" },
-    { q: "If it were not for water, ... を、1語で始まる2通りの言い方に。", a: "Without water / But for water（Were it not for water も可）", why: "「〜がなければ」は Without・But for で言いかえられる。" },
+    { q: "If it were not for water, ... を、if を使わず前置詞で始まる2通りの言い方に。", a: "Without water / But for water（Were it not for water も可）", why: "「〜がなければ」は Without・But for で言いかえられる。" },
   ],
   next: [
     { label: "4択ドリル「仮定法」に挑戦", href: "/learn/eibunpo-ko/h-eng-gram-kateiho" },

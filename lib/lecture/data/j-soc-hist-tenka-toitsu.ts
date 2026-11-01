@@ -70,12 +70,11 @@ export const J_SOC_HIST_TENKA_TOITSU: Lecture = {
         type: "cause",
         title: "兵農分離が進んだしくみ",
         causes: [
-          { label: "太閤検地", sub: "耕す人を検地帳に記し、年貢を確実に取る" },
+          { label: "太閤検地", sub: "耕す人を検地帳に記す。荘園のしくみがなくなる" },
           { label: "刀狩（1588年）", sub: "農民から刀ややりを取り上げる" },
         ],
         effect: { label: "兵農分離", sub: "武士と農民の身分が分かれる", tone: "yellow" },
         chain: [
-          { label: "荘園のしくみがなくなる", sub: "土地と耕す人を直接つかむ" },
           { label: "江戸時代の身分制度の土台に", tone: "navy" },
         ],
       },
