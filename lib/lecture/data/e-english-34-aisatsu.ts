@@ -2,12 +2,12 @@ import type { Lecture } from "../types";
 
 export const E_ENGLISH_34_AISATSU: Lecture = {
   unit: "e-english-34-aisatsu",
-  title: "あいさつは時こくで選《えら》び、気持ちは I'm 〜. で伝《つた》える",
+  title: "あいさつは時刻《じこく》で選《えら》び、気持ちは I'm 〜. で伝《つた》える",
   hook: "朝、友だちに「おはよう」と言うと、一日が気持ちよく始まりますね。英語《えいご》でも、あいさつは人となかよくなる第一歩です。まずは耳で聞いて、まねして、声に出して言ってみましょう。",
   sections: [
     {
-      heading: "時こくで変《か》わるあいさつ",
-      body: "英語《えいご》のあいさつは、時こくによって言葉が変《か》わります。朝は {{Good morning.}}、昼すぎは {{Good afternoon.}}、夜ねる前は {{Good night.}} です。{{Hello.}} は、いつでも使える {{便利《べんり》}} なあいさつです。",
+      heading: "時刻《じこく》で変《か》わるあいさつ",
+      body: "英語《えいご》のあいさつは、時刻《じこく》によって言葉が変《か》わります。朝は {{Good morning.}}、昼すぎは {{Good afternoon.}}、夜ねる前は {{Good night.}} です。{{Hello.}} は、いつでも使える {{便利《べんり》}} なあいさつです。",
       figure: {
         type: "flow",
         dir: "row",
