@@ -11,6 +11,7 @@ export const KanjiTodayLoader = dynamic(
         return (
           <m.DeckToday
             deckKey="kanji-e"
+            kids
             unit="字"
             play="/learn/kanji/play"
             allIds={k.ALL_KANJI.map((e) => e.k)}

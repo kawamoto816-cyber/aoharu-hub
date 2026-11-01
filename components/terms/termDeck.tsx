@@ -22,11 +22,11 @@ function TermCard({ set, id }: { set: TermSet; id: string }) {
       <p className="m-0 text-[12px] font-black text-[#1533B8]">
         {unitGroup(f.unit)}・{unitName(f.unit)}
       </p>
-      <p className="m-0 mt-1">
+      <p className="m-0 mt-3 leading-[1.9]">
         {/[\u4e00-\u9fff々]/.test(f.item.t) ? (
           <ruby className="text-[30px] font-black">
             {f.item.t}
-            <rt className="text-[11px] font-bold">{f.item.y}</rt>
+            <rt className="text-[12px] font-bold">{f.item.y}</rt>
           </ruby>
         ) : (
           <span className="text-[30px] font-black">{f.item.t}</span>
@@ -39,11 +39,14 @@ function TermCard({ set, id }: { set: TermSet; id: string }) {
 
 export function makeTermDeck(set: TermSet): DeckDef {
   const key = set.key;
+  const kids = key === "rika" || key === "shakai";
   const all = set.units.flatMap((u) => u.items.map((t) => ({ unit: u.unit, t })));
   return {
     key: `terms-${key}`,
     title: `${set.name}の重要語句`,
     home: `/learn/${key}`,
+    // 小学校の理科・社会は、画面の固定の言葉をひらがな多めにする
+    kids,
     play: `/learn/${key}/play`,
     unit: "語",
     ids: (g) => set.units.filter((u) => !g || u.unit === g || unitGroup(u.unit) === g).flatMap((u) => u.items.map((t) => termId(u.unit, t))),
@@ -55,13 +58,13 @@ export function makeTermDeck(set: TermSet): DeckDef {
       const wrong = [...sample(same, 3), ...sample(near, 3)].filter((x, i, a) => a.findIndex((y) => y.t.t === x.t.t) === i).slice(0, 3);
       if (level === "easy")
         return {
-          ask: "この説明にあう言葉は？",
+          ask: kids ? "この せつめいに あう ことばは？" : "この説明にあう言葉は？",
           prompt: <p className="m-0 text-[18px] font-bold leading-relaxed">{f.item.d}</p>,
           options: shuffle([f.item.t, ...wrong.map((x) => x.t.t)]),
           answer: f.item.t,
         };
       return {
-        ask: "この言葉の説明は？",
+        ask: kids ? "この ことばの せつめいは？" : "この言葉の説明は？",
         prompt: <p className="m-0 text-[28px] font-black">{f.item.t}</p>,
         options: shuffle([f.item.d, ...wrong.map((x) => x.t.d)]),
         answer: f.item.d,

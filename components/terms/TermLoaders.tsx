@@ -23,6 +23,7 @@ const TodayInner = dynamic(
         return (
           <m.DeckToday
             deckKey={`terms-${setKey}`}
+            kids={setKey === "rika" || setKey === "shakai"}
             unit="語"
             play={`/learn/${setKey}/play`}
             allIds={set.units.flatMap((u) => u.items.map((x) => t.termId(u.unit, x)))}

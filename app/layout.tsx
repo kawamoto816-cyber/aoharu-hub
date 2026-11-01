@@ -14,6 +14,7 @@ import { SmartSignUpButton } from "@/components/SmartSignUpButton";
 import { GA_MEASUREMENT_ID } from "@/lib/analytics";
 import { UpgradeModalProvider } from "@/components/UpgradeModal";
 import { BillingPortalLink } from "@/components/BillingPortalLink";
+import { AccountCorner } from "@/components/AccountCorner";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -99,7 +100,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
               gtag('config', '${GA_MEASUREMENT_ID}');
             `}
           </Script>
-          <div className="fixed top-4 right-4 z-[9999] flex flex-col items-end gap-1.5">
+          <AccountCorner>
             <SignedOut>
               {/* モバイルでは固定表示のCTAを非表示にする:
                   ヒーロー・キャリキャラ導線・各料金プランのボタン等、
@@ -122,7 +123,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
                 </SignOutButton>
               </div>
             </SignedIn>
-          </div>
+          </AccountCorner>
           <UpgradeModalProvider>{children}</UpgradeModalProvider>
         </body>
       </html>

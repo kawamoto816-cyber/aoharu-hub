@@ -14,6 +14,45 @@ type Phase = { kind: "card" } | { kind: "quiz" } | { kind: "feedback"; ok: boole
 const box = "rounded-[18px] border-[1.5px] border-[#15172B] bg-white p-5 shadow-[4px_4px_0_#15172B]";
 const bigBtn = "flex min-h-[56px] w-full items-center justify-center rounded-[14px] border-[1.5px] border-[#15172B] text-[17px] font-black no-underline";
 
+/** 画面の固定の言葉。kids = 小学生向けの束 */
+function words(kids: boolean, unit: string) {
+  return kids
+    ? {
+        more: `あと10${unit}、あたらしく おぼえる`,
+        top: "のトップへ",
+        noneTitle: "きょうの しゅぎょうは おしまい",
+        noneBody: "ふくしゅうも、きょうの あたらしい カードも おわっています。あした また、わすれかけた ものが でてくるよ。",
+        doneTitle: "しゅぎょう かんりょう！",
+        doneScore: (ok: number, miss: number) => `いっぱつで せいかい ${ok}・まちがえて おぼえなおし ${miss}`,
+        doneNote: "まちがえた ものは、あした また でてくるよ。つづけて せいかいすると、でてくる あいだが のびていくよ。",
+        left: "のこり",
+        score: (ok: number, miss: number) => `せいかい ${ok}・おぼえなおし ${miss}`,
+        newCard: "あたらしく おぼえる",
+        learned: "おぼえた！たしかめる",
+        dunno: "わからない",
+        right: "せいかい！",
+        wrong: (a: string) => `おぼえなおそう（こたえ：${a}）`,
+        next: "つぎへ",
+      }
+    : {
+        more: `あと10${unit}、新しく覚える`,
+        top: "のトップへ",
+        noneTitle: "今日の修行はおしまいです",
+        noneBody: "復習も、今日の新しいカードも済んでいます。明日また、忘れかけたものが出てきます。",
+        doneTitle: "修行完了！",
+        doneScore: (ok: number, miss: number) => `一発で正解 ${ok}・まちがえて覚え直し ${miss}`,
+        doneNote: "まちがえたものは、明日また出てきます。続けて正解すると、出てくる間隔がのびていきます。",
+        left: "のこり",
+        score: (ok: number, miss: number) => `正解 ${ok}・覚え直し ${miss}`,
+        newCard: "新しく覚える",
+        learned: "覚えた！確かめる",
+        dunno: "わからない",
+        right: "正解！",
+        wrong: (a: string) => `覚え直そう（答え：${a}）`,
+        next: "次へ",
+      };
+}
+
 export function DeckSession({ deck, group, extra }: { deck: DeckDef; group?: string; extra?: boolean }) {
   const store = deckStore(deck.key);
   const initial = useMemo(() => buildDeckSession(store.read(), deck.ids(group), { extra }), [store, deck, group, extra]);
@@ -25,14 +64,16 @@ export function DeckSession({ deck, group, extra }: { deck: DeckDef; group?: str
   const item = queue[idx];
   const quiz = useMemo(() => (item ? deck.quiz(item.id, item.mode === "hard" ? "hard" : "easy") : null), [deck, item, idx]); // eslint-disable-line react-hooks/exhaustive-deps
   const moreHref = `${deck.play}?${group ? `g=${group}&` : ""}extra=1`;
+  const w = words(!!deck.kids, deck.unit);
 
   const doneButtons = (
     <div className="mt-4 grid gap-2.5">
       <a href={moreHref} className={`${bigBtn} bg-[#FFE45C] text-[#15172B] shadow-[0_3px_0_#15172B]`}>
-        あと10{deck.unit}、新しく覚える
+        {w.more}
       </a>
       <Link href={deck.home} className={`${bigBtn} min-h-[48px] bg-white text-[15px] text-[#15172B]`}>
-        {deck.title}のトップへ
+        {deck.title}
+        {w.top}
       </Link>
     </div>
   );
@@ -40,8 +81,8 @@ export function DeckSession({ deck, group, extra }: { deck: DeckDef; group?: str
   if (initial.length === 0)
     return (
       <div className={box}>
-        <p className="m-0 text-[18px] font-black">今日の修行はおしまいです</p>
-        <p className="m-0 mt-2 text-[14px] leading-relaxed text-[#3A3D55]">復習も、今日の新しいカードも済んでいます。明日また、忘れかけたものが出てきます。</p>
+        <p className="m-0 text-[18px] font-black">{w.noneTitle}</p>
+        <p className="m-0 mt-2 text-[14px] leading-relaxed text-[#3A3D55]">{w.noneBody}</p>
         {doneButtons}
       </div>
     );
@@ -49,11 +90,9 @@ export function DeckSession({ deck, group, extra }: { deck: DeckDef; group?: str
   if (!item || !quiz)
     return (
       <div className={box}>
-        <p className="m-0 text-[22px] font-black text-[#1533B8]">修行完了！</p>
-        <p className="m-0 mt-2 text-[14px]">
-          一発で正解 {score.ok}・まちがえて覚え直し {score.miss}
-        </p>
-        <p className="m-0 mt-1 text-[13px] text-[#3A3D55]">まちがえたものは、明日また出てきます。続けて正解すると、出てくる間隔がのびていきます。</p>
+        <p className="m-0 text-[22px] font-black text-[#1533B8]">{w.doneTitle}</p>
+        <p className="m-0 mt-2 text-[14px]">{w.doneScore(score.ok, score.miss)}</p>
+        <p className="m-0 mt-1 text-[13px] text-[#3A3D55]">{w.doneNote}</p>
         {doneButtons}
       </div>
     );
@@ -81,20 +120,18 @@ export function DeckSession({ deck, group, extra }: { deck: DeckDef; group?: str
     <div>
       <div className="mb-3 flex items-center justify-between text-[13px] font-bold text-[#3A3D55]">
         <span>
-          のこり {queue.length - idx}
+          {w.left} {queue.length - idx}
           {deck.unit}
         </span>
-        <span>
-          正解 {score.ok}・覚え直し {score.miss}
-        </span>
+        <span>{w.score(score.ok, score.miss)}</span>
       </div>
 
       {phase.kind === "card" && (
         <>
-          <p className="m-0 mb-2 text-[12px] font-black text-[#1533B8]">新しく覚える</p>
+          <p className="m-0 mb-2 text-[12px] font-black text-[#1533B8]">{w.newCard}</p>
           {deck.card(item.id)}
           <button type="button" onClick={() => setPhase({ kind: "quiz" })} className={`${bigBtn} mt-4 bg-[#1533B8] text-white shadow-[0_4px_0_#0B1F7A]`}>
-            覚えた！確かめる
+            {w.learned}
           </button>
         </>
       )}
@@ -115,18 +152,20 @@ export function DeckSession({ deck, group, extra }: { deck: DeckDef; group?: str
               </button>
             ))}
           </div>
-          <button type="button" onClick={() => answer(false)} className="mt-3 text-[13px] font-bold text-[#3A3D55] underline">
-            わからない
+          <button type="button" onClick={() => answer(false)} className="-ml-3 mt-1 min-h-[44px] px-3 text-[13px] font-bold text-[#3A3D55] underline">
+            {w.dunno}
           </button>
         </div>
       )}
 
       {phase.kind === "feedback" && (
         <>
-          <p className={`m-0 mb-2 text-[20px] font-black ${phase.ok ? "text-[#1533B8]" : "text-[#D9341F]"}`}>{phase.ok ? "正解！" : `覚え直そう（答え：${quiz.answer}）`}</p>
+          <p role="status" aria-live="polite" className={`m-0 mb-2 text-[20px] font-black ${phase.ok ? "text-[#1533B8]" : "text-[#D9341F]"}`}>
+            {phase.ok ? w.right : w.wrong(quiz.answer)}
+          </p>
           {deck.card(item.id)}
           <button type="button" onClick={next} autoFocus className={`${bigBtn} mt-4 bg-[#FFE45C] text-[#15172B] shadow-[0_4px_0_#15172B]`}>
-            次へ
+            {w.next}
           </button>
         </>
       )}

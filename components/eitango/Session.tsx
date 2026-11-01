@@ -153,7 +153,7 @@ export function Session({ stage, extra }: { stage?: number; extra?: boolean }) {
               </button>
             ))}
           </div>
-          <button type="button" onClick={() => answer(false)} className="mt-3 text-[13px] font-bold text-[#3A3D55] underline">
+          <button type="button" onClick={() => answer(false)} className="-ml-3 mt-1 min-h-[44px] px-3 text-[13px] font-bold text-[#3A3D55] underline">
             わからない
           </button>
         </div>
@@ -197,7 +197,9 @@ export function Session({ stage, extra }: { stage?: number; extra?: boolean }) {
 
       {phase.kind === "feedback" && (
         <>
-          <p className={`m-0 mb-2 text-[20px] font-black ${phase.ok ? "text-[#1533B8]" : "text-[#D9341F]"}`}>{phase.ok ? "正解！" : "覚え直そう"}</p>
+          <p role="status" aria-live="polite" className={`m-0 mb-2 text-[20px] font-black ${phase.ok ? "text-[#1533B8]" : "text-[#D9341F]"}`}>
+            {phase.ok ? "正解！" : "覚え直そう"}
+          </p>
           {!phase.ok && phase.given && <p className="m-0 mb-2 text-[13px] text-[#3A3D55]">あなたの答え：{phase.given}</p>}
           <Card w={w} />
           <button type="button" onClick={next} autoFocus className="mt-4 flex min-h-[56px] w-full items-center justify-center rounded-[14px] border-[1.5px] border-[#15172B] bg-[#FFE45C] text-[17px] font-black text-[#15172B] shadow-[0_4px_0_#15172B]">

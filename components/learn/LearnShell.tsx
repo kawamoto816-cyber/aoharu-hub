@@ -9,7 +9,9 @@ import { SUPERVISION } from "@/lib/learn/types";
 const paper =
   "bg-[#F7F6F1] [background-image:linear-gradient(#E4E2D8_1px,transparent_1px),linear-gradient(90deg,#E4E2D8_1px,transparent_1px)] [background-size:28px_28px]";
 
-export function LearnShell({ crumbs, children, narrow = false, homeHref = "/learn" }: { crumbs: { href?: string; label: string }[]; children: ReactNode; narrow?: boolean; homeHref?: string }) {
+// パンくずの先頭の「アオハルOS」はヘッダーのロゴと同じなので、ページによってあったりなかったりしないよう、ここで外してそろえる。
+export function LearnShell({ crumbs: rawCrumbs, children, narrow = false, homeHref = "/learn" }: { crumbs: { href?: string; label: string }[]; children: ReactNode; narrow?: boolean; homeHref?: string }) {
+  const crumbs = rawCrumbs.filter((c, i) => !(i === 0 && c.href === "/" && c.label === "アオハルOS"));
   return (
     <main className={`${zen.className} ${paper} min-h-screen flex-1 text-[#15172B]`}>
       <header className="border-b border-[#E4E2D8] bg-[#F7F6F1]/95">
@@ -24,12 +26,12 @@ export function LearnShell({ crumbs, children, narrow = false, homeHref = "/lear
         </div>
       </header>
       <div className={`mx-auto px-4 pb-16 pt-5 sm:px-6 ${narrow ? "max-w-[560px]" : "max-w-[1100px]"}`}>
-        <nav aria-label="パンくずリスト" className="text-xs font-bold text-[#3A3D55]">
+        <nav aria-label="パンくずリスト" className="-my-3 text-xs font-bold leading-none text-[#3A3D55]">
           {crumbs.map((c, i) => (
             <span key={c.label}>
               {i > 0 && <span className="mx-1.5">/</span>}
               {c.href ? (
-                <Link href={c.href} className="text-[#3A3D55] hover:text-[#1533B8]">
+                <Link href={c.href} className="inline-block py-3 text-[#3A3D55] hover:text-[#1533B8]">
                   {c.label}
                 </Link>
               ) : (

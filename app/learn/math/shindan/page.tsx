@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 
 export default function ShindanPage() {
   return (
-    <LearnShell narrow crumbs={[{ href: "/learn", label: "まなぶ" }, { href: "/learn/math", label: "数学" }, { label: "学力診断" }]}>
+    <LearnShell narrow crumbs={[{ href: "/learn", label: "まなぶ" }, { href: "/learn/school", label: "学校の教科" }, { href: "/learn/math", label: "中学数学" }, { label: "学力診断" }]}>
       <h1 className="m-0 text-[22px] font-black">学力診断</h1>
       <p className="mb-4 mt-1 text-[14px] leading-relaxed text-[#3A3D55]">各単元から2問ずつ、やさしい順に出します。2問とも正解なら次の単元へ。まちがえたところの単元の最初から始めます。紙と鉛筆を用意してください。</p>
       <ShindanLoader />

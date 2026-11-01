@@ -33,7 +33,7 @@ export default async function KyokaPage({ params }: { params: Promise<{ subject:
       <h1 className="m-0 mt-1 text-[28px] font-black">{k.name}</h1>
       <nav aria-label="ほかの教科" className="mt-3 flex flex-wrap gap-2">
         {KYOKA.map((x) => (
-          <Link key={x.key} href={`/learn/kyoka/${x.key}`} aria-current={x.key === k.key ? "page" : undefined} className={`inline-flex min-h-[36px] items-center rounded-full border-[1.5px] border-[#15172B] px-3 text-[13px] font-black no-underline ${x.key === k.key ? "bg-[#15172B] text-white" : "bg-white text-[#15172B]"}`}>
+          <Link key={x.key} href={`/learn/kyoka/${x.key}`} aria-current={x.key === k.key ? "page" : undefined} className={`inline-flex min-h-[44px] items-center rounded-full border-[1.5px] border-[#15172B] px-3 text-[13px] font-black no-underline ${x.key === k.key ? "bg-[#15172B] text-white" : "bg-white text-[#15172B]"}`}>
             {x.name}
           </Link>
         ))}
@@ -51,15 +51,16 @@ export default async function KyokaPage({ params }: { params: Promise<{ subject:
             )}
           </div>
           <div className="mt-3 grid gap-3 md:grid-cols-2">
+            {/* 教材のない箱 (空の点線の箱) は出さない。①覚えるがない段階は、②鍛えるの箱に一言そえる */}
             {(["覚える", "鍛える"] as const).map((eng) => {
               const list = k.items.filter((x) => x.level === lv && x.engine === eng);
+              if (list.length === 0) return null;
+              const noMemo = eng === "鍛える" && !k.items.some((x) => x.level === lv && x.engine === "覚える");
               return (
-                <div key={eng} className={`rounded-[16px] border-[1.5px] p-3 ${list.length ? "border-[#15172B] bg-white" : "border-dashed border-[#9A9CB0] bg-white/50"}`}>
+                <div key={eng} className="rounded-[16px] border-[1.5px] border-[#15172B] bg-white p-3">
                   <p className="m-0 mb-2 text-[12px] font-black text-[#1533B8]">{eng === "覚える" ? "①覚える" : "②鍛える"}</p>
-                  {list.length === 0 ? (
-                    <p className="m-0 text-[13px] text-[#5A5D73]">{eng === "覚える" ? "単元ごとのポイントは、②鍛えるの各単元ページにあります。" : "準備中"}</p>
-                  ) : (
-                    <ul className="m-0 grid list-none gap-2 p-0">
+                  {noMemo && <p className="m-0 mb-2 text-[12.5px] text-[#3A3D55]">単元ごとのポイント（①覚える）は、各単元のページの上にあります。</p>}
+                  <ul className="m-0 grid list-none gap-2 p-0">
                       {list.map((x) => (
                         <li key={x.href}>
                           <Link href={x.href} className="flex flex-col rounded-[12px] border-[1.5px] border-[#15172B] bg-[#FFFBE6] px-3 py-2 text-[#15172B] no-underline shadow-[2px_2px_0_#15172B]">
@@ -68,8 +69,7 @@ export default async function KyokaPage({ params }: { params: Promise<{ subject:
                           </Link>
                         </li>
                       ))}
-                    </ul>
-                  )}
+                  </ul>
                 </div>
               );
             })}

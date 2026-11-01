@@ -33,7 +33,7 @@ export function TermsTop({ setKey, lead }: { setKey: TermSetKey; lead: string })
                     <summary className="flex cursor-pointer flex-wrap items-center gap-2 text-[15px] font-black">
                       <span className="min-w-0 flex-1">{unitName(u.unit)}</span>
                       <span className="text-[12px] font-bold text-[#3A3D55]">{u.items.length}語</span>
-                      <a href={`/learn/${setKey}/play?g=${u.unit}`} className="rounded-full border-[1.5px] border-[#15172B] bg-[#FFE45C] px-3 py-1 text-[12.5px] font-black text-[#15172B] no-underline">
+                      <a href={`/learn/${setKey}/play?g=${u.unit}`} className="inline-flex min-h-[44px] items-center rounded-full border-[1.5px] border-[#15172B] bg-[#FFE45C] px-3.5 text-[13px] font-black text-[#15172B] no-underline">
                         この単元を覚える
                       </a>
                     </summary>

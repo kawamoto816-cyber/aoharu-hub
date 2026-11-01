@@ -24,6 +24,8 @@ export interface DeckDef {
   unit: string;
   ids: (group?: string) => string[];
   card: (id: string) => ReactNode;
+  /** 小学生向けの束 (固定の言葉をひらがな多めにする) */
+  kids?: boolean;
   /** easy = 新しいカード・まだ覚えきっていない、hard = 覚えたカードの仕上げ */
   quiz: (id: string, level: "easy" | "hard") => DeckQuiz;
 }

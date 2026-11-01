@@ -59,6 +59,8 @@ export function Shunpatsu({ stage }: { stage: number }) {
   const [left, setLeft] = useState(SHUN_SECONDS);
   const [ok, setOk] = useState(0);
   const [miss, setMiss] = useState<WordEntry[]>([]);
+  // まちがえた回数 (同じ単語を2回まちがえたら2)。合否の記録と表示はこの数でそろえる
+  const [missN, setMissN] = useState(0);
   const [flash, setFlash] = useState<{ right: string; picked: string } | null>(null);
   const endAt = useRef(0);
   const w = order[i % order.length];
@@ -91,6 +93,7 @@ export function Shunpatsu({ stage }: { stage: number }) {
       setI((n) => n + 1);
     } else {
       tally.current.miss++;
+      setMissN((n) => n + 1);
       setMiss((m) => (m.some((x) => x.no === w.no) ? m : [...m, w]));
       setFlash({ right: w.ja, picked: o });
       setTimeout(() => {
@@ -125,11 +128,11 @@ export function Shunpatsu({ stage }: { stage: number }) {
     );
 
   if (phase === "done") {
-    const passed = ok >= SHUN_PASS && miss.length <= SHUN_MAX_MISS;
+    const passed = ok >= SHUN_PASS && missN <= SHUN_MAX_MISS;
     return (
       <Finish stage={stage} mode="shun" passed={passed}>
         <p className="m-0 mt-2 text-[16px] font-bold">
-          60秒で <span className="text-[30px] font-black">{ok}</span> 語・まちがい {miss.length}
+          60秒で <span className="text-[30px] font-black">{ok}</span> 語・まちがい {missN}
         </p>
         {prevBest > 0 && <p className="m-0 mt-1 text-[13px] text-[#3A3D55]">これまでのベスト {prevBest}語</p>}
         {!passed && (
@@ -147,7 +150,7 @@ export function Shunpatsu({ stage }: { stage: number }) {
       <div className="mb-3 flex items-center justify-between text-[14px] font-black">
         <span className={left <= 10 ? "text-[#D9341F]" : ""}>のこり {left}秒</span>
         <span>
-          正解 {ok}・まちがい {miss.length}
+          正解 {ok}・まちがい {missN}
         </span>
       </div>
       <div className="mb-3 h-2 overflow-hidden rounded-full bg-[#E6E4DA]">
@@ -165,7 +168,18 @@ export function Shunpatsu({ stage }: { stage: number }) {
                 onClick={() => pick(o)}
                 className={`flex min-h-[52px] items-center rounded-[12px] border-[1.5px] px-4 text-left text-[15px] font-bold ${state === "right" ? "border-[#1533B8] bg-[#E3E8FF]" : state === "wrong" ? "border-[#D9341F] bg-[#FFE6E1]" : "border-[#15172B] bg-white"} text-[#15172B]`}
               >
-                {o}
+                {state === "right" && (
+                  <span aria-hidden="true" className="mr-2 shrink-0 font-sans text-[18px] font-black text-[#1533B8]">
+                    ○
+                  </span>
+                )}
+                {state === "wrong" && (
+                  <span aria-hidden="true" className="mr-2 shrink-0 font-sans text-[18px] font-black text-[#D9341F]">
+                    ✕
+                  </span>
+                )}
+                <span>{o}</span>
+                {state && <span className="sr-only">{state === "right" ? "（正解）" : "（選んだ答え・まちがい）"}</span>}
               </button>
             );
           })}
@@ -234,14 +248,25 @@ export function Bunmyaku({ stage }: { stage: number }) {
                 }}
                 className={`flex min-h-[52px] items-center justify-center rounded-[12px] border-[1.5px] px-2 font-serif text-[17px] font-bold ${state === "right" ? "border-[#1533B8] bg-[#E3E8FF]" : state === "wrong" ? "border-[#D9341F] bg-[#FFE6E1]" : "border-[#15172B] bg-white"} text-[#15172B]`}
               >
-                {o}
+                {state === "right" && (
+                  <span aria-hidden="true" className="mr-2 shrink-0 font-sans text-[18px] font-black text-[#1533B8]">
+                    ○
+                  </span>
+                )}
+                {state === "wrong" && (
+                  <span aria-hidden="true" className="mr-2 shrink-0 font-sans text-[18px] font-black text-[#D9341F]">
+                    ✕
+                  </span>
+                )}
+                <span>{o}</span>
+                {state && <span className="sr-only">{state === "right" ? "（正解）" : "（選んだ答え・まちがい）"}</span>}
               </button>
             );
           })}
         </div>
         {picked && (
           <>
-            <p className={`m-0 mt-3 text-[15px] font-black ${correct ? "text-[#1533B8]" : "text-[#D9341F]"}`}>
+            <p role="status" aria-live="polite" className={`m-0 mt-3 text-[15px] font-black ${correct ? "text-[#1533B8]" : "text-[#D9341F]"}`}>
               {correct ? "正解！" : "ざんねん"}　{q.w.word}：{q.w.ja}
             </p>
             <button

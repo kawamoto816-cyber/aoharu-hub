@@ -30,7 +30,7 @@ export default async function MathStepPage({ params }: { params: Promise<{ step:
   if (!s) notFound();
   const u = unitOf(s.no);
   return (
-    <LearnShell narrow crumbs={[{ href: "/learn", label: "まなぶ" }, { href: "/learn/math", label: "数学" }, { label: `第${s.no}段` }]}>
+    <LearnShell narrow crumbs={[{ href: "/learn", label: "まなぶ" }, { href: "/learn/school", label: "学校の教科" }, { href: "/learn/math", label: "中学数学" }, { label: `第${s.no}段` }]}>
       <p className="m-0 text-xs font-bold text-[#3A3D55]">
         {u.grade}・{u.title}　第{s.no}段 / 50
       </p>

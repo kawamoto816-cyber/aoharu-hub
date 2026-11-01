@@ -33,6 +33,8 @@ export function Drill({ step, onRestart }: { step: KousuuStep; onRestart: () => 
   const [now, setNow] = useState(0);
   const [first, setFirst] = useState<{ seconds: number; perfect: boolean } | null>(null);
   const [outcome, setOutcome] = useState<{ pass: boolean; perfect: boolean; seconds: number; justCleared: boolean; passes: number; misses: number } | null>(null);
+  /** 空欄が残ったまま採点を押したときの、のこりの問題数 (もう一度押すと採点する) */
+  const [emptyWarn, setEmptyWarn] = useState<number | null>(null);
   const focused = useRef<{ p: number; f: number }>({ p: 0, f: 0 });
   const refs = useRef<Record<string, HTMLInputElement | null>>({});
   const progress = useKousuuProgress();
@@ -87,6 +89,7 @@ export function Drill({ step, onRestart }: { step: KousuuStep; onRestart: () => 
   }
 
   function setField(p: number, f: number, v: string) {
+    setEmptyWarn(null);
     setInputs((xs) => xs.map((row, i) => (i === p ? row.map((x, j) => (j === f ? v : x)) : row)));
   }
 
@@ -106,21 +109,39 @@ export function Drill({ step, onRestart }: { step: KousuuStep; onRestart: () => 
   }
 
   function grade() {
+    // 何も入れていない問題は、まちがいに数えない (tries を増やさず、最初の採点の記録にもしない)
+    const blank = problems.map((_, i) => !isOk(verdicts[i]) && inputs[i].every((x) => !x.trim()));
+    const blanks = blank.filter(Boolean).length;
+    if (blanks > 0 && emptyWarn === null) {
+      setEmptyWarn(blanks);
+      const bi = blank.indexOf(true);
+      setTimeout(() => {
+        const el = refs.current[`${bi}-0`];
+        el?.scrollIntoView({ behavior: "smooth", block: "center" });
+        el?.focus({ preventScroll: true });
+      }, 50);
+      return;
+    }
+    setEmptyWarn(null);
     const vs = problems.map((pr, i) => {
       const prev = verdicts[i];
       if (isOk(prev)) return prev!;
       return judge(pr.fields, inputs[i], pr.unordered);
     });
     const allOk = vs.every(isOk);
-    setVerdicts(vs);
-    setTries((ts) => ts.map((t, i) => (isOk(vs[i]) ? t : t + 1)));
+    setVerdicts(vs.map((v, i) => (blank[i] ? null : v))); // 空欄の問題は ✕ をつけない
+    setTries((ts) => ts.map((t, i) => (blank[i] || isOk(vs[i]) ? t : t + 1)));
     const seconds = (clock() - startedAt) / 1000;
-    const f = first ?? { seconds, perfect: allOk };
-    if (!first) setFirst(f);
-    if (!allOk) {
+    // 最初の採点 = 空欄なしで採点したとき。それまでに本当にまちがえていたら満点あつかいにしない
+    let f = first;
+    if (!f && blanks === 0) {
+      f = { seconds, perfect: allOk && tries.every((t) => t === 0) };
+      setFirst(f);
+    }
+    if (!allOk || !f) {
       setPhase("fixing");
-      const firstWrong = vs.findIndex((v) => !isOk(v));
-      setTimeout(() => refs.current[`${firstWrong}-0`]?.scrollIntoView({ behavior: "smooth", block: "center" }), 50);
+      const firstWrong = vs.findIndex((v, i) => !blank[i] && !isOk(v));
+      setTimeout(() => refs.current[`${firstWrong < 0 ? blank.indexOf(true) : firstWrong}-0`]?.scrollIntoView({ behavior: "smooth", block: "center" }), 50);
       return;
     }
     const pass = f.perfect && f.seconds <= step.target * 60;
@@ -223,11 +244,14 @@ export function Drill({ step, onRestart }: { step: KousuuStep; onRestart: () => 
     <div>
       <div className="sticky top-0 z-10 -mx-4 mb-3 flex flex-col gap-2 border-b border-[#E4E2D8] bg-[#F7F6F1]/95 px-4 py-2.5 backdrop-blur sm:-mx-6 sm:px-6">
         <div className="flex items-center justify-between text-[13px] font-bold">
-          <span>{phase === "fixing" ? "まちがえた問題を直そう" : `解いた ${answered} / ${problems.length}`}</span>
+          <span>{phase === "fixing" ? (verdicts.some((v) => !v) ? "のこりの問題を解いて、まちがいを直そう" : "まちがえた問題を直そう") : `解いた ${answered} / ${problems.length}`}</span>
           <span className={overTime ? "text-[#B42318]" : "text-[#3A3D55]"}>
             {fmt(elapsed)}／目標 {step.target}分
           </span>
         </div>
+        <p role="status" aria-live="polite" className={emptyWarn ? "m-0 rounded-lg bg-[#FFF4DE] px-2.5 py-1.5 text-[13px] font-bold text-[#B54708]" : "sr-only"}>
+          {emptyWarn ? `まだ ${emptyWarn}問 のこっています。このまま採点するときは、もう一度ボタンを押そう。` : ""}
+        </p>
         <div className="flex flex-wrap gap-1.5" aria-label="記号の入力">
           {keys.map((k) => (
             <button
@@ -235,7 +259,7 @@ export function Drill({ step, onRestart }: { step: KousuuStep; onRestart: () => 
               type="button"
               onMouseDown={(e) => e.preventDefault()}
               onClick={() => insert(k)}
-              className="min-h-[38px] min-w-[38px] rounded-lg border-[1.5px] border-[#15172B] bg-white px-2 text-[16px] font-bold text-[#15172B]"
+              className="min-h-[44px] min-w-[44px] rounded-lg border-[1.5px] border-[#15172B] bg-white px-2 text-[16px] font-bold text-[#15172B]"
             >
               {k}
             </button>
@@ -250,6 +274,8 @@ export function Drill({ step, onRestart }: { step: KousuuStep; onRestart: () => 
           const locked = phase === "fixing" && ok;
           const t = tries[pi];
           const point = pr.layout === "point";
+          // 答えが有理数か数字の並び (n進法の0〜9) だけの問題は数字のキーボード。− と / は記号キーで入れる
+          const numeric = pr.fields.every((f) => (f.kind === "num" && !f.alt && [...f.value.keys()].every((k) => k === 1)) || (f.kind === "digits" && /^\d+$/.test(f.value)));
 
           const field = (fi: number) => {
             const val = inputs[pi][fi];
@@ -270,7 +296,7 @@ export function Drill({ step, onRestart }: { step: KousuuStep; onRestart: () => 
                     refs.current[nextKey]?.focus();
                   }
                 }}
-                inputMode="text"
+                inputMode={numeric ? "decimal" : "text"}
                 autoCapitalize="off"
                 autoCorrect="off"
                 autoComplete="off"
@@ -312,7 +338,7 @@ export function Drill({ step, onRestart }: { step: KousuuStep; onRestart: () => 
                 {f.kind === "ineq" && !locked && (
                   <div className="mt-1.5 flex flex-wrap gap-1.5">
                     {[ALL_REAL, NO_SOL].map((w) => (
-                      <button key={w} type="button" onClick={() => setField(pi, fi, w)} className={`min-h-[34px] rounded-full border-[1.5px] px-3 text-[13px] font-bold ${val === w ? "border-[#1533B8] bg-[#EEF1FF] text-[#1533B8]" : "border-[#9A9CB0] bg-white text-[#15172B]"}`}>
+                      <button key={w} type="button" onClick={() => setField(pi, fi, w)} className={`min-h-[44px] rounded-full border-[1.5px] px-3 text-[13px] font-bold ${val === w ? "border-[#1533B8] bg-[#EEF1FF] text-[#1533B8]" : "border-[#9A9CB0] bg-white text-[#15172B]"}`}>
                         {w}
                       </button>
                     ))}
@@ -411,7 +437,7 @@ export function Drill({ step, onRestart }: { step: KousuuStep; onRestart: () => 
       </ol>
 
       <button type="button" onClick={grade} className="mt-5 flex min-h-[56px] w-full items-center justify-center rounded-[14px] border-[1.5px] border-[#15172B] bg-[#1533B8] text-[17px] font-black text-white shadow-[0_4px_0_#0B1F7A]">
-        {phase === "fixing" ? "直したところを採点する" : "採点する"}
+        {emptyWarn ? "このまま採点する" : phase === "fixing" ? "直したところを採点する" : "採点する"}
       </button>
     </div>
   );

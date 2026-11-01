@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 
 export default function MathTop() {
   return (
-    <LearnShell crumbs={[{ href: "/", label: "アオハルOS" }, { href: "/learn", label: "まなぶ" }, { label: "数学" }]}>
+    <LearnShell crumbs={[{ href: "/learn", label: "まなぶ" }, { href: "/learn/school", label: "学校の教科" }, { label: "中学数学" }]}>
       <p className="m-0 text-xs font-black tracking-wider text-[#1533B8]">AOHARU MATH　数学</p>
       <h1 className="m-0 mt-1 text-[26px] font-black sm:text-[32px]">中学数学 計算50段</h1>
       <p className="mb-0 mt-2 max-w-[720px] text-[15px] leading-relaxed text-[#3A3D55]">

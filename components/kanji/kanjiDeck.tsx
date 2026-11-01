@@ -73,6 +73,7 @@ export const kanjiDeck: DeckDef = {
   home: "/learn/kanji",
   play: "/learn/kanji/play",
   unit: "字",
+  kids: true,
   ids: (g) => (g ? kanjiOfGrade(Number(g)) : ALL_KANJI).map((e) => e.k),
   card: (id) => <KanjiCard e={findKanji(id)!} />,
   quiz: (id, level) => {

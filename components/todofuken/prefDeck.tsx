@@ -47,6 +47,7 @@ export const prefDeck: DeckDef = {
   home: "/learn/todofuken",
   play: "/learn/todofuken/play",
   unit: "県",
+  kids: true,
   ids: (g) => PREFS.filter((p) => !g || p.region === g).map((p) => p.name),
   card: (id) => <PrefCard p={BY.get(id)!} />,
   quiz: (id, level) => {

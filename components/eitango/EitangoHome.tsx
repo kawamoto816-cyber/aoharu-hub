@@ -42,7 +42,7 @@ export function EitangoHome() {
               type="button"
               aria-pressed={p.perDay === n}
               onClick={() => setPerDay(n)}
-              className={`min-h-[36px] rounded-full border-[1.5px] border-[#15172B] px-3 text-[13px] font-black ${p.perDay === n ? "bg-[#15172B] text-white" : "bg-white text-[#15172B]"}`}
+              className={`min-h-[44px] min-w-[52px] rounded-full border-[1.5px] border-[#15172B] px-3 text-[13px] font-black ${p.perDay === n ? "bg-[#15172B] text-white" : "bg-white text-[#15172B]"}`}
             >
               {n}語
             </button>
@@ -66,7 +66,7 @@ export function EitangoHome() {
         <h2 id="stages-h" className="m-0 text-[20px] font-black">
           20ステージ
         </h2>
-        <p className="m-0 mt-1 text-[13px] text-[#3A3D55]">1ステージ100語。基礎（1〜6）・標準（7〜14）・発展（15〜20）。点線は準備中です。</p>
+        <p className="m-0 mt-1 text-[13px] text-[#3A3D55]">1ステージ100語。基礎（1〜6）・標準（7〜14）・発展（15〜20）。{STAGES.some((s) => !s.open) ? "点線は準備中です。" : ""}</p>
         <ul className="m-0 mt-3 grid list-none grid-cols-2 gap-2.5 p-0 sm:grid-cols-4 lg:grid-cols-5">
           {STAGES.map((s) => {
             const seen = s.open ? Array.from({ length: 100 }, (_, i) => p.w[s.from + i]).filter(Boolean) : [];
@@ -80,10 +80,10 @@ export function EitangoHome() {
                     <span className="block text-[11.5px] text-[#3A3D55]">
                       No.{s.from}〜{s.to}
                     </span>
-                    <span className="mt-2 block h-2 overflow-hidden rounded-full bg-[#E6E4DA]">
+                    <span aria-hidden="true" className="mt-2 block h-2 overflow-hidden rounded-full bg-[#E6E4DA]">
                       <span className="block h-full bg-[#1533B8]" style={{ width: `${got}%` }} />
                     </span>
-                    <span className="mt-1 block text-[11.5px] font-bold text-[#3A3D55]">
+                    <span className="mt-1 block text-[12px] font-bold text-[#3A3D55]">
                       覚えた {got} / 100・見た {seen.length}
                     </span>
                   </Link>

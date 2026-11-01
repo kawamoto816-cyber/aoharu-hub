@@ -96,7 +96,8 @@ export function SpeakButton({ text, audio, label = "発音を聞く", size = 36 
       type="button"
       onClick={() => speak(text, audio)}
       aria-label={`${label}：${text}`}
-      className="inline-flex flex-none items-center justify-center rounded-full border-[1.5px] border-[#15172B] bg-white text-[#15172B]"
+      // 見た目は小さくても、押せる範囲は 44px 四方にする (before の透明な枠)
+      className="relative inline-flex flex-none items-center justify-center rounded-full border-[1.5px] border-[#15172B] bg-white text-[#15172B] before:absolute before:left-1/2 before:top-1/2 before:h-[44px] before:w-[44px] before:-translate-x-1/2 before:-translate-y-1/2 before:content-['']"
       style={{ width: size, height: size }}
     >
       <svg aria-hidden="true" width={size * 0.5} height={size * 0.5} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">

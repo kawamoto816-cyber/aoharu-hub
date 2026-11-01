@@ -9,6 +9,7 @@ export const PrefTodayLoader = dynamic(
         return (
           <m.DeckToday
             deckKey="todofuken"
+            kids
             unit="県"
             play="/learn/todofuken/play"
             allIds={d.PREFS.map((p) => p.name)}

@@ -58,6 +58,8 @@ export function Drill({ step, onRestart }: { step: SansuStep; onRestart: () => v
   const [now, setNow] = useState(0);
   const [first, setFirst] = useState<{ seconds: number; perfect: boolean } | null>(null);
   const [outcome, setOutcome] = useState<{ pass: boolean; perfect: boolean; seconds: number; justCleared: boolean; passes: number; misses: number } | null>(null);
+  /** 空欄が残ったまま採点を押したときの、のこりの問題数 (もう一度押すと採点する) */
+  const [emptyWarn, setEmptyWarn] = useState<number | null>(null);
   const focused = useRef<{ p: number; f: number }>({ p: 0, f: 0 });
   const refs = useRef<Record<string, HTMLInputElement | null>>({});
   const progress = useSansuProgress();
@@ -92,6 +94,7 @@ export function Drill({ step, onRestart }: { step: SansuStep; onRestart: () => v
   }
 
   function setField(p: number, f: number, v: string) {
+    setEmptyWarn(null);
     setInputs((xs) => xs.map((row, i) => (i === p ? row.map((x, j) => (j === f ? v : x)) : row)));
   }
 
@@ -110,21 +113,39 @@ export function Drill({ step, onRestart }: { step: SansuStep; onRestart: () => v
   }
 
   function grade() {
+    // 何も入れていない問題は、まちがいに数えない (tries を増やさず、最初の採点の記録にもしない)
+    const blank = problems.map((_, i) => !verdicts[i]?.every((v) => v.v === "ok") && inputs[i].every((x) => !x.trim()));
+    const blanks = blank.filter(Boolean).length;
+    if (blanks > 0 && emptyWarn === null) {
+      setEmptyWarn(blanks);
+      const bi = blank.indexOf(true);
+      setTimeout(() => {
+        const el = refs.current[`${bi}-0`];
+        el?.scrollIntoView({ behavior: "smooth", block: "center" });
+        el?.focus({ preventScroll: true });
+      }, 50);
+      return;
+    }
+    setEmptyWarn(null);
     const vs = problems.map((pr, i) => {
       const prev = verdicts[i];
       if (prev && prev.every((v) => v.v === "ok")) return prev;
       return judge(pr.fields, inputs[i]);
     });
     const allOk = vs.every((v) => v.every((x) => x.v === "ok"));
-    setVerdicts(vs);
-    setTries((ts) => ts.map((t, i) => (vs[i].every((x) => x.v === "ok") ? t : t + 1)));
+    setVerdicts(vs.map((v, i) => (blank[i] ? null : v))); // 空欄の問題は ✕ をつけない
+    setTries((ts) => ts.map((t, i) => (blank[i] || vs[i].every((x) => x.v === "ok") ? t : t + 1)));
     const seconds = (clock() - startedAt) / 1000;
-    const f = first ?? { seconds, perfect: allOk };
-    if (!first) setFirst(f);
-    if (!allOk) {
+    // 最初の採点 = 空欄なしで採点したとき。それまでに本当にまちがえていたら満点あつかいにしない
+    let f = first;
+    if (!f && blanks === 0) {
+      f = { seconds, perfect: allOk && tries.every((t) => t === 0) };
+      setFirst(f);
+    }
+    if (!allOk || !f) {
       setPhase("fixing");
-      const firstWrong = vs.findIndex((v) => !v.every((x) => x.v === "ok"));
-      setTimeout(() => refs.current[`${firstWrong}-0`]?.scrollIntoView({ behavior: "smooth", block: "center" }), 50);
+      const firstWrong = vs.findIndex((v, i) => !blank[i] && !v.every((x) => x.v === "ok"));
+      setTimeout(() => refs.current[`${firstWrong < 0 ? blank.indexOf(true) : firstWrong}-0`]?.scrollIntoView({ behavior: "smooth", block: "center" }), 50);
       return;
     }
     const pass = f.perfect && f.seconds <= step.target * 60;
@@ -219,11 +240,14 @@ export function Drill({ step, onRestart }: { step: SansuStep; onRestart: () => v
     <div>
       <div className="sticky top-0 z-10 -mx-4 mb-3 flex flex-col gap-2 border-b border-[#E4E2D8] bg-[#F7F6F1]/95 px-4 py-2.5 backdrop-blur sm:-mx-6 sm:px-6">
         <div className="flex items-center justify-between text-[14px] font-bold">
-          <span>{phase === "fixing" ? w.fix : `${low ? "といた" : "解いた"} ${answered} / ${problems.length}`}</span>
+          <span>{phase === "fixing" ? (verdicts.some((v) => !v) ? (low ? "のこりを といて、まちがいを なおそう" : "のこりの問題を解いて、まちがいを直そう") : w.fix) : `${low ? "といた" : "解いた"} ${answered} / ${problems.length}`}</span>
           <span className={overTime ? "text-[#B42318]" : "text-[#3A3D55]"}>
             {fmt(elapsed)}／目標 {step.target}分
           </span>
         </div>
+        <p role="status" aria-live="polite" className={emptyWarn ? "m-0 rounded-lg bg-[#FFF4DE] px-2.5 py-1.5 text-[14px] font-bold text-[#B54708]" : "sr-only"}>
+          {emptyWarn ? `${low ? `まだ ${emptyWarn}もん のこっているよ。このまま まるつけ するときは、もう いちど ボタンを おそう。` : `まだ ${emptyWarn}問 のこっています。このまま採点するときは、もう一度ボタンを押そう。`}` : ""}
+        </p>
         {keys.length > 0 && (
           <div className="flex flex-wrap items-center gap-1.5" aria-label="記号の入力">
             {keys.map((k) => (
@@ -351,7 +375,7 @@ export function Drill({ step, onRestart }: { step: SansuStep; onRestart: () => v
       </ol>
 
       <button type="button" onClick={grade} className="mt-5 flex min-h-[60px] w-full items-center justify-center rounded-[14px] border-[1.5px] border-[#15172B] bg-[#1533B8] text-[19px] font-black text-white shadow-[0_4px_0_#0B1F7A]">
-        {phase === "fixing" ? w.regrade : w.grade}
+        {emptyWarn ? (low ? "このまま まるつけ する" : "このまま採点する") : phase === "fixing" ? w.regrade : w.grade}
       </button>
     </div>
   );

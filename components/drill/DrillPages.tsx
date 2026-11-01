@@ -76,10 +76,14 @@ export function DrillUnitPage({ setKey, unit }: { setKey: DrillSetKey; unit: str
   if (!u) notFound();
   const prev = s.units[idx - 1];
   const next = s.units[idx + 1];
+  const group = drillUnitGroup(unit);
+  // 小1・小2の単元は、ドリルの言葉をひらがな多めにする
+  const kids = group === "小1" || group === "小2";
+  const navBtn = "flex min-h-[48px] items-center justify-center rounded-xl border-[1.5px] border-[#15172B] bg-white px-3 text-center text-sm font-bold text-[#15172B] no-underline";
   return (
-    <LearnShell narrow crumbs={[{ href: "/learn", label: "まなぶ" }, { href: `/learn/${setKey}`, label: s.name }, { label: drillUnitName(unit) }]}>
+    <LearnShell narrow crumbs={[{ href: "/learn", label: "まなぶ" }, { href: "/learn/school", label: "学校の教科" }, { href: `/learn/${setKey}`, label: s.name }, { label: drillUnitName(unit) }]}>
       <p className="m-0 text-xs font-bold text-[#3A3D55]">
-        {s.name}・{drillUnitGroup(unit)}
+        {s.name}・{group}
       </p>
       <h1 className="m-0 mt-1 text-[24px] font-black">{drillUnitName(unit)}</h1>
       {hasLecture(unit) && (
@@ -94,11 +98,11 @@ export function DrillUnitPage({ setKey, unit }: { setKey: DrillSetKey; unit: str
           <span aria-hidden="true">→</span>
         </Link>
       )}
-      <section aria-labelledby="pt-h" className="mt-4 rounded-[18px] border-[1.5px] border-[#15172B] bg-[#FFFBE6] p-5">
+      <section id="points" aria-labelledby="pt-h" className="mt-4 scroll-mt-3 rounded-[18px] border-[1.5px] border-[#15172B] bg-[#FFFBE6] p-5">
         <h2 id="pt-h" className="m-0 text-[13px] font-black text-[#1533B8]">
           ①覚える　ポイント
         </h2>
-        <ol className="m-0 mt-2 grid gap-2 pl-5 text-[15px] leading-relaxed">
+        <ol className="m-0 mt-2 grid list-decimal gap-2 pl-5 text-[15px] leading-relaxed marker:font-black marker:text-[#1533B8]">
           {u.points.map((p) => (
             <li key={p}>{p}</li>
           ))}
@@ -108,11 +112,25 @@ export function DrillUnitPage({ setKey, unit }: { setKey: DrillSetKey; unit: str
         <h2 id="dr-h" className="m-0 mb-2 text-[13px] font-black text-[#1533B8]">
           ②鍛える　4択ドリル
         </h2>
-        <DrillPlay unit={u.unit} qs={u.qs} />
+        <DrillPlay unit={u.unit} qs={u.qs} kids={kids} next={next ? { href: `/learn/${setKey}/${next.unit}`, name: drillUnitName(next.unit) } : undefined} />
       </section>
-      <nav className="mt-8 flex justify-between gap-3 text-[14px] font-black">
-        {prev ? <Link href={`/learn/${setKey}/${prev.unit}`}>← {drillUnitName(prev.unit)}</Link> : <span />}
-        {next ? <Link href={`/learn/${setKey}/${next.unit}`}>{drillUnitName(next.unit)} →</Link> : <Link href={`/learn/${setKey}`}>{s.name}のトップへ</Link>}
+      <nav aria-label="前後の単元" className="mt-8 grid grid-cols-2 gap-2.5">
+        {prev ? (
+          <Link href={`/learn/${setKey}/${prev.unit}`} className={navBtn}>
+            ← {drillUnitName(prev.unit)}
+          </Link>
+        ) : (
+          <span />
+        )}
+        {next ? (
+          <Link href={`/learn/${setKey}/${next.unit}`} className={navBtn}>
+            {drillUnitName(next.unit)} →
+          </Link>
+        ) : (
+          <Link href={`/learn/${setKey}`} className={navBtn}>
+            {s.name}のトップへ
+          </Link>
+        )}
       </nav>
     </LearnShell>
   );

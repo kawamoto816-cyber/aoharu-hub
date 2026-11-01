@@ -59,7 +59,7 @@ export default function SchoolMap() {
       <p className="m-0 text-xs font-black tracking-wider text-[#1533B8]">SCHOOL　学校の教科</p>
       <h1 className="m-0 mt-1 text-[26px] font-black sm:text-[32px]">学校の教科の地図</h1>
       <p className="mb-0 mt-2 max-w-[720px] text-[15px] leading-relaxed text-[#3A3D55]">
-        小学校・中学校・高校の単元を、教科書の単元ごとに並べました。黄色の箱はいま学べる単元、点線の箱はこれから開く単元です。
+        小学校・中学校・高校の単元を、教科書の単元ごとに並べました。{open < total ? "黄色の箱はいま学べる単元、点線の箱はこれから開く単元です。" : "箱を押すと、その単元を学べます。"}
       </p>
       <p className="m-0 mt-3 flex flex-wrap items-center gap-3 text-[13px] font-bold">
         <span>
@@ -76,7 +76,7 @@ export default function SchoolMap() {
       <nav aria-label="教科ごとの入口" className="mt-4 flex flex-wrap items-center gap-2">
         <span className="text-[13px] font-bold text-[#3A3D55]">教科ごとの入口：</span>
         {KYOKA.map((k) => (
-          <Link key={k.key} href={`/learn/kyoka/${k.key}`} className="inline-flex min-h-[36px] items-center rounded-full border-[1.5px] border-[#15172B] bg-[#FFFBE6] px-3 text-[13px] font-black text-[#15172B] no-underline">
+          <Link key={k.key} href={`/learn/kyoka/${k.key}`} className="inline-flex min-h-[44px] items-center rounded-full border-[1.5px] border-[#15172B] bg-[#FFFBE6] px-3 text-[13px] font-black text-[#15172B] no-underline">
             {k.name}
           </Link>
         ))}
