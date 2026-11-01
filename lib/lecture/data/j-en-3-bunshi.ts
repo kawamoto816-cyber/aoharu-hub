@@ -71,7 +71,7 @@ export const J_EN_3_BUNSHI: Lecture = {
   check: [
     { q: "「英語で書かれた手紙」：a letter ( ) in English。( ) に write の正しい形を。", a: "written", why: "手紙は書かれる側なので過去分詞。" },
     { q: "the man standing by the door の意味は？", a: "ドアのそばに立っている男の人", why: "standing by the door が the man をうしろから説明している。" },
-    { q: "a (crying) baby と a baby (crying) in the room、正しいのは両方？", a: "両方とも正しい", why: "1語なら名詞の前、in the room がつくと名詞のうしろ。" },
+    { q: "a (crying) baby と a baby (crying) in the room、正しいのはどちら？", a: "両方とも正しい", why: "1語なら名詞の前、in the room がつくと名詞のうしろ。" },
   ],
   next: [
     { label: "4択ドリル「分詞の後置修飾」に挑戦", href: "/learn/eibunpo-chu/j-en-3-bunshi" },

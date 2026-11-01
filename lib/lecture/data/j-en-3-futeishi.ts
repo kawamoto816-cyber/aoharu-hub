@@ -75,7 +75,7 @@ export const J_EN_3_FUTEISHI: Lecture = {
   check: [
     { q: "To play the piano is easy for her. を It で始めて書きかえると？", a: "It is easy for her to play the piano.", why: "仮の主語 It を先に置き、to 以下をうしろへ回す。" },
     { q: "「先生は私たちに静かにするように言った」の ( )：The teacher told ( ) ( ) be quiet.", a: "us / to", why: "tell＋人（目的格）＋to＋原形。" },
-    { q: "「どこで電車に乗ればいいか」を英語の3語で？", a: "where to take（the train）", why: "疑問詞 where＋to＋動詞の原形。" },
+    { q: "「どこで電車に乗ればいいか」を英語にしましょう。", a: "where to take the train", why: "疑問詞 where＋to＋動詞の原形。" },
   ],
   next: [
     { label: "4択ドリル「不定詞の発展」に挑戦", href: "/learn/eibunpo-chu/j-en-3-futeishi" },

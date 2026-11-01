@@ -16,6 +16,8 @@ export function NumberLineFig({ fig }: { fig: NumberLineFigure }) {
   const every = fig.labelEvery ?? tick;
   const x = (v: number) => PAD + ((v - min) / (max - min)) * (W - PAD * 2);
   const moves = fig.moves ?? [];
+  // 負の数がない数直線（小学校の数・時こくなど）は符号をつけない
+  const signed = min < 0;
   const rows = moves.length ? Math.max(...moves.map((m) => m.row ?? 0)) + 1 : 0;
   const top = rows ? rows * ROW * 0.75 + 30 : 8;
   const y = top + 6; // 数直線の高さ
@@ -81,8 +83,8 @@ export function NumberLineFig({ fig }: { fig: NumberLineFigure }) {
           <g key={v}>
             <line x1={x(v)} y1={y - (v === 0 ? 7 : 5)} x2={x(v)} y2={y + (v === 0 ? 7 : 5)} stroke="#15172B" strokeWidth={v === 0 ? 2.4 : 1.4} />
             {isLabeled(v) && (
-              <text x={x(v)} y={y + 20} textAnchor="middle" fontSize="12" fontWeight={v === 0 ? 900 : 700} fill={v < 0 ? "#1533B8" : v > 0 ? "#B42318" : "#15172B"}>
-                {fmt(v)}
+              <text x={x(v)} y={y + 20} textAnchor="middle" fontSize="12" fontWeight={v === 0 ? 900 : 700} fill={!signed ? "#15172B" : v < 0 ? "#1533B8" : v > 0 ? "#B42318" : "#15172B"}>
+                {signed ? fmt(v) : String(v)}
               </text>
             )}
           </g>
