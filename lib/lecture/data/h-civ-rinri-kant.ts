@@ -87,7 +87,7 @@ export const H_CIV_RINRI_KANT: Lecture = {
   ],
   next: [
     { label: "用語カード「カントとヘーゲル」で覚える", href: "/learn/ko-komin#h-civ-rinri-kant" },
-    { label: "ひとつ前「経験論と合理論」", href: "/learn/ko-komin#h-civ-rinri-keiken" },
+    { label: "ひとつ前「経験論と合理論」", href: "/learn/lecture/h-civ-rinri-keiken" },
     { label: "つぎの単元「功利主義」", href: "/learn/lecture/h-civ-rinri-kori" },
   ],
 };

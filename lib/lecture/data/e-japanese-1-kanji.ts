@@ -58,7 +58,7 @@ export const E_JAPANESE_1_KANJI: Lecture = {
         title: "おなじ 字の ちがう よみかた",
         columns: [{ title: "ひとつめ", tone: "blue" }, { title: "ふたつめ", tone: "yellow" }],
         rows: [
-          { label: "火", cells: ["ひ（花火）", "か（火よう日）"] },
+          { label: "火", cells: ["ひ（火が もえる）", "か（火よう日）"] },
           { label: "山", cells: ["やま（山のぼり）", "さん（ふじ山）"] },
           { label: "人", cells: ["ひと（あの 人）", "にん（三人）"] },
           { label: "大", cells: ["おお（大きい）", "だい（大すき）"] },

@@ -129,6 +129,6 @@ export const H_CIV_SEIKEI_RODO: Lecture = {
   next: [
     { label: "用語カード「労働問題」で覚える", href: "/learn/ko-komin#h-civ-seikei-rodo" },
     { label: "公共「労働と社会保障」のレクチャー", href: "/learn/lecture/h-civ-kokyo-rodo" },
-    { label: "つぎの単元「社会保障」", href: "/learn/ko-komin#h-civ-seikei-shakaihosho" },
+    { label: "つぎの単元「社会保障」", href: "/learn/lecture/h-civ-seikei-shakaihosho" },
   ],
 };

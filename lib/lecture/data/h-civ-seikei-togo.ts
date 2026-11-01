@@ -51,11 +51,11 @@ export const H_CIV_SEIKEI_TOGO: Lecture = {
         rows: [
           { label: "USMCA", cells: ["米・メキシコ・カナダ", "NAFTAを引きつぐ（2020）"] },
           { label: "MERCOSUR", cells: ["ブラジルなど南米", "関税同盟（1995）"] },
-          { label: "ASEAN", cells: ["東南アジア10か国", "AFTAで関税を引き下げ"] },
+          { label: "ASEAN", cells: ["東南アジア11か国", "AFTAで関税を引き下げ"] },
           { label: "TPP11", cells: ["日本など環太平洋", "2018年発効、英が加入"] },
           { label: "RCEP", cells: ["日中韓・ASEANなど", "2022年発効"] },
         ],
-        note: "日本はEUとも日EU・EPA（2019年発効）を結んでいる。",
+        note: "ASEANには2025年に東ティモールが加わり11か国になった。日本はEUとも日EU・EPA（2019年発効）を結んでいる。",
       },
     },
     {
@@ -104,7 +104,7 @@ export const H_CIV_SEIKEI_TOGO: Lecture = {
   ],
   next: [
     { label: "用語カード「地域経済統合と南北問題」で覚える", href: "/learn/ko-komin#h-civ-seikei-togo" },
-    { label: "ひとつ前「国際経済と貿易」", href: "/learn/ko-komin#h-civ-seikei-boeki" },
+    { label: "ひとつ前「国際経済と貿易」", href: "/learn/lecture/h-civ-seikei-boeki" },
     { label: "公共「持続可能な社会づくり」", href: "/learn/ko-komin#h-civ-kokyo-jizoku" },
   ],
 };

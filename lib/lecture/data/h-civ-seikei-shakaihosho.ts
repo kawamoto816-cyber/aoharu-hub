@@ -120,7 +120,7 @@ export const H_CIV_SEIKEI_SHAKAIHOSHO: Lecture = {
   ],
   next: [
     { label: "用語カード「社会保障」で覚える", href: "/learn/ko-komin#h-civ-seikei-shakaihosho" },
-    { label: "ひとつ前「労働問題」", href: "/learn/ko-komin#h-civ-seikei-rodo" },
+    { label: "ひとつ前「労働問題」", href: "/learn/lecture/h-civ-seikei-rodo" },
     { label: "関連「財政と租税」", href: "/learn/ko-komin#h-civ-seikei-zaisei" },
   ],
 };

@@ -44,7 +44,7 @@ export const H_CIV_RINRI_SEIMEI: Lecture = {
         rows: [
           { label: "重んじる視点", cells: ["QOL・自己決定権", "SOL（生命の尊厳）"] },
           { label: "主な根拠", cells: ["耐えがたい苦痛から救う", "命は本人にも処分できない"] },
-          { label: "心配される点", cells: ["苦しみを強いることになる", "周囲の圧力で選ばされる"] },
+          { label: "相手の立場への批判", cells: ["認めないと耐えがたい苦痛を強いる", "認めると周囲の圧力で選ばされるおそれ"] },
         ],
         note: "どちらが正しいかは社会の中で議論が続いている。ここでは代表的な論点を並べている。",
       },
@@ -83,7 +83,7 @@ export const H_CIV_RINRI_SEIMEI: Lecture = {
   next: [
     { label: "用語カード「生命倫理」で覚える", href: "/learn/ko-komin#h-civ-rinri-seimei" },
     { label: "ひとつ前「現代の思想」", href: "/learn/lecture/h-civ-rinri-gendai" },
-    { label: "つぎの単元「環境倫理」", href: "/learn/ko-komin#h-civ-rinri-kankyo" },
+    { label: "つぎの単元「環境倫理」", href: "/learn/lecture/h-civ-rinri-kankyo" },
     { label: "生物基礎「遺伝情報の発現」", href: "/learn/lecture/h-sci-biob-hatsugen" },
   ],
 };

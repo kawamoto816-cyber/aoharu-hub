@@ -87,6 +87,6 @@ export const H_CIV_SEIKEI_GENRI: Lecture = {
   next: [
     { label: "用語カード「民主政治の基本原理」で覚える", href: "/learn/ko-komin#h-civ-seikei-genri" },
     { label: "つぎの単元「日本国憲法の基本原理」", href: "/learn/lecture/h-civ-seikei-kenpo" },
-    { label: "関連「社会契約説」（倫理）", href: "/learn/ko-komin#h-civ-rinri-keiyaku" },
+    { label: "関連「社会契約説」（倫理）", href: "/learn/lecture/h-civ-rinri-keiyaku" },
   ],
 };

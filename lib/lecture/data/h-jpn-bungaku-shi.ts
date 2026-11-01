@@ -61,7 +61,7 @@ export const H_JPN_BUNGAKU_SHI: Lecture = {
         title: "行ごとに技法と働きを確かめる",
         prose: true,
         steps: [
-          { label: "第1連", expr: "白い息が{{ならぶ}}", note: "擬人法：息がならぶ＝人がならぶ" },
+          { label: "第1連", expr: "白い息が{{ならぶ}}", note: "換喩：白い息で人を表す（息がならぶ＝人がならぶ）" },
           { label: "第1連", expr: "だれも まだ {{名前をもたない}}", note: "隠喩：役割を持つ前の静けさ" },
           { label: "第2連", expr: "息は{{ほどけて}}", note: "静 → 動への転換" },
           { label: "第2連", expr: "ひとりずつ 今日へ{{散ってゆく}}", note: "それぞれの一日が始まる" },

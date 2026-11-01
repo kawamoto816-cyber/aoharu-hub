@@ -12,7 +12,7 @@ export const E_SOCIAL_6_KENPO: Lecture = {
         type: "timeline",
         title: "2つの憲法の年表",
         events: [
-          { year: 1889, label: "大日本帝国《ていこく》憲法が発布される" },
+          { year: 1889, label: "大日本｜帝国《ていこく》憲法が発布される" },
           { year: 1945, label: "第二次世界大戦が終わる" },
           { year: 1946, label: "日本国憲法が公布される（11月3日）", key: true },
           { year: 1947, label: "日本国憲法が施行《しこう》される（5月3日）", key: true },
@@ -43,7 +43,7 @@ export const E_SOCIAL_6_KENPO: Lecture = {
         type: "compare",
         title: "2つの憲法をくらべる",
         columns: [
-          { title: "大日本帝国《ていこく》憲法", tone: "plain" },
+          { title: "大日本｜帝国《ていこく》憲法", tone: "plain" },
           { title: "日本国憲法", tone: "blue" },
         ],
         rows: [

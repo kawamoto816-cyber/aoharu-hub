@@ -96,7 +96,7 @@ export const H_CIV_RINRI_RENAISSANCE: Lecture = {
   ],
   next: [
     { label: "用語カード「ルネサンスと宗教改革」で覚える", href: "/learn/ko-komin#h-civ-rinri-renaissance" },
-    { label: "ふりかえり「キリスト教」", href: "/learn/ko-komin#h-civ-rinri-christ" },
+    { label: "ふりかえり「キリスト教」", href: "/learn/lecture/h-civ-rinri-christ" },
     { label: "つぎの単元「経験論と合理論」", href: "/learn/lecture/h-civ-rinri-keiken" },
   ],
 };

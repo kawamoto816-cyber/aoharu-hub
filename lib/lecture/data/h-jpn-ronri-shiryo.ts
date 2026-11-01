@@ -79,6 +79,6 @@ export const H_JPN_RONRI_SHIRYO: Lecture = {
   next: [
     { label: "ドリル「資料・図表を読み解く」で鍛える", href: "/learn/kokugo-ko/h-jpn-ronri-shiryo" },
     { label: "関連「文章の論理構造をとらえる」", href: "/learn/kokugo-ko/h-jpn-ronri-kozo" },
-    { label: "つぎの単元「要約する」", href: "/learn/kokugo-ko/h-jpn-ronri-yoyaku" },
+    { label: "つぎの単元「要約する」", href: "/learn/lecture/h-jpn-ronri-yoyaku" },
   ],
 };

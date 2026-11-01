@@ -12,7 +12,7 @@ export const H_JPN_KOTEN_NIKKI: Lecture = {
         type: "timeline",
         title: "日記・随筆の年表（成立はおよそ）",
         eras: [
-          { label: "平安時代", from: 900, to: 1185 },
+          { label: "平安時代", from: 794, to: 1185 },
           { label: "鎌倉時代", from: 1185, to: 1333 },
         ],
         events: [

@@ -87,7 +87,7 @@ export const H_CIV_RINRI_KANKYO: Lecture = {
   ],
   next: [
     { label: "用語カード「環境倫理」で覚える", href: "/learn/ko-komin#h-civ-rinri-kankyo" },
-    { label: "ひとつ前「生命倫理」", href: "/learn/ko-komin#h-civ-rinri-seimei" },
+    { label: "ひとつ前「生命倫理」", href: "/learn/lecture/h-civ-rinri-seimei" },
     { label: "つぎの単元「情報社会と倫理」", href: "/learn/lecture/h-civ-rinri-joho" },
   ],
 };

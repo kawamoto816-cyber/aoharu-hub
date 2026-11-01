@@ -53,7 +53,7 @@ export const E_JAPANESE_2_HANTAI: Lecture = {
             { label: "ねだんが 高い", tone: "blue", children: [{ label: "ねだんが やすい", tone: "yellow" }] },
           ],
         },
-        note: "「あつい」も、お茶なら「つめたい」、夏なら「さむい」。",
+        note: "「あつい」も、お茶なら「つめたい」、天気なら「さむい」。",
       },
     },
     {

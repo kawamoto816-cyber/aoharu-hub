@@ -84,6 +84,6 @@ export const H_CIV_RINRI_BUKKYO: Lecture = {
   next: [
     { label: "用語カード「仏教」で覚える", href: "/learn/ko-komin#h-civ-rinri-bukkyo" },
     { label: "ひとつ前「イスラーム」", href: "/learn/lecture/h-civ-rinri-islam" },
-    { label: "つぎの単元「中国の思想」", href: "/learn/ko-komin#h-civ-rinri-china" },
+    { label: "つぎの単元「中国の思想」", href: "/learn/lecture/h-civ-rinri-china" },
   ],
 };

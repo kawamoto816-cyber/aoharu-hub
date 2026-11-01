@@ -76,6 +76,6 @@ export const E_JAPANESE_1_MONOGATARI: Lecture = {
   next: [
     { label: "「物語《ものがたり》を 読《よ》む」ドリル", href: "/learn/kokugo-sho/e-japanese-1-monogatari" },
     { label: "句読点《くとうてん》と かぎ（図解《ずかい》レクチャー）", href: "/learn/lecture/e-japanese-1-kutoten" },
-    { label: "「説明《せつめい》的《てき》な 文章《ぶんしょう》を 読《よ》む」ドリル", href: "/learn/kokugo-sho/e-japanese-1-setsumei" },
+    { label: "「説明的《せつめいてき》な 文章《ぶんしょう》を 読《よ》む」ドリル", href: "/learn/kokugo-sho/e-japanese-1-setsumei" },
   ],
 };

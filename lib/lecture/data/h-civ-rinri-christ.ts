@@ -15,13 +15,13 @@ export const H_CIV_RINRI_CHRIST: Lecture = {
       figure: {
         type: "compare",
         title: "律法主義とイエスの教え",
-        columns: [{ title: "当時の律法主義", tone: "plain" }, { title: "イエスの教え", tone: "yellow" }],
+        columns: [{ title: "イエスが批判した律法主義", tone: "plain" }, { title: "イエスの教え", tone: "yellow" }],
         rows: [
           { label: "大切にすること", cells: ["律法を形の上で守る", "律法の精神＝愛"] },
           { label: "救いの対象", cells: ["律法を守る人", "罪人をふくむすべての人"] },
           { label: "神の愛", cells: ["正しい者への報い", "無償・無差別のアガペー"] },
         ],
-        note: "イエスは律法を捨てたのではなく、その本当の意味を愛として示したとされる。",
+        note: "左の列は、イエスが批判した形式的な態度をさす（ユダヤ教全体の評価ではない）。イエスは律法を捨てたのではなく、その本当の意味を愛として示したとされる。",
       },
     },
     {

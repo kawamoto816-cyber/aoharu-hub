@@ -100,7 +100,7 @@ export const H_CIV_SEIKEI_BOEKI: Lecture = {
   ],
   next: [
     { label: "用語カード「国際経済と貿易」で覚える", href: "/learn/ko-komin#h-civ-seikei-boeki" },
-    { label: "次の単元「地域経済統合と南北問題」", href: "/learn/ko-komin#h-civ-seikei-togo" },
+    { label: "次の単元「地域経済統合と南北問題」", href: "/learn/lecture/h-civ-seikei-togo" },
     { label: "公共「国際経済」でおさらい", href: "/learn/ko-komin#h-civ-kokyo-kokusai-keizai" },
   ],
 };

@@ -88,6 +88,6 @@ export const H_CIV_SEIKEI_KOKKAI: Lecture = {
   next: [
     { label: "用語カード「国会と内閣」で覚える", href: "/learn/ko-komin#h-civ-seikei-kokkai" },
     { label: "ひとつ前「基本的人権の保障」", href: "/learn/lecture/h-civ-seikei-jinken" },
-    { label: "つぎの単元「裁判所と司法」", href: "/learn/ko-komin#h-civ-seikei-saiban" },
+    { label: "つぎの単元「裁判所と司法」", href: "/learn/lecture/h-civ-seikei-saiban" },
   ],
 };
