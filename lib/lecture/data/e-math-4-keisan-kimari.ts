@@ -3,7 +3,7 @@ import type { Lecture } from "../types";
 export const E_MATH_4_KEISAN_KIMARI: Lecture = {
   unit: "e-math-4-keisan-kimari",
   title: "計算のきまりは「どこから計算するか」と「入れかえ・まとめ方」",
-  hook: "120円のおにぎりと90円のお茶を1組にして、3人分買うと代金はいくらでしょう。1つの式で (120＋90)×3 と書けます。計算の順番のきまりを知ると、場面を1つの式に表したり、計算をかんたんにしたりできます。",
+  hook: "120円のおにぎりと90円のお茶を1組にして、3人分買うと代金はいくらでしょう。1つの式で (120＋90)×3 と書けます。計算の順番のきまりを知ると、場面を1つの式に表したり、計算を簡単《かんたん》にしたりできます。",
   sections: [
     {
       heading: "( ) の中を先に計算する",
@@ -105,6 +105,6 @@ export const E_MATH_4_KEISAN_KIMARI: Lecture = {
   next: [
     { label: "練習する：計算のきまり", href: "/learn/sansu/37" },
     { label: "ふりかえり：かけ算のきまり（3年）", href: "/learn/sansu-zukei/e-math-3-kake-kimari" },
-    { label: "次の単元：面積（図かい）", href: "/learn/lecture/e-math-4-menseki" },
+    { label: "次の単元：面積（図解《ずかい》）", href: "/learn/lecture/e-math-4-menseki" },
   ],
 };

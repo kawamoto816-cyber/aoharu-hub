@@ -35,7 +35,7 @@ export const E_MATH_2_M: Lecture = {
     },
     {
       heading: "1m20cm は 120cm",
-      body: "りょう手を広げた長さが「1m20cm」の人がいます。1mは100cmなので、{{1m20cm＝120cm}}です。mとcmをつかうと、長い長さを読みやすくできます。",
+      body: "両手《りょうて》を広げた長さが「1m20cm」の人がいます。1mは100cmなので、{{1m20cm＝120cm}}です。mとcmをつかうと、長い長さを読みやすくできます。",
       figure: {
         type: "area",
         kind: "bar",
@@ -43,7 +43,7 @@ export const E_MATH_2_M: Lecture = {
         max: 120,
         bars: [
           {
-            label: "りょう手",
+            label: "両手《りょうて》",
             parts: [
               { value: 100, label: "1m", tone: "blue" },
               { value: 20, label: "20cm", tone: "yellow" },

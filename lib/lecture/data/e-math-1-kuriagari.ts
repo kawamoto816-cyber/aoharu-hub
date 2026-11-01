@@ -2,6 +2,7 @@ import type { Lecture } from "../types";
 
 export const E_MATH_1_KURIAGARI: Lecture = {
   unit: "e-math-1-kuriagari",
+  nameRuby: "くり上がりのあるたし算《ざん》",
   title: "10の まとまりを つくって たす",
   hook: "おはじきが 9こ と 4こ あります。ゆびでは たりません。でも 10の まとまりを つくると、すぐに わかります。",
   sections: [
@@ -111,7 +112,7 @@ export const E_MATH_1_KURIAGARI: Lecture = {
     { q: "9＋9 は いくつ？", a: "18", why: "9を 1と 8に。9と 1で 10、10と 8で 18。" },
   ],
   next: [
-    { label: "けいさんの だんで「くりあがり」を れんしゅう", href: "/learn/sansu/4" },
+    { label: "計算《けいさん》の 段《だん》で「くりあがり」を れんしゅう", href: "/learn/sansu/4" },
     { label: "いくつと いくつ（ドリル）", href: "/learn/sansu-zukei/e-math-1-ikutsu" },
     { label: "くりさがりの ある ひきざん（レクチャー）", href: "/learn/lecture/e-math-1-kurisagari" },
   ],

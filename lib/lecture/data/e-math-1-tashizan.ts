@@ -2,6 +2,7 @@ import type { Lecture } from "../types";
 
 export const E_MATH_1_TASHIZAN: Lecture = {
   unit: "e-math-1-tashizan",
+  nameRuby: "たし算《ざん》",
   title: "たしざん：あわせる・ふえる",
   hook: "赤いあめが3こ、青いあめが2こ。あわせると、なんこかな。こんなときにつかうのが、たしざんです。",
   sections: [
@@ -74,7 +75,7 @@ export const E_MATH_1_TASHIZAN: Lecture = {
     { q: "赤い花が2本、白い花が6本。あわせてなん本ですか。", a: "8本", why: "あわせるので、2＋6＝8です。" },
   ],
   next: [
-    { label: "けいさんのだん「たしざん」", href: "/learn/sansu/1" },
+    { label: "計算《けいさん》の段《だん》「たしざん」", href: "/learn/sansu/1" },
     { label: "つぎは「ひきざん」", href: "/learn/sansu/2" },
     { label: "「くりあがりのあるたしざん」", href: "/learn/sansu/4" },
   ],

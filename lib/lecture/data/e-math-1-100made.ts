@@ -2,6 +2,7 @@ import type { Lecture } from "../types";
 
 export const E_MATH_1_100MADE: Lecture = {
   unit: "e-math-1-100made",
+  nameRuby: "100までの数《かず》",
   title: "10の まとまりで かぞえる",
   hook: "ビーズが 47こ あります。1こずつ かぞえると たいへんです。10こずつ まとめると、すぐに わかります。",
   sections: [
@@ -107,8 +108,8 @@ export const E_MATH_1_100MADE: Lecture = {
     { q: "64と 46、大きいのは どっち？", a: "64", why: "十のくらいの 6と 4を くらべます。" },
   ],
   next: [
-    { label: "けいさんの だんで「100までの かず」を れんしゅう", href: "/learn/sansu/7" },
-    { label: "20までの かず（けいさんの だん）", href: "/learn/sansu/3" },
+    { label: "計算《けいさん》の 段《だん》で「100までの かず」を れんしゅう", href: "/learn/sansu/7" },
+    { label: "20までの かず（計算《けいさん》の 段《だん》）", href: "/learn/sansu/3" },
     { label: "1000までの かず（2年・レクチャー）", href: "/learn/lecture/e-math-2-1000made" },
   ],
 };

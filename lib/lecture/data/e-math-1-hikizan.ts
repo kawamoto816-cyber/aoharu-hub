@@ -2,6 +2,7 @@ import type { Lecture } from "../types";
 
 export const E_MATH_1_HIKIZAN: Lecture = {
   unit: "e-math-1-hikizan",
+  nameRuby: "ひき算《ざん》",
   title: "ひきざん：のこり・ちがい",
   hook: "クッキーが5こ。2こたべると、のこりはなんこかな。へったり、くらべたりするときは、ひきざんです。",
   sections: [
@@ -75,7 +76,7 @@ export const E_MATH_1_HIKIZAN: Lecture = {
     { q: "赤いふうせんが9こ、青いふうせんが5こ。どちらがなんこおおいですか。", a: "赤が4こおおい", why: "ちがいなので、9−5＝4です。" },
   ],
   next: [
-    { label: "けいさんのだん「ひきざん」", href: "/learn/sansu/2" },
+    { label: "計算《けいさん》の段《だん》「ひきざん」", href: "/learn/sansu/2" },
     { label: "ふりかえり「いくつといくつ」", href: "/learn/sansu-zukei/e-math-1-ikutsu" },
     { label: "「くりさがりのあるひきざん」", href: "/learn/sansu/5" },
   ],

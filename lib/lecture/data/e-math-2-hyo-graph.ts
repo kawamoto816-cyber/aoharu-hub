@@ -4,15 +4,16 @@ const dots = (n: number, tone: "blue" | "yellow" | "red") => Array.from({ length
 
 export const E_MATH_2_HYO_GRAPH: Lecture = {
   unit: "e-math-2-hyo-graph",
-  title: "ひょうと グラフで「いくつ」を 見やすく する",
-  hook: "クラスで すきな あそびを しらべました。ひょうに すると、数が 数字で わかります。グラフに すると、多い・少ないが ひと目で 見えます。",
+  nameRuby: "表《ひょう》とグラフ",
+  title: "表《ひょう》と グラフで「いくつ」を 見やすく する",
+  hook: "クラスで すきな あそびを しらべました。表《ひょう》に すると、数が 数字で わかります。グラフに すると、多い・少ないが ひと目で 見えます。",
   sections: [
     {
-      heading: "しらべた 数を ひょうに まとめる",
-      body: "しらべた ことは、{{しゅるいごとに 数を 書いた ひょう}}に します。数が 数字で 正しく わかります。ぜんぶで 何人かも 計算できます。",
+      heading: "しらべた 数を 表《ひょう》に まとめる",
+      body: "しらべた ことは、{{しゅるいごとに 数を 書いた 表《ひょう》}}に します。数が 数字で 正しく わかります。ぜんぶで 何人かも 計算できます。",
       figure: {
         type: "compare",
-        title: "すきな あそびの ひょう",
+        title: "すきな あそびの 表《ひょう》",
         columns: [{ title: "あそび", tone: "blue" }, { title: "人数", tone: "yellow" }],
         rows: [
           { cells: ["おにごっこ", "7人"] },
@@ -42,12 +43,12 @@ export const E_MATH_2_HYO_GRAPH: Lecture = {
       },
     },
     {
-      heading: "ひょうと グラフの よい ところ",
-      body: "ひょうと グラフは、同じ ことを ちがう 形で 見せます。{{数を 知りたい ときは ひょう}}。{{くらべたい ときは グラフ}}が べんりです。",
+      heading: "表《ひょう》と グラフの よい ところ",
+      body: "表《ひょう》と グラフは、同じ ことを ちがう 形で 見せます。{{数を 知りたい ときは 表《ひょう》}}。{{くらべたい ときは グラフ}}が べんりです。",
       figure: {
         type: "compare",
-        title: "ひょうと グラフを くらべる",
-        columns: [{ title: "ひょう", tone: "blue" }, { title: "グラフ", tone: "yellow" }],
+        title: "表《ひょう》と グラフを くらべる",
+        columns: [{ title: "表《ひょう》", tone: "blue" }, { title: "グラフ", tone: "yellow" }],
         rows: [
           { label: "見える もの", cells: ["数が 数字で", "○の ならび"] },
           { label: "とくい", cells: ["ぜんぶの 数", "多い・少ない"] },
@@ -83,7 +84,7 @@ export const E_MATH_2_HYO_GRAPH: Lecture = {
       why: "ちがいは はみ出した ぶんです。ひき算で 出します。",
     },
     {
-      wrong: "ひょうに する ときに 同じ 人を 2かい 数える",
+      wrong: "表《ひょう》に する ときに 同じ 人を 2かい 数える",
       right: "数えた ものに しるしを つける",
       why: "しるしが あれば、数えわすれも 2かい 数えるのも ふせげます。",
     },
@@ -93,8 +94,8 @@ export const E_MATH_2_HYO_GRAPH: Lecture = {
     { q: "7人・5人・3人・4人。ぜんぶで 何人？", a: "19人", why: "7＋5＝12、12＋3＝15、15＋4＝19。" },
   ],
   next: [
-    { label: "ひょうと グラフ（ドリル）", href: "/learn/sansu-zukei/e-math-2-hyo-graph" },
+    { label: "表《ひょう》と グラフ（ドリル）", href: "/learn/sansu-zukei/e-math-2-hyo-graph" },
     { label: "1年の「かずしらべ」を ふりかえる", href: "/learn/lecture/e-math-1-seiri" },
-    { label: "3年の「ひょうと ぼうグラフ」（ドリル）", href: "/learn/sansu-zukei/e-math-3-bou-graph" },
+    { label: "3年の「表《ひょう》と 棒《ぼう》グラフ」（ドリル）", href: "/learn/sansu-zukei/e-math-3-bou-graph" },
   ],
 };

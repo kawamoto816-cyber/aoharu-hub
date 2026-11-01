@@ -2,8 +2,9 @@ import type { Lecture } from "../types";
 
 export const E_MATH_2_TASHI_HISSAN: Lecture = {
   unit: "e-math-2-tashi-hissan",
-  title: "たし算の ひっ算は「くらいを そろえて 一のくらいから」",
-  hook: "36円の えんぴつと 27円の けしゴムを 買います。あわせて いくらでしょう。ひっ算なら、大きな 数も 1けたずつ 計算できます。",
+  nameRuby: "たし算の筆算《ひっさん》",
+  title: "たし算の 筆算《ひっさん》は「くらいを そろえて 一のくらいから」",
+  hook: "36円の えんぴつと 27円の けしゴムを 買います。あわせて いくらでしょう。筆算《ひっさん》なら、大きな 数も 1けたずつ 計算できます。",
   sections: [
     {
       heading: "10の たばと ばらで 考える",
@@ -52,11 +53,11 @@ export const E_MATH_2_TASHI_HISSAN: Lecture = {
     },
     {
       heading: "くらいを そろえて 書く",
-      body: "ひっ算は {{一のくらいと 十のくらいを たてに そろえて}} 書きます。右の はしを そろえれば、くらいが そろいます。計算は {{一のくらいから}} はじめます。",
+      body: "筆算《ひっさん》は {{一のくらいと 十のくらいを たてに そろえて}} 書きます。右の はしを そろえれば、くらいが そろいます。計算は {{一のくらいから}} はじめます。",
       figure: {
         type: "flow",
         dir: "row",
-        title: "ひっ算の じゅんばん",
+        title: "筆算《ひっさん》の じゅんばん",
         steps: [
           { label: "そろえて 書く", sub: "右はしを そろえる", tone: "blue" },
           { label: "一のくらい", sub: "6＋7", tone: "yellow" },
@@ -106,8 +107,8 @@ export const E_MATH_2_TASHI_HISSAN: Lecture = {
     { q: "52＋34 は くり上がりが ある？", a: "ない（86）", why: "2＋4＝6 で 10を こえません。" },
   ],
   next: [
-    { label: "計算の だんで「2けたの たし算」", href: "/learn/sansu/8" },
+    { label: "計算の 段《だん》で「2けたの たし算」", href: "/learn/sansu/8" },
     { label: "こたえが 3けたに なる たし算", href: "/learn/sansu/10" },
-    { label: "ひき算の ひっ算（レクチャー）", href: "/learn/lecture/e-math-2-hiki-hissan" },
+    { label: "ひき算の 筆算《ひっさん》（レクチャー）", href: "/learn/lecture/e-math-2-hiki-hissan" },
   ],
 };

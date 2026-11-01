@@ -2,6 +2,7 @@ import type { Lecture } from "../types";
 
 export const E_MATH_1_KURISAGARI: Lecture = {
   unit: "e-math-1-kurisagari",
+  nameRuby: "くり下がりのあるひき算《ざん》",
   title: "10から ひいて、のこりと あわせる",
   hook: "あめが 13こ あります。8こ たべると、のこりは いくつ でしょう。3から 8は ひけません。10の まとまりから ひけば、できます。",
   sections: [
@@ -100,7 +101,7 @@ export const E_MATH_1_KURISAGARI: Lecture = {
     { q: "11−3 は いくつ？", a: "8", why: "10−3＝7、7と 1で 8。" },
   ],
   next: [
-    { label: "けいさんの だんで「くりさがり」を れんしゅう", href: "/learn/sansu/5" },
+    { label: "計算《けいさん》の 段《だん》で「くりさがり」を れんしゅう", href: "/learn/sansu/5" },
     { label: "くりあがりの ある たしざん（レクチャー）", href: "/learn/lecture/e-math-1-kuriagari" },
     { label: "いくつと いくつ（ドリル）", href: "/learn/sansu-zukei/e-math-1-ikutsu" },
   ],

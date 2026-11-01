@@ -2,6 +2,7 @@ import type { Lecture } from "../types";
 
 export const E_MATH_1_KURABE: Lecture = {
   unit: "e-math-1-kurabe",
+  nameRuby: "長《なが》さ・かさ・広《ひろ》さくらべ",
   title: "ながさ・かさ・ひろさは「いくつぶん」で くらべる",
   hook: "どちらの えんぴつが ながい？ どちらの コップに 水が おおく 入る？ くらべかたが わかると、はなれた ものでも くらべられます。",
   sections: [

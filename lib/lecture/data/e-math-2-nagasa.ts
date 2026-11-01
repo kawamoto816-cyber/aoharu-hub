@@ -9,7 +9,7 @@ export const E_MATH_2_NAGASA: Lecture = {
   sections: [
     {
       heading: "1cmの いくつ分",
-      body: "長さは {{1cm（センチメートル）の いくつ分}}かで あらわします。1cmが 6つ分なら 6cmです。ものさしは、はしを {{0の 目もり}}に あわせて はかります。",
+      body: "長さは {{1cm（センチメートル）の いくつ分}}かで あらわします。1cmが 6つ分なら 6cmです。ものさしは、はしを {{0の 目盛《めも》り}}に あわせて はかります。",
       figure: {
         type: "area",
         kind: "bar",
@@ -26,7 +26,7 @@ export const E_MATH_2_NAGASA: Lecture = {
     },
     {
       heading: "1cmより みじかい 長さは mm",
-      body: "1cmを 同じ 長さに 10こに 分けます。その 1つ分が {{1mm（ミリメートル）}}です。だから {{1cm＝10mm}}です。ものさしの 小さい 目もりが 1mmです。",
+      body: "1cmを 同じ 長さに 10こに 分けます。その 1つ分が {{1mm（ミリメートル）}}です。だから {{1cm＝10mm}}です。ものさしの 小さい 目盛《めも》りが 1mmです。",
       figure: {
         type: "area",
         kind: "bar",
@@ -81,7 +81,7 @@ export const E_MATH_2_NAGASA: Lecture = {
     },
     {
       wrong: "ものさしの はしから はかる",
-      right: "0の 目もりに はしを あわせる",
+      right: "0の 目盛《めも》りに はしを あわせる",
       why: "ものさしの はしと 0が ずれて いる ことが あります。",
     },
     {

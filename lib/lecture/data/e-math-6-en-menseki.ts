@@ -7,16 +7,16 @@ export const E_MATH_6_EN_MENSEKI: Lecture = {
   sections: [
     {
       heading: "円の面積は、半径×半径の何こ分？",
-      body: "半径10cmの円で考えます。円の外がわの正方形は「半径×半径」の{{4こ分}}、内がわの正方形は{{2こ分}}です。円の面積はその間にあるので、半径×半径の{{3こ分くらい}}と見当がつきます。くわしく調べると、ちょうど3.14こ分です。",
+      body: "半径10cmの円で考えます。円の外側の正方形は「半径×半径」の{{4こ分}}、内側の正方形は{{2こ分}}です。円の面積はその間にあるので、半径×半径の{{3こ分くらい}}と見当がつきます。くわしく調べると、ちょうど3.14こ分です。",
       figure: {
         type: "area",
         kind: "bar",
         title: "半径10cmの円と正方形（半径×半径＝100cm²）",
         max: 4,
         bars: [
-          { label: "内がわの正方形", parts: [{ value: 2, label: "2こ分", tone: "blue" }], total: "200cm²" },
+          { label: "内側の正方形", parts: [{ value: 2, label: "2こ分", tone: "blue" }], total: "200cm²" },
           { label: "円", parts: [{ value: 3.14, label: "3.14こ分", tone: "yellow" }], total: "314cm²" },
-          { label: "外がわの正方形", parts: [{ value: 4, label: "4こ分", tone: "blue" }], total: "400cm²" },
+          { label: "外側の正方形", parts: [{ value: 4, label: "4こ分", tone: "blue" }], total: "400cm²" },
         ],
         scale: [
           { at: 0, label: "0" },
@@ -43,7 +43,7 @@ export const E_MATH_6_EN_MENSEKI: Lecture = {
       body: "長方形の面積＝たて×横 にあてはめて式を整理すると、{{円の面積＝半径×半径×3.14}} になります。3.14 は{{円周率}}で、円周が直径の何倍かを表す数でした。",
       figure: {
         type: "formula",
-        title: "長方形の面積から公式をみちびく",
+        title: "長方形の面積から公式を導く",
         prose: true,
         steps: [
           { expr: "円の面積 ＝ たて × 横", note: "並べかえた長方形" },

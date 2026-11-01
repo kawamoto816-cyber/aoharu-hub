@@ -2,6 +2,7 @@ import type { Lecture } from "../types";
 
 export const E_MATH_1_3TSU: Lecture = {
   unit: "e-math-1-3tsu",
+  nameRuby: "3つの数《かず》の計算《けいさん》",
   title: "3つの かずは、まえから じゅんに けいさん",
   hook: "かごに りんごが 4こ あります。3こ と 2こ を じゅんに 入れました。ぜんぶで なんこ でしょう。1つの しきに すると、よく わかります。",
   sections: [
@@ -91,8 +92,8 @@ export const E_MATH_1_3TSU: Lecture = {
     { q: "6＋4−3 は いくつ？", a: "7", why: "6＋4＝10、10−3＝7。" },
   ],
   next: [
-    { label: "けいさんの だんで「3つの かず」を れんしゅう", href: "/learn/sansu/6" },
-    { label: "たしざん（けいさんの だん）", href: "/learn/sansu/1" },
-    { label: "ひきざん（けいさんの だん）", href: "/learn/sansu/2" },
+    { label: "計算《けいさん》の 段《だん》で「3つの かず」を れんしゅう", href: "/learn/sansu/6" },
+    { label: "たしざん（計算《けいさん》の 段《だん》）", href: "/learn/sansu/1" },
+    { label: "ひきざん（計算《けいさん》の 段《だん》）", href: "/learn/sansu/2" },
   ],
 };

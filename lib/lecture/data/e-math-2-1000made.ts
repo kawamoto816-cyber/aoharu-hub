@@ -98,7 +98,7 @@ export const E_MATH_2_1000MADE: Lecture = {
     { q: "1000は 100が 何こ？", a: "10こ", why: "100を 10こ あつめると 1000です。" },
   ],
   next: [
-    { label: "計算の だんで「何百の たし算・ひき算」", href: "/learn/sansu/18" },
+    { label: "計算の 段《だん》で「何百の たし算・ひき算」", href: "/learn/sansu/18" },
     { label: "10000までの 数（ドリル）", href: "/learn/sansu-zukei/e-math-2-10000made" },
     { label: "1年の「100までの 数」（レクチャー）", href: "/learn/lecture/e-math-1-100made" },
   ],

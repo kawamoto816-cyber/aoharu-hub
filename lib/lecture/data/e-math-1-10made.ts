@@ -2,6 +2,7 @@ import type { Lecture } from "../types";
 
 export const E_MATH_1_10MADE: Lecture = {
   unit: "e-math-1-10made",
+  nameRuby: "10までの数《かず》",
   title: "10までのかず：1つずつふえていく",
   hook: "おはじきは、いくつあるかな。かずをつかうと、おおさがすぐにつたわります。10までのかずは、けいさんのもとです。",
   sections: [

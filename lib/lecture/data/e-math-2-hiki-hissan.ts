@@ -4,8 +4,9 @@ const ten = { value: 10, label: "10" } as const;
 
 export const E_MATH_2_HIKI_HISSAN: Lecture = {
   unit: "e-math-2-hiki-hissan",
-  title: "ひき算の ひっ算は「ひけない ときは 10を かりる」",
-  hook: "シールが 52まい あります。27まい あげると、のこりは 何まいでしょう。ひっ算なら、一のくらいから じゅんに 計算できます。",
+  nameRuby: "ひき算の筆算《ひっさん》",
+  title: "ひき算の 筆算《ひっさん》は「ひけない ときは 10を かりる」",
+  hook: "シールが 52まい あります。27まい あげると、のこりは 何まいでしょう。筆算《ひっさん》なら、一のくらいから じゅんに 計算できます。",
   sections: [
     {
       heading: "ひけない ときは たばを ばらす",
@@ -23,8 +24,8 @@ export const E_MATH_2_HIKI_HISSAN: Lecture = {
       },
     },
     {
-      heading: "ひっ算の じゅんばん",
-      body: "ひっ算は {{くらいを たてに そろえて}} 書きます。計算は {{一のくらいから}} です。10を かした 十のくらいは、1 へって います。",
+      heading: "筆算《ひっさん》の じゅんばん",
+      body: "筆算《ひっさん》は {{くらいを たてに そろえて}} 書きます。計算は {{一のくらいから}} です。10を かした 十のくらいは、1 へって います。",
       figure: {
         type: "flow",
         dir: "row",
@@ -95,8 +96,8 @@ export const E_MATH_2_HIKI_HISSAN: Lecture = {
     { q: "41−15 の こたえを たし算で たしかめる しきは？", a: "26＋15＝41", why: "41−15＝26。こたえ＋ひく数 で もとに もどります。" },
   ],
   next: [
-    { label: "計算の だんで「2けたの ひき算」", href: "/learn/sansu/9" },
+    { label: "計算の 段《だん》で「2けたの ひき算」", href: "/learn/sansu/9" },
     { label: "百いくつから ひく ひき算", href: "/learn/sansu/11" },
-    { label: "たし算の ひっ算（レクチャー）", href: "/learn/lecture/e-math-2-tashi-hissan" },
+    { label: "たし算の 筆算《ひっさん》（レクチャー）", href: "/learn/lecture/e-math-2-tashi-hissan" },
   ],
 };

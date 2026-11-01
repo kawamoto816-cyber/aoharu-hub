@@ -42,11 +42,11 @@ export const E_MATH_4_KAWARIKATA: Lecture = {
     },
     {
       heading: "差がいつも同じになる",
-      body: "兄が8才、弟が5才のとき、年れいの差は3才です。1年たつと2人とも1才ずつ大きくなるので、{{差は何年たっても3才}}のままです。弟を○才、兄を△才とすると、△−○＝3 と表せます。",
+      body: "兄が8才、弟が5才のとき、年齢《ねんれい》の差は3才です。1年たつと2人とも1才ずつ大きくなるので、{{差は何年たっても3才}}のままです。弟を○才、兄を△才とすると、△−○＝3 と表せます。",
       figure: {
         type: "area",
         kind: "bar",
-        title: "兄と弟の年れい",
+        title: "兄と弟の年齢《ねんれい》",
         max: 10,
         bars: [
           { label: "弟（今）", parts: [{ value: 5, label: "5才", tone: "blue" }] },
@@ -75,7 +75,7 @@ export const E_MATH_4_KAWARIKATA: Lecture = {
   ],
   mistakes: [
     { wrong: "まわり20cmの長方形で「たて＋横＝20」とする", right: "たて＋横＝10", why: "長方形のまわりには、たてと横が2本ずつあります。たて＋横はまわりの半分です。" },
-    { wrong: "年れいの差は、年がたつほど大きくなる", right: "差はいつも同じ", why: "2人とも1年に1才ずつ大きくなるので、ふえ方が同じ。差は変わりません。" },
+    { wrong: "年齢《ねんれい》の差は、年がたつほど大きくなる", right: "差はいつも同じ", why: "2人とも1年に1才ずつ大きくなるので、ふえ方が同じ。差は変わりません。" },
     { wrong: "△＝○×4 で △が36のとき、○＝36×4", right: "○＝36÷4＝9", why: "○に4をかけたものが△。△から○にもどすには4でわります。" },
   ],
   check: [
@@ -86,6 +86,6 @@ export const E_MATH_4_KAWARIKATA: Lecture = {
   next: [
     { label: "「変わり方」のドリル", href: "/learn/sansu-zukei/e-math-4-kawarikata" },
     { label: "「折れ線グラフ」（ドリル）", href: "/learn/sansu-zukei/e-math-4-oresen" },
-    { label: "5年「ひれい」（ドリル）", href: "/learn/sansu-zukei/e-math-5-hirei" },
+    { label: "5年「比例《ひれい》」（ドリル）", href: "/learn/sansu-zukei/e-math-5-hirei" },
   ],
 };

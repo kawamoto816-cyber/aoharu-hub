@@ -3,7 +3,7 @@ import type { Lecture } from "../types";
 export const E_MATH_4_WARI_HISSAN2: Lecture = {
   unit: "e-math-4-wari-hissan2",
   title: "÷2けたの筆算は「商の見当をつけて、直す」",
-  hook: "84まいの色紙を21人で同じ数ずつ分けると、1人何まいになるでしょう。わる数が2けたになると、九九だけでは商が見つかりません。わる数を「何十」と見て商の見当をつければ、÷1けたと同じ手順でとけます。",
+  hook: "84枚《まい》の色紙を21人で同じ数ずつ分けると、1人｜何枚《なんまい》になるでしょう。わる数が2けたになると、九九だけでは商が見つかりません。わる数を「何十」と見て商の見当をつければ、÷1けたと同じ手順でとけます。",
   sections: [
     {
       heading: "手順は ÷1けたと同じ4つのくり返し",
@@ -118,6 +118,6 @@ export const E_MATH_4_WARI_HISSAN2: Lecture = {
   next: [
     { label: "練習する：わり算の筆算（÷2けた）", href: "/learn/sansu/34" },
     { label: "ふりかえり：わり算の筆算（÷1けた）", href: "/learn/sansu/32" },
-    { label: "次の単元：がい数（図かい）", href: "/learn/lecture/e-math-4-gaisu" },
+    { label: "次の単元：がい数（図解《ずかい》）", href: "/learn/lecture/e-math-4-gaisu" },
   ],
 };

@@ -3,7 +3,7 @@ import type { Lecture } from "../types";
 export const E_MATH_2_KASA: Lecture = {
   unit: "e-math-2-kasa",
   title: "水のかさは「1dLのいくつ分」でくらべる",
-  hook: "牛にゅうパックやペットボトルに「1L」と書いてあります。水とうが2つあるとき、お茶が多く入るのはどちらでしょう。かさのたんいをつかうと、だれでも同じ数でくらべられます。",
+  hook: "牛乳《ぎゅうにゅう》パックやペットボトルに「1L」と書いてあります。水筒《すいとう》が2つあるとき、お茶が多く入るのはどちらでしょう。かさのたんいをつかうと、だれでも同じ数でくらべられます。",
   sections: [
     {
       heading: "1dLますで、いくつ分かを数える",
@@ -93,6 +93,6 @@ export const E_MATH_2_KASA: Lecture = {
   next: [
     { label: "「水のかさ」のドリル", href: "/learn/sansu-zukei/e-math-2-kasa" },
     { label: "長さ（cm・mm）のドリル", href: "/learn/sansu-zukei/e-math-2-nagasa" },
-    { label: "図かいレクチャー「長い長さ（m）」", href: "/learn/lecture/e-math-2-m" },
+    { label: "図解《ずかい》レクチャー「長い長さ（m）」", href: "/learn/lecture/e-math-2-m" },
   ],
 };

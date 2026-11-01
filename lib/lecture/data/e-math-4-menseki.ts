@@ -90,7 +90,7 @@ export const E_MATH_4_MENSEKI: Lecture = {
   ],
   next: [
     { label: "練習する：面積", href: "/learn/sansu-zukei/e-math-4-menseki" },
-    { label: "ふりかえり：すい直・平行と四角形（図かい）", href: "/learn/lecture/e-math-4-suichoku" },
+    { label: "ふりかえり：垂直《すいちょく》・平行と四角形（図解《ずかい》）", href: "/learn/lecture/e-math-4-suichoku" },
     { label: "5年：四角形と三角形の面積", href: "/learn/sansu-zukei/e-math-5-menseki" },
   ],
 };

@@ -113,8 +113,8 @@ export const E_MATH_3_BUNSU: Lecture = {
     { q: "0.7を分数で表しましょう。", a: "7/10", why: "0.1は1/10。0.1が7こなので7/10。" },
   ],
   next: [
-    { label: "計算のだんで「分数のたし算・ひき算」を練習する", href: "/learn/sansu/31" },
-    { label: "3年「小数」の図かいレクチャー", href: "/learn/lecture/e-math-3-shosu" },
+    { label: "計算の段《だん》で「分数のたし算・ひき算」を練習する", href: "/learn/sansu/31" },
+    { label: "3年「小数」の図解《ずかい》レクチャー", href: "/learn/lecture/e-math-3-shosu" },
     { label: "2年「分数（2分の1・4分の1）」（ドリル）", href: "/learn/sansu-zukei/e-math-2-bunsu" },
   ],
 };

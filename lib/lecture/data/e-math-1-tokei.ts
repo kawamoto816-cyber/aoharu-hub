@@ -2,12 +2,13 @@ import type { Lecture } from "../types";
 
 export const E_MATH_1_TOKEI: Lecture = {
   unit: "e-math-1-tokei",
-  title: "とけいのよみかた：みじかいはりと、ながいはり",
-  hook: "学校は、なんじにはじまるかな。とけいがよめると、いつなにをするかがわかります。",
+  nameRuby: "時計《とけい》の読《よ》み方《かた》",
+  title: "時計《とけい》のよみかた：みじかいはりと、ながいはり",
+  hook: "学校は、なんじにはじまるかな。時計《とけい》がよめると、いつなにをするかがわかります。",
   sections: [
     {
       heading: "2本のはり",
-      body: "とけいには、{{みじかいはり}}と{{ながいはり}}があります。みじかいはりは、「なんじ」をよみます。ながいはりは、「なんぷん」をよみます。",
+      body: "時計《とけい》には、{{みじかいはり}}と{{ながいはり}}があります。みじかいはりは、「なんじ」をよみます。ながいはりは、「なんぷん」をよみます。",
       figure: {
         type: "compare",
         title: "2本のはりの ちがい",
@@ -74,7 +75,7 @@ export const E_MATH_1_TOKEI: Lecture = {
     { q: "ながいはりが2をさすと、なんぷんですか。", a: "10ぷん", why: "5ふんが2つで、10ぷんです。" },
   ],
   next: [
-    { label: "「とけいのよみかた」ドリル", href: "/learn/sansu-zukei/e-math-1-tokei" },
+    { label: "「時計《とけい》のよみかた」ドリル", href: "/learn/sansu-zukei/e-math-1-tokei" },
     { label: "2年「じこくとじかん」", href: "/learn/sansu-zukei/e-math-2-jikoku" },
   ],
 };

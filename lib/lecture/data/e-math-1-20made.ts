@@ -2,6 +2,7 @@ import type { Lecture } from "../types";
 
 export const E_MATH_1_20MADE: Lecture = {
   unit: "e-math-1-20made",
+  nameRuby: "20までの数《かず》",
   title: "20までのかず：10のまとまりと、ばら",
   hook: "きょうしつのいすは、なんこあるかな。10より大きいかずは、まとめるとかぞえやすくなります。",
   sections: [
@@ -75,7 +76,7 @@ export const E_MATH_1_20MADE: Lecture = {
     { q: "15−5は、いくつですか。", a: "10", why: "ばらの5をとると、10がのこります。" },
   ],
   next: [
-    { label: "けいさんのだん「20までのかず」", href: "/learn/sansu/3" },
+    { label: "計算《けいさん》の段《だん》「20までのかず」", href: "/learn/sansu/3" },
     { label: "ふりかえり「10までのかず」", href: "/learn/sansu-zukei/e-math-1-10made" },
     { label: "「100までのかず」", href: "/learn/sansu/7" },
   ],

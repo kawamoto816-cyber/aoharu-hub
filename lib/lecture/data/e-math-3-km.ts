@@ -3,11 +3,11 @@ import type { Lecture } from "../types";
 export const E_MATH_3_KM: Lecture = {
   unit: "e-math-3-km",
   title: "1km は 1000m。道のりときょりのちがい",
-  hook: "家から学校まで、学校から駅まで。長い道の長さをmで表すと、数が大きくなりすぎます。そこで使うのが km（キロメートル）というたんいです。",
+  hook: "家から学校まで、学校から駅まで。長い道の長さをmで表すと、数が大きくなりすぎます。そこで使うのが km（キロメートル）という単位《たんい》です。",
   sections: [
     {
       heading: "1km＝1000m",
-      body: "1000mを{{1km}}と書き、「1キロメートル」と読みます。「キロ」は1000といういみです。1しゅう200mのトラックなら、5しゅうで1000m、つまり1kmです。",
+      body: "1000mを{{1km}}と書き、「1キロメートル」と読みます。「キロ」は1000という意味です。1周《しゅう》200mのトラックなら、5周《しゅう》で1000m、つまり1kmです。",
       figure: {
         type: "area",
         kind: "bar",
@@ -15,7 +15,7 @@ export const E_MATH_3_KM: Lecture = {
         max: 1000,
         bars: [
           {
-            label: "5しゅう",
+            label: "5周《しゅう》",
             parts: [
               { value: 200, label: "200m", tone: "blue" },
               { value: 200, label: "200m", tone: "yellow" },
@@ -43,7 +43,7 @@ export const E_MATH_3_KM: Lecture = {
           { label: "①", expr: "1200m ＝ 1000m ＋ 200m", note: "1000mのまとまりを出す" },
           { label: "①", expr: "＝ {{1km}}200m", note: "1000m を 1km に" },
           { label: "②", expr: "2km50m ＝ 2000m ＋ 50m", note: "2km を 2000m に" },
-          { label: "②", expr: "＝ 20{{5}}0m", note: "十のくらいに5" },
+          { label: "②", expr: "＝ 20{{5}}0m", note: "十の位《くらい》に5" },
         ],
       },
     },
@@ -57,13 +57,13 @@ export const E_MATH_3_KM: Lecture = {
         rows: [
           { label: "はかり方", cells: ["道にそってはかる", "まっすぐはかる"] },
           { label: "長さ", cells: ["1km300m", "900m"] },
-          { label: "くらべると", cells: ["長い（同じこともある）", "みじかい"] },
+          { label: "くらべると", cells: ["長い（同じこともある）", "短い"] },
         ],
       },
     },
     {
       heading: "道のりをたす",
-      body: "家から公園まで600m、公園から学校まで700mなら、家から公園を通って学校までの道のりは 600m＋700m＝1300m です。1300mは{{1km300m}}とも書けます。km と m は、同じたんいどうしで計算します。",
+      body: "家から公園まで600m、公園から学校まで700mなら、家から公園を通って学校までの道のりは 600m＋700m＝1300m です。1300mは{{1km300m}}とも書けます。km と m は、同じ単位《たんい》どうしで計算します。",
       figure: {
         type: "area",
         kind: "bar",
@@ -91,8 +91,8 @@ export const E_MATH_3_KM: Lecture = {
     },
   ],
   mistakes: [
-    { wrong: "1km＝100m", right: "1km＝1000m", why: "キロは1000といういみ。100mが10こで1kmです。" },
-    { wrong: "2km50m＝250m", right: "2km50m＝2050m", why: "2kmは2000m。それに50mをたすので、百のくらいは0になります。" },
+    { wrong: "1km＝100m", right: "1km＝1000m", why: "キロは1000という意味。100mが10こで1kmです。" },
+    { wrong: "2km50m＝250m", right: "2km50m＝2050m", why: "2kmは2000m。それに50mをたすので、百の位《くらい》は0になります。" },
     { wrong: "道のりときょりは、いつも同じ", right: "道が曲がっていると、道のりのほうが長い", why: "道のりは道にそってはかり、きょりはまっすぐはかるからです。" },
   ],
   check: [

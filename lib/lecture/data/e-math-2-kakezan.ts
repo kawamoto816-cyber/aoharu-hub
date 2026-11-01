@@ -106,8 +106,8 @@ export const E_MATH_2_KAKEZAN: Lecture = {
     { q: "8×3 と同じ答えになる、3のだんの九九は？", a: "3×8", why: "入れかえても答えは同じ。どちらも24です。" },
   ],
   next: [
-    { label: "計算のだんで「2のだん・5のだん」をれんしゅうする", href: "/learn/sansu/13" },
-    { label: "九九ばらばら（計算のだん）", href: "/learn/sansu/17" },
+    { label: "計算の段《だん》で「2のだん・5のだん」をれんしゅうする", href: "/learn/sansu/13" },
+    { label: "九九ばらばら（計算の段《だん》）", href: "/learn/sansu/17" },
     { label: "つづき「かけ算のきまり」（3年）", href: "/learn/sansu-zukei/e-math-3-kake-kimari" },
   ],
 };

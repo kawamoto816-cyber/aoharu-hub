@@ -2,8 +2,9 @@ import type { Lecture } from "../types";
 
 export const E_MATH_4_WARIAI: Lecture = {
   unit: "e-math-4-wariai",
-  title: "かんたんなわり合は「何倍か」でくらべる",
-  hook: "20cmのゴムが60cmに、60cmのゴムが120cmにのびました。よくのびたのはどちらでしょう。のびた長さで見るか、何倍にのびたかで見るかで、答えが変わります。「何倍か」でくらべる考え方は、5年で学ぶわり合のもとになります。",
+  nameRuby: "簡単《かんたん》な割合《わりあい》",
+  title: "簡単《かんたん》な割合《わりあい》は「何倍か」でくらべる",
+  hook: "20cmのゴムが60cmに、60cmのゴムが120cmにのびました。よくのびたのはどちらでしょう。のびた長さで見るか、何倍にのびたかで見るかで、答えが変わります。「何倍か」でくらべる考え方は、5年で学ぶ割合《わりあい》のもとになります。",
   sections: [
     {
       heading: "差でくらべるか、倍でくらべるか",
@@ -22,7 +23,7 @@ export const E_MATH_4_WARIAI: Lecture = {
     },
     {
       heading: "何倍かは、わり算で求める",
-      body: "20cmを{{1と見たとき}}、60cmは20cmの3つ分です。だから60cmは20cmの3倍で、式は 60÷20＝3 です。このように、もとにする量を1と見て、くらべる量がいくつにあたるかを表した数を{{わり合}}といいます。",
+      body: "20cmを{{1と見たとき}}、60cmは20cmの3つ分です。だから60cmは20cmの3倍で、式は 60÷20＝3 です。このように、もとにする量を1と見て、くらべる量がいくつにあたるかを表した数を{{割合《わりあい》}}といいます。",
       figure: {
         type: "area",
         kind: "bar",
@@ -90,8 +91,8 @@ export const E_MATH_4_WARIAI: Lecture = {
     { q: "ある長さの4倍が32cmです。ある長さは何cmですか。", a: "8cm", why: "もとにする量＝くらべる量÷倍＝32÷4＝8。" },
   ],
   next: [
-    { label: "「かんたんなわり合」のドリル", href: "/learn/sansu-zukei/e-math-4-wariai" },
-    { label: "5年「わり合」の図かいレクチャー", href: "/learn/lecture/e-math-5-wariai" },
-    { label: "「変わり方」の図かいレクチャー", href: "/learn/lecture/e-math-4-kawarikata" },
+    { label: "「簡単《かんたん》な割合《わりあい》」のドリル", href: "/learn/sansu-zukei/e-math-4-wariai" },
+    { label: "5年「割合《わりあい》」の図解《ずかい》レクチャー", href: "/learn/lecture/e-math-5-wariai" },
+    { label: "「変わり方」の図解《ずかい》レクチャー", href: "/learn/lecture/e-math-4-kawarikata" },
   ],
 };

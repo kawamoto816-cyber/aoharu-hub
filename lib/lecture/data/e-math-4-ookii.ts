@@ -36,7 +36,7 @@ export const E_MATH_4_OOKII: Lecture = {
     },
     {
       heading: "一億は千万が10こ",
-      body: "数直線で見ると、{{一億は千万を10こ集めた数}}です。1目もりが千万なら、5目もりで五千万、10目もりで一億になります。どの位でも、{{10こ集まると1つ上の位}}になります。",
+      body: "数直線で見ると、{{一億は千万を10こ集めた数}}です。1目盛《めも》りが千万なら、5目盛《めも》りで五千万、10目盛《めも》りで一億になります。どの位でも、{{10こ集まると1つ上の位}}になります。",
       figure: {
         type: "area",
         kind: "bar",
@@ -85,6 +85,6 @@ export const E_MATH_4_OOKII: Lecture = {
   next: [
     { label: "「大きい数（億・兆）」をドリルで練習する", href: "/learn/sansu-zukei/e-math-4-ookii" },
     { label: "ふりかえり「大きい数（万の位）」", href: "/learn/sansu-zukei/e-math-3-ookii" },
-    { label: "計算のだんで「がい数」を練習する", href: "/learn/sansu/36" },
+    { label: "計算の段《だん》で「がい数」を練習する", href: "/learn/sansu/36" },
   ],
 };

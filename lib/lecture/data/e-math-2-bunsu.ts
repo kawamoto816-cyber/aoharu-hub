@@ -119,7 +119,7 @@ export const E_MATH_2_BUNSU: Lecture = {
   ],
   next: [
     { label: "分数（2分の1・4分の1）のドリル", href: "/learn/sansu-zukei/e-math-2-bunsu" },
-    { label: "3年の分数（計算のだん）", href: "/learn/sansu/31" },
+    { label: "3年の分数（計算の段《だん》）", href: "/learn/sansu/31" },
     { label: "かけ算（九九）", href: "/learn/sansu/13" },
   ],
 };

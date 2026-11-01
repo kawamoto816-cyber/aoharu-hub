@@ -45,11 +45,11 @@ export const E_MATH_5_SHOSU_KAKE: Lecture = {
       body: "2.6×1.4の筆算は、小数点がないものとして{{26×14}}を計算します。かけられる数とかける数の、{{小数点の右のけたの数をたした数}}だけ、積の右から数えて小数点をうちます。1けた＋1けたで2けたなので、3.64です。",
       figure: {
         type: "formula",
-        title: "2.6×1.4 の筆算（1だんずつ）",
+        title: "2.6×1.4 の筆算（1段《だん》ずつ）",
         prose: true,
         steps: [
-          { expr: "26×4＝{{104}}", note: "1だん目" },
-          { expr: "26×1＝{{26}}", note: "2だん目は1けた左にずらす" },
+          { expr: "26×4＝{{104}}", note: "1段《だん》目" },
+          { expr: "26×1＝{{26}}", note: "2段《だん》目は1けた左にずらす" },
           { expr: "104＋260＝{{364}}", note: "たす" },
           { expr: "364 → {{3.64}}", note: "1けた＋1けた＝右から2けた" },
         ],
@@ -81,7 +81,7 @@ export const E_MATH_5_SHOSU_KAKE: Lecture = {
     { q: "1m150円のリボンを0.6m買うと、何円ですか。", a: "90円", why: "150×0.6＝90。1mより短いので150円より安くなります。" },
   ],
   next: [
-    { label: "計算のだんで「小数のかけ算」を練習する", href: "/learn/sansu/44" },
+    { label: "計算の段《だん》で「小数のかけ算」を練習する", href: "/learn/sansu/44" },
     { label: "ふりかえり：小数×整数（図解）", href: "/learn/lecture/e-math-4-shosu-kakewari" },
     { label: "次の単元：小数のわり算（図解）", href: "/learn/lecture/e-math-5-shosu-wari" },
   ],

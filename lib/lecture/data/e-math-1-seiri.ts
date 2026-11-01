@@ -2,6 +2,7 @@ import type { Lecture } from "../types";
 
 export const E_MATH_1_SEIRI: Lecture = {
   unit: "e-math-1-seiri",
+  nameRuby: "かずしらべ（絵《え》や図《ず》に整理《せいり》する）",
   title: "かずしらべは「わけて ならべて くらべる」",
   hook: "クラスで すきな くだものを しらべました。どれが いちばん おおいかな？ えを きちんと ならべると、ひと目で わかります。",
   sections: [
