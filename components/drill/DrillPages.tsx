@@ -5,6 +5,7 @@ import { LearnShell } from "@/components/learn/LearnShell";
 import { DrillPlay } from "./DrillPlay";
 import { DrillMark } from "./DrillMarks";
 import { DRILL_SETS, drillUnitGroup, drillUnitName, type DrillSetKey } from "@/lib/drill";
+import { hasLecture, lectureHref } from "@/lib/lecture";
 
 // 「ポイント＋4択ドリル」のページ (サーバー側)。セットのトップと、単元のページ。
 
@@ -81,6 +82,18 @@ export function DrillUnitPage({ setKey, unit }: { setKey: DrillSetKey; unit: str
         {s.name}・{drillUnitGroup(unit)}
       </p>
       <h1 className="m-0 mt-1 text-[24px] font-black">{drillUnitName(unit)}</h1>
+      {hasLecture(unit) && (
+        <Link
+          href={lectureHref(unit)}
+          className="mt-4 flex min-h-[48px] items-center justify-between gap-2 rounded-[14px] border-[1.5px] border-[#15172B] bg-[#1533B8] px-4 py-2.5 text-[15px] font-black text-white no-underline shadow-[3px_3px_0_#15172B]"
+        >
+          <span>
+            図解レクチャーを読む
+            <span className="block text-[12px] font-bold text-white/80">なぜそうなるかを図で理解してから解く</span>
+          </span>
+          <span aria-hidden="true">→</span>
+        </Link>
+      )}
       <section aria-labelledby="pt-h" className="mt-4 rounded-[18px] border-[1.5px] border-[#15172B] bg-[#FFFBE6] p-5">
         <h2 id="pt-h" className="m-0 text-[13px] font-black text-[#1533B8]">
           ①覚える　ポイント

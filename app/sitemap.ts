@@ -19,6 +19,7 @@ import { STEPS as KOUSUU_STEPS } from "@/lib/kousuu/steps";
 import { TERM_SET_KEYS } from "@/lib/terms";
 import { DRILL_SETS } from "@/lib/drill";
 import { KYOKA } from "@/lib/learn/kyoka";
+import { LECTURES } from "@/lib/lecture";
 
 // 検索エンジン向けサイトマップ。入口ページを追加したらここに足す。
 // /guide の記事は静的記事とDBの記事の両方を載せる (取り込んだ記事が当日中に見つかるように)。
@@ -64,6 +65,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${base}/learn/kanji`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
     ...[1, 2, 3, 4, 5, 6].map((g) => ({ url: `${base}/learn/kanji/${g}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
     { url: `${base}/learn/todofuken`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
+    ...LECTURES.map((l) => ({ url: `${base}/learn/lecture/${l.unit}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.7 })),
     ...KYOKA.map((k) => ({ url: `${base}/learn/kyoka/${k.key}`, lastModified: now, changeFrequency: "weekly" as const, priority: 0.8 })),
     ...TERM_SET_KEYS.map((k) => ({ url: `${base}/learn/${k}`, lastModified: now, changeFrequency: "weekly" as const, priority: 0.7 })),
     ...Object.values(DRILL_SETS).flatMap((s) => [

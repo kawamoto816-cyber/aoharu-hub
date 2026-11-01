@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { KYOKA } from "@/lib/learn/kyoka";
+import { hasLecture, lectureHref } from "@/lib/lecture";
 import Link from "next/link";
 import { LearnShell } from "@/components/learn/LearnShell";
 import { LEVELS, schoolCounts } from "@/lib/school";
@@ -31,10 +32,17 @@ function Marks({ u }: { u: SchoolUnit }) {
 function Box({ u }: { u: SchoolUnit }) {
   if (u.href)
     return (
-      <Link id={u.id} href={u.href} className="inline-flex min-h-[38px] items-center rounded-[10px] border-[1.5px] border-[#15172B] bg-[#FFFBE6] px-2.5 text-[13px] font-black text-[#15172B] no-underline shadow-[2px_2px_0_#15172B]">
-        {u.name}
-        <Marks u={u} />
-      </Link>
+      <span className="inline-flex items-stretch gap-1">
+        <Link id={u.id} href={u.href} className="inline-flex min-h-[38px] items-center rounded-[10px] border-[1.5px] border-[#15172B] bg-[#FFFBE6] px-2.5 text-[13px] font-black text-[#15172B] no-underline shadow-[2px_2px_0_#15172B]">
+          {u.name}
+          <Marks u={u} />
+        </Link>
+        {hasLecture(u.id) && (
+          <Link href={lectureHref(u.id)} aria-label={`${u.name}の図解レクチャー`} className="inline-flex min-h-[38px] items-center rounded-[10px] border-[1.5px] border-[#1533B8] bg-[#1533B8] px-2 text-[11.5px] font-black text-white no-underline">
+            図解
+          </Link>
+        )}
+      </span>
     );
   return (
     <span id={u.id} className="inline-flex min-h-[38px] items-center rounded-[10px] border-[1.5px] border-dashed border-[#9A9CB0] bg-white/60 px-2.5 text-[13px] font-bold text-[#3A3D55]">
