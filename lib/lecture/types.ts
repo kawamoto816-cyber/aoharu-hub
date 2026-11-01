@@ -153,11 +153,36 @@ export type Figure =
 
 export type FigureType = Figure["type"];
 
+/** 資料の写真・図版（Wikimedia Commons などの自由に使える画像。public/media/ に保存したもの） */
+export interface LecturePhoto {
+  /** public からのパス（例 /media/commons/j-sci-1-kazan/showa-shinzan.jpg） */
+  src: string;
+  width: number;
+  height: number;
+  /** 画像の内容を言葉で（読み上げ用） */
+  alt: string;
+  /** 資料の説明（何が写っていて、本文のどこと関係するか） */
+  caption: string;
+  credit: {
+    /** 作者（Commons の Artist。不明なら「作者不明」） */
+    author: string;
+    /** ライセンス名（Public domain / CC0 / CC BY 4.0 / CC BY-SA 4.0 など） */
+    license: string;
+    licenseUrl?: string;
+    /** Commons のファイルページの URL */
+    source: string;
+  };
+}
+
 export interface LectureSection {
   heading: string;
-  /** 2〜5文。{{ }} で強調。 */
+  /** 2〜5文。{{ }} で強調。節の要点。 */
   body: string;
+  /** 教科書本文にあたる説明（段落ごと）。理科・社会で、教科書を読まなくても学べるように。{{ }} は重要語。 */
+  reading?: string[];
   figure?: Figure;
+  /** 資料（写真・図版） */
+  photos?: LecturePhoto[];
 }
 
 export interface Lecture {

@@ -4,6 +4,7 @@ import type { Lecture } from "@/lib/lecture/types";
 import { lectureUnitInfo } from "@/lib/lecture";
 import { LectureFigure } from "./Figure";
 import { Rich } from "./Rich";
+import { LecturePhotoView } from "./Photo";
 import { MoshiLink } from "@/components/moshi/MoshiLink";
 
 // 図解レクチャーの1単元のページ本体：導入 → 図解つきの節 → よくあるまちがい → 確認 → 次にやる教材。
@@ -17,6 +18,7 @@ export function LecturePage({ lec }: { lec: Lecture }) {
     ? { hook: "導入《どうにゅう》　なぜ学《まな》ぶの？", check: "確認《かくにん》しよう", next: "次《つぎ》にやる教材《きょうざい》", open: "答《こた》えを見《み》る", close: "答《こた》えをとじる", back: "学校《がっこう》の教科《きょうか》の地図《ちず》にもどる", answer: "答《こた》え：" }
     : { hook: "導入　なぜ学ぶの？", check: "確認しよう", next: "次にやる教材", open: "答えを見る", close: "答えをとじる", back: "学校の教科の地図にもどる", answer: "答え：" };
   let figNo = 0;
+  let photoNo = 0;
   return (
     <LearnShell narrow crumbs={[{ href: "/learn", label: "まなぶ" }, { href: "/learn/school", label: "学校の教科" }, { label: name }]}>
       <p className="m-0 text-xs font-black tracking-wider text-[#1533B8]">
@@ -51,9 +53,23 @@ export function LecturePage({ lec }: { lec: Lecture }) {
             </span>
             <span><Rich text={s.heading} /></span>
           </h2>
-          <p className="m-0 mt-2.5 text-[15px] leading-[1.85]">
-            <Rich text={s.body} />
-          </p>
+          {s.reading?.length ? (
+            <>
+              <p className="m-0 mt-2.5 rounded-[12px] border-l-4 border-[#FFE45C] bg-[#FFFBE6] px-3 py-2 text-[14px] font-bold leading-[1.75]">
+                <Rich text={s.body} />
+              </p>
+              {s.reading.map((para, k) => (
+                <p key={k} className="m-0 mt-3 text-[15.5px] leading-[1.95] [text-indent:1em]">
+                  <Rich text={para} />
+                </p>
+              ))}
+            </>
+          ) : (
+            <p className="m-0 mt-2.5 text-[15px] leading-[1.85]">
+              <Rich text={s.body} />
+            </p>
+          )}
+          {s.photos?.map((ph) => <LecturePhotoView key={ph.src} ph={ph} no={++photoNo} />)}
           {s.figure && <LectureFigure fig={s.figure} no={++figNo} />}
         </section>
       ))}
