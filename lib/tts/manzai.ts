@@ -53,19 +53,21 @@ export const manzaiSrc = (key: string) => `/audio/manzai/${key}.mp3`;
 // ── 小説の朗読 ──────────────────────────────────────────
 
 /**
- * 小説の語り手。漫才の2人とは別の、あたたかく落ち着いた女声（昔話の語り手のように、ゆっくりめ）。
+ * 小説の語り手。漫才の2人とは別の、あたたかく落ち着いた女声（昔話の語り手のように）。速さはふつう（0.9 はゆっくりすぎた）。
  */
-export const NARRATOR = { voice: "Sulafat", rate: 0.9 } as const;
+export const NARRATOR = { voice: "Sulafat", rate: 1.0 } as const;
 
 /** 段落と段落のあいだ（ミリ秒）。語りの「間」 */
 export const NOVEL_GAP = 750;
 
 /** 小説の1段落から読み上げる文を作る。sayFix は読み違えやすい語の読み（例 { "武蔵国": "むさしのくに" }） */
-export function novelSay(paragraph: string, sayFix?: Record<string, string>): string {
+export function novelSay(paragraph: string, sayFix?: Record<string, string>, say?: string): string {
+  if (say) return say.replace(/\s+/g, " ").trim();
   let t = paragraph.replace(RUBY, (_a, _b1, r1, _b2, r2) => r1 ?? r2).replace(/\{\{(.+?)\}\}/g, "$1");
   for (const [k, v] of Object.entries(sayFix ?? {})) t = t.split(k).join(v);
   return t.replace(/\s+/g, " ").trim();
 }
 
-export const novelKey = (paragraph: string, sayFix?: Record<string, string>) => jaKey(NARRATOR.voice, NARRATOR.rate, novelSay(paragraph, sayFix));
+export const novelKey = (paragraph: string, sayFix?: Record<string, string>, say?: string) =>
+  jaKey(NARRATOR.voice, NARRATOR.rate, novelSay(paragraph, sayFix, say));
 export const novelSrc = (key: string) => `/audio/novel/${key}.mp3`;

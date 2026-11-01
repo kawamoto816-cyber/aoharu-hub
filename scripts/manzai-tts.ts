@@ -28,9 +28,9 @@ function collect(): Job[] {
       }
     }
     if (st?.kind === "novel") {
-      for (const p of st.paragraphs) {
-        const key = novelKey(p, st.sayFix);
-        jobs.set(`n/${key}`, { dir: DIRS[1], key, text: novelSay(p, st.sayFix), voice: NARRATOR.voice, rate: NARRATOR.rate, unit: lec.unit });
+      for (const [i, p] of st.paragraphs.entries()) {
+        const key = novelKey(p, st.sayFix, st.say?.[i]);
+        jobs.set(`n/${key}`, { dir: DIRS[1], key, text: novelSay(p, st.sayFix, st.say?.[i]), voice: NARRATOR.voice, rate: NARRATOR.rate, unit: lec.unit });
       }
     }
   }

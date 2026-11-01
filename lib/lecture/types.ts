@@ -198,6 +198,8 @@ export type LectureStory =
       paragraphs: string[];
       /** 朗読で読み違えやすい語の読み（例 { "武蔵国": "むさしのくに" }）。画面の文は変えない */
       sayFix?: Record<string, string>;
+      /** 段落ごとの読み上げ文（段落の番号 → 文）。単独の漢字（風・元・土 など）を正しい読みのひらがなにしたもの。あれば sayFix より優先 */
+      say?: Record<number, string>;
       /** 創作であることと、史実・事実との関係（何が史実で、何が想像か） */
       note: string;
     }

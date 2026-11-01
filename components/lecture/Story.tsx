@@ -19,7 +19,7 @@ export function LectureStoryView({ story }: { story: LectureStory }) {
         <Rich text={story.title} />
       </h2>
 
-      {story.kind === "novel" && <NovelView paragraphs={story.paragraphs} sayFix={story.sayFix} />}
+      {story.kind === "novel" && <NovelView paragraphs={story.paragraphs} sayFix={story.sayFix} say={story.say} />}
 
       {story.kind === "manga4" && story.panels.every((p) => p.art) && <ComicStrip panels={story.panels} />}
 

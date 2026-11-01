@@ -9,8 +9,8 @@ import { useAudioSequence } from "./useAudioSequence";
 // 小説パート：本文 ＋「朗読を聞く」（語り手の声で1段落ずつ続けて読み、いま読んでいる段落にしるしをつける）。
 // 音声ファイルがまだない小説では、再生ボタンを出さない。
 
-export function NovelView({ paragraphs, sayFix }: { paragraphs: string[]; sayFix?: Record<string, string> }) {
-  const srcs = paragraphs.map((p) => novelSrc(novelKey(p, sayFix)));
+export function NovelView({ paragraphs, sayFix, say }: { paragraphs: string[]; sayFix?: Record<string, string>; say?: Record<number, string> }) {
+  const srcs = paragraphs.map((p, i) => novelSrc(novelKey(p, sayFix, say?.[i])));
   const seq = useAudioSequence(srcs, () => NOVEL_GAP);
   const rows = useRef<(HTMLParagraphElement | null)[]>([]);
   useEffect(() => {
