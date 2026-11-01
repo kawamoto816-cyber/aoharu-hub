@@ -61,7 +61,7 @@ export const J_EN_2_KAKO_SHINKO: Lecture = {
           },
         ],
         scale: [
-          { at: 2, label: "6:50" },
+          { at: 2, label: "6:40" },
           { at: 5, label: "7:00" },
           { at: 8, label: "7:20" },
         ],
