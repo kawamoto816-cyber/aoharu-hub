@@ -44,7 +44,7 @@ export const J_SCI_3_SAIBO_BUNRETSU: Lecture = {
           { label: "染色体が見える", sub: "核の形が消え、ひも状に", tone: "yellow" },
           { label: "中央にならぶ", sub: "細胞のまん中に集まる", tone: "yellow" },
           { label: "両はしに分かれる", sub: "同じものが半分ずつ", tone: "blue" },
-          { label: "2つの細胞", sub: "しきりができ、核ができる", tone: "navy" },
+          { label: "2つの細胞", sub: "核ができ、中央にしきりができる", tone: "navy" },
         ],
         note: "観察では、うすい塩酸で細胞を1つ1つ離れやすくし、酢酸オルセイン（酢酸カーミン）で染色体を染める。",
       },

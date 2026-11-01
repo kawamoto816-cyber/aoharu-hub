@@ -74,7 +74,8 @@ export const J_SCI_3_TAIYOKEI: Lecture = {
         rows: [
           { label: "見える時刻", cells: ["夕方", "明け方"] },
           { label: "見える方位", cells: ["西の空", "東の空"] },
-          { label: "共通", cells: ["真夜中は見えない", "満ち欠けし大きさも変わる"] },
+          { label: "真夜中", cells: ["見えない", "見えない"] },
+          { label: "形・大きさ", cells: ["満ち欠けし、大きさも変わる", "満ち欠けし、大きさも変わる"] },
         ],
       },
     },

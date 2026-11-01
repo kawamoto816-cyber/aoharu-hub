@@ -24,7 +24,7 @@ export function FormulaFig({ fig }: { fig: FormulaFigure }) {
                 {s.label && <span className="mr-2 inline-block rounded-[6px] bg-[#15172B] px-1.5 py-0.5 align-middle font-sans text-[11px] font-black tracking-normal text-white">{s.label}</span>}
                 <Rich text={s.expr} variant="change" />
               </p>
-              {s.note && <p className="m-0 text-[12px] font-bold leading-snug text-[#3A3D55]">{s.note}</p>}
+              {s.note && <p className="m-0 text-[12px] font-bold leading-snug text-[#3A3D55]"><Rich text={s.note} /></p>}
             </div>
           </div>
         </li>
