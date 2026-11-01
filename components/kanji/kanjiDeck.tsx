@@ -3,6 +3,7 @@
 import type { DeckDef } from "@/lib/deck/types";
 import { ALL_KANJI, findKanji, gradeOf, kanjiOfGrade } from "@/lib/kanji";
 import type { KanjiEntry } from "@/lib/kanji/types";
+import { jigenOf } from "@/lib/kanji/jigen";
 
 // 小学校の漢字の「カードの束」。
 //   カード: 大きな漢字・音読み・訓読み・言葉・例文
@@ -17,7 +18,13 @@ function pick<T>(xs: T[], n: number, not: (x: T) => boolean): T[] {
 }
 const shuffle = <T,>(xs: T[]) => pick(xs, xs.length, () => false);
 
+// 成り立ちの種類を、小学生にも分かる言葉で
+const KIND_LABEL = { 象形: "ものの形から", 指事: "しるしで表す", 会意: "字を組み合わせる", 形声: "意味＋音" } as const;
+// 小1・小2 はひらがなで
+const KIND_LABEL_KIDS = { 象形: "ものの かたちから", 指事: "しるしで あらわす", 会意: "字を くみあわせる", 形声: "いみ＋おと" } as const;
+
 export function KanjiCard({ e }: { e: KanjiEntry }) {
+  const jg = jigenOf(e.k);
   return (
     <div className="rounded-[18px] border-[1.5px] border-[#15172B] bg-white p-5 shadow-[4px_4px_0_#15172B]">
       <div className="flex items-start gap-4">
@@ -35,6 +42,15 @@ export function KanjiCard({ e }: { e: KanjiEntry }) {
               <span className="mr-1 rounded border border-[#15172B] px-1.5 text-[11px] font-black">訓</span>
               {e.kun.join("・")}
             </p>
+          )}
+          {jg && (
+            <div className="mt-2 rounded-[10px] border border-dashed border-[#C9C6B4] bg-[#FFFBE6] px-2.5 py-1.5">
+              <p className="m-0 flex items-center gap-1.5 text-[11px] font-black text-[#1533B8]">
+                {gradeOf(e.k) <= 2 ? "なりたち" : "字源"}
+                <span className="rounded bg-[#1533B8] px-1.5 text-white">{(gradeOf(e.k) <= 2 ? KIND_LABEL_KIDS : KIND_LABEL)[jg.kind]}</span>
+              </p>
+              <p className="m-0 mt-0.5 text-[12.5px] leading-snug text-[#15172B]">{jg.text}</p>
+            </div>
           )}
         </div>
       </div>
