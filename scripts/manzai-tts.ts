@@ -3,11 +3,12 @@
 //   数をたしかめる:  npx tsx scripts/manzai-tts.ts --count
 //   全部作る:        npx tsx scripts/manzai-tts.ts
 //     → public/audio/manzai/<キー>.mp3（1行ごと。キーは lib/tts/manzai.ts）
-//     すでにあるファイルは作り直さない。漫才を足したり直したりしたら、同じコマンドで足りない分だけ作る。
+//     すでにあるファイルは作り直さない。漫才を足したり直したり、声を変えたりしたら、同じコマンドで足りない分だけ作る。
+//     もう使われなくなった古い音声ファイルは消す（声を変えたときの前の声など）。
 //
 // API キーは .env.local の GOOGLE_TTS_API_KEY（英語の音声と同じ）。キーは画面に出さない。
 
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, readdirSync, unlinkSync, writeFileSync } from "node:fs";
 import { LECTURES } from "../lib/lecture";
 import { manzaiKey, manzaiSay, manzaiVoiceOf } from "../lib/tts/manzai";
 
@@ -64,7 +65,11 @@ async function main() {
   const units = new Set(jobs.map((j) => j.unit)).size;
   const chars = todo.reduce((n, j) => n + j.text.length, 0);
   console.log(`漫才 ${units} 本・${jobs.length} 行のうち、作るのは ${todo.length} 行（約 ${chars.toLocaleString()} 字）`);
+  const used = new Set(jobs.map((j) => `${j.key}.mp3`));
+  const stale = existsSync(DIR) ? readdirSync(DIR).filter((f) => f.endsWith(".mp3") && !used.has(f)) : [];
+  if (stale.length) console.log(`使われなくなった古い音声 ${stale.length} 個${process.argv.includes("--count") ? "（消すのは本番の実行時）" : "を消します"}`);
   if (process.argv.includes("--count")) return;
+  for (const f of stale) unlinkSync(`${DIR}/${f}`);
   const key = apiKey();
   mkdirSync(DIR, { recursive: true });
   let next = 0;
