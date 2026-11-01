@@ -183,7 +183,37 @@ export interface LectureSection {
   figure?: Figure;
   /** 資料（写真・図版） */
   photos?: LecturePhoto[];
+  /** この節で「謎」が解けるとき、その答え（2〜4文）。Lecture.mystery と対になる */
+  reveal?: string;
+  /** 節の終わりの「次が気になる」ひとこと（1文）。最後の節には置かない */
+  cliff?: string;
 }
+
+/** 物語化パート（史実・事実をもとにした創作。読んで覚えやすくする） */
+export type LectureStory =
+  | {
+      kind: "novel";
+      title: string;
+      /** 段落（会話は「」で）。合計800〜1600字 */
+      paragraphs: string[];
+      /** 創作であることと、史実・事実との関係（何が史実で、何が想像か） */
+      note: string;
+    }
+  | {
+      kind: "manga4";
+      title: string;
+      /** 4コマ。場面のト書きと、せりふ */
+      panels: { scene: string; lines: { who: string; text: string }[] }[];
+      note: string;
+    }
+  | {
+      kind: "manzai";
+      title: string;
+      /** ボケとツッコミの2人（名前） */
+      cast: [string, string];
+      lines: { who: string; text: string }[];
+      note: string;
+    };
 
 export interface Lecture {
   /** 学校の地図 (lib/school) の単元 id */
@@ -193,7 +223,11 @@ export interface Lecture {
   title: string;
   /** 導入：なぜ学ぶか・身近な例 (2〜3文) */
   hook: string;
+  /** 導入の「謎」：読み進めると解ける問い（1〜2文）。答えは、ある節の reveal に置く */
+  mystery?: string;
   sections: LectureSection[];
+  /** 物語化パート（小説・4コマ・漫才）。節のあと、まちがい・確認の前に置く */
+  story?: LectureStory;
   /** よくあるまちがい 2〜4個 */
   mistakes: { wrong: string; right: string; why: string }[];
   /** 確認の問い 2〜3個 (答えは開いて見る) */
