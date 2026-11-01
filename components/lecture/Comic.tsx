@@ -167,7 +167,7 @@ function Person({ c }: { c: CastItem }) {
   );
 }
 
-function Prop({ kind }: { kind: ComicProp }) {
+function Prop({ kind, text }: { kind: ComicProp; text?: string }) {
   const st = { stroke: INK, strokeWidth: 2, strokeLinejoin: "round" as const };
   switch (kind) {
     case "pancake":
@@ -345,6 +345,107 @@ function Prop({ kind }: { kind: ComicProp }) {
           <path d="M-34 0 L34 0" stroke={INK} strokeWidth="4" strokeLinecap="round" />
         </g>
       );
+    case "board":
+      return (
+        <g>
+          <rect x="-46" y="-30" width="92" height="40" rx="4" fill="#fff" {...st} />
+          <text x="0" y="-4" textAnchor="middle" fontSize="15" fontWeight="900" fill={INK}>
+            {text ?? ""}
+          </text>
+        </g>
+      );
+    case "flask":
+      return (
+        <g>
+          <path d="M-6 -40 L-6 -22 L-22 4 Q-24 10 -16 10 L16 10 Q24 10 22 4 L6 -22 L6 -40 Z" fill="#fff" {...st} />
+          <path d="M-16 -2 L16 -2 L22 4 Q24 10 16 10 L-16 10 Q-24 10 -22 4 Z" fill="#7FB8F0" stroke={INK} strokeWidth="1.5" />
+          <path d="M-9 -40 H9" stroke={INK} strokeWidth="3" strokeLinecap="round" />
+        </g>
+      );
+    case "bulb":
+      return (
+        <g>
+          <circle cx="0" cy="-22" r="16" fill="#FFE45C" {...st} />
+          <rect x="-7" y="-8" width="14" height="10" fill="#C9C6B4" {...st} />
+          <g stroke="#E8B400" strokeWidth="2.5" strokeLinecap="round">
+            <path d="M-24 -30 L-31 -34" />
+            <path d="M24 -30 L31 -34" />
+            <path d="M0 -42 L0 -50" />
+          </g>
+        </g>
+      );
+    case "magnet":
+      return (
+        <g>
+          <path d="M-20 0 L-20 -24 Q-20 -40 0 -40 Q20 -40 20 -24 L20 0 L8 0 L8 -24 Q8 -28 0 -28 Q-8 -28 -8 -24 L-8 0 Z" fill="#E86A5C" {...st} />
+          <rect x="-20" y="-8" width="12" height="8" fill="#fff" {...st} />
+          <rect x="8" y="-8" width="12" height="8" fill="#fff" {...st} />
+        </g>
+      );
+    case "battery":
+      return (
+        <g>
+          <rect x="-12" y="-36" width="24" height="36" rx="3" fill="#A9C2FF" {...st} />
+          <rect x="-5" y="-41" width="10" height="5" fill="#C9C6B4" {...st} />
+          <text x="0" y="-12" textAnchor="middle" fontSize="16" fontWeight="900" fill={INK}>+</text>
+        </g>
+      );
+    case "sun":
+      return (
+        <g>
+          <circle cx="0" cy="0" r="16" fill="#FFB547" {...st} />
+          <g stroke="#E8A000" strokeWidth="3" strokeLinecap="round">
+            <path d="M0 -22 V-30 M0 22 V30 M-22 0 H-30 M22 0 H30 M-16 -16 L-21 -21 M16 16 L21 21 M-16 16 L-21 21 M16 -16 L21 -21" />
+          </g>
+        </g>
+      );
+    case "cloud":
+    case "rain":
+      return (
+        <g>
+          <path d="M-30 0 Q-38 -14 -22 -18 Q-18 -32 0 -28 Q16 -36 24 -20 Q38 -16 30 0 Z" fill={kind === "rain" ? "#C9CBD6" : "#fff"} {...st} />
+          {kind === "rain" && (
+            <g stroke="#4A90D9" strokeWidth="2.5" strokeLinecap="round">
+              <path d="M-18 8 L-22 18 M-4 8 L-8 18 M10 8 L6 18 M24 8 L20 18" />
+            </g>
+          )}
+        </g>
+      );
+    case "plant":
+      return (
+        <g>
+          <path d="M-14 0 L-12 -14 L12 -14 L14 0 Z" fill="#C97B4A" {...st} />
+          <path d="M0 -14 V-40" stroke="#3E8E41" strokeWidth="3" />
+          <path d="M0 -26 Q-16 -34 -18 -24 Q-8 -20 0 -26 Z M0 -34 Q16 -44 18 -32 Q8 -28 0 -34 Z" fill="#7CC47F" stroke={INK} strokeWidth="1.5" />
+        </g>
+      );
+    case "globe":
+      return (
+        <g>
+          <circle cx="0" cy="-22" r="20" fill="#9DD0F5" {...st} />
+          <path d="M-12 -32 Q-4 -36 0 -28 Q-6 -20 -14 -24 Z M4 -18 Q14 -22 16 -12 Q8 -6 4 -18 Z" fill="#9CCB86" stroke={INK} strokeWidth="1.2" />
+          <path d="M-8 6 H8 M0 -2 V6" stroke={INK} strokeWidth="2.5" />
+        </g>
+      );
+    case "building":
+      return (
+        <g>
+          <path d="M-26 0 L-26 -36 L0 -50 L26 -36 L26 0 Z" fill="#F1EEE6" {...st} />
+          <path d="M-18 -30 V0 M-6 -30 V0 M6 -30 V0 M18 -30 V0" stroke={INK} strokeWidth="2" />
+          <path d="M-28 -32 H28" stroke={INK} strokeWidth="2.5" />
+        </g>
+      );
+    case "ship":
+      return (
+        <g>
+          <path d="M-34 -10 L34 -10 L24 4 L-24 4 Z" fill="#8A6B57" {...st} />
+          <path d="M0 -10 V-50" stroke={INK} strokeWidth="2.5" />
+          <path d="M2 -48 Q24 -32 2 -14 Z" fill="#fff" {...st} />
+          <path d="M-40 10 q6 -4 12 0 t12 0 t12 0 t12 0 t12 0 t12 0" fill="none" stroke="#4A90D9" strokeWidth="2" />
+        </g>
+      );
+    case "arrow":
+      return <path d="M-30 0 H22 M12 -10 L24 0 L12 10" fill="none" stroke="#C2413A" strokeWidth="4.5" strokeLinecap="round" strokeLinejoin="round" />;
     default:
       return null;
   }
@@ -411,7 +512,7 @@ export function ComicPanel({ art, lines, scene, no }: { art: ComicArt; lines: { 
           ?.filter((p) => p.kind !== "table")
           .map((p, i) => (
             <g key={i} transform={`translate(${p.x} ${p.y}) scale(${p.s ?? 1})`}>
-              <Prop kind={p.kind} />
+              <Prop kind={p.kind} text={p.text} />
             </g>
           ))}
       </svg>

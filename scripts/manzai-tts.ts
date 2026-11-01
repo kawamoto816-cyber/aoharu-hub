@@ -10,7 +10,7 @@
 
 import { existsSync, mkdirSync, readFileSync, readdirSync, unlinkSync, writeFileSync } from "node:fs";
 import { LECTURES } from "../lib/lecture";
-import { NARRATOR, manzaiKey, manzaiSay, manzaiVoiceOf, novelKey, novelSay } from "../lib/tts/manzai";
+import { manzaiAudio, novelAudio } from "../lib/tts/yomi";
 
 type Job = { dir: string; key: string; text: string; voice: string; rate: number; unit: string };
 
@@ -22,15 +22,14 @@ function collect(): Job[] {
     const st = lec.story;
     if (st?.kind === "manzai") {
       for (const l of st.lines) {
-        const v = manzaiVoiceOf(st.cast, l.who);
-        const key = manzaiKey(st.cast, l);
-        jobs.set(`m/${key}`, { dir: DIRS[0], key, text: manzaiSay(l), voice: v.voice, rate: v.rate, unit: lec.unit });
+        const a = manzaiAudio(st.cast, l);
+        jobs.set(`m/${a.key}`, { dir: DIRS[0], key: a.key, text: a.text, voice: a.voice, rate: a.rate, unit: lec.unit });
       }
     }
     if (st?.kind === "novel") {
       for (const [i, p] of st.paragraphs.entries()) {
-        const key = novelKey(p, st.sayFix, st.say?.[i]);
-        jobs.set(`n/${key}`, { dir: DIRS[1], key, text: novelSay(p, st.sayFix, st.say?.[i]), voice: NARRATOR.voice, rate: NARRATOR.rate, unit: lec.unit });
+        const a = novelAudio(p, st.sayFix, st.say?.[i]);
+        jobs.set(`n/${a.key}`, { dir: DIRS[1], key: a.key, text: a.text, voice: a.voice, rate: a.rate, unit: lec.unit });
       }
     }
   }

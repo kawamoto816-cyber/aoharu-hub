@@ -3,6 +3,7 @@ import { Rich } from "./Rich";
 import { Bubble, ManzaiView } from "./Manzai";
 import { ComicStrip } from "./Comic";
 import { NovelView } from "./Novel";
+import { manzaiAudio, novelAudio } from "@/lib/tts/yomi";
 
 // 物語化パート：小説・4コマ・漫才。どれも「創作」の札と、史実との関係の注を必ず出す。
 
@@ -19,7 +20,7 @@ export function LectureStoryView({ story }: { story: LectureStory }) {
         <Rich text={story.title} />
       </h2>
 
-      {story.kind === "novel" && <NovelView paragraphs={story.paragraphs} sayFix={story.sayFix} say={story.say} />}
+      {story.kind === "novel" && <NovelView paragraphs={story.paragraphs} srcs={story.paragraphs.map((p, i) => novelAudio(p, story.sayFix, story.say?.[i]).src)} />}
 
       {story.kind === "manga4" && story.panels.every((p) => p.art) && <ComicStrip panels={story.panels} />}
 
@@ -44,7 +45,7 @@ export function LectureStoryView({ story }: { story: LectureStory }) {
       )}
 
       {story.kind === "manzai" && (
-        <ManzaiView cast={story.cast} lines={story.lines} />
+        <ManzaiView cast={story.cast} lines={story.lines} srcs={story.lines.map((l) => manzaiAudio(story.cast, l).src)} />
       )}
 
       <p className="m-0 mt-4 rounded-[10px] bg-white/70 px-3 py-2 text-[12px] leading-relaxed text-[#3A3D55]">

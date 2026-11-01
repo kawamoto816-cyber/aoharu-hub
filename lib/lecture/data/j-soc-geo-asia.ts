@@ -34,7 +34,7 @@ export const J_SOC_GEO_ASIA: Lecture = {
       },
       photos: [
         {
-          src: `${M}/ger-mongolia.jpg`, width: 960, height: 638,
+          src: `${M}/ger-mongolia.webp`, width: 800, height: 532,
           alt: "草がまばらな茶色の大地に建つ、布でおおわれた円い形のテント",
           caption: "モンゴルのマンダルゴビ近くの草原に建つゲル（移動式の住居）。季節風の雨がとどかない内陸は乾燥し、家畜とともに移動する{{遊牧}}が行われてきた。",
           credit: { author: "Mark Fischer", license: "CC BY-SA 2.0", licenseUrl: "https://creativecommons.org/licenses/by-sa/2.0", source: "https://commons.wikimedia.org/wiki/File:Mongolian_Ger.jpg" },
@@ -52,7 +52,7 @@ export const J_SOC_GEO_ASIA: Lecture = {
       ],
       photos: [
         {
-          src: `${M}/rice-terraces-bali.jpg`, width: 960, height: 638,
+          src: `${M}/rice-terraces-bali.webp`, width: 800, height: 532,
           alt: "やしの木が立つ山の斜面に、水をはった田が階段のように何段も続いている",
           caption: "インドネシアのバリ島、テガラランの棚田。斜面を段にして水を引き、雨の多い気候を生かして稲を育てる。東南アジアの{{稲作}}の風景。",
           credit: { author: "Philip Nalangan", license: "CC BY 4.0", licenseUrl: "https://creativecommons.org/licenses/by/4.0", source: "https://commons.wikimedia.org/wiki/File:Tegallalang_Rice_Terraces_Bali.jpg" },
@@ -84,7 +84,7 @@ export const J_SOC_GEO_ASIA: Lecture = {
       },
       photos: [
         {
-          src: `${M}/shenzhen-futian.jpg`, width: 960, height: 640,
+          src: `${M}/shenzhen-futian.webp`, width: 800, height: 533,
           alt: "緑の木々の向こうに、高層ビルがたくさん立ちならぶ都市が広がっている",
           caption: "シェンチェン（深圳）の福田区の高層ビル群（2016年）。1980年に{{経済特区}}となり、小さな町から人口1000万人をこえる大都市に成長した。",
           credit: { author: "Huangdan2060", license: "CC BY 3.0", licenseUrl: "https://creativecommons.org/licenses/by/3.0", source: "https://commons.wikimedia.org/wiki/File:Shenzhen_Skyline_from_Futian_District5.jpg" },
@@ -123,7 +123,7 @@ export const J_SOC_GEO_ASIA: Lecture = {
       },
       photos: [
         {
-          src: `${M}/oil-palm-pahang.jpg`, width: 960, height: 720,
+          src: `${M}/oil-palm-pahang.webp`, width: 800, height: 600,
           alt: "道路ぞいに、葉を大きく広げたやしの木がずっと並んで植えられている",
           caption: "マレーシア、パハン州の油やし農園。実からとる{{パーム油}}は食品や洗剤の原料として世界に輸出される。{{プランテーション}}の代表的な作物。",
           credit: { author: "Kistara", license: "CC0", licenseUrl: "http://creativecommons.org/publicdomain/zero/1.0/deed.en", source: "https://commons.wikimedia.org/wiki/File:Oil_palm_plantation_in_Paloh_Hinai,_Pahang.jpg" },
@@ -155,13 +155,13 @@ export const J_SOC_GEO_ASIA: Lecture = {
       },
       photos: [
         {
-          src: `${M}/tea-darjeeling.jpg`, width: 960, height: 723,
+          src: `${M}/tea-darjeeling.webp`, width: 800, height: 603,
           alt: "霧がかかった山の斜面に、低い茶の木が一面に植えられている",
           caption: "インドのダージリン（西ベンガル州）の茶畑。雨が多く霧のかかる山の斜面で、イギリスの植民地時代から{{茶}}がつくられてきた。",
           credit: { author: "Sourabh.biswas003", license: "CC BY-SA 4.0", licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0", source: "https://commons.wikimedia.org/wiki/File:PXL_20240323_065728783_Cloud_and_Tea_Garden_at_Namring_Tea_Garden_Darjeeling_West_Bengal_734226_04.jpg" },
         },
         {
-          src: `${M}/ras-tanura.jpg`, width: 500, height: 333,
+          src: `${M}/ras-tanura.webp`, width: 500, height: 333,
           alt: "青い海に面した乾いた土地に、白い円いタンクと工場の設備がならぶ空からの写真",
           caption: "サウジアラビアのラスタヌラの石油精製所とタンク群を空から見たもの。{{ペルシャ湾}}に面し、原油を製品にしてタンカーで世界に輸出する。",
           credit: { author: "Paul Palmer", license: "Public domain", source: "https://commons.wikimedia.org/wiki/File:Tank_farm_and_refinery_by_Paul_Palmer_2486281049.jpg" },

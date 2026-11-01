@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { NOVEL_GAP, novelKey, novelSrc } from "@/lib/tts/manzai";
+import { NOVEL_GAP } from "@/lib/tts/manzai";
 import { Rich } from "./Rich";
 import { PlayButton } from "./Manzai";
 import { useAudioSequence } from "./useAudioSequence";
@@ -9,8 +9,7 @@ import { useAudioSequence } from "./useAudioSequence";
 // 小説パート：本文 ＋「朗読を聞く」（語り手の声で1段落ずつ続けて読み、いま読んでいる段落にしるしをつける）。
 // 音声ファイルがまだない小説では、再生ボタンを出さない。
 
-export function NovelView({ paragraphs, sayFix, say }: { paragraphs: string[]; sayFix?: Record<string, string>; say?: Record<number, string> }) {
-  const srcs = paragraphs.map((p, i) => novelSrc(novelKey(p, sayFix, say?.[i])));
+export function NovelView({ paragraphs, srcs }: { paragraphs: string[]; srcs: string[] }) {
   const seq = useAudioSequence(srcs, () => NOVEL_GAP);
   const rows = useRef<(HTMLParagraphElement | null)[]>([]);
   useEffect(() => {

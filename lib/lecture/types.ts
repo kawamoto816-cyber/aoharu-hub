@@ -254,11 +254,12 @@ export type ComicFx = "!" | "?" | "sweat" | "idea" | "steam";
 export type ComicProp =
   | "table" | "pancake" | "pancakeHard" | "honey" | "soup" | "straw" | "bubbles" | "splash"
   | "book" | "volcanoFlat" | "volcanoDome" | "rockWhite" | "rockBlack" | "shell" | "cliff" | "loupe"
-  | "factory" | "tshirt" | "map" | "coin" | "scroll" | "helmet";
+  | "factory" | "tshirt" | "map" | "coin" | "scroll" | "helmet"
+  | "board" | "flask" | "bulb" | "magnet" | "battery" | "sun" | "cloud" | "rain" | "plant" | "globe" | "building" | "ship" | "arrow";
 export interface ComicArt {
   bg?: "plain" | "kitchen" | "class" | "outdoor";
   /** x は 0〜340（左→右）。ふきだしは右から順に並ぶので、先に話す人を右に置く */
   cast: { who: string; look: ComicLook; x: number; face?: ComicFace; flip?: boolean; fx?: ComicFx; hand?: [number, number] }[];
-  /** 小道具。x 0〜340, y 0〜280（下が280）。s は大きさ（1 が基準） */
-  props?: { kind: ComicProp; x: number; y: number; s?: number }[];
+  /** 小道具。x 0〜340, y 0〜280（下が280）。s は大きさ（1 が基準）。text は board（札・ボード、8字まで）に書く字 */
+  props?: { kind: ComicProp; x: number; y: number; s?: number; text?: string }[];
 }

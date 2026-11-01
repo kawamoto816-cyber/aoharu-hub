@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { MANZAI_GAP, manzaiKey, manzaiSrc } from "@/lib/tts/manzai";
+import { MANZAI_GAP } from "@/lib/tts/manzai";
 import { Rich } from "./Rich";
 import { useAudioSequence } from "./useAudioSequence";
 
@@ -40,8 +40,7 @@ export function PlayButton({ playing, label, sub, onClick }: { playing: boolean;
   );
 }
 
-export function ManzaiView({ cast, lines }: { cast: [string, string]; lines: Line[] }) {
-  const srcs = lines.map((l) => manzaiSrc(manzaiKey(cast, l)));
+export function ManzaiView({ cast, lines, srcs }: { cast: [string, string]; lines: Line[]; srcs: string[] }) {
   const seq = useAudioSequence(srcs, (i) => (lines[i + 1]?.who === cast[1] ? MANZAI_GAP.toTsukkomi : MANZAI_GAP.toBoke));
   const rows = useRef<(HTMLDivElement | null)[]>([]);
   useEffect(() => {

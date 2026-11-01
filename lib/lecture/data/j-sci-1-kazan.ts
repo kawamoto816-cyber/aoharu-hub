@@ -33,9 +33,9 @@ export const J_SCI_1_KAZAN: Lecture = {
       },
       photos: [
         {
-          src: "/media/commons/j-sci-1-kazan/volcanic-bomb.jpg",
-          width: 960,
-          height: 665,
+          src: "/media/commons/j-sci-1-kazan/volcanic-bomb.webp",
+          width: 800,
+          height: 554,
           alt: "木の板の上に置かれた、ねじれたような筋のある灰色の細長い石",
           caption: "火山弾（アイスランド・ヘクラ山、長さ約17cm）。空中を飛ぶあいだにマグマが冷え固まり、ねじれた筋が残った{{火山噴出物}}。",
           credit: { author: "Roger McLassus", license: "CC BY-SA 3.0", licenseUrl: "http://creativecommons.org/licenses/by-sa/3.0/", source: "https://commons.wikimedia.org/wiki/File:Volcanic_bomb_from_Hekla.jpg" },
@@ -70,7 +70,7 @@ export const J_SCI_1_KAZAN: Lecture = {
       },
       photos: [
         {
-          src: "/media/commons/j-sci-1-kazan/mauna-loa.jpg",
+          src: "/media/commons/j-sci-1-kazan/mauna-loa.webp",
           width: 800,
           height: 361,
           alt: "空から見た、横に長くなだらかに広がる大きな山",
@@ -78,17 +78,17 @@ export const J_SCI_1_KAZAN: Lecture = {
           credit: { author: "J.D. Griggs (USGS)", license: "Public domain", source: "https://commons.wikimedia.org/wiki/File:Mauna_Loa_Volcano.jpg" },
         },
         {
-          src: "/media/commons/j-sci-1-kazan/sakurajima.jpg",
-          width: 960,
-          height: 640,
+          src: "/media/commons/j-sci-1-kazan/sakurajima.webp",
+          width: 800,
+          height: 533,
           alt: "海の向こうにそびえる、すそが広がった円すい形の山",
           caption: "桜島（鹿児島県）。溶岩と火山灰が交互に積み重なってできた{{成層火山}}で、ねばりけは中くらい。今も噴火をくり返している。",
           credit: { author: "Suicasmo", license: "CC BY-SA 4.0", licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0", source: "https://commons.wikimedia.org/wiki/File:Sakurajima_20170221-3.jpg" },
         },
         {
-          src: "/media/commons/j-sci-1-kazan/showa-shinzan.jpg",
-          width: 960,
-          height: 640,
+          src: "/media/commons/j-sci-1-kazan/showa-shinzan.webp",
+          width: 800,
+          height: 533,
           alt: "森の上にもり上がった、赤茶色と白っぽい岩はだの小さな山",
           caption: "昭和新山（北海道）。1943〜45年に畑がもり上がってできた溶岩ドーム。{{ねばりけの強いマグマ}}が流れずにおし上げた形。",
           credit: { author: "Mugu-shisai", license: "CC BY-SA 3.0", licenseUrl: "https://creativecommons.org/licenses/by-sa/3.0", source: "https://commons.wikimedia.org/wiki/File:Mount_Showa-shinzan_01.jpg" },
@@ -139,7 +139,7 @@ export const J_SCI_1_KAZAN: Lecture = {
       },
       photos: [
         {
-          src: "/media/commons/j-sci-1-kazan/andesite-thin.jpg",
+          src: "/media/commons/j-sci-1-kazan/andesite-thin.webp",
           width: 800,
           height: 533,
           alt: "黒っぽい細かい地の中に、灰色やオレンジ色の大きな結晶が散らばっている顕微鏡写真",
@@ -147,9 +147,9 @@ export const J_SCI_1_KAZAN: Lecture = {
           credit: { author: "Siim Sepp", license: "CC BY-SA 3.0", licenseUrl: "http://creativecommons.org/licenses/by-sa/3.0/", source: "https://commons.wikimedia.org/wiki/File:Andesite_pmg_ss_2006.jpg" },
         },
         {
-          src: "/media/commons/j-sci-1-kazan/granite.jpg",
-          width: 960,
-          height: 637,
+          src: "/media/commons/j-sci-1-kazan/granite.webp",
+          width: 800,
+          height: 531,
           alt: "白い粒の中に黒い粒がまだらに混じった岩石の標本",
           caption: "花こう岩の標本（はば約9cm）。白い長石・半透明の石英と、黒い黒雲母の粒がすき間なく組み合わさった{{等粒状組織}}。",
           credit: { author: "Dexter Perkins", license: "CC0", licenseUrl: "http://creativecommons.org/publicdomain/zero/1.0/deed.en", source: "https://commons.wikimedia.org/wiki/File:Biotite_granite_(GeoDIL_number_-_18).jpg" },

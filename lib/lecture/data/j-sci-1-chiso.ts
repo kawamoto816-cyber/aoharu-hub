@@ -63,9 +63,9 @@ export const J_SCI_1_CHISO: Lecture = {
       ],
       photos: [
         {
-          src: "/media/commons/j-sci-1-chiso/izu-oshima-ash.jpg",
-          width: 960,
-          height: 720,
+          src: "/media/commons/j-sci-1-chiso/izu-oshima-ash.webp",
+          width: 800,
+          height: 600,
           alt: "道路わきの高いがけに、うすい茶色とこい茶色のしまが何十本も重なり、ゆるやかに波打っている",
           caption: "伊豆大島（東京都）の道路わきのがけ。噴火のたびに降った火山灰などが重なった地層。火山灰の層は広く同時に積もるので{{かぎ層}}になる。",
           credit: {
@@ -139,9 +139,9 @@ export const J_SCI_1_CHISO: Lecture = {
       },
       photos: [
         {
-          src: "/media/commons/j-sci-1-chiso/trilobite.jpg",
-          width: 960,
-          height: 1440,
+          src: "/media/commons/j-sci-1-chiso/trilobite.webp",
+          width: 800,
+          height: 1200,
           alt: "楕円形の石に、頭と、横に節がたくさん並んだ胴体をもつ生き物の形がうき出ている",
           caption: "三葉虫の化石（中国・河南省地質博物館）。体が多くの節に分かれた海の節足動物で、{{古生代}}の地層を示す{{示準化石}}。",
           credit: {
@@ -152,9 +152,9 @@ export const J_SCI_1_CHISO: Lecture = {
           },
         },
         {
-          src: "/media/commons/j-sci-1-chiso/ammonite.jpg",
-          width: 960,
-          height: 1280,
+          src: "/media/commons/j-sci-1-chiso/ammonite.webp",
+          width: 800,
+          height: 1067,
           alt: "うずまき形の殻を半分に切った断面。中が多くの小さな部屋に仕切られている",
           caption: "アンモナイトの化石の断面（ロンドン自然史博物館）。うずまきの殻の中が部屋に仕切られている。{{中生代}}の{{示準化石}}。",
           credit: {
@@ -177,9 +177,9 @@ export const J_SCI_1_CHISO: Lecture = {
       ],
       photos: [
         {
-          src: "/media/commons/j-sci-1-chiso/millook-fold.jpg",
-          width: 960,
-          height: 652,
+          src: "/media/commons/j-sci-1-chiso/millook-fold.webp",
+          width: 800,
+          height: 543,
           alt: "海岸のがけに、うすい地層がジグザグに何度も折れ曲がったしま模様が見える",
           caption: "ミルック・ヘイブン（イギリス）の海岸のがけ。海底でできた泥岩と砂岩の地層が、横からおされてジグザグに曲がった{{しゅう曲}}。",
           credit: {
@@ -190,9 +190,9 @@ export const J_SCI_1_CHISO: Lecture = {
           },
         },
         {
-          src: "/media/commons/j-sci-1-chiso/nojima-fault.jpg",
-          width: 960,
-          height: 720,
+          src: "/media/commons/j-sci-1-chiso/nojima-fault.webp",
+          width: 800,
+          height: 600,
           alt: "建物の中に保存された大きな地面の断面。斜めの境目をはさんで、左右で土の色がちがう",
           caption: "野島断層の断面（兵庫県淡路市・野島断層保存館）。1995年の兵庫県南部地震で動いた{{断層}}で、斜めの境目で両側がずれている。",
           credit: {
@@ -203,9 +203,9 @@ export const J_SCI_1_CHISO: Lecture = {
           },
         },
         {
-          src: "/media/commons/j-sci-1-chiso/muroto-turbidite.jpg",
-          width: 960,
-          height: 720,
+          src: "/media/commons/j-sci-1-chiso/muroto-turbidite.webp",
+          width: 800,
+          height: 600,
           alt: "海岸の岩場で、うすい板のような地層がほぼ垂直に立ち並んでいる",
           caption: "室戸岬（高知県）の岩場。深い海底で砂と泥が交互に積もった地層が、{{隆起}}して陸に現れ、立ち上がるほど傾いている。",
           credit: {

@@ -23,7 +23,7 @@ export const J_SOC_HIST_KAMAKURA: Lecture = {
       ],
       photos: [
         {
-          src: `${C}/yoritomo.jpg`, width: 960, height: 1196,
+          src: `${C}/yoritomo.webp`, width: 800, height: 997,
           alt: "黒い装束に冠をつけ、刀を差してすわる男性の肖像画",
           caption: "伝源頼朝像（京都・神護寺）。鎌倉時代の写実的な肖像画（似絵）として知られる。描かれた人物を足利直義とみる説もある。",
           credit: { author: "Fujiwara no Takanobu", license: "Public domain", source: "https://commons.wikimedia.org/wiki/File:Minamoto_no_Yoritomo.jpg" },
@@ -59,7 +59,7 @@ export const J_SOC_HIST_KAMAKURA: Lecture = {
       ],
       photos: [
         {
-          src: `${C}/bushi-house.jpg`, width: 960, height: 941,
+          src: `${C}/bushi-house.webp`, width: 800, height: 784,
           alt: "板塀に囲まれた屋敷。庭に馬や鷹がいて、門の前に人がすわっている絵巻の一場面",
           caption: "武士の館（『一遍聖絵』より、13世紀末）。塀に囲まれた屋敷で、馬屋の馬や鷹も見える。御家人はこうした館を拠点に領地を治めた。",
           credit: { author: "作者不明", license: "Public domain", source: "https://commons.wikimedia.org/wiki/File:Bushinoie-g.jpg" },
@@ -110,7 +110,7 @@ export const J_SOC_HIST_KAMAKURA: Lecture = {
       ],
       photos: [
         {
-          src: `${C}/fukuoka-market.jpg`, width: 781, height: 635,
+          src: `${C}/fukuoka-market.webp`, width: 781, height: 635,
           alt: "小屋の下に人々が集まり品物を並べる市と、刀を手にした男たちが描かれた絵巻の一場面",
           caption: "備前国（岡山県）福岡の市（『一遍聖絵』、1299年）。小屋で布や米・魚などが売り買いされている。{{定期市}}のにぎわいを伝える資料。",
           credit: { author: "円伊", license: "Public domain", source: "https://commons.wikimedia.org/wiki/File:Ippen_shonin_eden_IV_-_Hukuoka.jpg" },
@@ -129,7 +129,7 @@ export const J_SOC_HIST_KAMAKURA: Lecture = {
       ],
       photos: [
         {
-          src: `${C}/kongorikishi.jpg`, width: 960, height: 1306,
+          src: `${C}/kongorikishi.webp`, width: 800, height: 1088,
           alt: "口を大きく開き、片手を広げて立つ木造の力強い仁王像の白黒写真",
           caption: "東大寺南大門の{{金剛力士像}}（阿形、奈良県）。運慶・快慶らが1203年に制作。筋肉や衣のうねりまで表した写実的な鎌倉彫刻。",
           credit: { author: "今泉篤男 et al.", license: "Public domain", source: "https://commons.wikimedia.org/wiki/File:Todaiji_Nandaimon_Agy%C5%8D.jpg" },
@@ -158,13 +158,13 @@ export const J_SOC_HIST_KAMAKURA: Lecture = {
       ],
       photos: [
         {
-          src: `${C}/moko-shurai.jpg`, width: 960, height: 321,
+          src: `${C}/moko-shurai.webp`, width: 800, height: 268,
           alt: "右側で馬に乗った武士が矢を受け、左側の元軍の兵が弓を構え、空中で火の玉が破裂している絵巻",
           caption: "『蒙古襲来絵詞』（13世紀末）。右が御家人の竹崎季長、中央上で炸裂するのが元軍の火薬兵器「てつはう」。元兵の一部をのちの書き加えとみる説もある。",
           credit: { author: "作者不明（竹崎季長が作らせた）", license: "Public domain", source: "https://commons.wikimedia.org/wiki/File:M%C5%8Dko_Sh%C5%ABrai_Ekotoba.jpg" },
         },
         {
-          src: `${C}/genko-borui.jpg`, width: 960, height: 720,
+          src: `${C}/genko-borui.webp`, width: 800, height: 600,
           alt: "芝生の中に低く長く続く石積みの壁の遺構",
           caption: "元寇防塁の跡（福岡市早良区西新）。文永の役のあと博多湾沿いに築かれた石の壁で、弘安の役で元軍の上陸をはばんだ。",
           credit: { author: "Momotarou2012", license: "CC BY-SA 3.0", licenseUrl: "https://creativecommons.org/licenses/by-sa/3.0", source: "https://commons.wikimedia.org/wiki/File:Genko_Borui_Nishijin_Fukuoka_02.jpg" },
