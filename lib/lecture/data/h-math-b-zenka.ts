@@ -32,7 +32,7 @@ export const H_MATH_B_ZENKA: Lecture = {
         rows: [
           { label: "aₙ₊₁＝aₙ＋d", cells: ["等差（公差 d）", "aₙ＝a₁＋(n−1)d"] },
           { label: "aₙ₊₁＝raₙ", cells: ["等比（公比 r）", "aₙ＝a₁rⁿ⁻¹"] },
-          { label: "aₙ₊₁＝aₙ＋f(n)", cells: ["階差が f(n)", "a₁＋Σₖ₌₁ⁿ⁻¹ f(k)"] },
+          { label: "aₙ₊₁＝aₙ＋f(n)", cells: ["階差が f(n)", "aₙ＝a₁＋Σₖ₌₁ⁿ⁻¹ f(k)"] },
         ],
         note: "階差型の式は n≧2 で求めたもの。最後に n＝1 でも成り立つか確かめる。",
       },
