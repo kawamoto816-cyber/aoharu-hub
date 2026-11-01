@@ -163,6 +163,8 @@ export interface LectureSection {
 export interface Lecture {
   /** 学校の地図 (lib/school) の単元 id */
   unit: string;
+  /** 小学校の単元名をルビつきで（例：垂直《すいちょく》・平行と四角形）。ページの見出しに使う。なければ地図の単元名。 */
+  nameRuby?: string;
   title: string;
   /** 導入：なぜ学ぶか・身近な例 (2〜3文) */
   hook: string;

@@ -1,5 +1,5 @@
 import type { CompareFigure, TimelineFigure, TreeFigure, TreeNode } from "@/lib/lecture/types";
-import { Rich, TONE_BOX } from "./Rich";
+import { plain, Rich, TONE_BOX } from "./Rich";
 
 // 比較表 (compare)・年表 (timeline)・分類の木 (tree)。どれも HTML。
 
@@ -23,7 +23,7 @@ export function CompareFig({ fig }: { fig: CompareFigure }) {
             {hasLabel && <th scope="col" className="w-[27%] bg-[#F7F6F1] p-2 text-left text-[11px] font-black text-[#3A3D55]"><span className="sr-only">項目</span></th>}
             {fig.columns.map((c, i) => (
               <th key={c.title} scope="col" className={`p-2 text-center text-[13.5px] font-black ${HEAD[c.tone ?? "plain"]} ${i > 0 || hasLabel ? "border-l-[1.5px] border-[#15172B]" : ""}`}>
-                {c.title}
+                <Rich text={c.title} />
               </th>
             ))}
           </tr>
@@ -33,7 +33,7 @@ export function CompareFig({ fig }: { fig: CompareFigure }) {
             <tr key={ri} className={ri % 2 === 1 ? "bg-[#FFFBE6]" : "bg-white"}>
               {hasLabel && (
                 <th scope="row" className="border-t-[1.5px] border-[#15172B] bg-[#F7F6F1] p-2 text-left text-[12px] font-black">
-                  {r.label}
+                  <Rich text={r.label ?? ""} />
                 </th>
               )}
               {r.cells.map((c, ci) => (
@@ -63,10 +63,10 @@ export function TimelineFig({ fig }: { fig: TimelineFigure }) {
   return (
     <div className="grid gap-3">
       {groups.map((g, gi) => (
-        <section key={gi} aria-label={g.era?.label}>
+        <section key={gi} aria-label={g.era ? plain(g.era.label) : undefined}>
           {g.era && (
             <p className="m-0 flex items-baseline gap-2 rounded-[8px] bg-[#15172B] px-2.5 py-1 text-[13px] font-black text-white">
-              {g.era.label}
+              <Rich text={g.era.label} />
               <span className="text-[11px] font-bold text-[#FFE45C]">
                 {g.era.from}〜{g.era.to}
               </span>
@@ -75,7 +75,7 @@ export function TimelineFig({ fig }: { fig: TimelineFigure }) {
           <ol className="m-0 mt-1 list-none p-0">
             {g.items.map((ev) => (
               <li key={`${ev.year}-${ev.label}`} className="grid grid-cols-[76px_14px_1fr] items-stretch gap-x-2">
-                <span className="py-1.5 text-right text-[13px] font-black tabular-nums text-[#1533B8]">{ev.yearLabel ?? ev.year}</span>
+                <span className="py-1.5 text-right text-[13px] font-black tabular-nums text-[#1533B8]">{ev.yearLabel ? <Rich text={ev.yearLabel} /> : ev.year}</span>
                 <span aria-hidden="true" className="relative flex justify-center">
                   <span className="absolute inset-y-0 w-[2px] bg-[#15172B]" />
                   <span className={`relative mt-[9px] h-3 w-3 rounded-full border-2 border-[#15172B] ${ev.key ? "bg-[#FFE45C]" : "bg-white"}`} />
@@ -113,7 +113,7 @@ function TreeBox({ node }: { node: TreeNode }) {
       <span className="text-[14px] font-black leading-snug">
         <Rich text={node.label} />
       </span>
-      {node.sub && <span className="ml-1.5 text-[11.5px] font-bold leading-snug opacity-80">{node.sub}</span>}
+      {node.sub && <span className="ml-1.5 text-[11.5px] font-bold leading-snug opacity-80"><Rich text={node.sub} /></span>}
     </span>
   );
 }

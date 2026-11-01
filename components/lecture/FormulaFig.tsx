@@ -21,7 +21,7 @@ export function FormulaFig({ fig }: { fig: FormulaFigure }) {
             </span>
             <div className="min-w-0 flex-1">
               <p className={`m-0 break-words font-bold leading-relaxed ${fig.prose ? "text-[15.5px]" : "font-mono text-[17px] tracking-tight"}`}>
-                {s.label && <span className="mr-2 inline-block rounded-[6px] bg-[#15172B] px-1.5 py-0.5 align-middle font-sans text-[11px] font-black tracking-normal text-white">{s.label}</span>}
+                {s.label && <span className="mr-2 inline-block rounded-[6px] bg-[#15172B] px-1.5 py-0.5 align-middle font-sans text-[11px] font-black tracking-normal text-white"><Rich text={s.label} /></span>}
                 <Rich text={s.expr} variant="change" />
               </p>
               {s.note && <p className="m-0 text-[12px] font-bold leading-snug text-[#3A3D55]"><Rich text={s.note} /></p>}

@@ -50,7 +50,7 @@ export function CycleFig({ fig }: { fig: CycleFigure }) {
               <p className="m-0 text-[13.5px] font-black leading-tight">
                 <Rich text={s.label} />
               </p>
-              {s.sub && <p className="m-0 mt-0.5 text-[10.5px] font-bold leading-snug opacity-85">{s.sub}</p>}
+              {s.sub && <p className="m-0 mt-0.5 text-[10.5px] font-bold leading-snug opacity-85"><Rich text={s.sub} /></p>}
             </li>
           );
         })}

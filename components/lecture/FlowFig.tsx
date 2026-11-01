@@ -9,7 +9,7 @@ export function Box({ node, className = "" }: { node: FigNode; className?: strin
       <p className="m-0 text-[14px] font-black leading-snug">
         <Rich text={node.label} />
       </p>
-      {node.sub && <p className="m-0 mt-0.5 text-[11.5px] font-bold leading-snug opacity-80">{node.sub}</p>}
+      {node.sub && <p className="m-0 mt-0.5 text-[11.5px] font-bold leading-snug opacity-80"><Rich text={node.sub} /></p>}
     </div>
   );
 }

@@ -26,8 +26,8 @@ function BarFig({ fig }: { fig: BarArea }) {
           return (
             <div key={b.label} className="relative">
               <p className="m-0 flex items-baseline justify-between gap-2 text-[12.5px] font-black">
-                <span>{b.label}</span>
-                {b.total && <span className="text-[#1533B8]">{b.total}</span>}
+                <span><Rich text={b.label} /></span>
+                {b.total && <span className="text-[#1533B8]"><Rich text={b.total} /></span>}
               </p>
               <div className="mt-1 flex h-9 overflow-hidden rounded-[8px] border-[1.5px] border-[#15172B] bg-white" style={{ width: pct(sum) }}>
                 {b.parts.map((p, i) => (
@@ -36,7 +36,7 @@ function BarFig({ fig }: { fig: BarArea }) {
                     style={{ flexGrow: p.value, flexBasis: 0 }}
                     className={`flex min-w-0 items-center justify-center px-1 text-center text-[12px] font-black leading-tight ${i > 0 ? "border-l-[1.5px] border-l-[#15172B]" : ""} ${SEG[p.tone ?? "blue"]}`}
                   >
-                    {p.label}
+                    {p.label && <Rich text={p.label} />}
                   </span>
                 ))}
               </div>
@@ -56,13 +56,13 @@ function BarFig({ fig }: { fig: BarArea }) {
                 className={`absolute top-0 flex flex-col text-[11.5px] font-black text-[#15172B] ${first ? "items-start" : last ? "-translate-x-full items-end" : "-translate-x-1/2 items-center"}`}
               >
                 <span aria-hidden="true" className="h-1.5 w-0 border-l-[1.5px] border-[#15172B]" />
-                <span className="whitespace-nowrap">{s.label}</span>
+                <span className="whitespace-nowrap"><Rich text={s.label} /></span>
               </span>
             );
           })}
         </div>
       )}
-      {fig.scaleLabel && <p className="m-0 text-right text-[11px] font-bold text-[#3A3D55]">目もり：{fig.scaleLabel}</p>}
+      {fig.scaleLabel && <p className="m-0 text-right text-[11px] font-bold text-[#3A3D55]">目もり：<Rich text={fig.scaleLabel} /></p>}
     </div>
   );
 }
@@ -79,7 +79,7 @@ function RectFig({ fig }: { fig: RectArea }) {
             style={{ height: Math.max(64, (r.h / maxH) * CH) }}
             className={`relative flex flex-col items-center justify-center border-[1.5px] p-1.5 text-center ${i > 0 ? "-ml-[1.5px]" : ""} ${TONE_BOX[r.tone ?? "blue"]}`}
           >
-            {r.hLabel && <span className="absolute left-1.5 top-1 text-[11px] font-black opacity-80">↕ {r.hLabel}</span>}
+            {r.hLabel && <span className="absolute left-1.5 top-1 text-[11px] font-black opacity-80">↕ <Rich text={r.hLabel} /></span>}
             {r.label && (
               <span className="mt-3 text-[14px] font-black leading-snug">
                 <Rich text={r.label} />
@@ -89,7 +89,7 @@ function RectFig({ fig }: { fig: RectArea }) {
           {r.wLabel && (
             <p className="m-0 mt-1 flex items-center gap-1 text-[11.5px] font-black text-[#15172B]">
               <span aria-hidden="true" className="h-0 flex-1 border-t-[1.5px] border-[#15172B]" />
-              <span className="whitespace-nowrap">{r.wLabel}</span>
+              <span className="whitespace-nowrap"><Rich text={r.wLabel} /></span>
               <span aria-hidden="true" className="h-0 flex-1 border-t-[1.5px] border-[#15172B]" />
             </p>
           )}

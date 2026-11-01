@@ -1,6 +1,6 @@
 import { useId } from "react";
 import type { FigNode, Figure, TreeNode } from "@/lib/lecture/types";
-import { plain } from "./Rich";
+import { plain, Rich } from "./Rich";
 import { FlowFig, CauseFig } from "./FlowFig";
 import { CycleFig } from "./CycleFig";
 import { CompareFig, TimelineFig, TreeFig } from "./TableFigs";
@@ -75,12 +75,12 @@ export function LectureFigure({ fig, no }: { fig: Figure; no: number }) {
     <figure aria-labelledby={`${id}-t`} aria-describedby={`${id}-d`} className="m-0 mt-4 rounded-[16px] border-[1.5px] border-[#15172B] bg-white p-3.5 shadow-[3px_3px_0_#15172B] sm:p-4">
       <figcaption id={`${id}-t`} className="m-0 mb-3 flex items-baseline gap-2 text-[13px] font-black text-[#1533B8]">
         <span className="flex-none rounded-full bg-[#1533B8] px-2 py-0.5 text-[11px] text-white">図{no}</span>
-        <span>{fig.title}</span>
+        <span><Rich text={fig.title} /></span>
       </figcaption>
       <Body fig={fig} />
-      {fig.note && <p className="m-0 mt-3 rounded-[10px] bg-[#FFFBE6] px-3 py-2 text-[12.5px] font-bold leading-relaxed text-[#3A3D55]">{plain(fig.note)}</p>}
+      {fig.note && <p className="m-0 mt-3 rounded-[10px] bg-[#FFFBE6] px-3 py-2 text-[12.5px] font-bold leading-relaxed text-[#3A3D55]"><Rich text={fig.note} /></p>}
       <p id={`${id}-d`} className="sr-only">
-        {describe(fig)}
+        {plain(describe(fig))}
       </p>
     </figure>
   );

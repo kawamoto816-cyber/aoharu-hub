@@ -1,5 +1,5 @@
 import type { NumberLineFigure } from "@/lib/lecture/types";
-import { TONE_STROKE } from "./Rich";
+import { rubyReading, TONE_STROKE } from "./Rich";
 
 // 数直線 (numberline)。SVG で目もり・点・区間・移動の矢印 (上の弧) を描く。
 // 幅 340 の座標で描いて画面幅に合わせて縮める。狭すぎるときは横スクロール。
@@ -57,7 +57,7 @@ export function NumberLineFig({ fig }: { fig: NumberLineFigure }) {
         {arcs.map((a, i) =>
           a.label ? (
             <text key={i} x={a.mid} y={a.peak - 5} textAnchor="middle" fontSize="12" fontWeight="900" fill={TONE_STROKE[a.tone]} stroke="#fff" strokeWidth="5" strokeLinejoin="round" paintOrder="stroke">
-              {a.label}
+              {rubyReading(a.label)}
             </text>
           ) : null,
         )}
@@ -71,7 +71,7 @@ export function NumberLineFig({ fig }: { fig: NumberLineFigure }) {
               <circle cx={x(r.to)} cy={y} r="5" fill={r.openTo ? "#fff" : c} stroke={c} strokeWidth="2" />
               {r.label && (
                 <text x={(x(r.from) + x(r.to)) / 2} y={H - 4} textAnchor="middle" fontSize="12" fontWeight="900" fill={c}>
-                  {r.label}
+                  {rubyReading(r.label)}
                 </text>
               )}
             </g>
@@ -97,7 +97,7 @@ export function NumberLineFig({ fig }: { fig: NumberLineFigure }) {
               <circle cx={x(p.x)} cy={y} r="5.5" fill={p.tone === "yellow" ? "#FFE45C" : c} stroke="#15172B" strokeWidth="1.5" />
               {p.label && (
                 <text x={x(p.x)} y={y + 40} textAnchor="middle" fontSize="12.5" fontWeight="900" fill={p.tone === "yellow" ? "#15172B" : c}>
-                  {p.label}
+                  {rubyReading(p.label)}
                 </text>
               )}
             </g>
