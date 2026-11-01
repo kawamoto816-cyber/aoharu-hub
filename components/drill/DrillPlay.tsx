@@ -5,13 +5,16 @@ import Link from "next/link";
 import type { DrillQ } from "@/lib/drill/types";
 import { recordDrill, useDrill } from "@/lib/drill/progress";
 import { trackEvent } from "@/lib/analytics";
+import { recordMistake, recordRight, type MistakeMeta } from "@/lib/learn/mistakes";
+
+export const NOTE_HREF = "/learn/note";
 
 // ②鍛える: 20問から10問を選び、選択肢もシャッフルして4択。9問正解で合格。
 
 export const DRILL_COUNT = 10;
 export const DRILL_PASS = 9;
 
-function shuffle<T>(xs: T[]): T[] {
+export function shuffle<T>(xs: T[]): T[] {
   const a = [...xs];
   for (let i = a.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -20,11 +23,11 @@ function shuffle<T>(xs: T[]): T[] {
   return a;
 }
 
-const card = "rounded-[18px] border-[1.5px] border-[#15172B] bg-white p-5 shadow-[4px_4px_0_#15172B]";
-const bigBtn = "flex min-h-[56px] w-full items-center justify-center rounded-[14px] border-[1.5px] border-[#15172B] text-[17px] font-black";
+export const card = "rounded-[18px] border-[1.5px] border-[#15172B] bg-white p-5 shadow-[4px_4px_0_#15172B]";
+export const bigBtn = "flex min-h-[56px] w-full items-center justify-center rounded-[14px] border-[1.5px] border-[#15172B] text-[17px] font-black";
 
 /** 画面の言葉。kids = 小1・小2の単元 (ひらがな多め) */
-function words(kids: boolean, n: number) {
+export function words(kids: boolean, n: number) {
   return kids
     ? {
         title: `4つから えらぶ もんだい ${DRILL_COUNT}もん。${DRILL_PASS}もん あたれば ごうかく`,
@@ -49,6 +52,8 @@ function words(kids: boolean, n: number) {
         cleared: "・ごうかく ずみ",
         markOk: "（せいかい）",
         markNg: "（えらんだ こたえ・まちがい）",
+        noteIn: (k: number) => `まちがいノートに ${k}もん はいったよ`,
+        noteGo: "ノートで ときなおす →",
       }
     : {
         title: `4択${DRILL_COUNT}問・${DRILL_PASS}問正解で合格`,
@@ -73,13 +78,15 @@ function words(kids: boolean, n: number) {
         cleared: "・合格ずみ",
         markOk: "（正解）",
         markNg: "（選んだ答え・まちがい）",
+        noteIn: (k: number) => `まちがいノートに ${k}問入りました`,
+        noteGo: "ノートで解き直す →",
       };
 }
 
-type Words = ReturnType<typeof words>;
+export type Words = ReturnType<typeof words>;
 type Next = { href: string; name: string };
 
-function Blank({ q, fill, state }: { q: string; fill?: string; state?: "ok" | "ng" }) {
+export function Blank({ q, fill, state }: { q: string; fill?: string; state?: "ok" | "ng" }) {
   const parts = q.split("___");
   if (parts.length < 2) return <>{q}</>;
   return (
@@ -91,7 +98,7 @@ function Blank({ q, fill, state }: { q: string; fill?: string; state?: "ok" | "n
   );
 }
 
-function Game({ unit, qs, onRestart, w, next }: { unit: string; qs: DrillQ[]; onRestart: () => void; w: Words; next?: Next }) {
+function Game({ unit, qs, onRestart, w, next, meta }: { unit: string; qs: DrillQ[]; onRestart: () => void; w: Words; next?: Next; meta: MistakeMeta }) {
   const set = useMemo(() => shuffle(qs).slice(0, DRILL_COUNT).map((q) => ({ q, order: shuffle([0, 1, 2, 3]) })), [qs]);
   const [i, setI] = useState(0);
   const [picked, setPicked] = useState<number | null>(null);
@@ -126,6 +133,15 @@ function Game({ unit, qs, onRestart, w, next }: { unit: string; qs: DrillQ[]; on
             </a>
           )}
         </div>
+        {miss.length > 0 && (
+          <Link
+            href={NOTE_HREF}
+            className="mt-4 flex min-h-[48px] flex-wrap items-center justify-between gap-x-2 gap-y-0.5 rounded-[14px] border-[1.5px] border-[#15172B] bg-[#FFFBE6] px-4 py-2.5 text-[#15172B] no-underline shadow-[3px_3px_0_#15172B]"
+          >
+            <span className="text-[14px] font-black">{w.noteIn(miss.length)}</span>
+            <span className="text-[14px] font-black text-[#1533B8]">{w.noteGo}</span>
+          </Link>
+        )}
         {miss.length > 0 && (
           <div className="mt-4 grid gap-2">
             <p className="m-0 text-[13px] font-black text-[#D9341F]">{w.missTitle}</p>
@@ -174,8 +190,13 @@ function Game({ unit, qs, onRestart, w, next }: { unit: string; qs: DrillQ[]; on
                 disabled={answered}
                 onClick={() => {
                   setPicked(k);
-                  if (k === cur.q.a) setOk((n) => n + 1);
-                  else setMiss((m) => [...m, cur.q]);
+                  if (k === cur.q.a) {
+                    setOk((n) => n + 1);
+                    recordRight(meta.unitId, cur.q.q);
+                  } else {
+                    setMiss((m) => [...m, cur.q]);
+                    recordMistake(meta, { q: cur.q.q, choices: cur.q.c, answer: cur.q.a, ex: cur.q.ex }, k);
+                  }
                 }}
                 className={`flex min-h-[52px] items-center rounded-[12px] border-[1.5px] px-3 py-2 text-left text-[16px] font-bold leading-snug text-[#15172B] ${st === "right" ? "border-[#1533B8] bg-[#E3E8FF]" : st === "wrong" ? "border-[#D9341F] bg-[#FFE6E1]" : "border-[#15172B] bg-white"}`}
               >
@@ -223,8 +244,9 @@ function Game({ unit, qs, onRestart, w, next }: { unit: string; qs: DrillQ[]; on
   );
 }
 
-export function DrillPlay({ unit, qs, kids = false, next }: { unit: string; qs: DrillQ[]; kids?: boolean; next?: Next }) {
+export function DrillPlay({ unit, qs, kids = false, next, note }: { unit: string; qs: DrillQ[]; kids?: boolean; next?: Next; note?: Omit<MistakeMeta, "unitId" | "kids"> }) {
   const [round, setRound] = useState(-1);
+  const meta: MistakeMeta = { unitId: unit, kids, unitName: note?.unitName ?? unit, href: note?.href ?? "", subject: note?.subject ?? "" };
   const rec = useDrill()[unit];
   const w = words(kids, qs.length);
   if (round < 0)
@@ -243,5 +265,5 @@ export function DrillPlay({ unit, qs, kids = false, next }: { unit: string; qs: 
         </button>
       </div>
     );
-  return <Game key={round} unit={unit} qs={qs} w={w} next={next} onRestart={() => setRound((r) => r + 1)} />;
+  return <Game key={round} unit={unit} qs={qs} w={w} next={next} meta={meta} onRestart={() => setRound((r) => r + 1)} />;
 }

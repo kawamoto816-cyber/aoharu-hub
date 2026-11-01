@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { LearnShell } from "@/components/learn/LearnShell";
 import { LegacyHashRedirect } from "@/components/learn/LegacyHashRedirect";
+import { NoteLink } from "@/components/drill/NoteLink";
 import { TOPICS } from "@/lib/learn/topics";
 import { schoolCounts } from "@/lib/school";
 
@@ -200,6 +201,11 @@ export default function LearnHub() {
           </li>
         ))}
       </ol>
+
+      <div className="mt-4 flex flex-wrap items-center gap-2">
+        <NoteLink />
+        <span className="text-[12.5px] text-[#3A3D55]">ドリルでまちがえた問題が自動でたまります</span>
+      </div>
 
       <section aria-labelledby="map-heading" className="mt-10">
         <h2 id="map-heading" className="m-0 text-[20px] font-black">

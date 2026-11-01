@@ -4,6 +4,7 @@ import Link from "next/link";
 import { LearnShell } from "@/components/learn/LearnShell";
 import { DrillPlay } from "./DrillPlay";
 import { DrillMark } from "./DrillMarks";
+import { NoteLink } from "./NoteLink";
 import { DRILL_SETS, drillUnitGroup, drillUnitName, type DrillSetKey } from "@/lib/drill";
 import { hasLecture, lectureHref } from "@/lib/lecture";
 
@@ -112,7 +113,12 @@ export function DrillUnitPage({ setKey, unit }: { setKey: DrillSetKey; unit: str
         <h2 id="dr-h" className="m-0 mb-2 text-[13px] font-black text-[#1533B8]">
           ②鍛える　4択ドリル
         </h2>
-        <DrillPlay unit={u.unit} qs={u.qs} kids={kids} next={next ? { href: `/learn/${setKey}/${next.unit}`, name: drillUnitName(next.unit) } : undefined} />
+        <DrillPlay unit={u.unit} qs={u.qs} kids={kids} next={next ? { href: `/learn/${setKey}/${next.unit}`, name: drillUnitName(next.unit) } : undefined}
+          note={{ unitName: drillUnitName(u.unit), href: `/learn/${setKey}/${u.unit}`, subject: s.name }}
+        />
+        <div className="mt-3 flex justify-end">
+          <NoteLink kids={kids} />
+        </div>
       </section>
       <nav aria-label="前後の単元" className="mt-8 grid grid-cols-2 gap-2.5">
         {prev ? (
