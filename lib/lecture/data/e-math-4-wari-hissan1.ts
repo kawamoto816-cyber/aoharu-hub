@@ -80,8 +80,8 @@ export const E_MATH_4_WARI_HISSAN1: Lecture = {
     { q: "812÷4 はいくつですか。", a: "203", why: "8÷4＝2、1÷4 はたたないので0、12÷4＝3。" },
   ],
   next: [
-    { label: "計算の段で「÷1けたの筆算」を練習する", href: "/learn/sansu/32" },
-    { label: "計算の段で「あまりのある筆算」を練習する", href: "/learn/sansu/33" },
+    { label: "計算のだんで「÷1けたの筆算」を練習する", href: "/learn/sansu/32" },
+    { label: "計算のだんで「あまりのある筆算」を練習する", href: "/learn/sansu/33" },
     { label: "つぎの単元「わり算の筆算（÷2けた）」", href: "/learn/sansu/34" },
   ],
 };

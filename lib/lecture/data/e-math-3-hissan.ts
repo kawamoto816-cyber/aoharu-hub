@@ -94,7 +94,7 @@ export const E_MATH_3_HISSAN: Lecture = {
     { q: "1000−365 はいくつ？", a: "635", why: "千から百・十へとじゅんにかりて、一は 10−5＝5、十は 9−6＝3、百は 9−3＝6。" },
   ],
   next: [
-    { label: "計算の段で「3けたの筆算」を練習する", href: "/learn/sansu/21" },
+    { label: "計算のだんで「3けたの筆算」を練習する", href: "/learn/sansu/21" },
     { label: "2年：たし算の筆算", href: "/learn/sansu/8" },
     { label: "2年：ひき算の筆算", href: "/learn/sansu/9" },
   ],

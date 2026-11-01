@@ -101,7 +101,7 @@ export const E_MATH_4_SHOSU: Lecture = {
     { q: "4−1.23 はいくつですか。", a: "2.77", why: "4を4.00と考えて、小数点をそろえてひきます。" },
   ],
   next: [
-    { label: "計算の段で「小数のたし算・ひき算」を練習する", href: "/learn/sansu/38" },
+    { label: "計算のだんで「小数のたし算・ひき算」を練習する", href: "/learn/sansu/38" },
     { label: "ふりかえり 3年「小数」", href: "/learn/sansu/30" },
     { label: "つぎの単元「小数のかけ算とわり算」", href: "/learn/sansu/39" },
   ],

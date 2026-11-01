@@ -107,8 +107,8 @@ export const E_MATH_3_SHOSU: Lecture = {
     { q: "5−2.3 を計算しましょう。", a: "2.7", why: "5を5.0と見ると、0.1が50こから23こをひいて27こ。" },
   ],
   next: [
-    { label: "計算の段で「小数のたし算・ひき算」を練習する", href: "/learn/sansu/30" },
-    { label: "3年「分数」の図解レクチャー", href: "/learn/lecture/e-math-3-bunsu" },
-    { label: "4年「小数のしくみ」（計算の段）", href: "/learn/sansu/38" },
+    { label: "計算のだんで「小数のたし算・ひき算」を練習する", href: "/learn/sansu/30" },
+    { label: "3年「分数」の図かいレクチャー", href: "/learn/lecture/e-math-3-bunsu" },
+    { label: "4年「小数のしくみ」（計算のだん）", href: "/learn/sansu/38" },
   ],
 };

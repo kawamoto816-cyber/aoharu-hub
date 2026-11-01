@@ -90,7 +90,7 @@ export const E_MATH_4_KAKU: Lecture = {
   ],
   next: [
     { label: "「角の大きさ」をドリルで練習する", href: "/learn/sansu-zukei/e-math-4-kaku" },
-    { label: "「垂直・平行と四角形」（ドリル）", href: "/learn/sansu-zukei/e-math-4-suichoku" },
+    { label: "「すい直・平行と四角形」（ドリル）", href: "/learn/sansu-zukei/e-math-4-suichoku" },
     { label: "5年「図形の角」（ドリル）", href: "/learn/sansu-zukei/e-math-5-zukei-kaku" },
   ],
 };

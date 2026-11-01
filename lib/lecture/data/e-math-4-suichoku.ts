@@ -100,6 +100,6 @@ export const E_MATH_4_SUICHOKU: Lecture = {
   next: [
     { label: "練習する：すい直・平行と四角形", href: "/learn/sansu-zukei/e-math-4-suichoku" },
     { label: "ふりかえり：角の大きさ", href: "/learn/sansu-zukei/e-math-4-kaku" },
-    { label: "次の単元：面積（図解）", href: "/learn/lecture/e-math-4-menseki" },
+    { label: "次の単元：面積（図かい）", href: "/learn/lecture/e-math-4-menseki" },
   ],
 };

@@ -64,8 +64,8 @@ export const E_MATH_3_KAKE_HISSAN2: Lecture = {
     { q: "1こ28円のあめを15こ買うと何円ですか。", a: "420円", why: "28×5＝140、28×10＝280、140＋280＝420。" },
   ],
   next: [
-    { label: "計算の段で「2けた×2けた」を練習する", href: "/learn/sansu/25" },
-    { label: "計算の段で「3けた×2けた」に進む", href: "/learn/sansu/26" },
-    { label: "ふりかえり「2けた×1けた」（計算の段）", href: "/learn/sansu/23" },
+    { label: "計算のだんで「2けた×2けた」を練習する", href: "/learn/sansu/25" },
+    { label: "計算のだんで「3けた×2けた」に進む", href: "/learn/sansu/26" },
+    { label: "ふりかえり「2けた×1けた」（計算のだん）", href: "/learn/sansu/23" },
   ],
 };

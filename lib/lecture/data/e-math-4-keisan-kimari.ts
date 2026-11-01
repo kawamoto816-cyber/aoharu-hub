@@ -105,6 +105,6 @@ export const E_MATH_4_KEISAN_KIMARI: Lecture = {
   next: [
     { label: "練習する：計算のきまり", href: "/learn/sansu/37" },
     { label: "ふりかえり：かけ算のきまり（3年）", href: "/learn/sansu-zukei/e-math-3-kake-kimari" },
-    { label: "次の単元：面積（図解）", href: "/learn/lecture/e-math-4-menseki" },
+    { label: "次の単元：面積（図かい）", href: "/learn/lecture/e-math-4-menseki" },
   ],
 };

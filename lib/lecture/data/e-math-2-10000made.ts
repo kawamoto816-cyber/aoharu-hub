@@ -86,7 +86,7 @@ export const E_MATH_2_10000MADE: Lecture = {
   ],
   next: [
     { label: "「10000までの数」のドリル", href: "/learn/sansu-zukei/e-math-2-10000made" },
-    { label: "ふりかえり「1000までの数」（計算のだん）", href: "/learn/sansu/18" },
+    { label: "ふりかえり「1000までの数」（レクチャー）", href: "/learn/lecture/e-math-2-1000made" },
     { label: "つづき「大きい数（万のくらい）」（3年）", href: "/learn/sansu-zukei/e-math-3-ookii" },
   ],
 };

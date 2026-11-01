@@ -129,8 +129,8 @@ export const E_MATH_4_BUNSU: Lecture = {
     { q: "1と3/4＋1と2/4 はいくつですか。", a: "3と1/4", why: "整数は1＋1＝2、分数は3/4＋2/4＝5/4＝1と1/4。合わせて3と1/4。" },
   ],
   next: [
-    { label: "計算の段で「かぶん数を帯分数に」を練習する", href: "/learn/sansu/41" },
-    { label: "計算の段で「帯分数をかぶん数に」", href: "/learn/sansu/42" },
-    { label: "計算の段で「帯分数のたし算・ひき算」", href: "/learn/sansu/43" },
+    { label: "計算のだんで「かぶん数を帯分数に」を練習する", href: "/learn/sansu/41" },
+    { label: "計算のだんで「帯分数をかぶん数に」", href: "/learn/sansu/42" },
+    { label: "計算のだんで「帯分数のたし算・ひき算」", href: "/learn/sansu/43" },
   ],
 };

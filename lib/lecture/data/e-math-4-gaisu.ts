@@ -98,6 +98,6 @@ export const E_MATH_4_GAISU: Lecture = {
   next: [
     { label: "練習する：がい数", href: "/learn/sansu/36" },
     { label: "ふりかえり：大きい数（億・兆）", href: "/learn/sansu-zukei/e-math-4-ookii" },
-    { label: "次の単元：計算のきまり（図解）", href: "/learn/lecture/e-math-4-keisan-kimari" },
+    { label: "次の単元：計算のきまり（図かい）", href: "/learn/lecture/e-math-4-keisan-kimari" },
   ],
 };

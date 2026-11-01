@@ -86,6 +86,6 @@ export const E_MATH_4_KAWARIKATA: Lecture = {
   next: [
     { label: "「変わり方」のドリル", href: "/learn/sansu-zukei/e-math-4-kawarikata" },
     { label: "「折れ線グラフ」（ドリル）", href: "/learn/sansu-zukei/e-math-4-oresen" },
-    { label: "5年「比例」（ドリル）", href: "/learn/sansu-zukei/e-math-5-hirei" },
+    { label: "5年「ひれい」（ドリル）", href: "/learn/sansu-zukei/e-math-5-hirei" },
   ],
 };

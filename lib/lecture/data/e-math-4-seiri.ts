@@ -28,7 +28,7 @@ export const E_MATH_4_SEIRI: Lecture = {
         columns: [{ title: "ねこ かっている", tone: "yellow" }, { title: "ねこ かっていない" }],
         rows: [
           { label: "犬 かっている", cells: ["4人（両方）", "8人（犬だけ）"] },
-          { label: "犬 かっていない", cells: ["6人（ねこだけ）", "12人（どちらも）"] },
+          { label: "犬 かっていない", cells: ["6人（ねこだけ）", "12人（どちらもかっていない）"] },
         ],
       },
     },
@@ -57,7 +57,7 @@ export const E_MATH_4_SEIRI: Lecture = {
               tone: "yellow",
               children: [
                 { label: "ねこだけ", sub: "6人" },
-                { label: "どちらも", sub: "12人" },
+                { label: "どちらもかっていない", sub: "12人" },
               ],
             },
           ],
@@ -78,8 +78,8 @@ export const E_MATH_4_SEIRI: Lecture = {
             parts: [
               { value: 4, label: "両方 4", tone: "red" },
               { value: 8, label: "犬だけ 8", tone: "blue" },
-              { value: 6, label: "ねこ 6", tone: "yellow" },
-              { value: 12, label: "どちらも 12", tone: "plain" },
+              { value: 6, label: "ねこだけ 6", tone: "yellow" },
+              { value: 12, label: "どちらもなし 12", tone: "plain" },
             ],
             total: "30人",
           },
@@ -95,12 +95,12 @@ export const E_MATH_4_SEIRI: Lecture = {
   ],
   check: [
     { q: "上の表で、ねこをかっている人は全部で何人ですか。", a: "10人", why: "両方4人＋ねこだけ6人＝10人。" },
-    { q: "上の表で、犬をかっていない人は何人ですか。", a: "18人", why: "ねこだけ6人＋どちらも12人＝18人。（30−12でも求められる）" },
+    { q: "上の表で、犬をかっていない人は何人ですか。", a: "18人", why: "ねこだけ6人＋どちらもかっていない12人＝18人。（30−12でも求められる）" },
     { q: "「正」の字が3つと、あと2画あります。何人ですか。", a: "17人", why: "正の字1つが5人なので 5×3＋2＝17。" },
   ],
   next: [
     { label: "「整理のしかた」のドリル", href: "/learn/sansu-zukei/e-math-4-seiri" },
-    { label: "ふりかえり「表と棒グラフ」", href: "/learn/sansu-zukei/e-math-3-bou-graph" },
+    { label: "ふりかえり「表とぼうグラフ」", href: "/learn/sansu-zukei/e-math-3-bou-graph" },
     { label: "「折れ線グラフ」（ドリル）", href: "/learn/sansu-zukei/e-math-4-oresen" },
   ],
 };

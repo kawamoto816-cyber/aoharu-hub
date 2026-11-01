@@ -89,7 +89,7 @@ export const E_MATH_3_WARIZAN: Lecture = {
     { q: "0÷7 はいくつ？", a: "0", why: "0を何人で分けても、1人分は0です。" },
   ],
   next: [
-    { label: "計算の段で「わり算」を練習する", href: "/learn/sansu/19" },
+    { label: "計算のだんで「わり算」を練習する", href: "/learn/sansu/19" },
     { label: "あまりのあるわり算", href: "/learn/sansu/20" },
     { label: "かけ算（九九）", href: "/learn/sansu/13" },
   ],

@@ -118,6 +118,6 @@ export const E_MATH_4_WARI_HISSAN2: Lecture = {
   next: [
     { label: "練習する：わり算の筆算（÷2けた）", href: "/learn/sansu/34" },
     { label: "ふりかえり：わり算の筆算（÷1けた）", href: "/learn/sansu/32" },
-    { label: "次の単元：がい数（図解）", href: "/learn/lecture/e-math-4-gaisu" },
+    { label: "次の単元：がい数（図かい）", href: "/learn/lecture/e-math-4-gaisu" },
   ],
 };

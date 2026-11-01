@@ -82,8 +82,8 @@ export const E_MATH_3_SHIKI: Lecture = {
     { q: "□÷3＝9 の□にあてはまる数は？", a: "27", why: "□を3つに分けた1つ分が9なので、□＝9×3＝27。" },
   ],
   next: [
-    { label: "計算の段で「□を使った式（たし算・ひき算）」を練習する", href: "/learn/sansu/28" },
-    { label: "計算の段で「□を使った式（かけ算・わり算）」を練習する", href: "/learn/sansu/29" },
-    { label: "中1「文字と式」の図解レクチャー", href: "/learn/lecture/j-math-1-moji" },
+    { label: "計算のだんで「□を使った式（たし算・ひき算）」を練習する", href: "/learn/sansu/28" },
+    { label: "計算のだんで「□を使った式（かけ算・わり算）」を練習する", href: "/learn/sansu/29" },
+    { label: "中1「文字と式」の図かいレクチャー", href: "/learn/lecture/j-math-1-moji" },
   ],
 };

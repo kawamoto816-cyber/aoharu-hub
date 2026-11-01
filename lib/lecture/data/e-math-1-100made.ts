@@ -79,7 +79,7 @@ export const E_MATH_1_100MADE: Lecture = {
         steps: [
           { label: "十のくらいを 見る", sub: "58と 62 → 5と 6" },
           { label: "おなじなら 一のくらい", sub: "34と 37 → 4と 7" },
-          { label: "大きい ほうが 大きい", sub: "62、37 が 大きい", tone: "yellow" },
+          { label: "すうじが 大きい ほうの かずが 大きい", sub: "62、37 が 大きい", tone: "yellow" },
         ],
       },
     },
@@ -109,6 +109,6 @@ export const E_MATH_1_100MADE: Lecture = {
   next: [
     { label: "けいさんの だんで「100までの かず」を れんしゅう", href: "/learn/sansu/7" },
     { label: "20までの かず（けいさんの だん）", href: "/learn/sansu/3" },
-    { label: "1000までの かず（2年）", href: "/learn/sansu/18" },
+    { label: "1000までの かず（2年・レクチャー）", href: "/learn/lecture/e-math-2-1000made" },
   ],
 };

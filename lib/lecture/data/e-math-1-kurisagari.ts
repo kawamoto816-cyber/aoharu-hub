@@ -84,7 +84,7 @@ export const E_MATH_1_KURISAGARI: Lecture = {
   ],
   mistakes: [
     {
-      wrong: "14−6 で 6−4＝2 と して 2",
+      wrong: "14−6 で、4から 6は ひけないので 6−4＝2 と して 12",
       right: "10−6＝4、4と 4で 8",
       why: "ひく かずと ひかれる かずを ぎゃくに しては いけません。",
     },

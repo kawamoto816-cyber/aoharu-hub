@@ -91,7 +91,7 @@ export const E_MATH_4_WARIAI: Lecture = {
   ],
   next: [
     { label: "「かんたんなわり合」のドリル", href: "/learn/sansu-zukei/e-math-4-wariai" },
-    { label: "5年「わり合」の図解レクチャー", href: "/learn/lecture/e-math-5-wariai" },
-    { label: "「変わり方」の図解レクチャー", href: "/learn/lecture/e-math-4-kawarikata" },
+    { label: "5年「わり合」の図かいレクチャー", href: "/learn/lecture/e-math-5-wariai" },
+    { label: "「変わり方」の図かいレクチャー", href: "/learn/lecture/e-math-4-kawarikata" },
   ],
 };

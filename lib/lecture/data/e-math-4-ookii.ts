@@ -85,6 +85,6 @@ export const E_MATH_4_OOKII: Lecture = {
   next: [
     { label: "「大きい数（億・兆）」をドリルで練習する", href: "/learn/sansu-zukei/e-math-4-ookii" },
     { label: "ふりかえり「大きい数（万の位）」", href: "/learn/sansu-zukei/e-math-3-ookii" },
-    { label: "計算の段で「がい数」を練習する", href: "/learn/sansu/36" },
+    { label: "計算のだんで「がい数」を練習する", href: "/learn/sansu/36" },
   ],
 };

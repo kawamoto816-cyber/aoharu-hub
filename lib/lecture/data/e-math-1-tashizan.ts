@@ -31,7 +31,7 @@ export const E_MATH_1_TASHIZAN: Lecture = {
           { label: "2わ", sub: "あとからきた" },
           { label: "6わ", sub: "ぜんぶで", tone: "yellow" },
         ],
-        arrows: ["ふえる", "4＋2"],
+        arrows: ["そこへ", "4＋2＝6"],
       },
     },
     {
