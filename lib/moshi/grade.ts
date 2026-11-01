@@ -67,6 +67,8 @@ export function cleanNumInput(raw: string, label?: string, unit?: string): strin
   if (unit) {
     const u = normalize(unit);
     if (u && s.endsWith(u)) s = s.slice(0, -u.length);
+    // 単位が「π cm²」のように π から始まるとき、「2π」とだけ書いても係数として読む
+    if (u.startsWith("π") && /^[+-]?[\d./]*π$/.test(s)) s = s.slice(0, -1) || "1";
   }
   const lab = label ? normalize(label).replace(/=$/, "") : "";
   if (lab && s.startsWith(`${lab}=`)) s = s.slice(lab.length + 1);
