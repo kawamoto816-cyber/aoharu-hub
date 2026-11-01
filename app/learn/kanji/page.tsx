@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { LearnShell } from "@/components/learn/LearnShell";
 import { KanjiTodayLoader } from "@/components/kanji/KanjiLoaders";
+import { KanjiParkCard } from "@/components/kanji/KanjiParkCard";
 
 // /learn/kanji: 小学校の漢字1026字。①覚える (カード＋間隔反復) と、読み・書きの4択。登録なし・無料。
 
@@ -21,6 +22,7 @@ export default function KanjiTop() {
       <div className="mt-6">
         <KanjiTodayLoader />
       </div>
+      <KanjiParkCard />
     </LearnShell>
   );
 }

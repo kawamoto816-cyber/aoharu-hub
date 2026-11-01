@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { LearnShell } from "@/components/learn/LearnShell";
 import { kanjiOfGrade } from "@/lib/kanji";
+import { KanjiParkCard } from "@/components/kanji/KanjiParkCard";
 
 // /learn/kanji/[grade]: 学年の漢字の一覧 (読み・言葉・例文)。ここから修行をはじめる。
 
@@ -63,6 +64,7 @@ export default async function KanjiGrade({ params }: { params: Promise<{ grade: 
         {g > 1 ? <Link href={`/learn/kanji/${g - 1}`}>← {g - 1}年生</Link> : <span />}
         {g < 6 ? <Link href={`/learn/kanji/${g + 1}`}>{g + 1}年生 →</Link> : <Link href="/learn/kanji">漢字のトップへ</Link>}
       </nav>
+      <KanjiParkCard compact />
     </LearnShell>
   );
 }
