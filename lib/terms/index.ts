@@ -22,3 +22,8 @@ export const TERM_SETS: Record<TermSetKey, TermSet> = {
   "ko-joho": S7,
 };
 export const TERM_SET_KEYS = Object.keys(TERM_SETS) as TermSetKey[];
+
+// 単元id → その単元の重要語句があるセットと語数 (図解レクチャーから「この単元の重要語句」へつなぐ)
+const BY_UNIT = new Map<string, { set: TermSetKey; count: number }>();
+for (const k of TERM_SET_KEYS) for (const u of TERM_SETS[k].units) if (u.items.length) BY_UNIT.set(u.unit, { set: k, count: u.items.length });
+export const unitTermSet = (unit: string) => BY_UNIT.get(unit);

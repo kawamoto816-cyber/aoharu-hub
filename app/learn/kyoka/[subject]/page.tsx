@@ -3,8 +3,11 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { LearnShell } from "@/components/learn/LearnShell";
 import { KYOKA, LEVEL_NAME, findKyoka, type Level } from "@/lib/learn/kyoka";
+import { bookOf } from "@/lib/lecture/book";
+import { BookToc } from "@/components/lecture/BookToc";
 
-// /learn/kyoka/<教科>: 教科ごとの入口。小・中・高 × ①覚える・②鍛える で教材を並べる。
+// /learn/kyoka/<教科>: 教科ごとの入口。小・中・高それぞれ、まず「教科書（図解）」の目次 (図解レクチャーを章の順に読み進める)、
+// その下に ①覚える・②鍛える の教材を並べる。
 
 const SITE = "https://app.bluespring.co.jp";
 
@@ -38,8 +41,15 @@ export default async function KyokaPage({ params }: { params: Promise<{ subject:
           </Link>
         ))}
       </nav>
-      {LEVELS.filter((lv) => k.items.some((x) => x.level === lv)).map((lv) => (
-        <section key={lv} aria-labelledby={`h-${lv}`} className="mt-8">
+      <nav aria-label="学校段階" className="mt-4 flex flex-wrap gap-2">
+        {LEVELS.filter((lv) => k.items.some((x) => x.level === lv) || bookOf(k.key, lv)).map((lv) => (
+          <a key={lv} href={`#h-${lv}`} className="inline-flex min-h-[44px] items-center rounded-[12px] border-[1.5px] border-[#15172B] bg-[#FFE45C] px-4 text-[14px] font-black text-[#15172B] no-underline shadow-[2px_2px_0_#15172B]">
+            {LEVEL_NAME[lv]}の{k.name} ↓
+          </a>
+        ))}
+      </nav>
+      {LEVELS.filter((lv) => k.items.some((x) => x.level === lv) || bookOf(k.key, lv)).map((lv) => (
+        <section key={lv} aria-labelledby={`h-${lv}`} className="mt-8 scroll-mt-4">
           <div className="flex flex-wrap items-baseline gap-3">
             <h2 id={`h-${lv}`} className="m-0 text-[21px] font-black">
               {LEVEL_NAME[lv]}
@@ -50,6 +60,16 @@ export default async function KyokaPage({ params }: { params: Promise<{ subject:
               </Link>
             )}
           </div>
+          {(() => {
+            const book = bookOf(k.key, lv);
+            if (!book) return null;
+            return (
+              <div id={`book-${lv}`} className="mt-3 scroll-mt-4">
+                <p className="m-0 mb-2 text-[12px] font-black text-[#1533B8]">教科書（図解）　読んで分かる</p>
+                <BookToc chapters={book.chapters} label={`${LEVEL_NAME[lv]}の${k.name}`} kids={lv === "sho"} />
+              </div>
+            );
+          })()}
           <div className="mt-3 grid gap-3 md:grid-cols-2">
             {/* 教材のない箱 (空の点線の箱) は出さない。①覚えるがない段階は、②鍛えるの箱に一言そえる */}
             {(["覚える", "鍛える"] as const).map((eng) => {

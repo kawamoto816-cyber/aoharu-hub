@@ -2,12 +2,16 @@ import Link from "next/link";
 import { LearnShell } from "@/components/learn/LearnShell";
 import type { Lecture } from "@/lib/lecture/types";
 import { lectureUnitInfo } from "@/lib/lecture";
+import { bookPlace } from "@/lib/lecture/book";
+import { findKyoka } from "@/lib/learn/kyoka";
 import { LectureFigure } from "./Figure";
 import { Rich } from "./Rich";
 import { LecturePhotoView } from "./Photo";
 import { LectureStoryView } from "./Story";
 import { MissionCard, MissionComplete } from "./Mission";
 import { MoshiLink } from "@/components/moshi/MoshiLink";
+import { BookNav } from "./BookNav";
+import { ReadMarker } from "./ReadMarker";
 
 // 図解レクチャーの1単元のページ本体：導入 → 図解つきの節 → よくあるまちがい → 確認 → 次にやる教材。
 
@@ -19,10 +23,12 @@ export function LecturePage({ lec }: { lec: Lecture }) {
   const L = kids
     ? { hook: "導入《どうにゅう》　なぜ学《まな》ぶの？", check: "確認《かくにん》しよう", next: "次《つぎ》にやる教材《きょうざい》", open: "答《こた》えを見《み》る", close: "答《こた》えをとじる", back: "学校《がっこう》の教科《きょうか》の地図《ちず》にもどる", answer: "答《こた》え：" }
     : { hook: "導入　なぜ学ぶの？", check: "確認しよう", next: "次にやる教材", open: "答えを見る", close: "答えをとじる", back: "学校の教科の地図にもどる", answer: "答え：" };
+  const place = bookPlace(lec.unit);
+  const kyoka = place ? findKyoka(place.kyoka) : undefined;
   let figNo = 0;
   let photoNo = 0;
   return (
-    <LearnShell narrow crumbs={[{ href: "/learn", label: "まなぶ" }, { href: "/learn/school", label: "学校の教科" }, { label: name }]}>
+    <LearnShell narrow crumbs={[{ href: "/learn", label: "まなぶ" }, place && kyoka ? { href: `/learn/kyoka/${kyoka.key}#book-${place.level}`, label: kyoka.name } : { href: "/learn/school", label: "学校の教科" }, { label: name }]}>
       <p className="m-0 text-xs font-black tracking-wider text-[#1533B8]">
         図解レクチャー{info && `　${info.level}・${info.subject}・${info.group}`}
       </p>
@@ -147,7 +153,9 @@ export function LecturePage({ lec }: { lec: Lecture }) {
         </ol>
       </section>
 
-      <MoshiLink unit={lec.unit} className="mt-10" />
+      <ReadMarker unit={lec.unit} />
+      <BookNav unit={lec.unit} kids={kids} />
+      <MoshiLink unit={lec.unit} className="mt-3" />
 
       <section aria-labelledby="lec-next" className="mt-10 rounded-[18px] border-[1.5px] border-[#15172B] bg-[#15172B] p-4 text-white sm:p-5">
         <h2 id="lec-next" className="m-0 text-[15px] font-black text-[#FFE45C]">

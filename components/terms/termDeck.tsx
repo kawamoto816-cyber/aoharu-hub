@@ -17,6 +17,7 @@ const shuffle = <T,>(xs: T[]) => sample(xs, xs.length);
 
 function TermCard({ set, id }: { set: TermSet; id: string }) {
   const f = findTerm(set, id)!;
+  const kids = set.key === "rika" || set.key === "shakai";
   return (
     <div className="rounded-[18px] border-[1.5px] border-[#15172B] bg-white p-5 shadow-[4px_4px_0_#15172B]">
       <p className="m-0 text-[12px] font-black text-[#1533B8]">
@@ -33,6 +34,9 @@ function TermCard({ set, id }: { set: TermSet; id: string }) {
         )}
       </p>
       <p className="m-0 mt-3 rounded-xl bg-[#F7F6F1] p-3 text-[16px] leading-relaxed">{f.item.d}</p>
+      <a href={`/learn/lecture/${f.unit}`} className="mt-3 inline-flex min-h-[40px] items-center gap-1 text-[13px] font-black text-[#1533B8]">
+        {kids ? "この ことばが でてくる ずかいを よむ →" : "この語句が出てくる図解を読む →"}
+      </a>
     </div>
   );
 }
