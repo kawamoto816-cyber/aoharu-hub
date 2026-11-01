@@ -84,7 +84,7 @@ export const H_ENG_SKILL_JIYU: Lecture = {
   mistakes: [
     { wrong: "I agree and disagree. のように、両方の立場を書く", right: "どちらか一方の立場をはっきり書く", why: "主張がはっきりしないと、理由とのつながりも弱くなります。設問が「賛成か反対か」なら一方を選びます。" },
     { wrong: "理由を3つも4つも並べて、どれも1文で終わる", right: "理由は2つにしぼり、それぞれに具体例をつける", why: "理由だけを並べると説得力が出ません。例や説明で支えるほうが評価されます。" },
-    { wrong: "It is because 〜. や Because 〜. だけで1文にする", right: "This is because 〜. / 主節＋because 〜.", why: "Because 〜 だけでは文として完結しません。This is because 〜 か、主節とつないで書きます。" },
+    { wrong: "Because 〜. だけで1文にする", right: "This is because 〜. / 主節＋because 〜.", why: "Because 〜 は従属節なので、それだけでは文として完結しません。This is because 〜 か、主節とつないで書きます。" },
   ],
   check: [
     { q: "自由英作文の型を、4つの部分で順に言いましょう。", a: "主張 → 理由 → 具体例 → まとめ", why: "結論を先に言い、理由と例で支え、最後にもう一度まとめる。" },

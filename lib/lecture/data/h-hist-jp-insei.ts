@@ -80,7 +80,7 @@ export const H_HIST_JP_INSEI: Lecture = {
         type: "timeline",
         title: "院政から平氏の滅亡まで",
         eras: [
-          { label: "後三条天皇の親政", from: 1068, to: 1085 },
+          { label: "後三条・白河天皇の親政", from: 1068, to: 1085 },
           { label: "院政の時代", from: 1086, to: 1185 },
         ],
         events: [
