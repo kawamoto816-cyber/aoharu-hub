@@ -4,6 +4,7 @@ import type { Lecture } from "@/lib/lecture/types";
 import { lectureUnitInfo } from "@/lib/lecture";
 import { LectureFigure } from "./Figure";
 import { Rich } from "./Rich";
+import { MoshiLink } from "@/components/moshi/MoshiLink";
 
 // 図解レクチャーの1単元のページ本体：導入 → 図解つきの節 → よくあるまちがい → 確認 → 次にやる教材。
 
@@ -113,6 +114,8 @@ export function LecturePage({ lec }: { lec: Lecture }) {
           ))}
         </ol>
       </section>
+
+      <MoshiLink unit={lec.unit} className="mt-10" />
 
       <section aria-labelledby="lec-next" className="mt-10 rounded-[18px] border-[1.5px] border-[#15172B] bg-[#15172B] p-4 text-white sm:p-5">
         <h2 id="lec-next" className="m-0 text-[15px] font-black text-[#FFE45C]">

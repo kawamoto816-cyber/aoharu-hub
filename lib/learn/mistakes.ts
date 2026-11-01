@@ -7,6 +7,8 @@ import { useSyncExternalStore } from "react";
 //   考え方は lib/deck (間隔反復の箱) と同じで「まちがえたら振り出し、正解で1つ進む」。
 //   deckStore はカードの id しか持たず、問題文・選択肢・解説を残せないので、保存の形はここで別に持つ。
 //   rightStreak = 続けて正解した回数。2回続けて正解したら「卒業」(ノートから外し、卒業ずみに移す)。
+//   定期テスト模試 (/learn/moshi) の小問も同じノートに入る。選択式でない小問は choices を空にし、
+//   model (模範解答) と mine (自分の答え) を文字で残す。解き直しは「答えを見て自己判定」になる。
 // 保存領域が使えない環境では、空のノートとして動く (記録は残らない)。
 
 export const NOTE_KEY = "aoharu:mistakes:v1";
@@ -34,6 +36,12 @@ export interface Mistake {
   picked: number;
   /** 解説 */
   ex: string;
+  /** どこでまちがえたか (なければドリル) */
+  source?: "drill" | "moshi";
+  /** 選択式でない問題の模範解答 (choices が空のとき) */
+  model?: string;
+  /** 選択式でない問題で、最後にまちがえたときの自分の答え */
+  mine?: string;
   /** 最後にまちがえた時刻 (ms) */
   at: number;
   wrongCount: number;
@@ -86,12 +94,13 @@ function write(p: NoteState) {
 }
 
 /** まちがえた: ノートに入れる (すでにあれば wrongCount を増やし、続けての正解を0に戻す) */
-export function recordMistake(meta: MistakeMeta, q: { q: string; choices: string[]; answer: number; ex: string }, picked: number) {
+export function recordMistake(meta: MistakeMeta, q: { q: string; choices: string[]; answer: number; ex: string; source?: Mistake["source"] }, picked: number) {
   const p = readNote();
   const id = mistakeId(meta.unitId, q.q);
   const prev = p.items[id];
   const item: Mistake = {
     ...meta,
+    ...(q.source ? { source: q.source } : {}),
     q: q.q,
     choices: [...q.choices],
     answer: q.answer,
@@ -105,6 +114,33 @@ export function recordMistake(meta: MistakeMeta, q: { q: string; choices: string
   delete graduated[id];
   write({ items: { ...p.items, [id]: item }, graduated });
 }
+
+/** 選択式でない問題 (数値・語句・並べかえ・記述) をまちがえた: q と模範解答を文字で残す */
+export function recordMistakeText(meta: MistakeMeta, q: { q: string; model: string; ex: string; source?: Mistake["source"] }, mine: string) {
+  const p = readNote();
+  const id = mistakeId(meta.unitId, q.q);
+  const prev = p.items[id];
+  const item: Mistake = {
+    ...meta,
+    source: q.source,
+    q: q.q,
+    choices: [],
+    answer: -1,
+    picked: -1,
+    model: q.model,
+    mine,
+    ex: q.ex,
+    at: Date.now(),
+    wrongCount: (prev?.wrongCount ?? 0) + 1,
+    rightStreak: 0,
+  };
+  const graduated = { ...p.graduated };
+  delete graduated[id];
+  write({ items: { ...p.items, [id]: item }, graduated });
+}
+
+/** 選択式でない問題か (ノートの画面で出し方を変える) */
+export const isTextMistake = (m: Mistake) => m.choices.length === 0;
 
 /**
  * 正解した: ノートにある問題なら rightStreak を1つ進め、GRADUATE_STREAK に届いたら卒業させる。

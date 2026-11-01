@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { KYOKA } from "@/lib/learn/kyoka";
 import { hasLecture, lectureHref } from "@/lib/lecture";
+import { hasMoshi, moshiHref } from "@/lib/moshi";
 import Link from "next/link";
 import { LearnShell } from "@/components/learn/LearnShell";
 import { LEVELS, schoolCounts } from "@/lib/school";
@@ -42,6 +43,11 @@ function Box({ u }: { u: SchoolUnit }) {
             図解
           </Link>
         )}
+        {hasMoshi(u.id) && (
+          <Link href={moshiHref([u.id])} aria-label={`${u.name}の定期テスト模試`} className="inline-flex min-h-[38px] items-center rounded-[10px] border-[1.5px] border-[#15172B] bg-[#FFE45C] px-2 text-[11.5px] font-black text-[#15172B] no-underline">
+            模試
+          </Link>
+        )}
       </span>
     );
   return (
@@ -71,6 +77,12 @@ export default function SchoolMap() {
         <span className="inline-flex items-center gap-1">
           <span className="rounded bg-[#1533B8] px-1 text-[10px] font-black text-white">②</span>鍛える
         </span>
+      </p>
+
+      <p className="m-0 mt-3">
+        <Link href="/learn/moshi" className="inline-flex min-h-[44px] items-center gap-2 rounded-[12px] border-[1.5px] border-[#15172B] bg-[#FFE45C] px-3 text-[14px] font-black text-[#15172B] no-underline shadow-[2px_2px_0_#15172B]">
+          定期テスト模試：テスト範囲を選んで本番形式で解く →
+        </Link>
       </p>
 
       <nav aria-label="教科ごとの入口" className="mt-4 flex flex-wrap items-center gap-2">
