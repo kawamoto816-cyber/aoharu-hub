@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { KYOKA } from "@/lib/learn/kyoka";
 import Link from "next/link";
 import { LearnShell } from "@/components/learn/LearnShell";
 import { LEVELS, schoolCounts } from "@/lib/school";
@@ -63,6 +64,15 @@ export default function SchoolMap() {
           <span className="rounded bg-[#1533B8] px-1 text-[10px] font-black text-white">②</span>鍛える
         </span>
       </p>
+
+      <nav aria-label="教科ごとの入口" className="mt-4 flex flex-wrap items-center gap-2">
+        <span className="text-[13px] font-bold text-[#3A3D55]">教科ごとの入口：</span>
+        {KYOKA.map((k) => (
+          <Link key={k.key} href={`/learn/kyoka/${k.key}`} className="inline-flex min-h-[36px] items-center rounded-full border-[1.5px] border-[#15172B] bg-[#FFFBE6] px-3 text-[13px] font-black text-[#15172B] no-underline">
+            {k.name}
+          </Link>
+        ))}
+      </nav>
 
       <nav aria-label="学校の段階" className="sticky top-0 z-10 -mx-4 mt-4 flex gap-2 border-b border-[#E4E2D8] bg-[#F7F6F1]/95 px-4 py-2 sm:-mx-6 sm:px-6">
         {LEVELS.map((l) => (

@@ -7,14 +7,14 @@ import { schoolCounts } from "@/lib/school";
 
 // /learn: アオハルラーンの入口。
 // 横軸 = 学びの段階 (①覚える → ②鍛える → ③教える)、縦軸 = 棚 (SCHOOL・APPLY・ADVANCE) の 3×3 の表で見せる。
-//   SCHOOL  学校の教科 (小学算数 計算63段・中学数学 計算50段・英単語2000)
+//   SCHOOL  学校の教科 (教科ごとの入口 /learn/kyoka/<教科> へ。教材の一覧は lib/learn/kyoka.ts)
 //   APPLY   選ばれる力 (総合型選抜・推薦入試・就活。スキル盤とカード、11のアプリ) → /learn/apply
 //   ADVANCE 知のアドバンス (裏面と知の図書館) → /learn/apply#ura
 // まだないマスは「準備中」として点線で見せる (③教えるは「オシエル」。全単元の覚える・鍛えるがそろってから作る)。
 
 const URL = "https://app.bluespring.co.jp/learn";
 const TITLE = "アオハルラーン｜覚えて、鍛えて、教えろ。中学・高校の学びと入試の力を無料で｜アオハルOS";
-const DESC = "①覚える ②鍛える ③教える の3段階で、学校の教科（小学算数 計算63段・中学数学 計算50段・英単語2000）、選ばれる力（総合型選抜・推薦入試のカードとAIアプリ）、知のアドバンス（知のパラダイム・地政学・知の図書館）を学ぶ。登録なし・無料。";
+const DESC = "①覚える ②鍛える ③教える の3段階で、学校の教科（小・中・高の全842単元：漢字・英単語・重要語句のカード、計算の段、文法と単元ドリル）、選ばれる力（総合型選抜・推薦入試のカードとAIアプリ）、知のアドバンスを学ぶ。登録なし・無料。";
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -48,8 +48,25 @@ function rows(): Row[] {
       cta: { label: "教科の地図を開く", href: "/learn/school" },
       tint: "bg-white",
       cells: [
-        { items: [{ label: "国語：小学校の漢字1026字", href: "/learn/kanji", sub: "読み・書きを4択で" }, { label: "社会：47都道府県", href: "/learn/todofuken", sub: "県庁所在地・地方・特徴" }, { label: "理科：重要語句", href: "/learn/rika", sub: "小3〜小6・単元ごと" }, { label: "社会：重要語句", href: "/learn/shakai", sub: "小3〜小6・単元ごと" }, { label: "国語：ことわざ・慣用句", href: "/learn/kotowaza", sub: "故事成語・四字熟語も" }, { label: "中学理科の用語", href: "/learn/chu-rika" }, { label: "中学社会の用語", href: "/learn/chu-shakai" }, { label: "高校理科の用語", href: "/learn/ko-rika" }, { label: "高校地歴の用語", href: "/learn/ko-chireki" }, { label: "高校公民の用語", href: "/learn/ko-komin" }, { label: "高校情報の用語", href: "/learn/ko-joho" }, { label: "古文単語300", href: "/learn/kobun-tango" }, { label: "中学英単語1200", href: "/learn/chu-tango" }, { label: "英熟語500", href: "/learn/jukugo" }, { label: "英語：英単語2000", href: "/learn/eitango", sub: "高校英語・忘れかけたころに復習" }], note: `公開中 ${school.oboeru.open} / ${school.oboeru.total} 単元` },
-        { items: [{ label: "算数：計算63段", href: "/learn/sansu", sub: "小学算数・その場で採点" }, { label: "英単語2000：鍛える", href: "/learn/eitango/kitaeru", sub: "60秒の瞬発・文脈の空所補充" }, { label: "数学：計算50段", href: "/learn/math", sub: "中学数学・その場で採点" }, { label: "数学：計算88段", href: "/learn/kousuu", sub: "高校数学Ⅰ・A・Ⅱ・B・Ⅲ・C" }, { label: "中学英文法", href: "/learn/eibunpo-chu" }, { label: "高校英文法", href: "/learn/eibunpo-ko" }, { label: "中学国語の文法", href: "/learn/kokubunpo-chu" }, { label: "古文", href: "/learn/kobun" }, { label: "漢文", href: "/learn/kanbun" }, { label: "ほか全教科の単元ドリル（教科の地図から）", href: "/learn/school" }], note: `公開中 ${school.kitaeru.open} / ${school.kitaeru.total} 単元` },
+        {
+          items: [
+            { label: "国語", href: "/learn/kyoka/kokugo", sub: "漢字1026字・ことわざ・古文単語300" },
+            { label: "理科", href: "/learn/kyoka/rika", sub: "小・中・高の重要語句" },
+            { label: "社会", href: "/learn/kyoka/shakai", sub: "47都道府県・地理・歴史・公民" },
+            { label: "英語", href: "/learn/kyoka/eigo", sub: "中学1200・高校2000・熟語500" },
+            { label: "情報", href: "/learn/kyoka/joho", sub: "情報Ⅰの重要語句" },
+          ],
+          note: `公開中 ${school.oboeru.open} / ${school.oboeru.total} 単元`,
+        },
+        {
+          items: [
+            { label: "算数・数学", href: "/learn/kyoka/sugaku", sub: "計算63段・50段・88段と図形・データ" },
+            { label: "国語", href: "/learn/kyoka/kokugo", sub: "文法・古文・漢文・読解" },
+            { label: "英語", href: "/learn/kyoka/eigo", sub: "英文法・英単語の瞬発と文脈・長文" },
+            { label: "理科・情報", href: "/learn/kyoka/rika", sub: "物理・化学の計算、情報の演習" },
+          ],
+          note: `公開中 ${school.kitaeru.open} / ${school.kitaeru.total} 単元`,
+        },
         OSHIERU,
       ],
     },
