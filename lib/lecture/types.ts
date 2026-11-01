@@ -196,6 +196,8 @@ export type LectureStory =
       title: string;
       /** 段落（会話は「」で）。合計800〜1600字 */
       paragraphs: string[];
+      /** 朗読で読み違えやすい語の読み（例 { "武蔵国": "むさしのくに" }）。画面の文は変えない */
+      sayFix?: Record<string, string>;
       /** 創作であることと、史実・事実との関係（何が史実で、何が想像か） */
       note: string;
     }

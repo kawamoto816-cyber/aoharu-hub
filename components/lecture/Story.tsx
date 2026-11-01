@@ -2,6 +2,7 @@ import type { LectureStory } from "@/lib/lecture/types";
 import { Rich } from "./Rich";
 import { Bubble, ManzaiView } from "./Manzai";
 import { ComicStrip } from "./Comic";
+import { NovelView } from "./Novel";
 
 // 物語化パート：小説・4コマ・漫才。どれも「創作」の札と、史実との関係の注を必ず出す。
 
@@ -18,15 +19,7 @@ export function LectureStoryView({ story }: { story: LectureStory }) {
         <Rich text={story.title} />
       </h2>
 
-      {story.kind === "novel" && (
-        <div className="mt-3">
-          {story.paragraphs.map((p, i) => (
-            <p key={i} className="m-0 mt-2.5 font-serif text-[15.5px] leading-[2] [text-indent:1em]">
-              <Rich text={p} />
-            </p>
-          ))}
-        </div>
-      )}
+      {story.kind === "novel" && <NovelView paragraphs={story.paragraphs} sayFix={story.sayFix} />}
 
       {story.kind === "manga4" && story.panels.every((p) => p.art) && <ComicStrip panels={story.panels} />}
 

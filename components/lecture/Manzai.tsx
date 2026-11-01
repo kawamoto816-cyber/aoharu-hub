@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { MANZAI_GAP, manzaiKey, manzaiSrc } from "@/lib/tts/manzai";
 import { Rich } from "./Rich";
+import { useAudioSequence } from "./useAudioSequence";
 
 // 漫才パート：ふきだしで読む ＋「漫才で聞く」（1行ずつの音声をテンポよく続けて再生し、いま話している行を光らせる）。
 // 音声ファイルがまだない漫才では、再生ボタンを出さない（読むだけ）。
@@ -24,68 +25,42 @@ export function Bubble({ who, text, side, active = false }: { who: string; text:
   );
 }
 
+/** 再生ボタン（漫才・朗読で共通） */
+export function PlayButton({ playing, label, sub, onClick }: { playing: boolean; label: string; sub: string; onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="mt-3 flex w-full items-center justify-center gap-2 rounded-full border-[1.5px] border-[#15172B] bg-[#15172B] px-4 py-2.5 text-[14px] font-black text-white shadow-[3px_3px_0_#B42318] active:translate-y-0.5"
+    >
+      <span aria-hidden>{playing ? "■" : "▶"}</span>
+      {playing ? "とめる" : label}
+      <span className="text-[11px] font-bold text-[#C9CEF2]">{sub}</span>
+    </button>
+  );
+}
+
 export function ManzaiView({ cast, lines }: { cast: [string, string]; lines: Line[] }) {
-  const [ready, setReady] = useState(false);
-  const [now, setNow] = useState(-1);
-  const audio = useRef<HTMLAudioElement | null>(null);
-  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const rows = useRef<(HTMLDivElement | null)[]>([]);
   const srcs = lines.map((l) => manzaiSrc(manzaiKey(cast, l)));
-
+  const seq = useAudioSequence(srcs, (i) => (lines[i + 1]?.who === cast[1] ? MANZAI_GAP.toTsukkomi : MANZAI_GAP.toBoke));
+  const rows = useRef<(HTMLDivElement | null)[]>([]);
   useEffect(() => {
-    let alive = true;
-    fetch(srcs[0], { method: "HEAD" })
-      .then((r) => alive && setReady(r.ok))
-      .catch(() => {});
-    return () => {
-      alive = false;
-      stop();
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  function stop() {
-    if (timer.current) clearTimeout(timer.current);
-    audio.current?.pause();
-    audio.current = null;
-    setNow(-1);
-  }
-
-  function play(i: number) {
-    if (i >= lines.length) return stop();
-    setNow(i);
-    rows.current[i]?.scrollIntoView({ block: "nearest", behavior: "smooth" });
-    const a = new Audio(srcs[i]);
-    audio.current = a;
-    // 次の行を先に読みこんでおく（間があかないように）
-    if (i + 1 < lines.length) new Audio(srcs[i + 1]).preload = "auto";
-    a.onended = () => {
-      if (audio.current !== a) return;
-      const gap = lines[i + 1]?.who === cast[1] ? MANZAI_GAP.toTsukkomi : MANZAI_GAP.toBoke;
-      timer.current = setTimeout(() => play(i + 1), gap);
-    };
-    a.onerror = () => audio.current === a && stop();
-    a.play().catch(() => stop());
-  }
-
-  const playing = now >= 0;
+    if (seq.now >= 0) rows.current[seq.now]?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  }, [seq.now]);
   return (
     <>
-      {ready && (
-        <button
-          type="button"
-          onClick={() => (playing ? stop() : play(0))}
-          className="mt-3 flex w-full items-center justify-center gap-2 rounded-full border-[1.5px] border-[#15172B] bg-[#15172B] px-4 py-2.5 text-[14px] font-black text-white shadow-[3px_3px_0_#B42318] active:translate-y-0.5"
-        >
-          <span aria-hidden>{playing ? "■" : "▶"}</span>
-          {playing ? "とめる" : "漫才で聞く"}
-          <span className="text-[11px] font-bold text-[#C9CEF2]">{playing ? `${now + 1} / ${lines.length}` : `${cast[0]}・${cast[1]}`}</span>
-        </button>
+      {seq.ready && (
+        <PlayButton
+          playing={seq.playing}
+          label="漫才で聞く"
+          sub={seq.playing ? `${seq.now + 1} / ${lines.length}` : `${cast[0]}・${cast[1]}`}
+          onClick={() => (seq.playing ? seq.stop() : seq.play(0))}
+        />
       )}
       <div className="mt-3 grid gap-2.5">
         {lines.map((l, k) => (
           <div key={k} ref={(el) => { rows.current[k] = el; }}>
-            <Bubble who={l.who} text={l.text} side={l.who === cast[1] ? "right" : "left"} active={k === now} />
+            <Bubble who={l.who} text={l.text} side={l.who === cast[1] ? "right" : "left"} active={k === seq.now} />
           </div>
         ))}
       </div>
