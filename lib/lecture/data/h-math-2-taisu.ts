@@ -32,7 +32,7 @@ export const H_MATH_2_TAISU: Lecture = {
           { label: "積", cells: ["logₐMN＝logₐM＋logₐN", "log₆4＋log₆9＝log₆36＝2"] },
           { label: "商", cells: ["logₐ(M/N)＝logₐM−logₐN", "log₃(54÷2)＝log₃27＝3"] },
           { label: "累乗", cells: ["logₐMᵏ＝k logₐM", "log₂4⁵＝5log₂4＝10"] },
-          { label: "底の変換", cells: ["底をそろえて割る", "log₄8＝log₂8／2＝3/2"] },
+          { label: "底の変換", cells: ["底をそろえて割る", "log₄8＝log₂8／log₂4＝3/2"] },
         ],
       },
     },
