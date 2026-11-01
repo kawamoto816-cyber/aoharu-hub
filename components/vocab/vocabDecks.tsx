@@ -2,10 +2,11 @@
 
 import type { DeckDef } from "@/lib/deck/types";
 import { SpeakButton } from "@/components/eitango/Speak";
+import { speakableHead } from "@/lib/tts/en";
 import { CHU_WORDS } from "@/lib/chutango";
 import { JUKUGO } from "@/lib/jukugo";
 
-// 中学英単語1200・英熟語500 の「カードの束」。発音はブラウザの読み上げ。
+// 中学英単語1200・英熟語500 の「カードの束」。発音は前もって作ったネイティブの音声 (なければブラウザの読み上げ)。
 //   easy: 英語→意味の4択、hard: 意味→英語の4択
 
 function sample<T>(xs: T[], n: number): T[] {
@@ -26,7 +27,7 @@ function Card({ no, head, tag, ja, ex, exJa }: { no: number; head: string; tag: 
       </div>
       <div className="mt-1 flex items-center gap-3">
         <p className="m-0 font-serif text-[30px] font-bold leading-tight">{head}</p>
-        <SpeakButton text={head.replace(/~ing|~|\bdo\b/g, "").replace(/\s+/g, " ").trim()} />
+        <SpeakButton text={speakableHead(head)} />
       </div>
       <p className="m-0 mt-2 text-[19px] font-black">{ja}</p>
       <div className="mt-3 rounded-xl bg-[#F7F6F1] p-3">

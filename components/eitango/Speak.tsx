@@ -1,5 +1,7 @@
 "use client";
 
+import { enAudioKey } from "@/lib/tts/en";
+
 // 英単語・例文をブラウザの読み上げで発音する (音声ファイルは使わない)。
 // 端末ごとに入っている声がちがうので、聞き取りやすい米国英語の女性の声を名前で選ぶ。
 // 自然な声 (Natural / Neural / Enhanced / Premium) を先に、見つからなければ女性の声、最後に米国英語の声。
@@ -48,27 +50,29 @@ if (typeof window !== "undefined" && window.speechSynthesis) {
 
 let current: HTMLAudioElement | null = null;
 
-/** 音声ファイル (Google の読み上げで前もって作ったネイティブの声) があればそれを、なければブラウザの読み上げを使う */
+/**
+ * 音声ファイル (Google の読み上げで前もって作ったネイティブの声) があればそれを、なければブラウザの読み上げを使う。
+ * audio を指定しないときは、文字列から決まるファイル /audio/en/<キー>.mp3 (scripts/en-tts.ts で作る) を探す。
+ */
 export function speak(text: string, audio?: string) {
-  if (audio) {
-    try {
-      current?.pause();
-      const a = new Audio(`/audio/eitango/${audio}.mp3`);
-      current = a;
-      let fellBack = false;
-      const fallback = () => {
-        if (fellBack || current !== a) return;
-        fellBack = true;
-        speakTts(text);
-      };
-      a.addEventListener("error", fallback);
-      a.play().catch((e: unknown) => {
-        if ((e as Error)?.name !== "AbortError") fallback();
-      });
-      return;
-    } catch {
-      /* 下のブラウザの読み上げへ */
-    }
+  const src = audio ? `/audio/eitango/${audio}.mp3` : `/audio/en/${enAudioKey(text)}.mp3`;
+  try {
+    current?.pause();
+    const a = new Audio(src);
+    current = a;
+    let fellBack = false;
+    const fallback = () => {
+      if (fellBack || current !== a) return;
+      fellBack = true;
+      speakTts(text);
+    };
+    a.addEventListener("error", fallback);
+    a.play().catch((e: unknown) => {
+      if ((e as Error)?.name !== "AbortError") fallback();
+    });
+    return;
+  } catch {
+    /* 下のブラウザの読み上げへ */
   }
   speakTts(text);
 }
