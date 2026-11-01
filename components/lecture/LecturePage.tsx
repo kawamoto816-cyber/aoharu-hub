@@ -6,6 +6,7 @@ import { LectureFigure } from "./Figure";
 import { Rich } from "./Rich";
 import { LecturePhotoView } from "./Photo";
 import { LectureStoryView } from "./Story";
+import { MissionCard, MissionComplete } from "./Mission";
 import { MoshiLink } from "@/components/moshi/MoshiLink";
 
 // 図解レクチャーの1単元のページ本体：導入 → 図解つきの節 → よくあるまちがい → 確認 → 次にやる教材。
@@ -35,14 +36,7 @@ export function LecturePage({ lec }: { lec: Lecture }) {
         <p className="m-0 mt-2 text-[15px] leading-relaxed">
           <Rich text={lec.hook} />
         </p>
-        {lec.mystery && (
-          <div className="mt-3 rounded-[12px] border-[1.5px] border-dashed border-[#B42318] bg-white px-3 py-2.5">
-            <p className="m-0 text-[12px] font-black text-[#B42318]">{kids ? "なぞ" : "謎"}　読み進めるとわかる</p>
-            <p className="m-0 mt-1 text-[15px] font-black leading-relaxed">
-              <Rich text={lec.mystery} />
-            </p>
-          </div>
-        )}
+        {lec.mystery && <MissionCard lec={lec} kids={kids} />}
         <ol className="m-0 mt-3 grid list-none gap-1 border-t border-dashed border-[#C9C6B4] p-0 pt-3 text-[13px] font-bold text-[#3A3D55]">
           {lec.sections.map((s, i) => (
             <li key={s.heading}>
@@ -80,23 +74,14 @@ export function LecturePage({ lec }: { lec: Lecture }) {
           )}
           {s.photos?.map((ph) => <LecturePhotoView key={ph.src} ph={ph} no={++photoNo} />)}
           {s.figure && <LectureFigure fig={s.figure} no={++figNo} />}
-          {s.reveal && (
-            <div className="mt-4 rounded-[14px] border-[1.5px] border-[#B42318] bg-[#FFF1EE] px-3.5 py-3">
-              <p className="m-0 text-[12px] font-black text-[#B42318]">{kids ? "なぞが とけた！" : "謎がとけた"}</p>
-              {lec.mystery && (
-                <p className="m-0 mt-1 text-[12.5px] font-bold text-[#5A5D73]">
-                  <Rich text={lec.mystery} />
-                </p>
-              )}
-              <p className="m-0 mt-1.5 text-[15px] font-bold leading-relaxed">
-                <Rich text={s.reveal} />
-              </p>
-            </div>
-          )}
+          {s.reveal && <MissionComplete lec={lec} kids={kids} answer={s.reveal} />}
           {s.cliff && i < lec.sections.length - 1 && (
             <p className="m-0 mt-4 text-right text-[13.5px] font-black text-[#1533B8]">
               <a href={`#lec-s${i + 2}`} className="text-[#1533B8] no-underline">
-                <Rich text={s.cliff} /> ↓
+                <Rich text={s.cliff} />
+                <span className="ml-1.5 inline-block whitespace-nowrap rounded-full bg-[#1533B8] px-2 py-0.5 align-[1px] text-[11px] text-white">
+                  {lec.mystery ? <Rich text={kids ? "つぎの手《て》がかりへ ↓" : "次の手がかりへ ↓"} /> : "次へ ↓"}
+                </span>
               </a>
             </p>
           )}

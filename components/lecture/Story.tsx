@@ -1,20 +1,11 @@
 import type { LectureStory } from "@/lib/lecture/types";
 import { Rich } from "./Rich";
+import { Bubble, ManzaiView } from "./Manzai";
+import { ComicStrip } from "./Comic";
 
 // 物語化パート：小説・4コマ・漫才。どれも「創作」の札と、史実との関係の注を必ず出す。
 
 const LABEL = { novel: "物語で読む", manga4: "4コマで読む", manzai: "漫才で読む" } as const;
-
-function Bubble({ who, text, side }: { who: string; text: string; side: "left" | "right" }) {
-  return (
-    <div className={`flex items-start gap-2 ${side === "right" ? "flex-row-reverse" : ""}`}>
-      <span className={`mt-0.5 flex-none rounded-full px-2 py-0.5 text-[11px] font-black ${side === "right" ? "bg-[#1533B8] text-white" : "bg-[#15172B] text-white"}`}>{who}</span>
-      <p className={`m-0 max-w-[85%] rounded-[14px] border-[1.5px] border-[#15172B] px-3 py-2 text-[14.5px] leading-relaxed ${side === "right" ? "bg-[#E6EAFB]" : "bg-white"}`}>
-        <Rich text={text} />
-      </p>
-    </div>
-  );
-}
 
 export function LectureStoryView({ story }: { story: LectureStory }) {
   return (
@@ -37,7 +28,9 @@ export function LectureStoryView({ story }: { story: LectureStory }) {
         </div>
       )}
 
-      {story.kind === "manga4" && (
+      {story.kind === "manga4" && story.panels.every((p) => p.art) && <ComicStrip panels={story.panels} />}
+
+      {story.kind === "manga4" && !story.panels.every((p) => p.art) && (
         <ol className="m-0 mt-3 grid list-none gap-3 p-0">
           {story.panels.map((pn, i) => (
             <li key={i} className="rounded-[12px] border-[1.5px] border-[#15172B] bg-white p-3">
@@ -58,11 +51,7 @@ export function LectureStoryView({ story }: { story: LectureStory }) {
       )}
 
       {story.kind === "manzai" && (
-        <div className="mt-3 grid gap-2.5">
-          {story.lines.map((l, k) => (
-            <Bubble key={k} who={l.who} text={l.text} side={l.who === story.cast[1] ? "right" : "left"} />
-          ))}
-        </div>
+        <ManzaiView cast={story.cast} lines={story.lines} />
       )}
 
       <p className="m-0 mt-4 rounded-[10px] bg-white/70 px-3 py-2 text-[12px] leading-relaxed text-[#3A3D55]">

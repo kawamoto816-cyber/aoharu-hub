@@ -202,8 +202,8 @@ export type LectureStory =
   | {
       kind: "manga4";
       title: string;
-      /** 4コマ。場面のト書きと、せりふ */
-      panels: { scene: string; lines: { who: string; text: string }[] }[];
+      /** 4コマ。場面のト書きと、せりふ（art があるときは絵の中のふきだしになるので、1コマ3行・1行18字まで） */
+      panels: { scene: string; lines: { who: string; text: string }[]; art?: ComicArt }[];
       note: string;
     }
   | {
@@ -211,7 +211,8 @@ export type LectureStory =
       title: string;
       /** ボケとツッコミの2人（名前） */
       cast: [string, string];
-      lines: { who: string; text: string }[];
+      /** say = 音声で読ませる文（読み違えやすい語をひらがなにするなど）。なければ text から作る */
+      lines: { who: string; text: string; say?: string }[];
       note: string;
     };
 
@@ -225,6 +226,12 @@ export interface Lecture {
   hook: string;
   /** 導入の「謎」：読み進めると解ける問い（1〜2文）。答えは、ある節の reveal に置く */
   mystery?: string;
+  /**
+   * 謎解きミッション：読者を「名探偵」に見立て、もっと大きな目的のために謎解きを託す。
+   * from = 依頼人（架空の立場。例「市立歴史博物館の学芸員」）、request = 依頼文（なぜこの謎を解いてほしいのか、2〜3文）、
+   * thanks = 謎が解けたあとの依頼人からのお礼（解けた答えが何に役立つか、1〜2文）
+   */
+  mission?: { from: string; request: string; thanks: string };
   sections: LectureSection[];
   /** 物語化パート（小説・4コマ・漫才）。節のあと、まちがい・確認の前に置く */
   story?: LectureStory;
@@ -234,4 +241,20 @@ export interface Lecture {
   check: { q: string; a: string; why: string }[];
   /** 続けてやる教材 */
   next: { label: string; href: string }[];
+}
+
+/** 4コマを「絵」で見せるための指定（components/lecture/Comic.tsx が SVG で描く。新聞の4コマのような素朴な絵） */
+export type ComicLook = "girl" | "boy" | "teacher";
+export type ComicFace = "normal" | "smile" | "surprise" | "sweat" | "shout" | "think";
+export type ComicFx = "!" | "?" | "sweat" | "idea" | "steam";
+export type ComicProp =
+  | "table" | "pancake" | "pancakeHard" | "honey" | "soup" | "straw" | "bubbles" | "splash"
+  | "book" | "volcanoFlat" | "volcanoDome" | "rockWhite" | "rockBlack" | "shell" | "cliff" | "loupe"
+  | "factory" | "tshirt" | "map" | "coin" | "scroll" | "helmet";
+export interface ComicArt {
+  bg?: "plain" | "kitchen" | "class" | "outdoor";
+  /** x は 0〜340（左→右）。ふきだしは右から順に並ぶので、先に話す人を右に置く */
+  cast: { who: string; look: ComicLook; x: number; face?: ComicFace; flip?: boolean; fx?: ComicFx; hand?: [number, number] }[];
+  /** 小道具。x 0〜340, y 0〜280（下が280）。s は大きさ（1 が基準） */
+  props?: { kind: ComicProp; x: number; y: number; s?: number }[];
 }
