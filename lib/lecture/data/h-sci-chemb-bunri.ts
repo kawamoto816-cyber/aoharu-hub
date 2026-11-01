@@ -38,7 +38,7 @@ export const H_SCI_CHEMB_BUNRI: Lecture = {
         title: "おもな分離・精製の方法",
         columns: [{ title: "利用する差", tone: "blue" }, { title: "例", tone: "yellow" }],
         rows: [
-          { label: "ろ過", cells: ["液体に溶けるかどうか", "泥水 → 砂と水"] },
+          { label: "ろ過", cells: ["粒の大きさ（ろ紙を通るか）", "泥水 → 砂と水"] },
           { label: "蒸留", cells: ["沸点の差", "海水 → 純水"] },
           { label: "分留", cells: ["沸点の差（液体どうし）", "原油・液体空気"] },
           { label: "再結晶", cells: ["温度による溶解度の差", "不純物をふくむ KNO₃"] },

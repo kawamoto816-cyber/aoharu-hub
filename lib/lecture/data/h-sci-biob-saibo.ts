@@ -71,8 +71,8 @@ export const H_SCI_BIOB_SAIBO: Lecture = {
         title: "細胞内共生説の考え方",
         steps: [
           { label: "祖先の細胞", sub: "核をもつ細胞", tone: "plain" },
-          { label: "ミトコンドリア", sub: "動物などの祖先", tone: "blue" },
-          { label: "葉緑体", sub: "植物などの祖先", tone: "yellow" },
+          { label: "ミトコンドリアをもつ細胞", sub: "動物などの祖先", tone: "blue" },
+          { label: "葉緑体ももつ細胞", sub: "植物などの祖先", tone: "yellow" },
         ],
         arrows: ["呼吸をする細菌が共生", "シアノバクテリアが共生"],
         note: "ミトコンドリアが先にとりこまれ、その一部の細胞にシアノバクテリアがとりこまれたと考えられている。",

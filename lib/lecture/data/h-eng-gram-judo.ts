@@ -3,7 +3,7 @@ import type { Lecture } from "../types";
 export const H_ENG_GRAM_JUDO: Lecture = {
   unit: "h-eng-gram-judo",
   title: "受動態は「される側」を主語にした文。be ＋過去分詞で、時制は be が表す",
-  hook: "駅の案内の This train is bound for Kyoto. や、ニュースの The bridge was built in 1970. のように、だれがしたかより「何がどうされたか」を伝えたい場面はたくさんあります。そんなときに使うのが受動態です。能動態からの作りかえを手順で押さえると、時制・助動詞・文型が変わっても迷いません。",
+  hook: "駅の掲示の Smoking is not allowed here. や、ニュースの The bridge was built in 1970. のように、だれがしたかより「何がどうされたか」を伝えたい場面はたくさんあります。そんなときに使うのが受動態です。能動態からの作りかえを手順で押さえると、時制・助動詞・文型が変わっても迷いません。",
   sections: [
     {
       heading: "作り方：目的語を主語にして、be ＋過去分詞",
@@ -45,7 +45,7 @@ export const H_ENG_GRAM_JUDO: Lecture = {
           label: "be ＋過去分詞＋前置詞",
           tone: "navy",
           children: [
-            { label: "気持ち", children: [{ label: "interested", sub: "in：〜に興味がある", tone: "yellow" }, { label: "surprised at", sub: "〜に驚く", tone: "yellow" }] },
+            { label: "気持ち", children: [{ label: "interested in", sub: "〜に興味がある", tone: "yellow" }, { label: "surprised at", sub: "〜に驚く", tone: "yellow" }] },
             { label: "状態", children: [{ label: "covered with", sub: "〜でおおわれる", tone: "blue" }, { label: "known to", sub: "〜に知られている", tone: "blue" }] },
             { label: "材料・原料", children: [{ label: "made of", sub: "見た目で分かる材料", tone: "red" }, { label: "made from", sub: "形が変わった原料", tone: "red" }] },
           ],

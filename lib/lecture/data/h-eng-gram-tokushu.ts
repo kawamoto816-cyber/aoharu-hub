@@ -73,7 +73,7 @@ export const H_ENG_GRAM_TOKUSHU: Lecture = {
     { wrong: "Never I have seen such a view.", right: "Never have I seen such a view.", why: "否定語が文頭に出たら、疑問文と同じ語順（have ＋主語）にします。" },
     { wrong: "Rarely he goes out at night.", right: "Rarely does he go out at night.", why: "一般動詞の文の倒置は does を主語の前に出し、動詞は原形にもどします。" },
     { wrong: "「生徒は1人も来なかった」を All the students didn't come. と書く。", right: "None of the students came.", why: "all と not の組み合わせは部分否定（全員が来たわけではない）と読まれます。全体否定は none です。" },
-    { wrong: "It was in this town which I was born.", right: "It was in this town that I was born.", why: "副詞句 in this town を強調するときは that を使います。which は名詞の後ろでしか使えません。" },
+    { wrong: "It was in this town which I was born.", right: "It was in this town that I was born.", why: "強調構文の「つなぎ」は that（強調するのが人なら who も可）。in this town は副詞句なので、関係代名詞の which は使えません。" },
   ],
   check: [
     { q: "I like tennis. — ___ ___ my brother.（兄もそうだ）", a: "So does", why: "「〜もそうだ」は So ＋助動詞（does）＋主語の倒置。" },

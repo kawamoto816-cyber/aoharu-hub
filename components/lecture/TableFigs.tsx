@@ -68,14 +68,14 @@ export function TimelineFig({ fig }: { fig: TimelineFigure }) {
             <p className="m-0 flex items-baseline gap-2 rounded-[8px] bg-[#15172B] px-2.5 py-1 text-[13px] font-black text-white">
               <Rich text={g.era.label} />
               <span className="text-[11px] font-bold text-[#FFE45C]">
-                {g.era.from}〜{g.era.to}
+                {yr(g.era.from)}〜{yr(g.era.to)}
               </span>
             </p>
           )}
           <ol className="m-0 mt-1 list-none p-0">
             {g.items.map((ev) => (
               <li key={`${ev.year}-${ev.label}`} className="grid grid-cols-[76px_14px_1fr] items-stretch gap-x-2">
-                <span className="py-1.5 text-right text-[13px] font-black tabular-nums text-[#1533B8]">{ev.yearLabel ? <Rich text={ev.yearLabel} /> : ev.year}</span>
+                <span className="py-1.5 text-right text-[13px] font-black tabular-nums text-[#1533B8]">{ev.yearLabel ? <Rich text={ev.yearLabel} /> : yr(ev.year)}</span>
                 <span aria-hidden="true" className="relative flex justify-center">
                   <span className="absolute inset-y-0 w-[2px] bg-[#15172B]" />
                   <span className={`relative mt-[9px] h-3 w-3 rounded-full border-2 border-[#15172B] ${ev.key ? "bg-[#FFE45C]" : "bg-white"}`} />
@@ -91,6 +91,9 @@ export function TimelineFig({ fig }: { fig: TimelineFigure }) {
     </div>
   );
 }
+
+// 紀元前（負の年）は「前509」のように書く
+const yr = (y: number) => (y < 0 ? `前${-y}` : `${y}`);
 
 function TreeItem({ node }: { node: TreeNode }) {
   return (

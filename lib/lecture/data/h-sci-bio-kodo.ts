@@ -48,7 +48,7 @@ export const H_SCI_BIO_KODO: Lecture = {
           { label: "雌があらわれる", sub: "ふくらんだ腹がかぎ刺激", tone: "plain" },
           { label: "雄がジグザグダンス", sub: "雌を誘う", tone: "blue" },
           { label: "雄が巣へ案内", sub: "入口を示す", tone: "blue" },
-          { label: "雌が産卵", sub: "雄が背中をつつく", tone: "plain" },
+          { label: "雌が産卵", sub: "雄が尾のつけ根をつつく", tone: "plain" },
           { label: "雄が放精", sub: "卵が受精する", tone: "yellow" },
         ],
         note: "腹部が赤いだけの模型にも雄は攻撃する。形よりも「赤い腹」という刺激に反応している。",
