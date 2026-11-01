@@ -610,7 +610,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-en-1-tango",
-            "href": "/learn/eigo-chu/j-en-1-tango",
+            "href": "/learn/chu-tango",
             "name": "英単語",
             "engines": [
               "覚える"
@@ -729,7 +729,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-en-2-tango",
-            "href": "/learn/eigo-chu/j-en-2-tango",
+            "href": "/learn/chu-tango",
             "name": "英単語",
             "engines": [
               "覚える"
@@ -821,7 +821,7 @@ export const SUBJECTS: SchoolSubject[] = [
           },
           {
             "id": "j-en-3-tango",
-            "href": "/learn/eigo-chu/j-en-3-tango",
+            "href": "/learn/chu-tango",
             "name": "英単語",
             "engines": [
               "覚える"
