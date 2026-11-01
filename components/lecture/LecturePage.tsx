@@ -103,7 +103,7 @@ export function LecturePage({ lec }: { lec: Lecture }) {
                 </span>
                 <span>
                   <span className="sr-only">まちがい：</span>
-                  <span className="line-through decoration-[#D9341F]/60"><Rich text={m.wrong} /></span>
+                  <span><Rich text={m.wrong} /></span>
                 </span>
               </p>
               <p className="m-0 mt-1.5 flex items-start gap-2 text-[14px] font-black leading-snug text-[#1533B8]">
