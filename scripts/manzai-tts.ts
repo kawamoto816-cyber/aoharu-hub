@@ -1,5 +1,5 @@
 // 「漫才で聞く」と小説の「朗読を聞く」、名作の引用の朗読の音声をまとめて作る。手元のパソコンで動かす。
-// 日本語は VOICEVOX（アプリを起動しておく。mp3 への変換に ffmpeg が要る）、英語は Google Cloud Text-to-Speech (Chirp 3: HD) のネイティブの声。
+// 日本語は VOICEVOX（アプリを起動しておく。mp3 への変換は ffmpeg。なければ npm install で入る ffmpeg-static を使う）、英語は Google Cloud Text-to-Speech (Chirp 3: HD) のネイティブの声。
 //
 //   数をたしかめる:  npx tsx scripts/manzai-tts.ts --count
 //   全部作る:        npx tsx scripts/manzai-tts.ts
@@ -13,6 +13,7 @@ import { existsSync, mkdirSync, readFileSync, readdirSync, unlinkSync, writeFile
 import { execFileSync } from "node:child_process";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { createRequire } from "node:module";
 import { LECTURES } from "../lib/lecture";
 import { manzaiAudio, novelAudio } from "../lib/tts/yomi";
 import { reciteAudio } from "../lib/tts/recite";
@@ -74,13 +75,27 @@ async function vvSpeakers(): Promise<Map<string, number>> {
   return vvIds;
 }
 
+// ffmpeg は、パソコンに入っていればそれを、なければ npm の ffmpeg-static（npm install で入る）を使う。
+let FFMPEG = process.env.FFMPEG_PATH ?? "ffmpeg";
 function checkFfmpeg() {
+  const ok = (bin: string) => {
+    try {
+      execFileSync(bin, ["-version"], { stdio: "ignore" });
+      return true;
+    } catch {
+      return false;
+    }
+  };
+  if (ok(FFMPEG)) return;
   try {
-    execFileSync("ffmpeg", ["-version"], { stdio: "ignore" });
-  } catch {
-    console.error("mp3 に変換する ffmpeg が見つかりません。ターミナルで  brew install ffmpeg  を実行してから、もう一度動かしてください。");
-    process.exit(1);
-  }
+    const bin = createRequire(import.meta.url)("ffmpeg-static") as string | null;
+    if (bin && ok(bin)) {
+      FFMPEG = bin;
+      return;
+    }
+  } catch {}
+  console.error("mp3 に変換する ffmpeg が見つかりません。ターミナルで  npm install  を実行してから、もう一度動かしてください。");
+  process.exit(1);
 }
 
 async function synthVoicevox(j: Job): Promise<Buffer> {
@@ -101,7 +116,7 @@ async function synthVoicevox(j: Job): Promise<Buffer> {
   const tmp = join(tmpdir(), `vv-${j.key}.wav`);
   const out = join(tmpdir(), `vv-${j.key}.mp3`);
   writeFileSync(tmp, Buffer.from(await w.arrayBuffer()));
-  execFileSync("ffmpeg", ["-y", "-loglevel", "error", "-i", tmp, "-ac", "1", "-b:a", "64k", out]);
+  execFileSync(FFMPEG, ["-y", "-loglevel", "error", "-i", tmp, "-ac", "1", "-b:a", "64k", out]);
   const buf = readFileSync(out);
   unlinkSync(tmp);
   unlinkSync(out);
@@ -145,11 +160,12 @@ async function main() {
   }
   if (stale.length) console.log(`使われなくなった古い音声 ${stale.length} 個${process.argv.includes("--count") ? "（消すのは本番の実行時）" : "を消します"}`);
   if (process.argv.includes("--count")) return;
-  for (const f of stale) unlinkSync(f);
+  // 先に ffmpeg と VOICEVOX がそろっているかを確かめてから、古い音声を消す
   if (todo.some((j) => j.voice.startsWith("vv:"))) {
     checkFfmpeg();
     await vvSpeakers();
   }
+  for (const f of stale) unlinkSync(f);
   const key = todo.some((j) => !j.voice.startsWith("vv:")) ? apiKey() : "";
   for (const dir of DIRS) mkdirSync(dir, { recursive: true });
   let next = 0;
