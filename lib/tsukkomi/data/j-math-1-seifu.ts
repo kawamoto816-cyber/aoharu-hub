@@ -17,7 +17,7 @@ export const J_MATH_1_SEIFU = defineUnit("j-math-1-seifu", [
     ],
     reasonAnswer: 1,
     why: "負の数は、絶対値が大きいほど0から左へはなれるので小さくなります。−5 ＜ −2 です。",
-    say: { boke: "負の数どうしでは、絶対値が大きいほど、大きい数になる。", tsukkomi: "なんでやねん！ 負の数は、絶対値が大きいほど、小さいんや。" },
+    say: { boke: "負の数どうしでは、絶対値が大きいほど、大きい数になる。", tsukkomi: "負の数は、絶対値が大きいほど、小さいんや。" },
   },
   {
     id: "sei-02",
@@ -33,7 +33,7 @@ export const J_MATH_1_SEIFU = defineUnit("j-math-1-seifu", [
     ],
     reasonAnswer: 0,
     why: "絶対値は0からのきょりなので、符号をとった数。−7 の絶対値は 7 です。",
-    say: { boke: "マイナス7の絶対値は、マイナス7である。", tsukkomi: "なんでやねん！ 絶対値は0からのきょりやから、7や。" },
+    say: { boke: "マイナス7の絶対値は、マイナス7である。", tsukkomi: "絶対値は0からのきょりやから、7や。" },
   },
   {
     id: "sei-03",
@@ -51,7 +51,7 @@ export const J_MATH_1_SEIFU = defineUnit("j-math-1-seifu", [
     why: "ひく数の符号を変えてたし算に直すと (−3)+(+5)＝+2。",
     say: {
       boke: "マイナス3ひくマイナス5は、マイナス3たすプラス5に直せるので、答えはマイナス8。",
-      tsukkomi: "なんでやねん！ 左へ3、右へ5進んで、答えはプラス2や。",
+      tsukkomi: "左へ3、右へ5進んで、答えはプラス2や。",
     },
   },
   {
@@ -68,7 +68,7 @@ export const J_MATH_1_SEIFU = defineUnit("j-math-1-seifu", [
     ],
     reasonAnswer: 2,
     why: "−3² ＝ −(3×3) ＝ −9。(−3)² なら (−3)×(−3) ＝ 9 です。",
-    say: { boke: "かっこのない、マイナス3の2乗は、9になる。", tsukkomi: "なんでやねん！ 3の2乗にマイナスをつけるから、マイナス9や。" },
+    say: { boke: "かっこのない、マイナス3の2乗は、9になる。", tsukkomi: "3の2乗にマイナスをつけるから、マイナス9や。" },
   },
   {
     id: "sei-05",
@@ -84,7 +84,7 @@ export const J_MATH_1_SEIFU = defineUnit("j-math-1-seifu", [
     ],
     reasonAnswer: 1,
     why: "0より大きい数が正の数、0より小さい数が負の数。0はちょうど境目で、どちらでもありません。",
-    say: { boke: "数直線で0を基準にすると、0は、正の数である。", tsukkomi: "なんでやねん！ 0は、正の数でも負の数でもないんや。" },
+    say: { boke: "数直線で0を基準にすると、0は、正の数である。", tsukkomi: "0は、正の数でも負の数でもないんや。" },
   },
   {
     id: "sei-06",
@@ -102,7 +102,7 @@ export const J_MATH_1_SEIFU = defineUnit("j-math-1-seifu", [
     why: "負の数が偶数個なら ＋、奇数個なら −。ここでは2個なので +30。",
     say: {
       boke: "マイナス2かけるプラス5かけるマイナス3を計算すると、マイナス30になる。",
-      tsukkomi: "なんでやねん！ 負の数が2個やから、プラス30や。",
+      tsukkomi: "負の数が2個やから、プラス30や。",
     },
   },
   {
@@ -119,7 +119,7 @@ export const J_MATH_1_SEIFU = defineUnit("j-math-1-seifu", [
     ],
     reasonAnswer: 2,
     why: "ひき算は、ひく数の符号を変えてたし算に直します。(+2)−(−3)＝(+2)+(+3)＝+5。",
-    say: { boke: "ひき算は、ひく数の符号をそのままにして、たし算に直す。", tsukkomi: "なんでやねん！ ひく数の符号を変えて、たし算に直すんや。" },
+    say: { boke: "ひき算は、ひく数の符号をそのままにして、たし算に直す。", tsukkomi: "ひく数の符号を変えて、たし算に直すんや。" },
   },
   {
     id: "sei-08",
@@ -135,7 +135,7 @@ export const J_MATH_1_SEIFU = defineUnit("j-math-1-seifu", [
     ],
     reasonAnswer: 1,
     why: "計算は、累乗→かっこの中→かけ算・わり算→たし算・ひき算の順です。",
-    say: { boke: "いくつもの計算がまざった式では、たし算、ひき算を、最初に計算する。", tsukkomi: "なんでやねん！ 最初に計算するのは、累乗や。" },
+    say: { boke: "いくつもの計算がまざった式では、たし算、ひき算を、最初に計算する。", tsukkomi: "最初に計算するのは、累乗や。" },
   },
   {
     id: "sei-09",

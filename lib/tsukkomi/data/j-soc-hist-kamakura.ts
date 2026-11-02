@@ -17,7 +17,7 @@ export const J_SOC_HIST_KAMAKURA = defineUnit("j-soc-hist-kamakura", [
     ],
     reasonAnswer: 2,
     why: "「恩」を与えるのは将軍の側（領地の保護・新しい領地）。御家人の警備や戦いは奉公です。",
-    say: { boke: "御家人が、京都や鎌倉の警備をつとめることを、御恩という。", tsukkomi: "なんでやねん！ 御家人のはたらきは、奉公や。" },
+    say: { boke: "御家人が、京都や鎌倉の警備をつとめることを、御恩という。", tsukkomi: "御家人のはたらきは、奉公や。" },
   },
   {
     id: "kam-02",
@@ -33,7 +33,7 @@ export const J_SOC_HIST_KAMAKURA = defineUnit("j-soc-hist-kamakura", [
     ],
     reasonAnswer: 0,
     why: "執権は将軍を補佐する役職。北条氏が代々つき、実際の政治を動かしました（執権政治）。",
-    say: { boke: "執権は、将軍の別のよび方で、北条氏が代々ついた。", tsukkomi: "なんでやねん！ 執権は、将軍を補佐する役職や。" },
+    say: { boke: "執権は、将軍の別のよび方で、北条氏が代々ついた。", tsukkomi: "執権は、将軍を補佐する役職や。" },
   },
   {
     id: "kam-03",
@@ -49,7 +49,7 @@ export const J_SOC_HIST_KAMAKURA = defineUnit("j-soc-hist-kamakura", [
     ],
     reasonAnswer: 1,
     why: "1221年の承久の乱。壇ノ浦の戦いは、1185年に平氏がほろびた戦いです。",
-    say: { boke: "1221年、後鳥羽上皇が幕府をたおそうと兵を挙げたのが、壇ノ浦の戦いである。", tsukkomi: "なんでやねん！ それは、承久の乱や。" },
+    say: { boke: "1221年、後鳥羽上皇が幕府をたおそうと兵を挙げたのが、壇ノ浦の戦いである。", tsukkomi: "それは、承久の乱や。" },
   },
   {
     id: "kam-04",
@@ -65,7 +65,7 @@ export const J_SOC_HIST_KAMAKURA = defineUnit("j-soc-hist-kamakura", [
     ],
     reasonAnswer: 0,
     why: "六波羅探題は京都に置かれ、朝廷を監視し、西日本の御家人を統制しました。",
-    say: { boke: "承久の乱のあと、朝廷を監視するために、鎌倉に六波羅探題が置かれた。", tsukkomi: "なんでやねん！ 朝廷を見はるんやから、京都や。" },
+    say: { boke: "承久の乱のあと、朝廷を監視するために、鎌倉に六波羅探題が置かれた。", tsukkomi: "朝廷を見はるんやから、京都や。" },
   },
   {
     id: "kam-05",
@@ -81,7 +81,7 @@ export const J_SOC_HIST_KAMAKURA = defineUnit("j-soc-hist-kamakura", [
     ],
     reasonAnswer: 1,
     why: "1232年の御成敗式目（貞永式目）は、武士のための最初の法律。徳政令は1297年です。",
-    say: { boke: "1232年、北条泰時は、武士の裁判の基準として、徳政令を定めた。", tsukkomi: "なんでやねん！ 裁判の基準は、御成敗式目や。" },
+    say: { boke: "1232年、北条泰時は、武士の裁判の基準として、徳政令を定めた。", tsukkomi: "裁判の基準は、御成敗式目や。" },
   },
   {
     id: "kam-06",
@@ -97,7 +97,7 @@ export const J_SOC_HIST_KAMAKURA = defineUnit("j-soc-hist-kamakura", [
     ],
     reasonAnswer: 1,
     why: "念仏は浄土宗・浄土真宗・時宗。座禅でさとりを開くのが禅宗（臨済宗・曹洞宗）です。",
-    say: { boke: "座禅によって、自分の力でさとりを開こうとするのは、浄土宗の教えである。", tsukkomi: "なんでやねん！ 座禅は、禅宗や。" },
+    say: { boke: "座禅によって、自分の力でさとりを開こうとするのは、浄土宗の教えである。", tsukkomi: "座禅は、禅宗や。" },
   },
   {
     id: "kam-07",
@@ -113,7 +113,7 @@ export const J_SOC_HIST_KAMAKURA = defineUnit("j-soc-hist-kamakura", [
     ],
     reasonAnswer: 2,
     why: "元軍は退けましたが、守りの戦いで新しい領地が得られず、十分な恩賞を与えられませんでした。",
-    say: { boke: "元寇で幕府は、元軍に負けたので、御家人に十分な恩賞を与えられなかった。", tsukkomi: "なんでやねん！ 元軍は退けたけど、守りの戦いやったんや。" },
+    say: { boke: "元寇で幕府は、元軍に負けたので、御家人に十分な恩賞を与えられなかった。", tsukkomi: "元軍は退けたけど、守りの戦いやったんや。" },
   },
   {
     id: "kam-08",
@@ -129,7 +129,7 @@ export const J_SOC_HIST_KAMAKURA = defineUnit("j-soc-hist-kamakura", [
     ],
     reasonAnswer: 1,
     why: "金剛力士像は、運慶・快慶らが1203年に約2か月でつくりました。法然は浄土宗を開いた僧です。",
-    say: { boke: "東大寺南大門の金剛力士像は、法然らがつくった、写実的な彫刻である。", tsukkomi: "なんでやねん！ つくったのは、運慶と快慶らや。" },
+    say: { boke: "東大寺南大門の金剛力士像は、法然らがつくった、写実的な彫刻である。", tsukkomi: "つくったのは、運慶と快慶らや。" },
   },
   {
     id: "kam-09",

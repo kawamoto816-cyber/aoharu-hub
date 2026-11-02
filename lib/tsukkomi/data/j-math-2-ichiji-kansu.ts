@@ -17,7 +17,7 @@ export const J_MATH_2_ICHIJI_KANSU = defineUnit("j-math-2-ichiji-kansu", [
     ],
     reasonAnswer: 2,
     why: "符号もふくめて、x の係数が傾き。y＝−2x+3 の傾きは −2 です。",
-    say: { boke: "yイコール、マイナス2xたす3の傾きは、2である。", tsukkomi: "なんでやねん！ 符号もふくめて、傾きはマイナス2や。" },
+    say: { boke: "yイコール、マイナス2xたす3の傾きは、2である。", tsukkomi: "符号もふくめて、傾きはマイナス2や。" },
   },
   {
     id: "ich-02",
@@ -33,7 +33,7 @@ export const J_MATH_2_ICHIJI_KANSU = defineUnit("j-math-2-ichiji-kansu", [
     ],
     reasonAnswer: 0,
     why: "定数項が切片。y＝−2x+3 の切片は 3 です。",
-    say: { boke: "yイコール、マイナス2xたす3の切片は、マイナス3である。", tsukkomi: "なんでやねん！ 切片は、定数項の3や。" },
+    say: { boke: "yイコール、マイナス2xたす3の切片は、マイナス3である。", tsukkomi: "切片は、定数項の3や。" },
   },
   {
     id: "ich-03",
@@ -51,7 +51,7 @@ export const J_MATH_2_ICHIJI_KANSU = defineUnit("j-math-2-ichiji-kansu", [
     why: "変化の割合は「x が1増えたら y はいくつ増えるか」。y の増加量を x の増加量でわります。",
     say: {
       boke: "一次関数の変化の割合は、xの増加量わる、yの増加量で求める。",
-      tsukkomi: "なんでやねん！ yの増加量を、xの増加量でわるんや。",
+      tsukkomi: "yの増加量を、xの増加量でわるんや。",
     },
   },
   {
@@ -70,7 +70,7 @@ export const J_MATH_2_ICHIJI_KANSU = defineUnit("j-math-2-ichiji-kansu", [
     why: "y÷x は比例の比例定数の求め方。一次関数 y＝ax+b の変化の割合は、いつも a（ここでは 2）です。",
     say: {
       boke: "yイコール2xたす5で、xイコール1のときyイコール7だから、変化の割合は7である。",
-      tsukkomi: "なんでやねん！ 一次関数の変化の割合は、いつもaやから、2や。",
+      tsukkomi: "一次関数の変化の割合は、いつもaやから、2や。",
     },
   },
   {
@@ -87,7 +87,7 @@ export const J_MATH_2_ICHIJI_KANSU = defineUnit("j-math-2-ichiji-kansu", [
     ],
     reasonAnswer: 2,
     why: "一次関数のグラフは直線。y＝ax（原点を通る直線）を、上へ b だけずらしたものです。",
-    say: { boke: "一次関数のグラフは、放物線である。", tsukkomi: "なんでやねん！ 一次関数のグラフは、直線や。" },
+    say: { boke: "一次関数のグラフは、放物線である。", tsukkomi: "一次関数のグラフは、直線や。" },
   },
   {
     id: "ich-06",
@@ -103,7 +103,7 @@ export const J_MATH_2_ICHIJI_KANSU = defineUnit("j-math-2-ichiji-kansu", [
     ],
     reasonAnswer: 1,
     why: "a＞0 なら右上がり、a＜0 なら右下がりです。",
-    say: { boke: "aが0より小さいとき、一次関数のグラフは、右上がりになる。", tsukkomi: "なんでやねん！ aが負なら、右下がりや。" },
+    say: { boke: "aが0より小さいとき、一次関数のグラフは、右上がりになる。", tsukkomi: "aが負なら、右下がりや。" },
   },
   {
     id: "ich-07",
@@ -121,7 +121,7 @@ export const J_MATH_2_ICHIJI_KANSU = defineUnit("j-math-2-ichiji-kansu", [
     why: "傾きが同じ2本の直線は平行で、交わりません。連立方程式にしても解がありません。",
     say: {
       boke: "yイコール2xたす1と、yイコール2xたす4のグラフは、垂直な直線である。",
-      tsukkomi: "なんでやねん！ 傾きが同じやから、平行な直線や。",
+      tsukkomi: "傾きが同じやから、平行な直線や。",
     },
   },
   {
@@ -138,7 +138,7 @@ export const J_MATH_2_ICHIJI_KANSU = defineUnit("j-math-2-ichiji-kansu", [
     ],
     reasonAnswer: 2,
     why: "交点の座標は2つの式を両方満たす x、y の組。だから連立方程式の解と同じです。",
-    say: { boke: "2直線の交点の座標は、2つの式をあわせた、比例式の解と同じである。", tsukkomi: "なんでやねん！ 交点の座標は、連立方程式の解や。" },
+    say: { boke: "2直線の交点の座標は、2つの式をあわせた、比例式の解と同じである。", tsukkomi: "交点の座標は、連立方程式の解や。" },
   },
   {
     id: "ich-09",
