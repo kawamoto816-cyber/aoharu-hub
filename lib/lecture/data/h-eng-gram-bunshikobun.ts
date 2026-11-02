@@ -1,13 +1,34 @@
 import type { Lecture } from "../types";
 
+const M = "/media/commons/h-eng-gram-bunshikobun";
+
 export const H_ENG_GRAM_BUNSHIKOBUN: Lecture = {
   unit: "h-eng-gram-bunshikobun",
   title: "分詞構文は「接続詞と主語を消して -ing」。意味は文脈で決まる",
   hook: "小説やニュースの英文には、Walking home, I met Ken. のように、文の頭がいきなり -ing で始まる文がよく出てきます。これは when や because の文を短くまとめた形です。作り方を逆にたどれば、意味も形もすっきり分かります。",
+  mystery: "分詞構文は、接続詞を消して「とき」なのか「から」なのかをぼかした、いわば省略の形です。それなのに、ジャック・ロンドンやジョゼフ・コンラッドのような名作家は、物語のいちばん大事な書き出しで、なぜわざわざ意味のあいまいな分詞構文を選んだのでしょう？",
+  mission: {
+    from: "海外の名作小説を新しく訳しなおしている翻訳家",
+    request: "いま、100年以上前の冒険小説の新訳に取り組んでいます。原文の分詞構文を「〜なので」「〜したとき」と訳し分けると、どうも原文の勢いが消えてしまうのです。作家たちが分詞構文にこめたねらいを、名探偵のあなたに解き明かしてほしいのです。",
+    thanks: "分詞構文は、二つの動作を一枚の絵として同時に見せる形でした。これからは接続詞で説明しすぎず、場面が目に浮かぶように訳してみます。",
+  },
   sections: [
     {
       heading: "作り方：接続詞と主語を消して、動詞を -ing に",
       body: "分詞構文は、接続詞のある副詞節を短くした形です。{{接続詞を消し}}、主節と主語が同じなら{{主語も消し}}、動詞を{{現在分詞 -ing}}にします。be動詞なら Being になりますが、Being はよく省略されます。",
+      reading: [
+        "When I walked home, I met Ken.（家に歩いて帰るとき、ケンに会った）という文を見てみましょう。前半の When I walked home は、文全体の「時」を説明する副詞のかたまり（副詞節）です。この文から{{接続詞を消し}}、主節と同じ主語 I も消して、動詞 walked を{{現在分詞 -ing}}に変えると、Walking home, I met Ken. になります。これが{{分詞構文}}です。分詞のかたまりが、文全体に「どんな状況で」という情報を添える副詞のはたらきをします。",
+        "時制は、分詞のほうでは表しません。walked の「過去」という情報は、主節の met がになっています。Walking home, I'll call you. なら「帰り道に電話するね」という未来の話になります。また、be動詞の文 Because I was tired, 〜 は Being tired, 〜 となりますが、Being はふつう省略され、Tired, I went to bed early. のように形容詞や過去分詞がいきなり文頭に来ることもあります。文頭のコンマまでのかたまりが「主語も動詞もない」ときは、分詞構文を疑ってみましょう。",
+        "この形が物語でどう生きるかを、アメリカの作家{{ジャック・ロンドン}}（1876〜1916年）の『{{野性の呼び声}}』（1903年）で見てみます。1896年、カナダ北西部のクロンダイク地方で金が見つかり、翌年からアメリカ中の人々が北へ押しよせました（{{クロンダイク・ゴールドラッシュ}}）。ロンドン自身も1897年に金を求めて北へ向かいましたが、金は手に入らず、そこで見た犬ぞりの世界をもとに、カリフォルニアの屋敷から連れ去られてそり犬になる犬バックの物語を書きました。その書き出しの2文目に、分詞構文が主語のすぐあとに割りこむ形で出てきます。",
+        "Because men, groping in the Arctic darkness, had found a yellow metal の groping in the Arctic darkness は、as they groped in the Arctic darkness（北極圏の暗やみを手さぐりしながら）をちぢめた形です。接続詞と主語を消したおかげで、男たちの姿が説明ではなく「暗やみで手をのばしている映像」として一瞬で目に入ります。しかも金を gold と言わず a yellow metal（黄色い金属）とよぶことで、物語を見ている犬バックの目の高さに読者を立たせています。ちなみに1文目の or he would have known（さもなければ知っていたはずだ）は、仮定法過去完了です。",
+      ],
+      recite: [{
+        lang: "en", voice: "male",
+        text: "Buck did not read the newspapers, or he would have known that trouble was brewing, not alone for himself, but for every tide-water dog, strong of muscle and with warm, long hair, from Puget Sound to San Diego. Because men, groping in the Arctic darkness, had found a yellow metal, and because steamship and transportation companies were booming the find, thousands of men were rushing into the Northland.",
+        ja: "バックは新聞を読まなかった。もし読んでいたら、やっかいなことが起こりかけていると知っていたはずだ。それは自分ひとりのことではなく、ピュージェット湾からサンディエゴまで、海辺の土地に暮らす、筋肉がたくましく暖かい長い毛をもつすべての犬にふりかかることだった。北極圏の暗やみを手さぐりしていた男たちが黄色い金属を見つけ、蒸気船会社や運送会社がその発見をさかんに書き立てたせいで、何千もの男たちが北の国へ押しよせていたのだ。",
+        cite: "Jack London, The Call of the Wild, Chapter I (1903)",
+        source: "https://www.gutenberg.org/ebooks/215",
+      }],
       figure: {
         type: "formula",
         title: "When I walked home, I met Ken. を分詞構文に",
@@ -18,10 +39,30 @@ export const H_ENG_GRAM_BUNSHIKOBUN: Lecture = {
           { expr: "{{Walking}} home, I met Ken.", note: "動詞を -ing に。時制は主節が示す" },
         ],
       },
+      photos: [
+        {
+          src: `${M}/chilkoot.webp`, width: 700, height: 536,
+          alt: "雪におおわれた急な斜面を、荷物を背負った人々が一列になって山頂までのぼっていく古い写真",
+          caption: "チルクート峠をのぼる人々（1898年、エリック・ヘッグ撮影）。{{クロンダイク・ゴールドラッシュ}}で、金を求める人々はこの雪の急坂をこえてカナダの金鉱地へ向かった。",
+          credit: { author: "Eric A. Hegg", license: "Public domain", source: "https://commons.wikimedia.org/wiki/File:Packers_ascending_summit_of_Chilkoot_Pass,_1898_(MOHAI_7145).jpg" },
+        },
+        {
+          src: `${M}/call-wild-cover.webp`, width: 294, height: 417,
+          alt: "緑色の表紙に THE CALL of THE WILD と JACK LONDON の文字。雪原で犬ぞりを走らせる男たちの絵が3段に描かれている",
+          caption: "『{{野性の呼び声}}』の初版の表紙（1903年、ニューヨーク）。雪原を行く犬ぞりが描かれている。主人公はそり犬になった犬バック。",
+          credit: { author: "Paul Bransom または Charles Bull（表紙画）", license: "Public domain", source: "https://commons.wikimedia.org/wiki/File:JackLondoncallwild.jpg" },
+        },
+      ],
+      cliff: "接続詞を消してしまったら、「とき」か「から」か、どうやって見分けるのでしょう？",
     },
     {
       heading: "意味は文脈で決まる。接続詞にもどして考える",
       body: "接続詞を消しているので、意味は{{文脈}}から判断します。{{時}}（〜するとき）、{{理由}}（〜なので）、{{条件}}（〜すれば）、{{譲歩}}（〜だけれど）、{{付帯状況・連続}}（〜しながら・そして〜）があります。訳に迷ったら、when・because・if などにもどして自然なものを選びます。条件と譲歩は数が少なく、慣用的な言い方で出ることが多いです。",
+      reading: [
+        "分詞構文には「この意味」という決まった印がありません。Feeling tired, I went to bed early. は、「疲れていたので（{{理由}}）早く寝た」と読むのが自然です。Opening the door, she found a cat. は「ドアを開けると（{{時}}）、ネコがいた」。Turning left, you'll see the station. は「左に曲がれば（{{条件}}）駅が見えます」。どれも、主節との関係を考えて、when・because・if のうち一番すっきりつながるものを選びます。これが「意味は{{文脈}}で決まる」ということです。",
+        "分詞のかたまりが主節の{{うしろ}}に来ると、多くは{{付帯状況}}（〜しながら）か{{連続}}（そして〜）になります。He came in, carrying a box.（彼は箱をかかえて入ってきた）は、入ってくる動作と箱をかかえる様子が同時に起きています。The train left Tokyo at six, arriving in Osaka at nine.（列車は6時に東京を出て、9時に大阪に着いた）は、出来事が順に続く連続です。文の前から順に、起きたことを追いかけるように読めばよいのです。",
+        "{{譲歩}}（〜だけれど）の分詞構文は書き言葉でも多くありません。Admitting that he is right, I still can't agree.（彼が正しいとは認めるが、それでも賛成できない）のように、あとに still や yet が来て「にもかかわらず」の関係が分かる形がふつうです。読むときは文脈で判断し、自分で書くときは、誤解されないように although などの接続詞を使った文で書くほうが安全です。",
+      ],
       figure: {
         type: "compare",
         title: "分詞構文の意味",
@@ -34,10 +75,24 @@ export const H_ENG_GRAM_BUNSHIKOBUN: Lecture = {
         ],
         note: "ほかに譲歩（〜だけれど）や連続（そして〜）もある。",
       },
+      cliff: "主語が「される」側のときや、主語が別々のときは、文の頭はどう変わるのでしょう？",
     },
     {
       heading: "形の選び方：する・される・前のこと・主語がちがう",
       body: "主語が「{{する}}」側なら現在分詞 -ing、「{{される}}」側なら{{過去分詞}}で始めます。主節より{{前のこと}}なら Having ＋過去分詞にします。主節と主語が{{ちがう}}ときは、分詞の前に主語を残します（{{独立分詞構文}}：It being rainy, 〜）。否定は not を分詞の{{前}}に置きます。",
+      reading: [
+        "分詞構文の主語は、書かれていなくても主節の主語と同じだと読まれます。だから分詞の形は、主節の主語がその動作を「{{する}}」のか「{{される}}」のかで決まります。Seen from the hill, the town looks small.（丘から見ると、町は小さく見える）では、町は「見られる」側なので{{過去分詞}} Seen で始めます。Written in easy English, this book is easy to read.（やさしい英語で書かれているので、この本は読みやすい）も、本が「書かれる」側だから Written です。",
+        "主節と主語が{{ちがう}}ときは、分詞の前に主語を残します。これを{{独立分詞構文}}といいます。It being rainy, we stayed home.（雨だったので家にいた）では、天気の it と主節の we がちがうので、it を残します。否定は not を分詞の{{前}}に置き、Not knowing what to say, she kept silent.（何と言えばよいか分からず、彼女はだまっていた）とします。Generally speaking（一般的に言えば）、Judging from 〜（〜から判断すると）、Considering 〜（〜を考えると）は、主語がちがっても主語を書かない慣用表現として覚えておきましょう。",
+        "ところが名作の書き出しに、このルールから外れた文があります。ポーランド出身の作家{{ジョゼフ・コンラッド}}（1857〜1924年）の『{{闇の奥}}』（1899年に雑誌連載）は、テムズ川の河口に止まった小さな帆船ネリー号から始まります。being bound down the river（川を下る途中だったので）の意味上の主語は船に乗っている「わたしたち」なのに、主節の主語は the only thing（できること）です。主語がずれたまま主語を残さない分詞構文を{{懸垂分詞}}といい、試験の英作文では避けるべき形です。",
+        "それでも、この文は少しも読みにくくありません。上げ潮、なぎの風、川を下る途中という三つの状況が、主語を立てずにコンマで並べられ、「待つしかない」という結論へ流れこみます。コンラッドは20代になってから船乗りとして英語を身につけ、母語でない英語で書いた作家です。それだけに、規則を知ったうえで、読者の目を船の上の空気に向けさせるために、あえて「だれが」を消したのだと読むこともできます。",
+      ],
+      recite: [{
+        lang: "en", voice: "male", accent: "gb",
+        text: "The Nellie, a cruising yawl, swung to her anchor without a flutter of the sails, and was at rest. The flood had made, the wind was nearly calm, and being bound down the river, the only thing for it was to come to and wait for the turn of the tide.",
+        ja: "遊覧用の小さな帆船ネリー号は、帆をはためかせることもなく錨のまわりで向きを変え、静かに止まった。上げ潮はすでに満ち、風はほとんどなかった。そして川を下る途中だったので、できることといえば、錨を下ろして潮の変わり目を待つことだけだった。",
+        cite: "Joseph Conrad, Heart of Darkness, Part I (1899)",
+        source: "https://www.gutenberg.org/ebooks/219",
+      }],
       figure: {
         type: "tree",
         title: "分詞構文の頭の形を決める",
@@ -52,10 +107,30 @@ export const H_ENG_GRAM_BUNSHIKOBUN: Lecture = {
           ],
         },
       },
+      photos: [
+        {
+          src: `${M}/conrad.webp`, width: 555, height: 770,
+          alt: "口ひげとあごひげをたくわえ、背広を着た男性の白黒の肖像写真",
+          caption: "{{ジョゼフ・コンラッド}}（1904年、G. C. ベレスフォード撮影）。ポーランド語を母語とし、船乗りとして英語を身につけ、英語で小説を書いた。",
+          credit: { author: "George Charles Beresford", license: "Public domain", source: "https://commons.wikimedia.org/wiki/File:Joseph_Conrad,_Fotografie_von_George_Charles_Beresford,_1904.jpg" },
+        },
+        {
+          src: `${M}/blackwoods.webp`, width: 650, height: 1000,
+          alt: "BLACKWOOD'S MAGAZINE の題字と人物の肖像、FEB. 1899、No. 1000 と印刷された古い雑誌の表紙",
+          caption: "イギリスの月刊誌『ブラックウッズ・マガジン』1899年2月号（第1000号）の表紙。『{{闇の奥}}』はこの号から3回に分けて連載された。",
+          credit: { author: "William Blackwood and Sons", license: "Public domain", source: "https://commons.wikimedia.org/wiki/File:Blackwood%27s_Magazine_-_1899_cover.jpg" },
+        },
+      ],
+      cliff: "「宿題を終えてから出かけた」。この時間のずれは、分詞構文でどう表すのでしょう？",
     },
     {
       heading: "Having ＋過去分詞は「時のずれ」のしるし",
       body: "After I had finished my homework, I went out. のように、主節より前に終わったことは {{Having finished}} my homework, I went out. とします。ふつうの -ing は主節と{{同じころ}}、Having ＋過去分詞は主節より{{前}}と覚えておきましょう。完了不定詞 to have ＋過去分詞や完了動名詞 having ＋過去分詞と同じ考え方です。",
+      reading: [
+        "ふつうの -ing の分詞構文は、主節と{{同じころ}}のことを表します。Finishing my homework, I went out. と書くと、「宿題を終わらせながら出かけた」ような、時間が重なった印象になってしまいます。宿題が出かけるより{{前}}にすっかり終わっていたことをはっきりさせたいときは、{{完了分詞}}の Having finished を使い、Having finished my homework, I went out.（宿題を終えてから出かけた）とします。",
+        "Having ＋過去分詞は、理由の意味でもよく使われます。Having lived in London for ten years, she knows the city well.（ロンドンに10年住んでいたので、彼女はその町をよく知っている）では、「住んでいた」期間が、「知っている」今より前から続いてきたことを示しています。受け身なら Having been ＋過去分詞ですが、Having been も省略されることが多く、(Having been) Written in a hurry, the letter was full of mistakes.（急いで書かれたので、その手紙はまちがいだらけだった）のようになります。",
+        "この「一段前の時」を表すしくみは、英語の文法全体に通っています。to have ＋過去分詞（He seems to have been ill.＝病気だったらしい）、having ＋過去分詞の動名詞（I regret having said that.＝あんなことを言ったのを後悔している）、そして分詞構文の Having ＋過去分詞。どれも have ＋過去分詞の形で「主節より前」を示します。完了形を見たら「時計の針が一つ前にもどった」と考えると、意味がすぐつかめます。",
+      ],
       figure: {
         type: "numberline",
         title: "Having finished my homework, I went out.",
@@ -69,8 +144,57 @@ export const H_ENG_GRAM_BUNSHIKOBUN: Lecture = {
         moves: [{ from: -1, to: -2, label: "主節より前 → Having", tone: "red" }],
         desc: "−3から1の数直線。−2に宿題を終えた finished、−1に主節の went out、0に今。went out から finished へ左向きの矢印。",
       },
+      cliff: "最後に、名作家が分詞構文で描いた「一枚の肖像画」をのぞいてみましょう。",
+    },
+    {
+      heading: "with ＋名詞＋分詞と、名作の「一枚の絵」",
+      body: "「〜を…したまま」と様子を添えるときは、{{with ＋名詞＋分詞}}を使います（with his arms folded＝腕を組んで）。名詞が「する」側なら -ing、「される」側なら過去分詞です。分詞構文は接続詞を消すことで、動作と様子を{{同時に}}並べ、場面を{{映像のように}}見せます。",
+      reading: [
+        "{{付帯状況}}を表すときによく使うのが、{{with ＋名詞＋分詞}}の形です。He listened with his eyes closed.（彼は目を閉じて聞いていた）では、目は「閉じられた」状態なので過去分詞 closed、She sat with her hair blowing in the wind.（彼女は髪を風になびかせてすわっていた）では、髪が「なびいている」ので現在分詞 blowing です。分詞の選び方は、名詞と動作の関係で決まります。with ＋名詞＋分詞は、名詞が主節の主語とちがう独立分詞構文の仲間だと考えることができます。",
+        "『{{闇の奥}}』では、ネリー号の上で語り手マーロウが初めて姿を見せる場面に、この形が重ねて使われています。leaning against the mizzen-mast（後ろのマストにもたれて）は文末の分詞構文で、すわる動作と、もたれる様子が同時に起きています。続く文では、こけた頬・黄ばんだ顔色・まっすぐな背筋と名詞を並べたあと、with his arms dropped（腕を下ろして）と、with を使わない the palms of hands outwards（手のひらを外に向けて）で姿勢を描き、最後に resembled an idol（偶像のようだった）で文を閉じます。",
+        "ここで、なぜ when や because で文を区切らないのかが見えてきます。「マーロウはすわった。そしてマストにもたれた」と書けば説明になりますが、分詞構文と with ＋名詞＋分詞は、いくつもの様子を{{同時に}}、一枚の絵として読者の前に置きます。この船の上で、マーロウはアフリカの大河をさかのぼった旅を語りはじめます。作品はのちに映画の題材にもなり、ヨーロッパの植民地支配を描いた名作として読みつがれる一方で、アフリカの人々の描き方に批判も寄せられ、今も議論が続いています。",
+      ],
+      recite: [{
+        lang: "en", voice: "male", accent: "gb",
+        text: "Marlow sat cross-legged right aft, leaning against the mizzen-mast. He had sunken cheeks, a yellow complexion, a straight back, an ascetic aspect, and, with his arms dropped, the palms of hands outwards, resembled an idol.",
+        ja: "マーロウは船尾のいちばん後ろにあぐらをかいてすわり、後ろのマストにもたれていた。こけた頬、黄ばんだ顔色、まっすぐな背筋、修行僧のような風貌。そして腕を下ろし、手のひらを外に向けたその姿は、まるで偶像のようだった。",
+        cite: "Joseph Conrad, Heart of Darkness, Part I (1899)",
+        source: "https://www.gutenberg.org/ebooks/219",
+      }],
+      reveal: "分詞構文は、接続詞を消すことで「とき」か「から」かを言い切らず、二つの動作や様子を{{同時に}}並べる形です。groping in the Arctic darkness は男たちが暗やみで手をのばす姿を、with his arms dropped はマーロウの姿勢を、説明ではなく{{映像のように}}見せます。主節が中心の出来事を、分詞が背景や様子を受けもつので、読者は関係を自分で感じとりながら場面の中に入っていけるのです。あいまいさは欠点ではなく、物語の書き出しで読者を一気に引きこむための力でした。",
     },
   ],
+  story: {
+    kind: "manzai",
+    title: "歩く家と、こっちを見る町",
+    cast: ["ユウト", "アカリ"],
+    lines: [
+      { who: "ユウト", text: "どうもー、ユウトとアカリです！　ぼく、今日から英語で日記をつけることにしました。" },
+      { who: "アカリ", text: "えらいね。何て書いたの？" },
+      { who: "ユウト", text: "Walking home, I met Ken.「歩く家で、ケンに会いました」。", say: "ウォーキング・ホーム、アイ・メット・ケン。歩く家で、ケンに会いました。" },
+      { who: "アカリ", text: "家は歩かない！　When I walked home の接続詞と主語を消して -ing にした{{分詞構文}}。「歩いて帰るとき、ケンに会った」。", say: "家は歩かない！ ホエン・アイ・ウォークト・ホームの接続詞と主語を消して、イングにした分詞構文。歩いて帰るとき、ケンに会った。" },
+      { who: "ユウト", text: "でも when が書いてないのに、なんで「とき」ってわかるの？" },
+      { who: "アカリ", text: "{{文脈}}で決めるの。時・理由・条件・{{付帯状況}}。迷ったら when や because にもどして、自然なほうを選ぶ。", say: "文脈で決めるの。時、理由、条件、付帯状況。迷ったらホエンやビコーズにもどして、自然なほうを選ぶ。" },
+      { who: "ユウト", text: "じゃあ2日目。Feeling tired, I slept.「疲れを感じる係がいて、ぼくは寝ました」。", say: "じゃあ、ふつかめ。フィーリング・タイアード、アイ・スレプト。疲れを感じる係がいて、ぼくは寝ました。" },
+      { who: "アカリ", text: "係はいない！　主語は書いてなくても、主節と同じ I。「疲れていたので寝た」、{{理由}}だよ。", say: "係はいない！ 主語は書いてなくても、主節と同じアイ。疲れていたので寝た、理由だよ。" },
+      { who: "ユウト", text: "3日目は丘にのぼった。Seeing from the hill, the town looks small.", say: "みっかめは丘にのぼった。シーイング・フロム・ザ・ヒル、ザ・タウン・ルックス・スモール。" },
+      { who: "アカリ", text: "それだと、町が丘からこっちを見てる！　町は見られる側だから{{過去分詞}}の Seen。", say: "それだと、町が丘からこっちを見てる！ 町は見られる側だから、過去分詞のシーン。" },
+      { who: "ユウト", text: "町ににらまれてたのか。4日目は雨。Being rainy, we stayed home.", say: "町ににらまれてたのか。よっかめは雨。ビーイング・レイニー、ウィー・ステイド・ホーム。" },
+      { who: "アカリ", text: "わたしたちが雨になってる！　天気の it と we は主語がちがうから、It being rainy と主語を残す。{{独立分詞構文}}。", say: "わたしたちが雨になってる！ 天気のイットとウィーは主語がちがうから、イット・ビーイング・レイニーと主語を残す。独立分詞構文。" },
+      { who: "ユウト", text: "5日目。宿題を終えてから遊びに行った。Finishing my homework, I went out.", say: "いつかめ。宿題を終えてから遊びに行った。フィニッシング・マイ・ホームワーク、アイ・ウェント・アウト。" },
+      { who: "アカリ", text: "それだと宿題をやりながら出かけてる。先に終わったなら {{Having finished}}。主節より前のしるし。", say: "それだと宿題をやりながら出かけてる。先に終わったなら、ハビング・フィニッシュト。主節より前のしるし。" },
+      { who: "ユウト", text: "細かいなあ。でもコンラッドの『闇の奥』には、主語がちがうのに主語を書いてない文があったよ。" },
+      { who: "アカリ", text: "being bound down the river のところね。主語がずれる{{懸垂分詞}}。名作家の文体としては味わうけど、英作文ではまねしない。", say: "ビーイング・バウンド・ダウン・ザ・リバーのところね。主語がずれる懸垂分詞。名作家の文体としては味わうけど、英作文ではまねしない。" },
+      { who: "ユウト", text: "じゃあ、ぼくのまちがいも全部「文体」ってことで。" },
+      { who: "アカリ", text: "都合よすぎ！　コンラッドは規則を知ったうえで使ってるの。" },
+      { who: "ユウト", text: "わかった。最後の日は、ちゃんと書けた。Not knowing what to say, I kept silent.", say: "わかった。最後の日は、ちゃんと書けた。ノット・ノウイング・ホワット・トゥ・セイ、アイ・ケプト・サイレント。" },
+      { who: "アカリ", text: "not も分詞の前で、かんぺき！「何と言えばいいか分からず、だまっていた」。……何があったの？", say: "ノットも分詞の前で、かんぺき！ 何と言えばいいか分からず、だまっていた。……何があったの？" },
+      { who: "ユウト", text: "日記を先生に見せたら、赤ペンで真っ赤になって返ってきた。" },
+      { who: "アカリ", text: "それは何も言えないね！　もういいよ。" },
+      { who: "ユウト", text: "どうも、ありがとうございました！" },
+    ],
+    note: "ユウトとアカリは架空の人物で、会話はすべて創作です。漫才の中の英文は自分で作った例文で、『闇の奥』の being bound down the river だけが原作（Project Gutenberg 版で照合）からの引用です。",
+  },
   mistakes: [
     { wrong: "Seeing from the hill, the town looks small.", right: "Seen from the hill, the town looks small.", why: "主語の town は「見られる」側なので過去分詞で始めます。" },
     { wrong: "Knowing not what to say, she kept silent.", right: "Not knowing what to say, she kept silent.", why: "分詞構文の否定は、not を分詞の前に置きます。" },

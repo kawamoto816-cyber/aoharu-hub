@@ -1,13 +1,41 @@
 import type { Lecture } from "../types";
 
+const C = "/media/commons/h-eng-gram-jodoshi";
+
 export const H_ENG_GRAM_JODOSHI: Lecture = {
   unit: "h-eng-gram-jodoshi",
   title: "助動詞は話し手の「気持ち・確信の強さ」を足す。過去の推量は助動詞＋have＋過去分詞",
   hook: "「彼は疲れている」と言い切るか、「疲れているにちがいない」「疲れているかもしれない」とぼかすか。日本語では文末で変えるこの差を、英語では動詞の前の助動詞で表します。高校では、must や may が「義務・許可」と「推量」の2つの顔をもつこと、過去のことを推し量る形が大事になります。",
+  mystery: "1858年、リンカーンは「分かれたる家は立つことができない（cannot stand）」と演説し、事前に原稿を聞いた友人たちから「言いすぎだ」と心配されたと伝えられます。can は「できる」の助動詞なのに、なぜ cannot のひと言で、この一文は国の行く末を告げる「予言」のように響いたのでしょう？",
+  mission: {
+    from: "歴史ドキュメンタリー番組の字幕翻訳者",
+    request: "アメリカ南北戦争の番組で、リンカーンの「分かれたる家」演説に字幕をつけています。新人スタッフは cannot stand を「家は立つことができない」と直訳しましたが、それでは「足が弱って立てない」ような、気の抜けた字幕になってしまいます。助動詞が話し手のどんな気持ちを運んでいるのかを、名探偵のあなたに解き明かしてほしいのです。",
+    thanks: "cannot は「能力がない」ではなく「ありえない」という、確信のいちばん強い否定だったのですね。これで字幕は「分かれた家が、立ちゆくはずはない」と、演説の重さをそのまま伝える言葉にできます。",
+  },
   sections: [
     {
       heading: "1つの助動詞に、2つの顔がある",
       body: "助動詞の後ろはいつも{{動詞の原形}}です。そして多くの助動詞には、{{「〜しなければならない・〜してもよい」（義務・許可）}}と、{{「〜にちがいない・〜かもしれない」（推量）}}の2つの意味があります。どちらの意味かは文脈で決まり、be 動詞や状態を表す動詞が続くときは推量になりやすいです。",
+      reading: [
+        "助動詞は、動詞の前に置いて{{話し手の気持ち}}を足すことばです。He is tired.（彼は疲れている）は事実をそのまま言った文ですが、He must be tired. とすると「疲れているにちがいない」と、話し手の判断が加わります。助動詞の後ろは、主語が he でも she でも、いつも{{動詞の原形}}です。助動詞そのものが話し手の気持ちを背負っているので、後ろの動詞は飾りのない形にもどる、と考えるとよいでしょう。",
+        "多くの助動詞には2つの顔があります。1つは、相手や自分に向けて「〜しなければならない」「〜してもよい」と行動を求めたり許したりする{{義務・許可}}の顔。もう1つは、「〜にちがいない」「〜かもしれない」と、世の中のできごとがどれくらい確かかを判断する{{推量}}の顔です。You must leave now.（もう帰らなければならない）は義務、You must be hungry.（おなかがすいているにちがいない）は推量です。見分けるヒントは後ろの動詞で、be や know、like のような{{状態を表す動詞}}が続くと推量になりやすく、leave や study のような動作の動詞なら義務になりやすい傾向があります。",
+        "この2つの顔が重なり合う、英語の歴史の中でも有名な一文があります。1611年、イングランド王ジェームズ1世の命で英訳された聖書、いわゆる{{欽定訳聖書}}の「マルコによる福音書」の一節です。「that house cannot stand」の can は、文字どおりには「立っていられない」という{{能力・可能}}の否定です。けれども、内輪でもめる家がやがて崩れていくという文脈では、「立ちゆくはずがない」という{{推量の否定}}としても読めます。この聖書は英語圏で何百年も読み継がれ、19世紀のアメリカでは多くの人がこの言い回しをそらんじていました。のちにリンカーンが演説で借りたのも、この一句です。",
+      ],
+      recite: [{
+        lang: "en", voice: "male", accent: "gb",
+        text: "And if a kingdom be divided against itself, that kingdom cannot stand.\nAnd if a house be divided against itself, that house cannot stand.",
+        ja: "もし国が内側で分かれて争うなら、その国は立ちゆくことができない。\nもし家が内側で分かれて争うなら、その家は立ちゆくことができない。",
+        cite: "King James Bible, Mark 3:24–25 (1611)",
+        source: "https://www.gutenberg.org/cache/epub/8041/pg8041.txt",
+      }],
+      photos: [
+        {
+          src: `${C}/kjv-1611.webp`, width: 800, height: 1251,
+          alt: "人物の彫刻にかこまれた中央の白い枠に、THE HOLY BIBLE と大きく書かれた古い本のとびら",
+          caption: "欽定訳聖書の初版（1611年）のとびら。中央下に ANNO DOM. 1611 とある。{{cannot stand}} の一句は、この英訳を通して英語圏に広まった。",
+          credit: { author: "Church of England", license: "Public domain", source: "https://commons.wikimedia.org/wiki/File:KJV-King-James-Version-Bible-first-edition-title-page-1611.jpg" },
+        },
+      ],
       figure: {
         type: "compare",
         title: "助動詞の2つの顔",
@@ -20,10 +48,38 @@ export const H_ENG_GRAM_JODOSHI: Lecture = {
         ],
         note: "例：You must be tired.（疲れているにちがいない）は推量の must。",
       },
+      cliff: "推量の顔をした助動詞たち。その「確かさ」には、はっきりした順番がありました。",
     },
     {
       heading: "推量の助動詞は「確信の強さ」でならぶ",
       body: "推量の助動詞は、話し手が{{どれくらい確かだと思っているか}}で使い分けます。must は「ほぼまちがいない」、should は「（理屈では）そのはず」、may は「半々」、might・could は「ひょっとしたら」くらいです。反対に「ありえない」と強く打ち消すときは{{can't（cannot）}}を使います。",
+      reading: [
+        "推量の助動詞は、話し手の{{確信の強さ}}を目盛りのように表します。The rumor must be true.（そのうわさは本当にちがいない）は、ほぼ確実だと思っているとき。It should arrive tomorrow.（明日には届くはずだ）は、予定や理屈から考えて「そのはず」というとき。It may rain.（雨が降るかもしれない）は半々、It might rain. は「ひょっとしたら」くらいの弱さです。おもしろいのは、might・could・should がもともと may・can・shall の{{過去形}}だったことです。形を過去にずらすことで、「今の現実から一歩引いた、控えめな言い方」になっています。この発想は、のちに学ぶ仮定法ともつながっています。",
+        "目盛りの反対の端にあるのが{{can't（cannot）}}です。He can't be at home.（彼が家にいるはずがない）は、「ありえない」と強く打ち消す推量です。注意したいのは、must の反対が must not ではないことです。「〜にちがいない」を打ち消して「〜のはずがない」と言いたいときは、can't を使います。つまり推量の世界では、{{must（ほぼ確実）と can't（ありえない）が両端}}にあり、そのあいだに should・may・might がならんでいるのです。",
+        "この目盛りを演説で鮮やかに使ったのが、1858年6月16日、イリノイ州スプリングフィールドの州議事堂での{{リンカーンの「分かれたる家」演説}}です。当時のアメリカは、奴隷制を認める南部の州と認めない北部の州に分かれ、新しく加わる西部の土地に奴隷制を広げるかどうかで激しく対立していました。連邦上院議員の候補に選ばれたリンカーンは、聖書の cannot stand を引いたうえで、I believe ... cannot endure（もちこたえられないと信じる）、I do expect it will cease（終わると確かに思う）、It will become（なるだろう）と、{{確信の強い助動詞だけ}}を積み重ねました。may や might のようなぼかしは、この一節に一つもありません。I do expect の do は、動詞の意味を強める{{強調の do}}で、直前の I do not expect と対になっています。",
+        "演説のあと、リンカーンは対立候補のダグラスと州の各地で7回の討論会を行い、全国の注目を集めました。この選挙では上院の議席を逃しますが、2年後の1860年に大統領に選ばれます。そしてその直後から南部の州が次々に連邦をはなれ、1861年に南北戦争が始まりました。「分かれた家は立ちゆかない」という言葉は、結果として現実の歴史と重なることになり、いまも名演説の一節として引用されています。",
+      ],
+      recite: [{
+        lang: "en", voice: "male",
+        text: "In my opinion, it will not cease, until a crisis shall have been reached, and passed.\n“A house divided against itself cannot stand.”\nI believe this government cannot endure, permanently half slave and half free.\nI do not expect the Union to be dissolved—I do not expect the house to fall—but I do expect it will cease to be divided.\nIt will become all one thing or all the other.",
+        ja: "わたしの考えでは、この対立は、危機が訪れ、そしてそれを越えるまでは、やむことはないでしょう。\n「内側で分かれた家は、立ちゆくことができない」。\nこの政府が、半分は奴隷制、半分は自由という状態のまま、いつまでも続いていけるはずはないと、わたしは信じています。\n連邦が解体されるとは思っていません。家が倒れるとも思っていません。けれども、家が分かれた状態は、必ず終わると思っています。\nこの国は、すべてが一方になるか、すべてがもう一方になるか、そのどちらかになるでしょう。",
+        cite: "Abraham Lincoln, “House Divided” Speech, Springfield, Illinois (June 16, 1858)",
+        source: "https://www.abrahamlincolnonline.org/lincoln/speeches/house.htm",
+      }],
+      photos: [
+        {
+          src: `${C}/old-capitol.webp`, width: 800, height: 600,
+          alt: "青空の下、赤茶色のドームと太い柱の玄関をもつ石造りの建物と、手前の鉄の門",
+          caption: "イリノイ州の旧州議事堂（スプリングフィールド、1837〜40年建設）。1858年6月16日、リンカーンはこの建物の議場で「分かれたる家」演説をした。",
+          credit: { author: "w_lemay", license: "CC BY-SA 2.0", licenseUrl: "https://creativecommons.org/licenses/by-sa/2.0", source: "https://commons.wikimedia.org/wiki/File:Old_Illinois_State_Capitol,_Adams_Street,_Springfield,_IL.jpg" },
+        },
+        {
+          src: `${C}/lincoln-1858.webp`, width: 800, height: 1104,
+          alt: "ひげのない、髪の乱れた男性の白黒の肖像写真。蝶結びのネクタイをしている",
+          caption: "1858年に撮影されたリンカーン（49歳）。大統領になる前、ひげをたくわえる前の姿。この年、上院議員の候補として{{cannot stand}} の演説をした。",
+          credit: { author: "Samuel G. Alschuler", license: "Public domain", source: "https://commons.wikimedia.org/wiki/File:Abraham_Lincoln_by_Alschuler,_1858.png" },
+        },
+      ],
       figure: {
         type: "area",
         kind: "bar",
@@ -37,10 +93,32 @@ export const H_ENG_GRAM_JODOSHI: Lecture = {
         ],
         note: "長さは順番を見せるための目安で、数値に決まりはない。may と might の差は小さいとする考え方もある。",
       },
+      reveal: "cannot stand の can't は「立つ力がない」という能力の否定ではなく、{{推量の目盛りのいちばん端}}、「ありえない・〜のはずがない」という{{確信の最も強い否定}}として響いていました。リンカーンはそこに cannot endure、I do expect、it will become と{{確信の強い助動詞}}だけを重ね、may や might のぼかしを一度も使いませんでした。だから聞き手には、比喩が「こうなるはずだ」という予言として届いたのです。",
+      cliff: "では「（あのとき）〜したにちがいない」と、過去を推し量るには？",
     },
     {
       heading: "過去のことは「助動詞＋have＋過去分詞」",
       body: "「（あのとき）〜したにちがいない」のように{{過去のことを今推し量る}}ときは、助動詞の後ろを{{have＋過去分詞}}にします。助動詞そのものには過去形の意味をもたせず、have 以下で「過去」を示すしくみです。should have＋過去分詞は「〜すべきだったのに（しなかった）」という{{後悔・非難}}を表します。",
+      reading: [
+        "推量の助動詞で過去のことを言うとき、must を過去形にすることはできません。そこで、助動詞はそのまま「{{今の判断}}」を表し、後ろを{{have＋過去分詞}}にして「判断の中身が過去」であることを示します。The ground is wet. It must have rained last night.（地面がぬれている。昨夜雨が降ったにちがいない）。判断しているのは今、雨が降ったのは昨夜。この時間のずれを、have＋過去分詞が受けもっているのです。",
+        "同じ形で、確信の目盛りもそのまま過去に使えます。He may have missed the bus.（バスに乗りおくれたのかもしれない）、She can't have said that.（彼女がそんなことを言ったはずがない）。注意したいのは {{should have＋過去分詞}}です。「〜したはずだ」という推量のほかに、「〜すべきだったのに（実際はしなかった）」という{{後悔・非難}}の意味でよく使われます。I should have studied harder.（もっと勉強しておくべきだった）は、テストのあとに多くの人が口にする一文でしょう。",
+        "この should have の二重の意味が、400年以上も読み手を悩ませてきた名せりふがあります。1606年ごろに書かれたシェイクスピアの悲劇『{{マクベス}}』の終わり近く、王の座を奪ったマクベスのもとに、妻の死の知らせが届きます。彼の第一声が She should have died hereafter.（hereafter＝のちに）です。これを「どうせいつかは死ぬ運命だった」と読むか、「もっとあとで死ぬべきだった（今でなければよかった）」と読むかで、マクベスの心の冷たさも悲しみも、まるで変わって見えます。次の行の There would have been a time ... は仮定法の形で、「（あとで死んでいれば）その知らせにふさわしい時もあっただろうに」とも読めます。たった1つの助動詞の解釈が、人物像を左右するのです。",
+      ],
+      recite: [{
+        lang: "en", voice: "male", accent: "gb",
+        text: "She should have died hereafter;\nThere would have been a time for such a word.\nTo-morrow, and to-morrow, and to-morrow,\nCreeps in this petty pace from day to day\nTo the last syllable of recorded time,",
+        ja: "あれは、いずれは死なねばならなかったのだ。\nそんな知らせを受けとめる時も、いつかは来ただろうに。\nあすが、またあすが、またあすが、\nこのちっぽけな足どりで、一日、また一日と忍びよる、\n記された時の、最後のひと文字にいたるまで。",
+        cite: "William Shakespeare, Macbeth, Act V, Scene 5 (1606年ごろ)",
+        source: "http://shakespeare.mit.edu/macbeth/macbeth.5.5.html",
+      }],
+      photos: [
+        {
+          src: `${C}/lady-macbeth.webp`, width: 800, height: 613,
+          alt: "いすにもたれて目を閉じた女性を、白いひげの老人や女性たちがとりかこむ鉛筆の素描",
+          caption: "19世紀イギリスの画家ロセッティの素描『マクベス夫人の死』。劇では夫人の死は舞台の外で起こり、知らせを聞いたマクベスが{{should have died}} と語り出す。",
+          credit: { author: "Dante Gabriel Rossetti", license: "Public domain", source: "https://commons.wikimedia.org/wiki/File:Dante_Gabriel_Rossetti_-_The_Death_of_Lady_Macbeth_-_Tullie_House.jpg" },
+        },
+      ],
       figure: {
         type: "formula",
         title: "今の推量 → 過去の推量",
@@ -52,10 +130,16 @@ export const H_ENG_GRAM_JODOSHI: Lecture = {
           { expr: "I should {{have left}} earlier.", note: "過去：もっと早く出るべきだった（後悔）" },
         ],
       },
+      cliff: "最後は、否定にしたとたん意味が別れてしまう、must と have to の話です。",
     },
     {
       heading: "must not と don't have to は意味がまったくちがう",
       body: "肯定文の must と have to はどちらも「〜しなければならない」ですが、否定にすると分かれます。{{must not}} は「〜してはいけない」という{{禁止}}、{{don't have to}} は「〜する必要はない」という{{不要}}です。need not（needn't）も「〜する必要はない」を表します。",
+      reading: [
+        "肯定文では、You must wear a helmet. と You have to wear a helmet. は、どちらも「ヘルメットをかぶらなければならない」です。細かく言えば、must は{{話し手自身が必要だと感じている}}とき、have to は{{規則や状況のせいで}}そうせざるをえないときに使われやすい、という傾向があります。また must には過去形や未来の形がないので、「〜しなければならなかった」は had to、「〜しなければならないだろう」は will have to で表します。",
+        "ところが否定にすると、2つはまったく別の意味になります。{{must not（mustn't）}}は、not が「する」ことを打ち消すのではなく、「しないこと」が義務になる形で、「〜してはいけない」という{{禁止}}です。You mustn't swim here. は「ここで泳いではいけない」。一方 {{don't have to}} は「しなければならない」そのものを打ち消すので、「〜する必要はない」という{{不要}}になります。You don't have to swim here. は「ここで泳がなくてもいい（泳いでもかまわない）」です。プールの看板でこの2つを取りちがえたら、大変なことになります。",
+        "禁止の言い方は、古い英語では別の助動詞が担っていました。欽定訳聖書の十戒に見られる Thou shalt not ...（なんじ〜するなかれ）の shall です。いまの英語では、shall は Shall I open the window?（窓を開けましょうか）のような申し出や、契約書・規則の文に残る程度になり、ふだんの禁止は must not や Don't ... が受けもっています。助動詞の役割は、時代とともに少しずつ入れかわってきたのです。",
+      ],
       figure: {
         type: "compare",
         title: "否定にすると分かれる",
@@ -68,6 +152,37 @@ export const H_ENG_GRAM_JODOSHI: Lecture = {
       },
     },
   ],
+  story: {
+    kind: "manzai",
+    title: "家は立てない？",
+    cast: ["カイ", "リツ"],
+    lines: [
+      { who: "カイ", text: "どうもー、カイとリツです！　ぼく、英語の名演説の暗唱大会に出ることになりました！" },
+      { who: "リツ", text: "すごいね。何の演説？" },
+      { who: "カイ", text: "リンカーンの A house divided against itself cannot stand. 意味は「割れた家は、立つことができない」。家って、ふつう座ってるよね？", say: "リンカーンの、ア・ハウス・ディバイデッド・アゲンスト・イットセルフ・キャンノット・スタンド。意味は、われた家は、たつことができない。家って、ふつうすわってるよね？" },
+      { who: "リツ", text: "家は立ちも座りもしない！　この stand は「立ちゆく・もちこたえる」。cannot は「できない」より「{{ありえない}}」に近い、{{推量の否定}}なの。", say: "家は立ちも座りもしない！ このスタンドは、立ちゆく、もちこたえる。キャンノットは、できない、より、ありえない、に近い、推量の否定なの。" },
+      { who: "カイ", text: "推量？　じゃあ、先生に You must be tired. って言われたのは「疲れなきゃだめだ」って命令？", say: "推量？ じゃあ、先生に、ユー・マスト・ビー・タイアード、って言われたのは、疲れなきゃだめだ、って命令？" },
+      { who: "リツ", text: "そんな先生いない！　be が続く must は{{推量}}で「疲れているにちがいない」。気づかってくれてるの。" },
+      { who: "カイ", text: "助動詞って、顔が2つあるのか。{{義務}}の顔と、{{推量}}の顔。" },
+      { who: "リツ", text: "そう。推量のほうは{{確信の強さ}}の順にならぶよ。must がほぼ確実、should がそのはず、may が半々、might はひょっとしたら。", say: "そう。推量のほうは確信の強さの順にならぶよ。マストがほぼ確実、シュッドがそのはず、メイが半々、マイトはひょっとしたら。" },
+      { who: "カイ", text: "じゃあ、暗唱大会でぼくが優勝するのは……might くらいかな。", say: "じゃあ、暗唱大会でぼくが優勝するのは……マイトくらいかな。" },
+      { who: "リツ", text: "急に弱気！　リンカーンは may も might も使わずに、I do expect it will と言い切ったんだよ。", say: "急に弱気！ リンカーンはメイもマイトも使わずに、アイ・ドゥー・エクスペクト・イット・ウィル、と言い切ったんだよ。" },
+      { who: "カイ", text: "よし、言い切る！　……でも、きのう練習しなかったのは後悔してる。I should study yesterday.", say: "よし、言い切る！ ……でも、きのう練習しなかったのは後悔してる。アイ・シュッド・スタディ・イエスタデイ。" },
+      { who: "リツ", text: "過去の後悔は {{should have＋過去分詞}}！　I should have studied yesterday. ね。", say: "過去の後悔は、シュッド・ハブ、プラス過去分詞！ アイ・シュッド・ハブ・スタディド・イエスタデイ、ね。" },
+      { who: "カイ", text: "have を入れるだけで、過去になるんだ。" },
+      { who: "リツ", text: "助動詞は「今の判断」のまま、have 以下が「過去のできごと」を受けもつの。It must have rained. で「雨が降ったにちがいない」。", say: "助動詞は、いまの判断のまま、ハブいかが、過去のできごとを受けもつの。イット・マスト・ハブ・レインド、で、雨が降ったにちがいない。" },
+      { who: "カイ", text: "なるほど。ところで、大会の会場に「You must not run.」って張り紙があったんだけど。", say: "なるほど。ところで、大会の会場に、ユー・マスト・ノット・ラン、って張り紙があったんだけど。" },
+      { who: "リツ", text: "「走ってはいけない」。{{must not}} は{{禁止}}だね。" },
+      { who: "カイ", text: "じゃあ「You don't have to run.」も同じでしょ？", say: "じゃあ、ユー・ドント・ハフ・トゥ・ラン、も同じでしょ？" },
+      { who: "リツ", text: "ちがう！　{{don't have to}} は{{不要}}で「走らなくていい」。走ってもかまわないの。", say: "ちがう！ ドント・ハフ・トゥは不要で、走らなくていい。走ってもかまわないの。" },
+      { who: "カイ", text: "なんだ、じゃあ暗唱も、ぼくは出なくていいってこと？" },
+      { who: "リツ", text: "出なきゃだめ！　You must speak. 義務の must だよ。", say: "出なきゃだめ！ ユー・マスト・スピーク。義務のマストだよ。" },
+      { who: "カイ", text: "わかった。じゃあ本番でぼくが緊張で固まったら……" },
+      { who: "リツ", text: "それは He cannot stand. でいいよ。もういいよ。", say: "それは、ヒー・キャンノット・スタンド、でいいよ。もういいよ。" },
+      { who: "カイ", text: "どうも、ありがとうございました！" },
+    ],
+    note: "カイとリツは架空の人物で、会話はすべて創作です。リンカーンが1858年の演説で聖書の A house divided against itself cannot stand. を引用したこと、I do expect it will cease to be divided. と述べたことは、演説の記録（パブリックドメイン）にもとづきます。それ以外の英文は自作の例文です。",
+  },
   mistakes: [
     { wrong: "You don't have to take photos here.（撮影禁止、のつもり）", right: "You must not take photos here.", why: "don't have to は「〜する必要はない」。禁止は must not です。" },
     { wrong: "I should study harder last week.", right: "I should have studied harder last week.", why: "過去にしなかったことへの後悔は should have＋過去分詞で表します。" },
