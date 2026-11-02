@@ -5,6 +5,7 @@ import { LegacyHashRedirect } from "@/components/learn/LegacyHashRedirect";
 import { LearnMoreMap } from "@/components/learn/LearnMoreMap";
 import { NoteLink } from "@/components/drill/NoteLink";
 import { LECTURES, getLecture, lectureHref, lectureUnitInfo } from "@/lib/lecture";
+import { TSUKKOMI_HOME } from "@/lib/tsukkomi";
 import type { Lecture, Recitation } from "@/lib/lecture/types";
 
 // /learn: アオハルラーンの入口。「AI時代の新しい教科書」として、上から
@@ -205,6 +206,14 @@ export default function LearnHub() {
               )}
             </div>
           </div>
+          {/* ②鍛える の新しい学び方への入口 */}
+          <Link href={TSUKKOMI_HOME} className="flex items-center gap-3 rounded-[16px] border-[1.5px] border-[#15172B] bg-[#15172B] p-4 text-white no-underline shadow-[3px_3px_0_#B42318] transition-transform hover:-translate-y-0.5 focus-visible:-translate-y-0.5">
+            <span className="min-w-0 flex-1">
+              <span className="block text-[11px] font-black text-[#FFE45C]">読んだら鍛える　ツッコミ学習法（試作）</span>
+              <span className="mt-1 block text-[15px] font-bold leading-[1.6]">ボケのまちがいに、時間内にツッコめ。正しい文は見抜いてスルー。</span>
+            </span>
+            <Arrow className="shrink-0" />
+          </Link>
         </section>
 
         {/* 3. なかみ */}
