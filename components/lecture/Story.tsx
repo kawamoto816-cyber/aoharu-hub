@@ -4,12 +4,13 @@ import { Bubble, ManzaiView } from "./Manzai";
 import { ComicStrip } from "./Comic";
 import { NovelView } from "./Novel";
 import { manzaiAudio, novelAudio } from "@/lib/tts/yomi";
+import { manzaiCredit, narratorOf, voiceCredit } from "@/lib/tts/manzai";
 
 // 物語化パート：小説・4コマ・漫才。どれも「創作」の札と、史実との関係の注を必ず出す。
 
 const LABEL = { novel: "物語で読む", manga4: "4コマで読む", manzai: "漫才で読む" } as const;
 
-export function LectureStoryView({ story }: { story: LectureStory }) {
+export function LectureStoryView({ story, kids = false }: { story: LectureStory; kids?: boolean }) {
   return (
     <section aria-labelledby="lec-story" className="mt-10 rounded-[18px] border-[1.5px] border-[#15172B] bg-[#FFF8EC] p-4 shadow-[4px_4px_0_#15172B] sm:p-5">
       <p className="m-0 flex items-center gap-2 text-[12px] font-black text-[#B42318]">
@@ -20,7 +21,7 @@ export function LectureStoryView({ story }: { story: LectureStory }) {
         <Rich text={story.title} />
       </h2>
 
-      {story.kind === "novel" && <NovelView paragraphs={story.paragraphs} srcs={story.paragraphs.map((p, i) => novelAudio(p, story.sayFix, story.say?.[i]).src)} />}
+      {story.kind === "novel" && <NovelView paragraphs={story.paragraphs} srcs={story.paragraphs.map((p, i) => novelAudio(p, story.sayFix, story.say?.[i], kids).src)} credit={voiceCredit(narratorOf(kids).voice)} />}
 
       {story.kind === "manga4" && story.panels.every((p) => p.art) && <ComicStrip panels={story.panels} />}
 
@@ -45,7 +46,7 @@ export function LectureStoryView({ story }: { story: LectureStory }) {
       )}
 
       {story.kind === "manzai" && (
-        <ManzaiView cast={story.cast} lines={story.lines} srcs={story.lines.map((l) => manzaiAudio(story.cast, l).src)} />
+        <ManzaiView cast={story.cast} lines={story.lines} srcs={story.lines.map((l) => manzaiAudio(story.cast, l).src)} credit={manzaiCredit(story.cast)} />
       )}
 
       <p className="m-0 mt-4 rounded-[10px] bg-white/70 px-3 py-2 text-[12px] leading-relaxed text-[#3A3D55]">

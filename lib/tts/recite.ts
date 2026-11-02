@@ -1,10 +1,10 @@
-// 名作の引用の朗読（Recitation）。Google Cloud Text-to-Speech (Chirp 3: HD) で1引用ずつ作り、
+// 名作の引用の朗読（Recitation）。日本語は VOICEVOX、英語は Google Cloud Text-to-Speech (Chirp 3: HD) のネイティブの声で1引用ずつ作り、
 // public/audio/recite/<キー>.mp3 に置く。英語はネイティブの声（en-US / en-GB）で読む。作るのは scripts/manzai-tts.ts。
 
 import type { Recitation } from "@/lib/lecture/types";
 
 const VOICES = {
-  ja: { male: "Charon", female: "Sulafat" },
+  ja: { male: "青山龍星", female: "四国めたん" },
   en: { male: "Charon", female: "Aoede" },
 } as const;
 
@@ -13,7 +13,9 @@ const RATE = { ja: 0.92, en: 0.95 } as const;
 
 export function reciteVoice(r: Recitation) {
   const languageCode = r.lang === "ja" ? "ja-JP" : r.accent === "gb" ? "en-GB" : "en-US";
-  const name = `${languageCode}-Chirp3-HD-${VOICES[r.lang][r.voice ?? (r.lang === "ja" ? "female" : "male")]}`;
+  const v = VOICES[r.lang][r.voice ?? (r.lang === "ja" ? "male" : "male")];
+  // 日本語は VOICEVOX（"vv:名前"）、英語は Google のネイティブの声
+  const name = r.lang === "ja" ? `vv:${v}` : `${languageCode}-Chirp3-HD-${v}`;
   return { languageCode, name, rate: RATE[r.lang] };
 }
 

@@ -5,7 +5,7 @@
 //   キー = 補正前の読み上げ文のハッシュ、値 = 補正後の読み上げ文。メインの作業者が形態素解析＋目視確認で作る。
 
 import { YOMI } from "./yomi.gen";
-import { jaKey, manzaiSay, manzaiSrc, manzaiVoiceOf, NARRATOR, novelSay, novelSrc } from "./manzai";
+import { jaKey, manzaiSay, manzaiSrc, manzaiVoiceOf, narratorOf, novelSay, novelSrc } from "./manzai";
 
 export function textHash(s: string): string {
   let a = 2166136261 >>> 0;
@@ -36,8 +36,9 @@ export function manzaiAudio(cast: [string, string], line: { who: string; text: s
   return { key, text, voice: v.voice, rate: v.rate, src: manzaiSrc(key) };
 }
 
-export function novelAudio(paragraph: string, sayFix?: Record<string, string>, say?: string) {
+export function novelAudio(paragraph: string, sayFix?: Record<string, string>, say?: string, kids?: boolean) {
   const text = novelSpeech(paragraph, sayFix, say);
-  const key = jaKey(NARRATOR.voice, NARRATOR.rate, text);
-  return { key, text, voice: NARRATOR.voice, rate: NARRATOR.rate, src: novelSrc(key) };
+  const n = narratorOf(kids);
+  const key = jaKey(n.voice, n.rate, text);
+  return { key, text, voice: n.voice, rate: n.rate, src: novelSrc(key) };
 }

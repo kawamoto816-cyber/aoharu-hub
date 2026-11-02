@@ -1,4 +1,5 @@
-// 「漫才で聞く」と小説の「朗読を聞く」、名作の引用の朗読（英語はネイティブの声）の音声を Google Cloud Text-to-Speech (Chirp 3: HD, 日本語) でまとめて作る。手元のパソコンで動かす。
+// 「漫才で聞く」と小説の「朗読を聞く」、名作の引用の朗読の音声をまとめて作る。手元のパソコンで動かす。
+// 日本語は VOICEVOX（アプリを起動しておく。mp3 への変換に ffmpeg が要る）、英語は Google Cloud Text-to-Speech (Chirp 3: HD) のネイティブの声。
 //
 //   数をたしかめる:  npx tsx scripts/manzai-tts.ts --count
 //   全部作る:        npx tsx scripts/manzai-tts.ts
@@ -9,6 +10,9 @@
 // API キーは .env.local の GOOGLE_TTS_API_KEY（英語の音声と同じ）。キーは画面に出さない。
 
 import { existsSync, mkdirSync, readFileSync, readdirSync, unlinkSync, writeFileSync } from "node:fs";
+import { execFileSync } from "node:child_process";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { LECTURES } from "../lib/lecture";
 import { manzaiAudio, novelAudio } from "../lib/tts/yomi";
 import { reciteAudio } from "../lib/tts/recite";
@@ -29,7 +33,7 @@ function collect(): Job[] {
     }
     if (st?.kind === "novel") {
       for (const [i, p] of st.paragraphs.entries()) {
-        const a = novelAudio(p, st.sayFix, st.say?.[i]);
+        const a = novelAudio(p, st.sayFix, st.say?.[i], lec.unit.startsWith("e-"));
         jobs.set(`n/${a.key}`, { dir: DIRS[1], key: a.key, text: a.text, voice: a.voice, rate: a.rate, unit: lec.unit });
       }
     }
@@ -52,7 +56,60 @@ function apiKey(): string {
   process.exit(1);
 }
 
+// ── VOICEVOX（日本語）。アプリを起動しておくと http://localhost:50021 で待ち受ける ──
+const VV = process.env.VOICEVOX_URL ?? "http://localhost:50021";
+let vvIds: Map<string, number> | null = null;
+
+async function vvSpeakers(): Promise<Map<string, number>> {
+  if (vvIds) return vvIds;
+  let r: Response;
+  try {
+    r = await fetch(`${VV}/speakers`);
+  } catch {
+    console.error("VOICEVOX につながりません。VOICEVOX のアプリを起動してから、もう一度動かしてください。");
+    process.exit(1);
+  }
+  const list = (await r.json()) as { name: string; styles: { name: string; id: number }[] }[];
+  vvIds = new Map(list.map((sp) => [sp.name, (sp.styles.find((st) => st.name === "ノーマル") ?? sp.styles[0]).id]));
+  return vvIds;
+}
+
+function checkFfmpeg() {
+  try {
+    execFileSync("ffmpeg", ["-version"], { stdio: "ignore" });
+  } catch {
+    console.error("mp3 に変換する ffmpeg が見つかりません。ターミナルで  brew install ffmpeg  を実行してから、もう一度動かしてください。");
+    process.exit(1);
+  }
+}
+
+async function synthVoicevox(j: Job): Promise<Buffer> {
+  const name = j.voice.slice(3);
+  const id = (await vvSpeakers()).get(name);
+  if (id === undefined) throw new Error(`VOICEVOX に「${name}」の声が入っていません（アプリの「キャラクター」から追加してください）`);
+  const q = await fetch(`${VV}/audio_query?speaker=${id}&text=${encodeURIComponent(j.text)}`, { method: "POST" });
+  if (!q.ok) throw new Error(`audio_query ${q.status}`);
+  const query = (await q.json()) as Record<string, number>;
+  const manzai = j.dir.endsWith("manzai");
+  query.speedScale = j.rate;
+  query.intonationScale = manzai ? 1.25 : 1.12;
+  query.prePhonemeLength = manzai ? 0.05 : 0.1;
+  query.postPhonemeLength = manzai ? 0.05 : 0.15;
+  if ("pauseLengthScale" in query) query.pauseLengthScale = manzai ? 0.9 : 1.1;
+  const w = await fetch(`${VV}/synthesis?speaker=${id}`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(query) });
+  if (!w.ok) throw new Error(`synthesis ${w.status}`);
+  const tmp = join(tmpdir(), `vv-${j.key}.wav`);
+  const out = join(tmpdir(), `vv-${j.key}.mp3`);
+  writeFileSync(tmp, Buffer.from(await w.arrayBuffer()));
+  execFileSync("ffmpeg", ["-y", "-loglevel", "error", "-i", tmp, "-ac", "1", "-b:a", "64k", out]);
+  const buf = readFileSync(out);
+  unlinkSync(tmp);
+  unlinkSync(out);
+  return buf;
+}
+
 async function synth(key: string, j: Job): Promise<Buffer> {
+  if (j.voice.startsWith("vv:")) return synthVoicevox(j);
   const body = {
     input: { text: j.text },
     voice: j.name ? { languageCode: j.lang, name: j.name } : { languageCode: "ja-JP", name: `ja-JP-Chirp3-HD-${j.voice}` },
@@ -89,7 +146,11 @@ async function main() {
   if (stale.length) console.log(`使われなくなった古い音声 ${stale.length} 個${process.argv.includes("--count") ? "（消すのは本番の実行時）" : "を消します"}`);
   if (process.argv.includes("--count")) return;
   for (const f of stale) unlinkSync(f);
-  const key = apiKey();
+  if (todo.some((j) => j.voice.startsWith("vv:"))) {
+    checkFfmpeg();
+    await vvSpeakers();
+  }
+  const key = todo.some((j) => !j.voice.startsWith("vv:")) ? apiKey() : "";
   for (const dir of DIRS) mkdirSync(dir, { recursive: true });
   let next = 0;
   let done = 0;

@@ -14,6 +14,7 @@ import { BookNav } from "./BookNav";
 import { ReadMarker } from "./ReadMarker";
 import { ReciteCard } from "./Recite";
 import { reciteAudio } from "@/lib/tts/recite";
+import { voiceCredit } from "@/lib/tts/manzai";
 
 // 図解レクチャーの1単元のページ本体：導入 → 図解つきの節 → よくあるまちがい → 確認 → 次にやる教材。
 
@@ -80,7 +81,7 @@ export function LecturePage({ lec }: { lec: Lecture }) {
               <Rich text={s.body} />
             </p>
           )}
-          {s.recite?.map((r) => <ReciteCard key={r.text} r={r} src={reciteAudio(r).src} />)}
+          {s.recite?.map((r) => <ReciteCard key={r.text} r={r} src={reciteAudio(r).src} credit={voiceCredit(reciteAudio(r).name)} />)}
           {s.photos?.map((ph) => <LecturePhotoView key={ph.src} ph={ph} no={++photoNo} />)}
           {s.figure && <LectureFigure fig={s.figure} no={++figNo} />}
           {s.reveal && <MissionComplete lec={lec} kids={kids} answer={s.reveal} />}
@@ -97,7 +98,7 @@ export function LecturePage({ lec }: { lec: Lecture }) {
         </section>
       ))}
 
-      {lec.story && <LectureStoryView story={lec.story} />}
+      {lec.story && <LectureStoryView story={lec.story} kids={kids} />}
 
       <section aria-labelledby="lec-mis" className="mt-10">
         <h2 id="lec-mis" className="m-0 text-[19px] font-black">

@@ -8,7 +8,7 @@ import { useAudioSequence } from "./useAudioSequence";
 // 名作の引用カード：本文（行分けそのまま）＋作者・作品＋出典リンク＋（英語なら）日本語訳＋「朗読を聞く」。
 // 音声ファイルがまだないときは、再生ボタンを出さない。
 
-export function ReciteCard({ r, src }: { r: Recitation; src: string }) {
+export function ReciteCard({ r, src, credit }: { r: Recitation; src: string; credit?: string }) {
   const seq = useAudioSequence([src], () => 0);
   return (
     <figure className="m-0 mt-5 rounded-[16px] border-[1.5px] border-[#15172B] bg-[#FBF7EE] p-4 shadow-[3px_3px_0_#15172B] sm:p-5">
@@ -34,7 +34,7 @@ export function ReciteCard({ r, src }: { r: Recitation; src: string }) {
         <PlayButton
           playing={seq.playing}
           label="朗読を聞く"
-          sub={r.lang === "en" ? (r.accent === "gb" ? "British English" : "American English") : "名作の朗読"}
+          sub={r.lang === "en" ? (r.accent === "gb" ? "British English" : "American English") : credit || "名作の朗読"}
           onClick={() => (seq.playing ? seq.stop() : seq.play(0))}
         />
       )}

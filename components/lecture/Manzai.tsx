@@ -40,7 +40,7 @@ export function PlayButton({ playing, label, sub, onClick }: { playing: boolean;
   );
 }
 
-export function ManzaiView({ cast, lines, srcs }: { cast: [string, string]; lines: Line[]; srcs: string[] }) {
+export function ManzaiView({ cast, lines, srcs, credit }: { cast: [string, string]; lines: Line[]; srcs: string[]; credit?: string }) {
   const seq = useAudioSequence(srcs, (i) => (lines[i + 1]?.who === cast[1] ? MANZAI_GAP.toTsukkomi : MANZAI_GAP.toBoke));
   const rows = useRef<(HTMLDivElement | null)[]>([]);
   useEffect(() => {
@@ -52,7 +52,7 @@ export function ManzaiView({ cast, lines, srcs }: { cast: [string, string]; line
         <PlayButton
           playing={seq.playing}
           label="漫才で聞く"
-          sub={seq.playing ? `${seq.now + 1} / ${lines.length}` : `${cast[0]}・${cast[1]}`}
+          sub={seq.playing ? `${seq.now + 1} / ${lines.length}` : credit || `${cast[0]}・${cast[1]}`}
           onClick={() => (seq.playing ? seq.stop() : seq.play(0))}
         />
       )}

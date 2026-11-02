@@ -9,7 +9,7 @@ import { useAudioSequence } from "./useAudioSequence";
 // 小説パート：本文 ＋「朗読を聞く」（語り手の声で1段落ずつ続けて読み、いま読んでいる段落にしるしをつける）。
 // 音声ファイルがまだない小説では、再生ボタンを出さない。
 
-export function NovelView({ paragraphs, srcs }: { paragraphs: string[]; srcs: string[] }) {
+export function NovelView({ paragraphs, srcs, credit }: { paragraphs: string[]; srcs: string[]; credit?: string }) {
   const seq = useAudioSequence(srcs, () => NOVEL_GAP);
   const rows = useRef<(HTMLParagraphElement | null)[]>([]);
   useEffect(() => {
@@ -21,7 +21,7 @@ export function NovelView({ paragraphs, srcs }: { paragraphs: string[]; srcs: st
         <PlayButton
           playing={seq.playing}
           label="朗読を聞く"
-          sub={seq.playing ? `${seq.now + 1} / ${paragraphs.length}` : "語り手の声で"}
+          sub={seq.playing ? `${seq.now + 1} / ${paragraphs.length}` : credit || "語り手の声で"}
           onClick={() => (seq.playing ? seq.stop() : seq.play(0))}
         />
       )}
