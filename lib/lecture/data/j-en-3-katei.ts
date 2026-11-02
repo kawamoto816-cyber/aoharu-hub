@@ -6,7 +6,7 @@ export const J_EN_3_KATEI: Lecture = {
   unit: "j-en-3-katei",
   title: "仮定法は「現実とちがう今」を、時制を1つ過去にずらして表す",
   hook: "「もし鳥だったら、空を飛べるのに」「もっと時間があればいいのに」。こうした{{現実とはちがう想像}}や願いを伝えるのが仮定法です。今の話なのに過去形を使うのがふしぎなところですが、そのわけがわかると、形はすっきり覚えられます。",
-  mystery: "シェイクスピアの劇で、ロミオは窓辺のジュリエットを見上げながら、O, that I were a glove ……と「今」の願いを語ります。今の気持ちなのに、なぜ過去形？　しかも主語は I なのに、なぜ was ではなく were なのでしょう？",
+  mystery: "シェイクスピアの劇で、ロミオは窓辺のジュリエットを見上げながら、O that I were a glove ……と「今」の願いを語ります。今の気持ちなのに、なぜ過去形？　しかも主語は I なのに、なぜ was ではなく were なのでしょう？",
   mission: {
     from: "名画座の字幕翻訳者",
     request: "来月、シェイクスピア劇と古い名作映画の特集上映で、字幕を新しく作ります。見習いの若者に「ロミオは今の気持ちを言っているのに、なぜ過去形？　字幕は『〜だった』と訳すべき？」と聞かれ、うまく答えられませんでした。字幕の訳し方を決めるために、名探偵のあなたに過去形と were のなぞを解いてほしいのです。",
@@ -29,6 +29,13 @@ export const J_EN_3_KATEI: Lecture = {
           credit: { author: "John Leech", license: "Public domain", source: "https://commons.wikimedia.org/wiki/File:Ghost_of_Christmas_Present_John_Leech_1843.jpg" },
         },
       ],
+      recite: [{
+        lang: "en", voice: "male", accent: "gb",
+        text: "\"Spirit,\" said Scrooge, with an interest he had never felt before, \"tell me if Tiny Tim will live.\"\n\"I see a vacant seat,\" replied the Ghost, \"in the poor chimney-corner, and a crutch without an owner, carefully preserved. If these shadows remain unaltered by the Future, the child will die.\"\n\"No, no,\" said Scrooge. \"Oh, no, kind Spirit! say he will be spared.\"",
+        ja: "「精霊よ」とスクルージは、これまで感じたことのない気持ちで言った。「ティムが生きのびるかどうか、教えてくれ」\n「空いた席が見える」と精霊は答えた。「貧しい暖炉のすみにな。それと、持ち主のいない松葉づえが、だいじにしまってある。これらの影が未来によって変えられないままなら、あの子は死ぬ」\n「いやだ、いやだ」とスクルージは言った。「ああ、やさしい精霊よ、どうか、あの子は助かると言ってくれ」",
+        cite: "Charles Dickens, A Christmas Carol, Stave Three (1843)",
+        source: "https://www.gutenberg.org/ebooks/46",
+      }],
       figure: {
         type: "compare",
         title: "条件の if と仮定法の if",
@@ -47,7 +54,7 @@ export const J_EN_3_KATEI: Lecture = {
       reading: [
         "仮定法の文は、現実の文から作るとわかりやすくなります。I don't have a car, so I can't drive there.（車を持っていないので、そこへ運転して行けない）が現実です。これを想像に変えると、If I had a car, I could drive there.（もし車を持っていたら、運転して行けるのに）。if の中は{{過去形}}の had、後半は{{could}}＋原形です。現実の否定が、想像では肯定に入れかわる点に注意しましょう。「〜だろう」なら would、「〜できるのに」なら could を使います。",
         "イギリスで何百年も口ずさまれてきた伝承童謡、{{マザーグース}}にもこの形があります。If wishes were horses, beggars would ride.（願いごとが馬だったら、物ごいだって馬に乗るだろう）。願うだけでかなうなら苦労はしない、という教えを、were と would の組み合わせで歌っています。短く口ずさみやすいので、ことわざのように今も使われます。",
-        "同じく古いマザーグースに、If all the world were paper, / And all the sea were ink（もし世界じゅうが紙で、海がぜんぶインクだったら）と始まる唄もあります。ありえない「もし」を were で次々に重ね、子どもは空想の世界を楽しみます。仮定法は、文法のきまりである前に、英語を話す人々が昔から使ってきた「空想の扉」なのです。",
+        "同じく古いマザーグースに、If all the world were apple pie, / And all the sea were ink（もし世界じゅうがアップルパイで、海がぜんぶインクだったら）と始まる唄もあります。ありえない「もし」を were で次々に重ね、子どもは空想の世界を楽しみます。仮定法は、文法のきまりである前に、英語を話す人々が昔から使ってきた「空想の扉」なのです。",
       ],
       figure: {
         type: "formula",
@@ -59,6 +66,22 @@ export const J_EN_3_KATEI: Lecture = {
         ],
         note: "意味：もし車を持っていたら、そこへ運転して行けるのに。",
       },
+      recite: [
+        {
+          lang: "en", voice: "female", accent: "gb",
+          text: "If wishes were horses, beggars would ride.\nIf turnips were watches, I would wear one by my side.\nAnd if \"ifs\" and \"ands\"\nWere pots and pans,\nThere'd be no work for tinkers!",
+          ja: "願いごとが馬ならば、物ごいだって馬に乗る。\nカブが時計になるのなら、ぼくは腰にひとつ下げる。\nそして「もしも」や「だったら」が\nお鍋やフライパンになるのなら、\n鍋直しの職人は、仕事がなくなっちゃう！",
+          cite: "Mother Goose, \"If Wishes Were Horses\" (The Real Mother Goose, 1916)",
+          source: "https://www.gutenberg.org/ebooks/10607",
+        },
+        {
+          lang: "en", voice: "female", accent: "gb",
+          text: "If all the world were apple pie,\nAnd all the sea were ink,\nAnd all the trees were bread and cheese,\nWhat should we have for drink?",
+          ja: "もし世界じゅうがアップルパイで、\n海がぜんぶインクで、\n木がぜんぶパンとチーズだったら、\nわたしたち、何を飲めばいいの？",
+          cite: "Mother Goose, \"If\" (The Real Mother Goose, 1916)",
+          source: "https://www.gutenberg.org/ebooks/10607",
+        },
+      ],
       cliff: "ところで、主語が I でも the world でも were なのは、なぜでしょう？",
     },
     {
@@ -77,7 +100,7 @@ export const J_EN_3_KATEI: Lecture = {
           credit: { author: "Tohma", license: "CC BY-SA 4.0", licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0", source: "https://commons.wikimedia.org/wiki/File:Globe_Theatre_Innenraum.jpg" },
         },
       ],
-      reveal: "英語の過去形は「遠さ」のしるしです。ロミオの願いは今の気持ちですが、手袋になるのはありえない、現実から遠い想像なので過去形を使いました。そして I なのに were なのは、想像や願いを言う{{仮定法}}では、be動詞の過去形が主語に関係なく{{were}}だったからです。O, that I were …… は、時間ではなく「現実からの遠さ」を伝える切ない一言なのです。",
+      reveal: "英語の過去形は「遠さ」のしるしです。ロミオの願いは今の気持ちですが、手袋になるのはありえない、現実から遠い想像なので過去形を使いました。そして I なのに were なのは、想像や願いを言う{{仮定法}}では、be動詞の過去形が主語に関係なく{{were}}だったからです。O that I were …… は、時間ではなく「現実からの遠さ」を伝える切ない一言なのです。",
       cliff: "「もし〜なら」と言わずに、願いだけをまっすぐ伝える言い方もあります。",
     },
     {
@@ -85,7 +108,7 @@ export const J_EN_3_KATEI: Lecture = {
       body: "{{I wish＋主語＋過去形}}で、「〜ならいいのに」という現実とちがう願いを表します。I wish I {{had}} a dog. は「犬を飼っていればいいのに（実際は飼っていない）」です。「〜できればいいのに」は I wish I {{could}} 〜. とします。",
       reading: [
         "{{I wish＋主語＋過去形}}は、今の現実とちがうことを願う言い方です。I wish I had a dog.（犬を飼っていればいいのに）の裏には、I don't have a dog.（実際は飼っていない）という現実があります。I wish I could swim.（泳げたらいいのに）、I wish it were Sunday today.（今日が日曜ならいいのに）のように、can は could、be動詞は were にします。かなう見こみがあることを願うなら、I hope 〜 を使います。",
-        "シェイクスピアが1595年ごろに書いた悲劇『ロミオとジュリエット』は、イタリアの町ヴェローナで、敵どうしの家に生まれた若い2人の恋の物語です。有名なバルコニーの場面で、夜の庭にしのびこんだロミオは、窓辺でほおづえをつくジュリエットを見上げてつぶやきます。O, that I were a glove upon that hand, / That I might touch that cheek!（ああ、あの手の手袋になれたら。そうすれば、あのほおにふれられるのに）。O, that I were は、今の英語の{{I wish I were}}にあたる古い言い方です。",
+        "シェイクスピアが1595年ごろに書いた悲劇『ロミオとジュリエット』は、イタリアの町ヴェローナで、敵どうしの家に生まれた若い2人の恋の物語です。有名なバルコニーの場面で、夜の庭にしのびこんだロミオは、窓辺でほおづえをつくジュリエットを見上げてつぶやきます。O that I were a glove upon that hand, / That I might touch that cheek.（ああ、あの手の手袋になれたら。そうすれば、あのほおにふれられるのに）。O that I were は、今の英語の{{I wish I were}}にあたる古い言い方です。",
         "手袋になるなど、もちろんありえません。だからこそ過去形の were が、好きな人に手が届かない「距離」を伝えます。2人の家は争っていて、近づくことさえ許されない間がらでした。この劇は400年以上演じられ続け、1957年にはニューヨークを舞台に置きかえたミュージカル『ウエスト・サイド物語』も生まれました。",
       ],
       photos: [
@@ -96,6 +119,13 @@ export const J_EN_3_KATEI: Lecture = {
           credit: { author: "Frank Bernard Dicksee", license: "Public domain", source: "https://commons.wikimedia.org/wiki/File:Frank_Bernard_Dicksee_-_Romeo_and_Juliet,_1884.jpg" },
         },
       ],
+      recite: [{
+        lang: "en", voice: "male", accent: "gb",
+        text: "See how she leans her cheek upon her hand.\nO that I were a glove upon that hand,\nThat I might touch that cheek.",
+        ja: "ごらん、あの人が手にほおをのせている。\nああ、あの手の手袋になれたなら。\nそうすれば、あのほおにふれられるのに。",
+        cite: "William Shakespeare, Romeo and Juliet, Act 2, Scene 2 (c. 1595)",
+        source: "https://www.gutenberg.org/ebooks/1513",
+      }],
       figure: {
         type: "tree",
         title: "仮定法の2つの型",
@@ -136,7 +166,7 @@ export const J_EN_3_KATEI: Lecture = {
       { who: "ソラ", text: "天気に失礼でしょ！　明日は晴れるかもしれない。起こりうることは{{ふつうの条件}}で、現在形と will。", say: "天気に失礼でしょ！ あしたは晴れるかもしれない。起こりうることはふつうの条件で、現在形とウィル。" },
       { who: "ミナ", text: "そういえば『クリスマス・キャロル』の精霊も、if と will を使ってた。幽霊だから文法を知らないんだね。", say: "そういえばクリスマス・キャロルの精霊も、イフとウィルを使ってた。幽霊だから文法を知らないんだね。" },
       { who: "ソラ", text: "知ってるよ！　未来はまだ変えられるから、わざとふつうの条件。だからスクルージは生き方を変えたんでしょ。" },
-      { who: "ミナ", text: "次はロミオ。O, that I were a glove. ロミオって、冬に手が冷たかったんだね。", say: "つぎはロミオ。オー、ザット・アイ・ワー・ア・グラブ。ロミオって、ふゆに手が冷たかったんだね。" },
+      { who: "ミナ", text: "次はロミオ。O that I were a glove. ロミオって、冬に手が冷たかったんだね。", say: "つぎはロミオ。オー、ザット・アイ・ワー・ア・グラブ。ロミオって、ふゆに手が冷たかったんだね。" },
       { who: "ソラ", text: "寒がりの話じゃない！　ジュリエットの手の手袋になって、ほおにふれたいっていう、かなわない願い。今の英語なら{{I wish I were}}だよ。", say: "寒がりの話じゃない！ ジュリエットの手の手袋になって、ほおにふれたいっていう、かなわない願い。今の英語ならアイ・ウィッシュ・アイ・ワーだよ。" },
       { who: "ミナ", text: "I wish か。じゃあ I wish I had a dog は、前に犬を飼ってた思い出話？", say: "アイ・ウィッシュか。じゃあアイ・ウィッシュ・アイ・ハド・ア・ドッグは、まえに犬を飼ってた思い出話？" },
       { who: "ソラ", text: "今、飼ってないの！　{{I wish＋主語＋過去形}}で「〜ならいいのに」。もう飼ってたら、そんなこと言わないでしょ。", say: "今、飼ってないの！ アイ・ウィッシュ、プラス主語、プラス過去形で、〜ならいいのに。もう飼ってたら、そんなこと言わないでしょ。" },

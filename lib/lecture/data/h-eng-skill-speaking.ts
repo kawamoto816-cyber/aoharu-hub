@@ -21,6 +21,13 @@ export const H_ENG_SKILL_SPEAKING: Lecture = {
         "足した1文が会話をどれほど動かすかは、英語の名作にもよく表れています。コナン・ドイルの小説『緋色の研究』（1887年）で、シャーロック・ホームズは初めて会ったワトソンに、あいさつ代わりにこう言います。「{{You have been in Afghanistan, I perceive.}}」（あなたはアフガニスタンに行っていましたね、お見受けしたところ。）おどろいたワトソンは「なぜわかったのか」と聞き返さずにいられず、そこから二人の長い物語が始まります。たった1文の情報が、相手の「知りたい」を引き出したのです。",
         "答えに情報を足したら、最後に {{How about you?}}（あなたはどう？）や What about you? と聞き返して、ボールを相手に返します。相手の話には、Really? / That sounds fun. / I see. のような{{あいづち}}で反応し、Why do you like it? / When did you start? のような疑問詞の質問を重ねると、会話は自然に続きます。「答える→1文足す→聞き返す・反応する」のくり返しが、やり取りの基本の形です。",
       ],
+      recite: [{
+        lang: "en", voice: "male", accent: "gb",
+        text: "“Dr. Watson, Mr. Sherlock Holmes,” said Stamford, introducing us.\n“How are you?” he said cordially, gripping my hand with a strength for which I should hardly have given him credit. “You have been in Afghanistan, I perceive.”\n“How on earth did you know that?” I asked in astonishment.",
+        ja: "「ワトソン先生、こちらがシャーロック・ホームズさん」と、スタンフォードがわたしたちを引き合わせた。\n「はじめまして」と彼は親しげに言い、思いがけないほどの力でわたしの手をにぎった。「アフガニスタンに行っておられましたね、お見受けしたところ」\n「いったいどうしてそれがわかったのです？」と、わたしはおどろいてたずねた。",
+        cite: "Arthur Conan Doyle, A Study in Scarlet (1887)",
+        source: "https://www.gutenberg.org/ebooks/244",
+      }],
       figure: {
         type: "formula",
         title: "What do you do on weekends? への答え方",
@@ -42,6 +49,13 @@ export const H_ENG_SKILL_SPEAKING: Lecture = {
         "PREP の流れを聞き手に伝えるのが、{{つなぎの合図（ディスコースマーカー）}}です。I have two reasons. First, ... Second, ... For example, ... So, ... のように、話の切れ目ごとに合図を入れると、聞き手は「いま理由の2つ目だ」とわかって安心して聞けます。I like fall the best. I have two reasons. First, it's cool and comfortable. Second, the food is delicious.（私は秋がいちばん好きです。理由は2つあります。1つ目に、涼しくて過ごしやすいからです。2つ目に、食べ物がおいしいからです。）",
         "最初と最後に置く結論は、短く言いきるほど記憶に残ります。1961年、ケネディ大統領は就任演説の終わり近くで、国民にこう呼びかけました。「{{ask not what your country can do for you—ask what you can do for your country.}}」（国があなたのために何をしてくれるかではなく、あなたが国のために何ができるかを問うてほしい。）your country と you を入れかえる{{対比}}の形で、演説全体の主張が一文にまとめられています。この一文は、いまも演説の名文句としてよく引用されます。",
       ],
+      recite: [{
+        lang: "en", voice: "male",
+        text: "And so, my fellow Americans: ask not what your country can do for you—ask what you can do for your country.\nMy fellow citizens of the world: ask not what America will do for you, but what together we can do for the freedom of man.",
+        ja: "だからこそ、アメリカ国民のみなさん。国があなたのために何をしてくれるかを問うのではなく、あなたが国のために何ができるかを問うてください。\n世界の市民のみなさん。アメリカがあなたのために何をするかを問うのではなく、わたしたちが力を合わせて人間の自由のために何ができるかを問うてください。",
+        cite: "John F. Kennedy, Inaugural Address (1961)",
+        source: "https://www.presidency.ucsb.edu/documents/inaugural-address-2",
+      }],
       figure: {
         type: "flow",
         dir: "col",
@@ -61,9 +75,17 @@ export const H_ENG_SKILL_SPEAKING: Lecture = {
       body: "すぐに答えが浮かばないとき、だまってしまうと相手は「質問がわからなかったのかな」と思います。{{Let me see.}} や {{Well,}} のような{{つなぎの言葉}}を使えば、考えていることが伝わります。質問が聞きとれなかったときは、だまらずに聞き返しましょう。",
       reading: [
         "英語の会話では、数秒の沈黙でも相手を不安にさせます。「聞こえなかったのかな」「怒っているのかな」と受け取られてしまうからです。そこで、考えているあいだも{{声で「考え中」を知らせる}}のが、英語を話す人たちのふつうのやり方です。{{Well,}}（ええと）、{{Let me see.}}（そうですね）、That's a good question.（いい質問ですね）、I'm not sure, but ...（はっきりとは言えませんが）などを使えば、数秒の考える時間をかせぎながら、話す意思があることを伝えられます。",
-        "考えていることを声に出すのは、英語の名作の得意わざでもあります。1600年ごろ、ロンドンのグローブ座で上演されたシェイクスピアの『ハムレット』では、主人公が舞台にひとり立ち、迷いをそのまま観客に語りかけます。「{{To be, or not to be: that is the question.}}」（生きるべきか、死ぬべきか、それが問題だ。）答えの出ない問いを、声に出しながら考えていく{{独白（ソリロキー）}}は、観客を主人公の頭の中に招き入れる技法で、いまも世界中の舞台で演じられています。",
+        "考えていることを声に出すのは、英語の名作の得意わざでもあります。1600年ごろ、ロンドンのグローブ座で上演されたシェイクスピアの『ハムレット』では、主人公が舞台にひとり立ち、迷いをそのまま観客に語りかけます。「{{To be, or not to be, that is the question}}」（生きるべきか、死ぬべきか、それが問題だ。）答えの出ない問いを、声に出しながら考えていく{{独白（ソリロキー）}}は、観客を主人公の頭の中に招き入れる技法で、いまも世界中の舞台で演じられています。",
         "相手の質問が聞きとれなかったときも、だまってはいけません。{{Sorry?}} / {{Pardon?}} と短く聞き返すか、ていねいに Could you say that again? と頼みます。一部だけ聞きとれたなら、Do you mean ...?（〜という意味ですか？）と確かめましょう。聞き返すのは失礼ではなく、{{やり取りを続けようとする前向きな行動}}です。イギリス映画『英国王のスピーチ』（2010年）は、話すことに苦手意識をもつ国王が、言葉につまりながらも間の取り方を工夫して、国民へのラジオ演説をやりとげるまでを描きました。完ぺきに話すことより、止まらずに伝えようとする姿が人の心を動かすことを教えてくれる作品です。",
       ],
+      recite: [{
+        lang: "en", voice: "male", accent: "gb",
+        text: "To be, or not to be, that is the question:\nWhether ’tis nobler in the mind to suffer\nThe slings and arrows of outrageous fortune,\nOr to take arms against a sea of troubles,\nAnd by opposing end them?",
+        ja: "生きるべきか、死ぬべきか、それが問題だ。\n心のうちで耐えしのぶほうが気高いのか――\n荒れくるう運命が放つ石つぶてや矢を。\nそれとも、押しよせる苦しみの海に武器をとって立ち向かい、\n戦って終わらせるほうが気高いのか。",
+        cite: "William Shakespeare, Hamlet, Act III, Scene 1 (1600年ごろ)",
+        source: "https://www.gutenberg.org/ebooks/1524",
+        say: "To be, or not to be, that is the question: Whether 'tis nobler in the mind to suffer The slings and arrows of outrageous fortune, Or to take arms against a sea of troubles, And by opposing end them?",
+      }],
       photos: [
         {
           src: `${C}/globe.webp`, width: 800, height: 600,
@@ -115,6 +137,13 @@ export const H_ENG_SKILL_SPEAKING: Lecture = {
         "くり返しの力を、だれよりも鮮やかに示したのが、1963年8月、リンカーン記念堂の階段で行われたキング牧師の演説「{{I Have a Dream}}」です。人種差別の撤廃を求めて集まった約25万人を前に、キング牧師は、リンカーンの演説を思わせる言い回しで話し始め、後半では「私には夢がある」という同じ言葉で始まる文を何度も重ねて、自分の思いえがく未来を一つずつ具体的に語りました。同じ文の頭をくり返す技法を{{アナフォラ（首句反復）}}といいます。聞き手はくり返しのたびに次の言葉を待ち、会場は一体となって盛り上がりました。",
         "みなさんの発表でも、同じ技法が使えます。結論を最初と最後に言う（PREP）、理由は{{3つ以内}}にしぼる、キーワードを{{くり返す}}。さらに、大事な語の前で一瞬{{間（ポーズ）}}をとり、その語を{{強く、ゆっくり}}言うと、聞き手の注意が集まります。原稿を読み上げるのではなく、顔を上げて聞き手の目を見ること（{{アイコンタクト}}）も、伝わり方を大きく変えます。",
       ],
+      recite: [{
+        lang: "en", voice: "male",
+        text: "But, in a larger sense, we can not dedicate—we can not consecrate—we can not hallow—this ground. The brave men, living and dead, who struggled here, have consecrated it, far above our poor power to add or detract. The world will little note, nor long remember what we say here, but it can never forget what they did here.\n…that this nation, under God, shall have a new birth of freedom—and that government of the people, by the people, for the people, shall not perish from the earth.",
+        ja: "しかし、より大きな意味では、わたしたちはこの土地をささげることはできません。清めることも、聖なるものにすることもできません。ここで戦った勇敢な人々は、生きている者も亡くなった者も、すでにこの地を清めました。それは、わたしたちの貧しい力で何かを足したり引いたりできる域をはるかにこえています。世界は、わたしたちがここで語ることにほとんど目をとめず、長く覚えてもいないでしょう。しかし、彼らがここでなしたことは決して忘れられません。\n……この国が、神のもとで、自由の新たな誕生をむかえること。そして、人民の、人民による、人民のための政治を、地上から消し去ってはならないということを。",
+        cite: "Abraham Lincoln, Gettysburg Address (1863)（ブリス・コピー）",
+        source: "https://www.abrahamlincolnonline.org/lincoln/speeches/gettysburg.htm",
+      }],
       photos: [
         {
           src: `${C}/gettysburg-crowd.webp`, width: 800, height: 450,
