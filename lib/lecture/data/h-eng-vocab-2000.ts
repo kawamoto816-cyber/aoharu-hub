@@ -1,13 +1,26 @@
 import type { Lecture } from "../types";
 
+const C = "/media/commons/h-eng-vocab-2000";
+
 export const H_ENG_VOCAB_2000: Lecture = {
   unit: "h-eng-vocab-2000",
   title: "単語は「1語1訳」でなく、コアの意味・語の部品・品詞のセットで覚える",
   hook: "She runs a small café. を「彼女は小さなカフェを走る」と訳してしまったことはありませんか。高校で出会う単語は、1つの語が文によってちがう意味になったり、形を変えて別の品詞になったりします。2000語を短い時間で身につけるには、ばらばらに暗記するより「しくみでまとめる」ほうが速く、忘れにくいのです。",
+  mystery: "1828年、ノア・ウェブスターは約7万語を収めた『アメリカ英語辞典』を世に出しました。ところが彼は、その英語の辞書を作る途中で、なんと10年もかけて「20の言語の単語」を見比べていたのです。英語の辞書なのに、なぜそんな遠回りをしたのでしょう？",
+  mission: {
+    from: "出版社で高校生向けの英和辞典を編集している編集者",
+    request: "新しい辞典の巻頭に「単語の覚え方」のページを作ることになりました。ところが高校生に聞くと、「単語帳を何周しても覚えられない」という声ばかり。辞書づくりの大先輩ウェブスターの遠回りにかくれた「単語のしくみ」を、名探偵のあなたに解き明かしてほしいのです。",
+    thanks: "単語は1つずつの点ではなく、根っこでつながった家族だった。この見方を巻頭ページの最初に書けば、辞書を引くたびに、1語が何語にも広がっていくはずです。",
+  },
   sections: [
     {
       heading: "忘れる前に、思い出す練習をくり返す",
       body: "人は覚えたことを、時間がたつと急に忘れていきます。だから1回で完ぺきにするより、{{間をあけて何度も思い出す}}ほうが記憶に残ります。単語を見て意味を言う、意味を見て単語を言う、と{{自分でテストする}}のがこつです。思い出せなかった語だけを、次の回にまわしましょう。",
+      reading: [
+        "高校3年間で新しく学ぶ英単語は、学習指導要領の目安で1800〜2500語ほど。中学の語と合わせると4000語をこえます。この量を「1回見て覚える」のは、だれにとっても無理な話です。ドイツの心理学者エビングハウスは1880年代、意味のない音のならびを自分で覚えては、時間をおいてどれだけ忘れたかを測りました。その結果、覚えた直後の数時間〜1日で一気に忘れ、そのあとはゆっくり忘れていくことが分かりました。これが{{忘却曲線}}とよばれるものです。",
+        "ただし、同じ実験は希望も示しています。いったん忘れかけた内容を覚えなおすと、1回目よりずっと少ない手間で取りもどせ、しかも次は忘れにくくなるのです。だから単語は、1日に100回ながめるより、{{間をあけて何度も思い出す}}ほうが残ります。翌日、3日後、1週間後と、少しずつ間を広げるのが目安です。",
+        "もう1つのこつは、ながめるのではなく{{自分でテストする}}ことです。英語を見て日本語を言い、日本語を見て英語を言う。思い出そうとして頭をしぼる、その苦労そのものが記憶を強くします。すらすら言えた語は次の回から外し、つまった語だけを残す。こうすると、時間は自然に「覚えにくい語」に集まっていきます。",
+      ],
       figure: {
         type: "cycle",
         title: "単語を覚えるサイクル",
@@ -19,10 +32,31 @@ export const H_ENG_VOCAB_2000: Lecture = {
           { label: "数日後にもう一度", sub: "忘れた語だけ", tone: "red" },
         ],
       },
+      cliff: "でも、くり返すべき「意味」が1語に10個もあったら？ 400年前の恋の名せりふが答えます。",
     },
     {
       heading: "意味がたくさんある語は「コア」を1つつかむ",
       body: "run の訳語は「走る・経営する・流れる・動く」などたくさんありますが、中心にあるのは{{「止まらずに動き続ける」}}というイメージです。店が休まず動き続ければ「経営する」、水が動き続ければ「流れる」になります。訳語をならべて覚えるより、{{コアの意味}}から文に合う訳を選ぶほうが、初めて見る使い方にも対応できます。",
+      reading: [
+        "辞書で run を引くと、訳語が何十も並んでいて気が遠くなります。けれど、よく使う基本の語ほど意味が多いのは、英語にかぎらず言葉の宿命です。短くて言いやすい語は、たくさんの場面で使われるうちに、少しずつ意味を広げていくからです。そこで役に立つのが、すべての訳語に共通する中心のイメージ、{{コアの意味}}です。run なら{{「止まらずに動き続ける」}}。人なら走る、川なら流れる、バスなら運行する、店なら経営する。訳語は、コアが何に使われたかで決まる「結果」にすぎません。",
+        "1595年ごろに書かれたシェイクスピアの喜劇『夏の夜の夢』で、恋人ハーミアとの結婚を彼女の父親に反対された若者ライサンダーは、こうなげきます。The course of true love never did run smooth.（まことの恋の道すじが、なめらかに流れたためしはない。）ここの run は「走る」ではありません。course（道すじ・進路）が「止まらずに進み続ける」こと、つまり川のように流れていく、という意味です。run smooth は「なめらかに流れる」。run dry（かれる）、run short（足りなくなる）のように、run のあとに状態を表す語が続く形でもあります。",
+        "course もまた、コアで覚えたい語です。中心は「進んでいく道すじ」。だから、川の流れ、船の針路、学校の課程（コース）、料理のコース、そして of course（当然の成り行きで→もちろん）にまでつながります。このせりふは今では、恋愛にかぎらず「大事なことほど順調にはいかない」という意味の、英語の決まり文句になっています。名せりふは、コアの意味を体で覚えるための最高の例文でもあるのです。",
+      ],
+      recite: [{
+        lang: "en", voice: "male", accent: "gb",
+        text: "Ay me! For aught that I could ever read,\nCould ever hear by tale or history,\nThe course of true love never did run smooth.",
+        ja: "ああ、ぼくがこれまでに読んだかぎり、\n物語や歴史で聞いたかぎりでは、\nまことの恋の道すじが、なめらかに流れたためしはない。",
+        cite: "William Shakespeare, A Midsummer Night's Dream, Act I, Scene 1 (1595年ごろ)",
+        source: "https://www.gutenberg.org/cache/epub/1514/pg1514.txt",
+      }],
+      photos: [
+        {
+          src: `${C}/midsummer-quarto.webp`, width: 800, height: 582,
+          alt: "開いた古い本の右ページに、飾り文字で A Midsommer nights dreame. と印刷され、下に鳥の木版画がある扉",
+          caption: "『夏の夜の夢』最初の印刷本（1600年、ロンドン）の扉。当時のつづりで Midsommer nights dreame とある。「恋の道すじ」の名せりふはこの劇の第1幕に出てくる。",
+          credit: { author: "William Shakespeare, Richard Bradock and Thomas Fisher (printers)", license: "Public domain", source: "https://commons.wikimedia.org/wiki/File:First_Quarto_Printing_of_A_Midsummer_Night%27s_Dream.jpg" },
+        },
+      ],
       figure: {
         type: "tree",
         title: "run のコアから訳が分かれる",
@@ -39,10 +73,37 @@ export const H_ENG_VOCAB_2000: Lecture = {
         },
         note: "例：The trains run every ten minutes.（電車は10分ごとに運行する）",
       },
+      cliff: "コアの次は、単語を「分解」してみます。辞書の名人は、そのために10年を使いました。",
     },
     {
       heading: "語の部品（接頭辞・語根・接尾辞）で意味を組み立てる",
       body: "長い単語の多くは、{{部品の組み合わせ}}でできています。前につく{{接頭辞}}（un- 否定、re- ふたたび など）は意味を変え、後ろにつく{{接尾辞}}（-able できる、-ly 副詞 など）は品詞を変えます。部品を知っていれば、知らない語でも意味の見当がつきます。",
+      reading: [
+        "ノア・ウェブスター（1758〜1843年）は、アメリカがイギリスから独立したころに育った教師で、のちに辞書づくりに一生をささげました。1828年、70歳になる年に出した2巻本の『アメリカ英語辞典』には、約7万語が収められています。その序文で彼は、辞書づくりを考えはじめたのは約27年前だったとふり返り、途中でこう打ち明けます。I spent ten years in this comparison of radical words, and in forming a synopsis of the principal words in twenty languages, arranged in classes, under their primary elements or letters.",
+        "radical words とは「根っこの語」、つまり{{語根}}のことです。radical の rad- は、ラテン語で「根」を表す radix から来ています。ウェブスターは、英語の単語の多くがラテン語・ギリシャ語・古い英語などの根っこから枝分かれしてできていることに気づき、その根を20の言語で見比べることで、1語1語のもとの意味と、語どうしのつながりを確かめようとしたのです。7万語は、ばらばらの7万個ではなく、根っこでつながったいくつもの「家族」だったわけです。",
+        "この見方は、そのまま単語の覚え方になります。dict は「言う」。predict は pre-（前に）＋dict で「予言する・予測する」、contradict は contra-（反対に）＋dict で「反論する・矛盾する」、そして dictionary は「言葉を集めたもの」。前につく{{接頭辞}}が意味を変え、後ろにつく{{接尾辞}}が品詞を変えます。spect（見る）を知っていれば inspect・respect・spectator が、port（運ぶ）を知っていれば export・import・portable が、まとめて見えてきます。ただし部品の意味は目安で、合わない語もあるので、最後は辞書で確かめましょう。",
+      ],
+      recite: [{
+        lang: "en", voice: "male",
+        text: "I spent ten years in this comparison of radical words, and in forming a synopsis of the principal words in twenty languages, arranged in classes, under their primary elements or letters.",
+        ja: "わたしは10年を費やして、こうした根っこの語を比べ、20の言語のおもな単語の一覧表を作りました。単語は、そのもとになる要素、つまり文字ごとに、グループに分けて並べてあります。",
+        cite: "Noah Webster, Preface to An American Dictionary of the English Language (1828)",
+        source: "https://webstersdictionary1828.com/Preface",
+      }],
+      photos: [
+        {
+          src: `${C}/webster.webp`, width: 800, height: 931,
+          alt: "緑のいすにすわる白髪の老紳士の油絵。黒い上着に白いネクタイ、左手前の机に羽根ペンとインクつぼ",
+          caption: "ノア・ウェブスターの肖像（ジェームズ・ヘリング画、1833年）。机の羽根ペンとインクつぼは、7万語の辞書を手書きで仕上げた仕事ぶりを思わせる。",
+          credit: { author: "James Herring", license: "Public domain", source: "https://commons.wikimedia.org/wiki/File:James_Herring_-_Noah_Webster_-_NPG.67.31_-_National_Portrait_Gallery.jpg" },
+        },
+        {
+          src: `${C}/dictionary-1828.webp`, width: 800, height: 499,
+          alt: "開いた古い本。左ページに老紳士の銅版画の肖像、右ページに AN AMERICAN DICTIONARY OF THE ENGLISH LANGUAGE と印刷された扉",
+          caption: "『アメリカ英語辞典』初版（1828年、ニューヨーク）。扉には、語の起源とつながりを示すことが目的の第一にあげられている。",
+          credit: { author: "Cullen328", license: "CC BY-SA 3.0", licenseUrl: "https://creativecommons.org/licenses/by-sa/3.0", source: "https://commons.wikimedia.org/wiki/File:American_Dictionary_of_the_English_Language_1828.jpg" },
+        },
+      ],
       figure: {
         type: "formula",
         title: "predict（予測する）から広げる",
@@ -55,10 +116,33 @@ export const H_ENG_VOCAB_2000: Lecture = {
         ],
         note: "部品の意味は「目安」。語によっては合わないものもあるので、最後は辞書で確かめる。",
       },
+      reveal: "ウェブスターの10年は、遠回りではありませんでした。英語の単語の多くは、ラテン語やギリシャ語などの{{語根}}から枝分かれした「家族」です。20の言語で根っこを見比べれば、1語1語のもとの意味（コア）と、どの語とどの語が親せきなのかが分かります。7万語を1つずつ覚えるのではなく、根でまとめてつかむ。それが、辞書の名人にとっても、2000語を覚える高校生にとっても、いちばんの近道なのです。",
+      cliff: "部品で品詞が変わるなら、部品なしで品詞を変えることは？ シェイクスピアはやってのけました。",
     },
     {
       heading: "品詞の形をセットで覚える",
       body: "入試や長文では、同じ語の{{動詞・名詞・形容詞}}が入れかわって出てきます。decide を覚えるときは decision・decisive もいっしょに覚えると、1回の努力で3語ぶんになります。とくに{{形がまぎらわしい組}}（succeed の名詞は success と succession の2つ）は意味のちがいまで確かめましょう。",
+      reading: [
+        "シェイクスピアの歴史劇『リチャード二世』（1595年ごろ）に、品詞の教科書のような場面があります。国を追放されていたボリングブルックが、兵をひきいて勝手に帰ってきました。留守をあずかる叔父のヨーク公の前にひざまずき、My gracious uncle（おやさしい叔父上）と呼びかけます。するとヨーク公は、その言葉をさえぎって言い返すのです。",
+        "Grace me no grace, nor uncle me no uncle. 名詞の grace（恵み・閣下という敬称）と uncle（叔父）を、そのまま動詞として使っています。直訳すれば「わたしを閣下などと閣下するな、叔父上などと叔父上するな」。英語は、語の形を変えなくても、文の中の{{位置}}で品詞が決まる性質が強い言葉です。動詞の場所に置けば、名詞も動詞として働いてしまう。今の英語で email（メールを送る）、text（携帯でメッセージを送る）、google（検索する）が動詞になったのも、同じ性質のおかげです。",
+        "この場面にはもう1つ仕かけがあります。gracious（形容詞：恵み深い）、grace（名詞）、そして ungracious（un-＋gracious：礼儀知らずの）。1つの語根から{{動詞・名詞・形容詞}}が次々に生まれ、言葉の打ち合いになっているのです。単語を覚えるときも、decide・decision・decisive のように品詞の形をセットにすれば、1回の努力で3語ぶん。succeed（成功する／継ぐ）のように意味が2つに分かれる語は、success・successful と succession・successive のように{{形がまぎらわしい組}}を意味ごと整理しましょう。",
+      ],
+      recite: [{
+        lang: "en", voice: "male", accent: "gb",
+        text: "BOLINGBROKE. My gracious uncle—\nYORK. Tut, tut!\nGrace me no grace, nor uncle me no uncle.\nI am no traitor’s uncle, and that word “grace”\nIn an ungracious mouth is but profane.",
+        ja: "ボリングブルック：おやさしい叔父上――\nヨーク：ええい、だまれ！\n閣下などと閣下するな。叔父上などと叔父上するな。\nわしは謀反人の叔父ではない。それに「閣下」という言葉は、\n礼儀知らずの口から出れば、けがれた言葉にすぎぬ。",
+        cite: "William Shakespeare, King Richard II, Act II, Scene 3 (1595年ごろ)",
+        source: "https://www.gutenberg.org/cache/epub/1512/pg1512.txt",
+        say: "My gracious uncle. Tut, tut! Grace me no grace, nor uncle me no uncle. I am no traitor's uncle, and that word grace, In an ungracious mouth is but profane.",
+      }],
+      photos: [
+        {
+          src: `${C}/first-folio.webp`, width: 800, height: 1274,
+          alt: "MR. WILLIAM SHAKESPEARES COMEDIES, HISTORIES, & TRAGEDIES と印刷された下に、ひだえりの男性の銅版画の肖像がある本の扉",
+          caption: "シェイクスピアの戯曲全集「ファースト・フォリオ」（1623年）の扉。『リチャード二世』は「歴史劇（HISTORIES）」の1つとして収められた。肖像はマーティン・ドルーシャウトの銅版画。",
+          credit: { author: "Martin Droeshout", license: "Public domain", source: "https://commons.wikimedia.org/wiki/File:Title_page_William_Shakespeare%27s_First_Folio_1623.jpg" },
+        },
+      ],
       figure: {
         type: "compare",
         title: "品詞の形をそろえる",
@@ -70,8 +154,68 @@ export const H_ENG_VOCAB_2000: Lecture = {
           { cells: ["differ 異なる", "difference 違い", "different 異なる"] },
         ],
       },
+      cliff: "ところで、ウェブスターの辞書の名前には、なぜわざわざ「アメリカ」とついているのでしょう？",
+    },
+    {
+      heading: "アメリカ英語とイギリス英語の「ちがい」も単語の一部",
+      body: "同じ英語でも、アメリカとイギリスでは{{つづり}}や{{語の選び方}}が少しちがいます。color と colour、center と centre はどちらも正しい英語です。長文や辞書でどちらが出ても同じ語だと分かるように、{{組で覚えて}}おきましょう。",
+      reading: [
+        "ウェブスターが辞書の名前に「アメリカ」を入れたのには理由があります。アメリカは1776年に独立を宣言し、1783年にイギリスとの戦争を終えたばかりの新しい国でした。彼は序文の冒頭近くでこう書いています。It is not only important, but, in a degree necessary, that the people of this country, should have an American Dictionary of the English Language; for, although the body of the language is the same as in England, and it is desirable to perpetuate that sameness, yet some differences must exist.",
+        "although ～, yet ～ の組み立てに注目しましょう。「言葉の本体はイギリスと同じで、その同じさは保ちたい。それでも、ちがいは必ず生まれる」。新しい土地には新しい動植物や制度があり、それを表す語が必要になります。ウェブスターは、そうしたアメリカの言葉もきちんと辞書に載せようとしました。また、colour を color、centre を center のように、発音に近い短いつづりを広めることにも力をつくしました。今の{{アメリカ英語}}のつづりの多くは、彼の辞書とつづり方の教科書を通して定着したといわれます。",
+        "大学入試や英語の資格試験では、どちらのつづりも正しいものとして出てきます。自分で書くときは、1つの文章の中でどちらかにそろえるのが大切です。語そのものがちがう組もあります。アメリカの elevator・fall・apartment は、イギリスでは lift・autumn・flat。こうした組は、品詞のセットと同じように{{組で覚えて}}おくと、映画やニュースでどちらが出てきても迷いません。",
+      ],
+      recite: [{
+        lang: "en", voice: "male",
+        text: "It is not only important, but, in a degree necessary, that the people of this country, should have an American Dictionary of the English Language; for, although the body of the language is the same as in England, and it is desirable to perpetuate that sameness, yet some differences must exist.",
+        ja: "この国の人々が「アメリカ英語辞典」を持つことは、大切であるばかりか、ある程度は欠かせないことです。というのも、言葉の本体はイギリスと同じであり、その同じさを保ち続けることは望ましいのですが、それでも、いくらかのちがいは必ず生まれるからです。",
+        cite: "Noah Webster, Preface to An American Dictionary of the English Language (1828)",
+        source: "https://webstersdictionary1828.com/Preface",
+      }],
+      figure: {
+        type: "compare",
+        title: "アメリカ英語とイギリス英語",
+        columns: [{ title: "アメリカ", tone: "blue" }, { title: "イギリス", tone: "red" }, { title: "意味", tone: "yellow" }],
+        rows: [
+          { label: "つづり", cells: ["color", "colour", "色"] },
+          { label: "つづり", cells: ["center", "centre", "中心"] },
+          { label: "つづり", cells: ["theater", "theatre", "劇場"] },
+          { label: "語", cells: ["elevator", "lift", "エレベーター"] },
+          { label: "語", cells: ["fall", "autumn", "秋"] },
+        ],
+      },
     },
   ],
+  story: {
+    kind: "manzai",
+    title: "2000語を一晩で",
+    cast: ["ハルキ", "ツムギ"],
+    lines: [
+      { who: "ハルキ", text: "どうもー、ハルキとツムギです！　ぼく、今夜ひと晩で英単語2000語を覚えます！", say: "どうもー、ハルキとツムギです！ ぼく、こんや、ひとばんで、えいたんごにせんごを覚えます！" },
+      { who: "ツムギ", text: "無理だよ。人は覚えたことを、翌日までにごっそり忘れるの。{{忘却曲線}}って知らない？", say: "むりだよ。ひとは覚えたことを、よくじつまでにごっそり忘れるの。ぼうきゃくきょくせんって知らない？" },
+      { who: "ハルキ", text: "じゃあ忘れないように、単語帳を100回ながめる！", say: "じゃあ忘れないように、単語帳をひゃっかいながめる！" },
+      { who: "ツムギ", text: "ながめるだけじゃだめ。かくして{{自分でテストする}}。それを{{間をあけて}}くり返すの。" },
+      { who: "ハルキ", text: "よし、1語目。run＝走る。完ぺき！", say: "よし、いちごめ。ラン、イコール、はしる。かんぺき！" },
+      { who: "ツムギ", text: "じゃあ She runs a café. は？", say: "じゃあ、シー・ランズ・ア・カフェ、は？" },
+      { who: "ハルキ", text: "彼女はカフェを走る。……店内をぐるぐると。", say: "かのじょはカフェをはしる。……てんないをぐるぐると。" },
+      { who: "ツムギ", text: "迷惑なお客だな！　run の{{コアの意味}}は「止まらずに動き続ける」。店を動かし続けるから「経営する」。", say: "めいわくなおきゃくだな！ ランのコアのいみは、とまらずにうごきつづける。みせをうごかしつづけるから、けいえいする。" },
+      { who: "ハルキ", text: "じゃあ My nose is running. は、鼻が走って逃げた？", say: "じゃあ、マイ・ノーズ・イズ・ランニング、は、はなが、はしってにげた？" },
+      { who: "ツムギ", text: "顔から鼻が消えるか！　鼻水が止まらず流れてるの。", say: "かおから、はなが、きえるか！ はなみずが、とまらずながれてるの。" },
+      { who: "ハルキ", text: "次は unpredictable。長い！　これは捨てる。", say: "つぎは、アンプレディクタブル。ながい！ これはすてる。" },
+      { who: "ツムギ", text: "捨てないで！　un が否定の{{接頭辞}}、dict が「言う」の{{語根}}、able が「できる」の{{接尾辞}}。前もって言えない、で「予測できない」。", say: "すてないで！ アンが否定の接頭辞、ディクトが、いうの語根、エイブルが、できるの接尾辞。まえもっていえない、で、よそくできない。" },
+      { who: "ハルキ", text: "dict が「言う」なら、dictionary は「言う人」？", say: "ディクトが、いう、なら、ディクショナリーは、いうひと？" },
+      { who: "ツムギ", text: "言葉を集めた本！　辞書を作ったウェブスターは、10年かけて20の言語の根っこを比べたんだよ。", say: "ことばをあつめたほん！ じしょをつくったウェブスターは、じゅうねんかけて、にじゅうのげんごの、ねっこをくらべたんだよ。" },
+      { who: "ハルキ", text: "10年!?　ぼくは一晩なのに。", say: "じゅうねん!? ぼくはひとばんなのに。" },
+      { who: "ツムギ", text: "だから、くらべるな！　次は品詞。decide の名詞は？", say: "だから、くらべるな！ つぎは品詞。ディサイドの名詞は？" },
+      { who: "ハルキ", text: "decideman。決める人。", say: "ディサイドマン。きめるひと。" },
+      { who: "ツムギ", text: "そんなヒーローいない！　decision。形容詞は decisive。{{品詞の形をセットで}}覚えれば3語ぶん。", say: "そんなヒーローいない！ ディシジョン。けいようしは、ディシシブ。品詞のかたちをセットでおぼえれば、さんごぶん。" },
+      { who: "ハルキ", text: "シェイクスピアは uncle を動詞にしたんでしょ。ぼくも sleep を名詞にして、もう寝ます。", say: "シェイクスピアは、アンクルを動詞にしたんでしょ。ぼくも、スリープを名詞にして、もうねます。" },
+      { who: "ツムギ", text: "sleep はもともと名詞にもなるの！　寝るのは、3日後のテストの予定を立ててから。", say: "スリープは、もともと名詞にもなるの！ ねるのは、みっかごのテストのよていをたててから。" },
+      { who: "ハルキ", text: "じゃあ最後に覚えた単語で決めます。グッドラック、マイ単語帳！", say: "じゃあ、さいごにおぼえたたんごで、きめます。グッドラック、マイたんごちょう！" },
+      { who: "ツムギ", text: "単語帳に言うな！　もういいよ。", say: "たんごちょうに言うな！ もういいよ。" },
+      { who: "ハルキ", text: "どうも、ありがとうございました！" },
+    ],
+    note: "ハルキとツムギは架空の人物で、会話はすべて創作です。忘却曲線、run のコアの意味、語の部品（un-・dict・-able）、品詞の形、ウェブスターが辞書づくりの途中で20の言語の語根を10年かけて比べたこと（1828年の辞書の序文による）、シェイクスピアが『リチャード二世』で uncle を動詞として使ったことは事実にもとづいています。",
+  },
   mistakes: [
     { wrong: "He runs a bakery. →「彼はパン屋を走る」", right: "「彼はパン屋を経営している」", why: "run のあとに店・会社が来たら「経営する」。訳語を1つに決めつけず、コアの意味から文に合う訳を選びます。" },
     { wrong: "The plan was very economic.（むだがない、のつもり）", right: "The plan was very economical.", why: "economic は「経済の」、economical は「節約になる・むだのない」。-ic と -ical で意味が分かれる語は組で覚えます。" },

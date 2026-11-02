@@ -1,13 +1,33 @@
 import type { Lecture } from "../types";
 
+const M = "/media/commons/h-eng-gram-waho";
+
 export const H_ENG_GRAM_WAHO: Lecture = {
   unit: "h-eng-gram-waho",
   title: "話法は「そのまま引用」か「自分の言葉で伝え直す」か。立場が変わると語も変わる",
   hook: "友だちが「明日ここに来るよ」と言ったのを、1週間後に別の人に伝えるなら「あの子は翌日そこに行くと言っていた」と言い直しますね。英語の話法の書きかえは、この「話し手の立場・時・場所の言い直し」をルールにしたものです。",
+  mystery: "『はだかの王さま』で子どもが叫んだのは、現在形の has でした。ところがその一言が人から人へささやき伝えられる場面で、英文は what the child had said と「過去の過去」に変わります。王さまは今まさに目の前を歩いているのに、なぜ時制がふたつも下がるのでしょう？",
+  mission: {
+    from: "子ども向け英語劇団の脚本家",
+    request: "今度の公演は『はだかの王さま』です。ナレーターが「子どもの一言が町に広がる」場面を英語で語るのですが、役者から「子どもは has と言ったのに、なぜナレーションは had said なの？　まちがいでは？」と聞かれ、答えに詰まってしまいました。台本を直すべきか決めるために、名探偵のあなたに、伝え直すと語が変わるわけを解き明かしてほしいのです。",
+    thanks: "時制は「だれの、いつの立場から語るか」で決まるのですね。台本は直さずにすみます。ナレーターには、物語の外から語る自分の立場を意識して読むよう伝えます。",
+  },
   sections: [
     {
       heading: "直接話法と間接話法",
       body: "人のことばを \" \" でそのまま示すのが{{直接話法}}、自分の言葉に直して that 節などで伝えるのが{{間接話法}}です。間接話法では、元の話し手の I が he や she に、「今・ここ」が「その時・そこ」に変わります。伝える動詞が過去形なら、that 節の中も{{時制の一致}}で過去にずらします。",
+      reading: [
+        "人の言ったことを伝える方法は2つあります。ひとつは、言われたことばを引用符（\" \"）の中にそのまま写す{{直接話法}}。Ken said, \"I am busy now.\"（ケンは「ぼくは今いそがしい」と言った）では、I も now も、ケンが話したその場の言い方のままです。もうひとつは、伝える人が自分の立場から言い直す{{間接話法}}で、Ken said that he was busy then.（ケンはそのときいそがしいと言った）となります。直接話法は録音の再生、間接話法は要約した報告にたとえられます。",
+        "この2つを鮮やかに使い分けた物語が、デンマークの作家{{アンデルセン}}（1805〜75年）が1837年に発表した『はだかの王さま』です。新しい服に目がない王さまのもとに、二人のペテン師が「ばか者や役目にふさわしくない者には見えない布」を織ると言ってやってきます。見えないと言えば自分がばか者になるので、大臣も家来も、見えない布をほめちぎります。もとになったのは、14世紀のスペインで書かれた教訓話だとされています。",
+        "行列の日、町の人々も口々に服をほめるなか、小さな子どもが叫びます。ここで語り手は、子どもの声を{{直接話法}}でそのまま響かせます。続く父親の叫びも直接話法です。ところが、その一言が群衆に広がっていく部分では、語り手はもう引用符を使わず、what the child had said（子どもが言ったこと）とまとめて語ります。声の「再生」から、語り手による「報告」へ。この切りかえが、ひとつの声が町じゅうの声に変わっていく時間の流れを感じさせるのです。",
+      ],
+      recite: [{
+        lang: "en", voice: "female", accent: "gb",
+        text: "“But the Emperor has nothing at all on!” said a little child.\n“Listen to the voice of innocence!” exclaimed his father; and what the child had said was whispered from one to another.\n“But he has nothing at all on!” at last cried out all the people.",
+        ja: "「でも、王さま、なんにも着てないよ！」と小さな子どもが言った。\n「聞いたか、けがれのない子の声だ！」と父親が叫んだ。そして子どもの言ったことは、人から人へとささやき伝えられていった。\n「でも、王さまはなんにも着てないぞ！」と、とうとう町じゅうの人々が叫んだ。",
+        cite: "Hans Christian Andersen, \"The Emperor's New Clothes\" (1837), English translation in Andersen's Fairy Tales (Project Gutenberg)",
+        source: "https://www.gutenberg.org/ebooks/1597",
+      }],
       figure: {
         type: "formula",
         title: "直接話法 → 間接話法",
@@ -17,10 +37,37 @@ export const H_ENG_GRAM_WAHO: Lecture = {
           { label: "間接", expr: "Ken said (that) {{he was}} busy {{then}}.", note: "I → he、am → was、now → then" },
         ],
       },
+      photos: [
+        {
+          src: `${M}/emperor-procession.webp`, width: 730, height: 562,
+          alt: "天がいの下を、肌着のような薄い服ではだしの王さまが歩き、両側の家来と、子どもを抱いた女性や群衆が見守る版画",
+          caption: "ヴィルヘルム・ペーダセンによる『はだかの王さま』の挿絵（1849年ごろ）。天がいの下を歩く王さまと、沿道の群衆。この中の子どもの一言が、{{直接話法}}で物語に響く。",
+          credit: { author: "Vilhelm Pedersen (1820 - 1859)", license: "Public domain", source: "https://commons.wikimedia.org/wiki/File:Emperor_Clothes_01.jpg" },
+        },
+        {
+          src: `${M}/andersen.webp`, width: 800, height: 1220,
+          alt: "巻き毛で、蝶ネクタイに上着を着た年配の男性が、横を向いてほほえんでいるセピア色の肖像写真",
+          caption: "{{アンデルセン}}（1869年、コペンハーゲンで撮影）。貧しい靴職人の家に生まれ、童話で世界に知られる作家になった。『はだかの王さま』は1837年の作品。",
+          credit: { author: "Thora Hallager", license: "Public domain", source: "https://commons.wikimedia.org/wiki/File:Hans_Christian_Andersen_by_Thora_Hallager_1869.jpg" },
+        },
+      ],
+      cliff: "声をそのまま響かせず「報告」に変えるとき、英文はどんな順で書きかえるのでしょう？",
     },
     {
       heading: "書きかえは決まった順で",
       body: "平叙文の書きかえは、下の順に進めると迷いません。said to 人 は {{told 人}} に変えます。ただし、{{今も変わらない事実}}や習慣は、時制の一致をしないこともあります（He said that the earth goes around the sun.）。",
+      reading: [
+        "直接話法を間接話法にするときは、手順を決めておくと迷いません。まず伝える動詞を整えます。She said to me, \"…\" のように聞き手がいるなら、{{told 人}} that … にします。say は後ろにすぐ「人」を置けないからです。次に引用符をはずして that でつなぎ、人称を伝える人の立場に合わせ（I → she、you → me など）、伝える動詞が過去形なら引用の中の時制を1つ過去にずらします。これが{{時制の一致}}です。最後に、now や here のような時・場所の語を直します。",
+        "子どもの叫びで練習してみましょう。\"But the Emperor has nothing at all on!\" said a little child. を間接話法にすると、A little child said that the Emperor had nothing at all on. です。has が had になったのは、伝える動詞 said が過去形だからです。ただし、He said that the earth goes around the sun.（地球は太陽のまわりを回っていると彼は言った）のように、{{今も変わらない事実}}や現在も続く習慣は、現在形のままにすることがあります。",
+        "イギリスの作家ジェーン・オースティンが1813年に出した小説『高慢と偏見』の冒頭は、話法の使い分けのお手本です。娘5人の嫁ぎ先を案じるベネット夫人は、近所の屋敷に借り手がついたと、夫に勢いこんで話しかけます。夫人のことばは{{直接話法}}で長々と再生されるのに、夫の返事は replied that he had not と、語り手が{{間接話法}}でたった一行に要約します。話法の差が、そのまま二人の熱量の差になっていて、読者は思わずくすりと笑うのです。",
+      ],
+      recite: [{
+        lang: "en", voice: "female", accent: "gb",
+        text: "“My dear Mr. Bennet,” said his lady to him one day, “have you heard that Netherfield Park is let at last?”\nMr. Bennet replied that he had not.\n“But it is,” returned she; “for Mrs. Long has just been here, and she told me all about it.”\nMr. Bennet made no answer.",
+        ja: "「ねえ、あなた」とある日、ベネット夫人は夫に言った。「ネザーフィールド屋敷に、とうとう借り手がついたって聞きました？」\nベネット氏は、聞いていないと答えた。\n「でも、ついたのよ」と夫人は言い返した。「だって、たった今ロングさんの奥さまが来て、すっかり話してくださったんですもの」\nベネット氏は何も答えなかった。",
+        cite: "Jane Austen, Pride and Prejudice, Chapter 1 (1813)",
+        source: "https://www.gutenberg.org/ebooks/1342",
+      }],
       figure: {
         type: "flow",
         dir: "col",
@@ -33,10 +80,24 @@ export const H_ENG_GRAM_WAHO: Lecture = {
           { label: "時・場所の語", sub: "now → then など", tone: "red" },
         ],
       },
+      photos: [
+        {
+          src: `${M}/bennets.webp`, width: 800, height: 916,
+          alt: "いすで本を読みながらにやりと笑う男性と、背を向けて腕を組む女性。足もとのクッションで猫が眠っているペン画",
+          caption: "ヒュー・トムソンによる『高慢と偏見』（1894年版）の挿絵「ベネット夫妻」。冒頭の会話で、夫人は{{直接話法}}、夫の返事は{{間接話法}}で語られる。",
+          credit: { author: "Hugh Thomson (1860-1920)", license: "Public domain", source: "https://commons.wikimedia.org/wiki/File:Thomson-PP03.jpg" },
+        },
+      ],
+      cliff: "時制だけではありません。today や here も、伝える日と場所しだいで姿を変えます。",
     },
     {
       heading: "変わる語の一覧",
       body: "間接話法では、話し手から見た時や場所が「その時の」言い方に変わります。today は {{that day}}、yesterday は {{the day before}}（the previous day）、tomorrow は {{the next day}}（the following day）です。ただし、同じ日に同じ場所で伝えるなら、変えないこともあります。",
+      reading: [
+        "now・today・here・this のような語は、話し手が「いつ・どこで」話しているかによって指すものが変わります。こうした語は、話し手の立場を中心にした目印です。ですから、ことばを別の日・別の場所で伝え直すときは、目印もその時点から見た言い方に直します。today は {{that day}}、tomorrow は {{the next day}}、yesterday は {{the day before}}、here は there、this は that、three days ago は three days before です。",
+        "時制も同じ考え方です。引用の中の現在形は過去形に、過去形や現在完了は{{過去完了}}（had＋過去分詞）にずらします。たとえば、王さまの行列の翌日、町の人がうわさを伝えたとします。直接話法なら He said, \"I saw the Emperor yesterday.\" ですが、間接話法では He said that he had seen the Emperor the day before. になります。「話した時点」よりさらに前に「見た」ので、過去の過去、つまり過去完了になるのです。",
+        "ただし、これは機械的な変換ではありません。話した内容が今も当てはまるときや、同じ日に同じ場所で伝えるときは、today や here、現在形をそのまま使ってかまいません。大切なのは、「伝えている自分の今・ここから見て、それはいつ・どこか」を考えることです。話法の書きかえは、暗記した表を当てはめる作業ではなく、視点を動かす作業なのです。",
+      ],
       figure: {
         type: "compare",
         title: "直接話法と間接話法で変わる語",
@@ -53,10 +114,17 @@ export const H_ENG_GRAM_WAHO: Lecture = {
           { cells: ["will / can", "would / could"] },
         ],
       },
+      reveal: "時制は、ことばを口にした人ではなく、いま語っている人の立場から決まります。『はだかの王さま』の語り手は、物語全体を過去形で語っています。ささやきが広がったのは was whispered（過去）、子どもが叫んだのはそれよりさらに前なので、{{過去完了}}の had said になるのです。子どもの has は、その場の声を{{直接話法}}で再生したから現在形のまま。伝え直すときには、語り手の「今」を基準に{{時制の一致}}が働くのです。",
+      cliff: "では、質問や「〜しなさい」という命令は、どうやって伝え直すのでしょう？",
     },
     {
       heading: "疑問文・命令文を伝える",
       body: "疑問文は伝える動詞を{{ask}}にし、疑問詞（疑問詞がなければ{{if / whether}}）のあとを{{主語＋動詞の語順}}にします。命令文は{{tell 人 to 〜}}、Please のついた依頼は{{ask 人 to 〜}}で表し、「〜するな」は not to 〜 にします。",
+      reading: [
+        "疑問文を伝えるときは、伝える動詞を{{ask}}にします。疑問詞があればそれでつなぎ、疑問詞がなければ{{if / whether}}（〜かどうか）でつなぎます。そして、つないだあとは疑問文の語順をやめ、{{主語＋動詞の語順}}にもどします。間接話法の疑問文は、もう相手に問いかけている文ではなく、「何を聞いたか」を報告する文だからです。文の終わりも ? ではなくピリオドになります。",
+        "ベネット夫人の問いかけで試してみましょう。\"Have you heard that Netherfield Park is let at last?\" は疑問詞のない疑問文なので、Mrs. Bennet asked her husband if he had heard that Netherfield Park was let at last. となります。have you heard が he had heard に変わり、語順がふつうの文にもどっていますね。疑問詞のある She said to me, \"Where do you live?\" なら、She asked me where I lived. です。",
+        "命令文は{{tell 人 to 〜}}で伝えます。『はだかの王さま』の父親の \"Listen to the voice of innocence!\" なら、The father told the people to listen to the voice of innocence. です。Please がついたていねいな頼みは ask 人 to 〜、「〜するな」は not to 〜 にします。叫び、ささやき、問いかけ、命令。人の声にはさまざまな形があり、英語の話法はそれを正確に、しかも自分の立場から伝え直すための道具なのです。",
+      ],
       figure: {
         type: "formula",
         title: "疑問文・命令文の書きかえ",
@@ -72,6 +140,37 @@ export const H_ENG_GRAM_WAHO: Lecture = {
       },
     },
   ],
+  story: {
+    kind: "manzai",
+    title: "伝言ナレーター",
+    cast: ["ハヤテ", "シオリ"],
+    lines: [
+      { who: "ハヤテ", text: "どうもー、ハヤテとシオリです！　ぼく、文化祭の英語劇『はだかの王さま』で、ナレーターに選ばれました！" },
+      { who: "シオリ", text: "すごいじゃない。人のせりふを伝える、大事な役だよ。" },
+      { who: "ハヤテ", text: "練習もばっちり。子どもの叫びを伝えるところは、「ア・リトル・チャイルド・セッド・ザット・アイ・ハズ・ナッシング・オン」！", say: "練習もばっちり。子どもの叫びを伝えるところは、ア・リトル・チャイルド・セッド・ザット・アイ・ハズ・ナッシング・オン！" },
+      { who: "シオリ", text: "それだと子どもがはだかになってる！　{{間接話法}}では、王さまのことは the Emperor か he で言うの。", say: "それだと子どもがはだかになってる！ 間接話法では、王さまのことは、ジ・エンペラーか、ヒーで言うの。" },
+      { who: "ハヤテ", text: "あ、そうか。じゃあ「セッド・ザット・ジ・エンペラー・ハズ・ナッシング・オン」！", say: "あ、そうか。じゃあ、セッド・ザット・ジ・エンペラー・ハズ・ナッシング・オン！" },
+      { who: "シオリ", text: "惜しい。said が過去形だから、{{時制の一致}}で has は had にずらす。", say: "惜しい。セッドが過去形だから、時制の一致で、ハズはハッドにずらす。" },
+      { who: "ハヤテ", text: "王さまがもう服を着たってこと？" },
+      { who: "シオリ", text: "着てない！　伝えている今から見て、言ったのが過去だから、中身も過去にそろえるの。" },
+      { who: "ハヤテ", text: "なるほど。じゃあ町の人がうわさするところは、「ザ・チャイルド・セッド」で……。" },
+      { who: "シオリ", text: "台本は what the child had said。ささやいたのが過去で、子どもが言ったのはさらにその前だから、{{過去完了}}。", say: "台本は、ワット・ザ・チャイルド・ハッド・セッド。ささやいたのが過去で、子どもが言ったのはさらにその前だから、過去完了。" },
+      { who: "ハヤテ", text: "過去のさらに前……。王さま、ずいぶん前からはだかだったんだね。" },
+      { who: "シオリ", text: "かわいそうだからやめて！" },
+      { who: "ハヤテ", text: "次はお父さんの命令。「ザ・ファーザー・セッド・トゥー・ザ・ピープル・リッスン」！", say: "次はお父さんの命令。ザ・ファーザー・セッド・トゥー・ザ・ピープル・リッスン！" },
+      { who: "シオリ", text: "命令文は {{tell 人 to}}。told the people to listen で「聞くように言った」。", say: "命令文は、テル、ひと、トゥー。トールド・ザ・ピープル・トゥー・リッスンで、聞くように言った。" },
+      { who: "ハヤテ", text: "じゃあ王さまの質問「服は似合うか？」は、アスクト・イフ・ドゥー・アイ・ルック・グッド！", say: "じゃあ王さまの質問、服は似合うか？は、アスクト・イフ・ドゥー・アイ・ルック・グッド！" },
+      { who: "シオリ", text: "疑問文の語順のままはだめ。if のあとは{{主語＋動詞の語順}}。asked if he looked good。", say: "疑問文の語順のままはだめ。イフのあとは主語と動詞の語順。アスクト・イフ・ヒー・ルックト・グッド。" },
+      { who: "ハヤテ", text: "語順まで変わるのか。英語の伝言って、たいへんだなあ。" },
+      { who: "シオリ", text: "伝える人の「今・ここ」から言い直すだけ。today は {{that day}}、here は there。", say: "伝える人の、いま、ここから言い直すだけ。トゥデイは、ザット・デイ。ヒアは、ゼア。" },
+      { who: "ハヤテ", text: "わかった！　じゃあ本番の日、先生に伝えておくね。「シオリが、ナレーターは自分がやるって言ってた」って。" },
+      { who: "シオリ", text: "わたし、そんなこと言ってない！　伝言をつくるな！" },
+      { who: "ハヤテ", text: "だって、ぼくには見えたんだ。きみの心の声が。" },
+      { who: "シオリ", text: "見えない布みたいに言うな！　もういいよ。" },
+      { who: "ハヤテ", text: "どうも、ありがとうございました！" },
+    ],
+    note: "ハヤテとシオリは架空の人物で、会話はすべて創作です。漫才の中の英文は『はだかの王さま』の場面をもとに自分で作った例文です（王さまの「服は似合うか？」という質問は原作にはありません）。アンデルセンが1837年にこの童話を発表したこと、英訳に what the child had said という表現があることは事実です。",
+  },
   mistakes: [
     { wrong: "He said me that he was busy.", right: "He told me that he was busy.", why: "say は「人」をすぐ後ろに置けません。人に伝えるなら tell 人 that 〜 です。" },
     { wrong: "She asked me where did I live.", right: "She asked me where I lived.", why: "間接話法の疑問文は、疑問詞のあとをふつうの語順（主語＋動詞）にします。" },
