@@ -174,6 +174,27 @@ export interface LecturePhoto {
   };
 }
 
+/**
+ * 名作の引用（朗読つき）。著作権が切れた作品だけ（青空文庫・Project Gutenberg・米国政府の演説など）。
+ * 本文は出典と一字一句照合したもの。音声は scripts/manzai-tts.ts が public/audio/recite/<キー>.mp3 に作る。
+ */
+export interface Recitation {
+  lang: "ja" | "en";
+  /** 引用の本文（行分けは \n）。ja はルビ《》可 */
+  text: string;
+  /** 英語のときの日本語訳（自分で訳したもの） */
+  ja?: string;
+  /** 作者と作品（例：夏目漱石『こころ』／Abraham Lincoln, Gettysburg Address, 1863） */
+  cite: string;
+  /** 照合した出典のページ（青空文庫の作品ページ・Gutenberg・archives.gov など） */
+  source: string;
+  /** 朗読用の読み（ja：古文の現代読み・難読語のひらがな。en：ふつうは不要） */
+  say?: string;
+  /** 朗読の声（en：male=低めの男声 / female=女声、gb=イギリス英語。ja：male / female） */
+  voice?: "male" | "female";
+  accent?: "us" | "gb";
+}
+
 export interface LectureSection {
   heading: string;
   /** 2〜5文。{{ }} で強調。節の要点。 */
@@ -183,6 +204,8 @@ export interface LectureSection {
   figure?: Figure;
   /** 資料（写真・図版） */
   photos?: LecturePhoto[];
+  /** 名作の引用（朗読つき）。本文のあとに置く */
+  recite?: Recitation[];
   /** この節で「謎」が解けるとき、その答え（2〜4文）。Lecture.mystery と対になる */
   reveal?: string;
   /** 節の終わりの「次が気になる」ひとこと（1文）。最後の節には置かない */

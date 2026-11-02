@@ -1,4 +1,4 @@
-// 「漫才で聞く」と小説の「朗読を聞く」の音声を Google Cloud Text-to-Speech (Chirp 3: HD, 日本語) でまとめて作る。手元のパソコンで動かす。
+// 「漫才で聞く」と小説の「朗読を聞く」、名作の引用の朗読（英語はネイティブの声）の音声を Google Cloud Text-to-Speech (Chirp 3: HD, 日本語) でまとめて作る。手元のパソコンで動かす。
 //
 //   数をたしかめる:  npx tsx scripts/manzai-tts.ts --count
 //   全部作る:        npx tsx scripts/manzai-tts.ts
@@ -11,10 +11,11 @@
 import { existsSync, mkdirSync, readFileSync, readdirSync, unlinkSync, writeFileSync } from "node:fs";
 import { LECTURES } from "../lib/lecture";
 import { manzaiAudio, novelAudio } from "../lib/tts/yomi";
+import { reciteAudio } from "../lib/tts/recite";
 
-type Job = { dir: string; key: string; text: string; voice: string; rate: number; unit: string };
+type Job = { dir: string; key: string; text: string; voice: string; rate: number; unit: string; lang?: string; name?: string };
 
-const DIRS = ["public/audio/manzai", "public/audio/novel"];
+const DIRS = ["public/audio/manzai", "public/audio/novel", "public/audio/recite"];
 
 function collect(): Job[] {
   const jobs = new Map<string, Job>();
@@ -32,6 +33,11 @@ function collect(): Job[] {
         jobs.set(`n/${a.key}`, { dir: DIRS[1], key: a.key, text: a.text, voice: a.voice, rate: a.rate, unit: lec.unit });
       }
     }
+    for (const s of lec.sections)
+      for (const r of s.recite ?? []) {
+        const a = reciteAudio(r);
+        jobs.set(`r/${a.key}`, { dir: DIRS[2], key: a.key, text: a.text, voice: a.name, rate: a.rate, unit: lec.unit, lang: a.languageCode, name: a.name });
+      }
   }
   return [...jobs.values()];
 }
@@ -49,7 +55,7 @@ function apiKey(): string {
 async function synth(key: string, j: Job): Promise<Buffer> {
   const body = {
     input: { text: j.text },
-    voice: { languageCode: "ja-JP", name: `ja-JP-Chirp3-HD-${j.voice}` },
+    voice: j.name ? { languageCode: j.lang, name: j.name } : { languageCode: "ja-JP", name: `ja-JP-Chirp3-HD-${j.voice}` },
     audioConfig: { audioEncoding: "MP3", speakingRate: j.rate },
   };
   for (let attempt = 1; ; attempt++) {
@@ -72,7 +78,7 @@ async function main() {
   const count = (dir: string) => jobs.filter((j) => j.dir === dir);
   const chars = todo.reduce((n, j) => n + j.text.length, 0);
   console.log(
-    `漫才 ${new Set(count(DIRS[0]).map((j) => j.unit)).size} 本・${count(DIRS[0]).length} 行／小説 ${new Set(count(DIRS[1]).map((j) => j.unit)).size} 本・${count(DIRS[1]).length} 段落`,
+    `漫才 ${new Set(count(DIRS[0]).map((j) => j.unit)).size} 本・${count(DIRS[0]).length} 行／小説 ${new Set(count(DIRS[1]).map((j) => j.unit)).size} 本・${count(DIRS[1]).length} 段落／名作の朗読 ${count(DIRS[2]).length} 編`,
   );
   console.log(`作るのは ${todo.length} 個（約 ${chars.toLocaleString()} 字）`);
   const stale: string[] = [];
