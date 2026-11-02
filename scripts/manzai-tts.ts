@@ -17,10 +17,12 @@ import { createRequire } from "node:module";
 import { LECTURES } from "../lib/lecture";
 import { manzaiAudio, novelAudio } from "../lib/tts/yomi";
 import { reciteAudio } from "../lib/tts/recite";
+import { tsukkomiJobs } from "../lib/tsukkomi/audio";
+import { KAKEGOE, kakegoeKey } from "../lib/tsukkomi/kakegoe";
 
-type Job = { dir: string; key: string; text: string; voice: string; rate: number; unit: string; lang?: string; name?: string };
+type Job = { dir: string; key: string; text: string; voice: string; rate: number; unit: string; lang?: string; name?: string; kana?: string; intonation?: number };
 
-const DIRS = ["public/audio/manzai", "public/audio/novel", "public/audio/recite"];
+const DIRS = ["public/audio/manzai", "public/audio/novel", "public/audio/recite", "public/audio/tsukkomi"];
 
 function collect(): Job[] {
   const jobs = new Map<string, Job>();
@@ -44,6 +46,10 @@ function collect(): Job[] {
         jobs.set(`r/${a.key}`, { dir: DIRS[2], key: a.key, text: a.text, voice: a.name, rate: a.rate, unit: lec.unit, lang: a.languageCode, name: a.name });
       }
   }
+  // ツッコミ学習法：ボケの文・言い直し・掛け声
+  for (const j of tsukkomiJobs()) jobs.set(`t/${j.key}`, { dir: DIRS[3], key: j.key, text: j.text, voice: j.voice, rate: j.rate, unit: j.unit });
+  for (const k of KAKEGOE)
+    jobs.set(`k/${kakegoeKey(k)}`, { dir: DIRS[3], key: kakegoeKey(k), text: k.text.replace(/！/g, ""), voice: k.voice, rate: k.rate, unit: "tsukkomi", kana: k.kana, intonation: k.intonation });
   return [...jobs.values()];
 }
 
@@ -104,10 +110,16 @@ async function synthVoicevox(j: Job): Promise<Buffer> {
   if (id === undefined) throw new Error(`VOICEVOX に「${name}」の声が入っていません（アプリの「キャラクター」から追加してください）`);
   const q = await fetch(`${VV}/audio_query?speaker=${id}&text=${encodeURIComponent(j.text)}`, { method: "POST" });
   if (!q.ok) throw new Error(`audio_query ${q.status}`);
-  const query = (await q.json()) as Record<string, number>;
-  const manzai = j.dir.endsWith("manzai");
+  const query = (await q.json()) as Record<string, unknown>;
+  const manzai = j.dir.endsWith("manzai") || j.dir.endsWith("tsukkomi");
+  if (j.kana) {
+    // アクセントつきカナで抑揚を決める（掛け声の「なんでやねん」など）
+    const ap = await fetch(`${VV}/accent_phrases?speaker=${id}&is_kana=true&text=${encodeURIComponent(j.kana)}`, { method: "POST" });
+    if (!ap.ok) throw new Error(`accent_phrases ${ap.status}`);
+    query.accent_phrases = await ap.json();
+  }
   query.speedScale = j.rate;
-  query.intonationScale = manzai ? 1.25 : 1.12;
+  query.intonationScale = j.intonation ?? (manzai ? 1.25 : 1.12);
   query.prePhonemeLength = manzai ? 0.05 : 0.1;
   query.postPhonemeLength = manzai ? 0.05 : 0.15;
   if ("pauseLengthScale" in query) query.pauseLengthScale = manzai ? 0.9 : 1.1;
@@ -150,7 +162,7 @@ async function main() {
   const count = (dir: string) => jobs.filter((j) => j.dir === dir);
   const chars = todo.reduce((n, j) => n + j.text.length, 0);
   console.log(
-    `漫才 ${new Set(count(DIRS[0]).map((j) => j.unit)).size} 本・${count(DIRS[0]).length} 行／小説 ${new Set(count(DIRS[1]).map((j) => j.unit)).size} 本・${count(DIRS[1]).length} 段落／名作の朗読 ${count(DIRS[2]).length} 編`,
+    `漫才 ${new Set(count(DIRS[0]).map((j) => j.unit)).size} 本・${count(DIRS[0]).length} 行／小説 ${new Set(count(DIRS[1]).map((j) => j.unit)).size} 本・${count(DIRS[1]).length} 段落／名作の朗読 ${count(DIRS[2]).length} 編／ツッコミ ${count(DIRS[3]).length} 本`,
   );
   console.log(`作るのは ${todo.length} 個（約 ${chars.toLocaleString()} 字）`);
   const stale: string[] = [];

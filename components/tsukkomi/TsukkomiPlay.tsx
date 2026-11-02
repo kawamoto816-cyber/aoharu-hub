@@ -6,6 +6,7 @@ import type { BokeWithAudio, TsukkomiKind, TsukkomiMode } from "@/lib/tsukkomi/t
 import { type Answer, type Scored, TIME_LIMIT, TITLES, accuracy, isRightChoice, isWrongToken, pickRound, roundTotal, scoreAnswer, shuffle, titleOf } from "@/lib/tsukkomi/score";
 import { bestKey, parseSave, readRaw, subscribeSave, updateSave, type TsukkomiSave } from "@/lib/tsukkomi/storage";
 import { Stage, StageBubble } from "./Stage";
+import { pickKakegoe } from "@/lib/tsukkomi/kakegoe";
 
 // ツッコミ学習法の1回分（10問）。はじめ（遊び方とモード）→ プレイ → 結果。
 // 1問の流れ：ボケ役がボケの文を言う → ①どこ？（語句をタップ／正しい文なら「スルー」）→ ②正しくは？（4択）→ ③なんでやねん（上級だけ・3択）
@@ -56,6 +57,7 @@ export function TsukkomiPlay(p: TsukkomiPlayProps) {
   const [left, setLeft] = useState(1);
   const [summary, setSummary] = useState<{ total: number; prevBest: number; save: TsukkomiSave; prevTitle: string } | null>(null);
   const startedAt = useRef(0);
+  const [cheer, setCheer] = useState("なんでやねん！");
   const audio = useRef<HTMLAudioElement | null>(null);
   const finishRef = useRef<(a: Answer) => void>(() => {});
 
@@ -68,17 +70,26 @@ export function TsukkomiPlay(p: TsukkomiPlayProps) {
   })();
   const score = roundTotal(results);
 
-  function speak(src: string) {
+  // srcs を順に鳴らす（掛け声 → 言い直し など）。ファイルがまだなければ（404）、その分はとばして次へ
+  function speak(...srcs: string[]) {
     audio.current?.pause();
     audio.current = null;
     if (!save.voice) return;
-    try {
-      const a = new Audio(src);
-      audio.current = a;
-      // 音声ファイルがまだなければ（404）、黙って無音のまま進む
-      a.onerror = () => {};
-      a.play().catch(() => {});
-    } catch {}
+    const playAt = (i: number) => {
+      if (i >= srcs.length) return;
+      try {
+        const a = new Audio(srcs[i]);
+        audio.current = a;
+        a.onended = () => {
+          if (audio.current === a) playAt(i + 1);
+        };
+        a.onerror = () => {
+          if (audio.current === a) playAt(i + 1);
+        };
+        a.play().catch(() => {});
+      } catch {}
+    };
+    playAt(0);
   }
 
   function beginQuestion(id: string | undefined) {
@@ -112,7 +123,12 @@ export function TsukkomiPlay(p: TsukkomiPlayProps) {
     const s = scoreAnswer(cur, mode, ans, elapsed, streak);
     setResults((r) => [...r, { ...s, id: cur.id, tapped: ans.type === "tsukkomi" ? ans.tapped : null }]);
     setStep("done");
-    speak(cur.audio.tsukkomi);
+    if (s.correct) {
+      // うまくツッコめたら掛け声。スルーで見抜いたら「せやな！」、3問連続なら「キレッキレや！」
+      const k = pickKakegoe(s.kind === "through" ? "through" : streak + 1 >= 3 ? "combo" : "nice");
+      setCheer(k.text);
+      speak(k.src, cur.audio.tsukkomi);
+    } else speak(cur.audio.tsukkomi);
   }
 
   useEffect(() => {
@@ -412,7 +428,7 @@ export function TsukkomiPlay(p: TsukkomiPlayProps) {
           <StageBubble side="right" who="ツッコミ">
             {last.correct && (
               <p className="m-0 mb-1 inline-block origin-left rounded-full bg-[#B42318] px-2.5 py-0.5 text-[14px] font-black text-white motion-safe:animate-[tsk-pop_.35s_ease-out]">
-                {suru ? "見抜いた！ スルーで正解" : "なんでやねん！"}
+                {suru ? `${cheer} 見抜いてスルーで正解` : cheer}
               </p>
             )}
             {!last.correct && <p className="m-0 mb-1 text-[13px] font-black text-[#B42318]">{KIND_LABEL[last.kind]}</p>}
