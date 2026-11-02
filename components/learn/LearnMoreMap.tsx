@@ -1,0 +1,215 @@
+import Link from "next/link";
+import { TOPICS } from "@/lib/learn/topics";
+import { schoolCounts } from "@/lib/school";
+
+// /learn の下のほうの「もっと学ぶ」。もとの /learn の入口だった 3×3 の表。
+// 横軸 = 学びの段階 (①覚える → ②鍛える → ③教える)、縦軸 = 棚 (SCHOOL・APPLY・ADVANCE)。
+//   SCHOOL  学校の教科 (教科ごとの入口 /learn/kyoka/<教科> へ。教材の一覧は lib/learn/kyoka.ts)
+//   APPLY   選ばれる力 (総合型選抜・推薦入試・就活。スキル盤とカード、11のアプリ) → /learn/apply
+//   ADVANCE 知のアドバンス (裏面と知の図書館) → /learn/apply#ura
+// まだないマスは「準備中」として点線で見せる (③教えるは「オシエル」。全単元の覚える・鍛えるがそろってから作る)。
+
+const STAGES = [
+  { no: "①", name: "覚える", game: "技や呪文を覚える", how: "図解のカードや診断で、知識をためる" },
+  { no: "②", name: "鍛える", game: "修行・レベル上げ", how: "その場で採点・指摘。直して、また挑む" },
+  { no: "③", name: "教える", game: "師匠として技を伝える", how: "自分の言葉で説明できたら、マスター" },
+] as const;
+
+type Item = { label: string; href: string; external?: boolean; sub?: string };
+type Cell = { items: Item[]; soon?: string[]; note?: string };
+type Row = { key: string; en: string; title: string; lead: string; cta?: { label: string; href: string }; tint: string; cells: [Cell, Cell, Cell] };
+
+const OSHIERU: Cell = { items: [], soon: ["オシエル"], note: "AIの弟子に教える。全単元の①②がそろったら開講" };
+
+function rows(): Row[] {
+  const school = schoolCounts();
+  const apply = TOPICS.filter((t) => !t.homeHref);
+  const advance = TOPICS.filter((t) => t.homeHref);
+  return [
+    {
+      key: "school",
+      en: "SCHOOL",
+      title: "学校の教科",
+      lead: `小・中・高の全${school.total}単元（公開中 ${school.open}）`,
+      cta: { label: "教科の地図を開く", href: "/learn/school" },
+      tint: "bg-white",
+      cells: [
+        {
+          items: [
+            { label: "国語", href: "/learn/kyoka/kokugo", sub: "漢字1026字・ことわざ・古文単語300" },
+            { label: "理科", href: "/learn/kyoka/rika", sub: "小・中・高の重要語句" },
+            { label: "社会", href: "/learn/kyoka/shakai", sub: "47都道府県・地理・歴史・公民" },
+            { label: "英語", href: "/learn/kyoka/eigo", sub: "中学1200・高校2000・熟語500" },
+            { label: "情報", href: "/learn/kyoka/joho", sub: "情報Ⅰの重要語句" },
+          ],
+          note: `公開中 ${school.oboeru.open} / ${school.oboeru.total} 単元`,
+        },
+        {
+          items: [
+            { label: "算数・数学", href: "/learn/kyoka/sugaku", sub: "計算63段・50段・88段と図形・データ" },
+            { label: "国語", href: "/learn/kyoka/kokugo", sub: "文法・古文・漢文・読解" },
+            { label: "英語", href: "/learn/kyoka/eigo", sub: "英文法・英単語の瞬発と文脈・長文" },
+            { label: "理科・情報", href: "/learn/kyoka/rika", sub: "物理・化学の計算、情報の演習" },
+          ],
+          note: `公開中 ${school.kitaeru.open} / ${school.kitaeru.total} 単元`,
+        },
+        OSHIERU,
+      ],
+    },
+    {
+      key: "apply",
+      en: "APPLY",
+      title: "選ばれる力",
+      lead: "総合型選抜・推薦入試、その先の就活",
+      cta: { label: "スキル盤を開く", href: "/learn/apply" },
+      tint: "bg-white",
+      cells: [
+        {
+          items: [
+            ...apply.map((t) => ({ label: t.label, href: t.basePath })),
+            { label: "16カラー診断", href: "https://color.bluespring.co.jp", external: true },
+            { label: "ジココーテー", href: "https://kotei.bluespring.co.jp", external: true },
+            { label: "キャリキャラ", href: "https://career.bluespring.co.jp", external: true },
+            { label: "キャリデザ", href: "https://cd.bluespring.co.jp", external: true },
+            { label: "edufit", href: "https://edufit.bluespring.co.jp", external: true },
+            { label: "キャンパスコープ", href: "https://campus.bluespring.co.jp", external: true },
+            { label: "コーポレートスコープ", href: "https://corporate-scope.bluespring.co.jp", external: true },
+          ],
+        },
+        {
+          items: [
+            { label: "テンサクン", href: "/tensaku", sub: "志望理由書・小論文の添削" },
+            { label: "メンサツ", href: "https://interview.bluespring.co.jp", external: true, sub: "AIと面接練習" },
+            { label: "しぼりゆ", href: "https://reason.bluespring.co.jp", external: true, sub: "志望理由書を組み立てる" },
+            { label: "ジコアピ", href: "https://jkap.bluespring.co.jp", external: true, sub: "自己PRをつくる" },
+          ],
+        },
+        OSHIERU,
+      ],
+    },
+    {
+      key: "advance",
+      en: "ADVANCE",
+      title: "知のアドバンス",
+      lead: "さらなる知の森へ。ものの見方と古典",
+      cta: { label: "裏面のスキル盤を開く", href: "/learn/apply#ura" },
+      tint: "bg-[#FFF4DE]",
+      cells: [
+        { items: [...advance.map((t) => ({ label: t.label, href: t.basePath })), { label: "知の図書館（名著30冊）", href: "/learn/library" }] },
+        { items: [{ label: "2つのレンズで書く", href: "/tensaku?kind=shoronbun&learn=paradigm-quest", sub: "テンサクンで小論文" }] },
+        OSHIERU,
+      ],
+    },
+  ];
+}
+
+const chipLink = "inline-flex min-h-[36px] items-center rounded-[10px] border-[1.5px] border-[#15172B] bg-white px-2.5 text-[13px] font-black text-[#15172B] no-underline hover:bg-[#FFFBE6]";
+const chipSoon = "inline-flex min-h-[36px] items-center rounded-[10px] border-[1.5px] border-dashed border-[#9A9CB0] px-2.5 text-[13px] font-bold text-[#5A5D73]";
+
+function CellView({ cell, stage }: { cell: Cell; stage: (typeof STAGES)[number] }) {
+  const empty = cell.items.length === 0;
+  return (
+    <div className={`min-w-0 rounded-[14px] border-[1.5px] p-3 ${empty ? "border-dashed border-[#9A9CB0] bg-white/50" : "border-[#15172B] bg-white"}`}>
+      <p className="m-0 mb-2 text-[11px] font-black text-[#1533B8] lg:hidden">
+        {stage.no} {stage.name}
+      </p>
+      {cell.items.length > 0 && (
+        <ul className="m-0 flex list-none flex-wrap gap-1.5 p-0">
+          {cell.items.map((it) => (
+            <li key={it.label} className={it.sub ? "w-full" : ""}>
+              {it.sub ? (
+                <a href={it.href} target={it.external ? "_blank" : undefined} rel={it.external ? "noopener" : undefined} className="flex flex-col rounded-[10px] border-[1.5px] border-[#15172B] bg-[#FFFBE6] px-3 py-2 text-[#15172B] no-underline shadow-[2px_2px_0_#15172B]">
+                  <span className="text-[14px] font-black">
+                    {it.label}
+                    {it.external && <span aria-hidden="true"> ↗</span>}
+                  </span>
+                  <span className="text-[11.5px] text-[#3A3D55]">{it.sub}</span>
+                </a>
+              ) : it.external ? (
+                <a href={it.href} target="_blank" rel="noopener" className={chipLink}>
+                  {it.label}
+                  <span aria-hidden="true" className="ml-0.5 text-[11px]">↗</span>
+                </a>
+              ) : (
+                <Link href={it.href} className={chipLink}>
+                  {it.label}
+                </Link>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
+      {cell.soon && (
+        <>
+          {cell.items.length > 0 && <p className="m-0 mt-2 text-[11px] font-bold text-[#5A5D73]">準備中</p>}
+          <ul className="m-0 mt-1 flex list-none flex-wrap gap-1.5 p-0">
+            {cell.soon.map((s) => (
+              <li key={s} className={chipSoon}>
+                {s}
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+      {(cell.note || cell.soon) && <p className="m-0 mt-2 text-[11.5px] font-bold text-[#5A5D73]">{cell.note ?? "準備中"}</p>}
+    </div>
+  );
+}
+
+export function LearnMoreMap() {
+  return (
+    <section aria-labelledby="more-heading">
+      <h2 id="more-heading" className="m-0 text-[20px] font-black">
+        もっと学ぶ
+      </h2>
+      <p className="m-0 mt-1 text-[13px] leading-relaxed text-[#3A3D55]">①覚えて、②鍛えて、③人に教えられたらマスター。横が段階、縦が棚。点線のマスは、これから開く場所です。</p>
+
+      <ol className="m-0 mt-4 grid list-none gap-2 p-0 sm:grid-cols-[1fr_auto_1fr_auto_1fr] sm:items-stretch">
+        {STAGES.map((s, i) => (
+          <li key={s.no} className="contents">
+            {i > 0 && (
+              <span aria-hidden="true" className="hidden self-center text-xl font-black text-[#1533B8] sm:block">
+                →
+              </span>
+            )}
+            <div className="rounded-[16px] border-[1.5px] border-[#15172B] bg-white px-4 py-3">
+              <p className="m-0 text-[18px] font-black">
+                <span className="text-[#1533B8]">{s.no}</span> {s.name}
+              </p>
+              <p className="m-0 mt-0.5 text-[12px] font-bold text-[#1533B8]">{s.game}</p>
+              <p className="m-0 mt-1 text-[13px] leading-relaxed text-[#3A3D55]">{s.how}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+
+      <div className="mt-6 hidden gap-3 px-3 lg:grid lg:grid-cols-[200px_1fr_1fr_1fr]">
+        <span />
+        {STAGES.map((s) => (
+          <p key={s.no} className="m-0 text-center text-[15px] font-black">
+            <span className="text-[#1533B8]">{s.no}</span> {s.name}
+          </p>
+        ))}
+      </div>
+      <div className="mt-3 flex flex-col gap-4">
+        {rows().map((r) => (
+          <div key={r.key} className={`grid gap-3 rounded-[20px] border-[1.5px] border-[#15172B] p-3 shadow-[5px_5px_0_#15172B] lg:grid-cols-[200px_1fr_1fr_1fr] ${r.tint}`}>
+            <div className="min-w-0 px-1 py-1">
+              <p className="m-0 text-xs font-black tracking-wider text-[#1533B8]">{r.en}</p>
+              <h3 className="m-0 mt-0.5 text-[19px] font-black">{r.title}</h3>
+              <p className="m-0 mt-1 text-[12.5px] leading-relaxed text-[#3A3D55]">{r.lead}</p>
+              {r.cta && (
+                <Link href={r.cta.href} className="mt-2 inline-flex min-h-[40px] items-center rounded-[10px] border-[1.5px] border-[#15172B] bg-[#15172B] px-3 text-[12.5px] font-black text-white no-underline">
+                  {r.cta.label} →
+                </Link>
+              )}
+            </div>
+            {r.cells.map((c, i) => (
+              <CellView key={i} cell={c} stage={STAGES[i]} />
+            ))}
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
