@@ -74,6 +74,9 @@ export default function LearnHome() {
             <Link href="/learn/kyoyo" className="inline-flex min-h-[52px] items-center rounded-[14px] border-[1.5px] border-[#15172B] bg-[#D8D2F5] px-6 text-base font-black text-[#15172B] no-underline shadow-[0_4px_0_#15172B]">
               教養・時事のカード
             </Link>
+            <Link href="/learn/unizeb" className="inline-flex min-h-[52px] items-center rounded-[14px] border-[1.5px] border-[#15172B] bg-[#15172B] px-6 text-base font-black text-white no-underline shadow-[0_4px_0_#F4B860]">
+              起業の棚（ゼロワンOSユース版）
+            </Link>
           </div>
         </div>
         <LearnBoard

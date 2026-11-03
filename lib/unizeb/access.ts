@@ -34,7 +34,19 @@ export const canFinishPlan = (plan: UzPlan) => plan === "max";
 export const gradeLimit = (plan: UzPlan): { month: number; day?: number } =>
   plan === "max" ? { month: 150, day: 20 } : plan === "pro" ? { month: 30 } : plan === "free" ? { month: 10 } : { month: 0 };
 
-/** 仮の判定：本体の entitlements（plans.ts の APP_KEYS に unizeb を足したもの）につなぐまでは、登録なしとして扱う */
+/**
+ * いまのプラン（画面＝ブラウザから呼ぶ用）。本体の entitlements（plans.ts の APP_KEYS.UNIZEB）をサーバーで判定し、
+ * GET /api/unizeb/plan で受け取る。サーバーのページ・API では lib/unizeb/server.ts の serverPlan() を使う。
+ * 通信できないときは登録なしとして扱う（見せすぎない側に倒す）。
+ */
 export async function currentPlan(): Promise<UzPlan> {
-  return "guest";
+  if (typeof window === "undefined") return "guest";
+  try {
+    const r = await fetch("/api/unizeb/plan", { cache: "no-store" });
+    if (!r.ok) return "guest";
+    const j = (await r.json()) as { plan?: UzPlan };
+    return j.plan === "free" || j.plan === "pro" || j.plan === "max" ? j.plan : "guest";
+  } catch {
+    return "guest";
+  }
 }

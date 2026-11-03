@@ -5,7 +5,8 @@ import { LearnShell } from "@/components/learn/LearnShell";
 import { Kicker, UZ_HOME, uzCrumbs } from "@/components/unizeb/parts";
 import { V3App } from "@/components/unizeb/V3App";
 import { UZ_CARDS, UZ_LECTURES, cardInfo, deptLabel, getUzLecture } from "@/lib/unizeb";
-import { canReadLecture, canUseCard, currentPlan } from "@/lib/unizeb/access";
+import { canReadLecture, canUseCard } from "@/lib/unizeb/access";
+import { serverPlan } from "@/lib/unizeb/server";
 
 // /learn/unizeb/card/<id>：スキルカード（ユニゼブ v3 の4段・AI採点・マイ事業ボード）。そのカードを開いた状態で始める。
 // Lv4 以降は access.ts で判定し、Max でなければ案内だけ（カードの中身は出さない）。
@@ -13,6 +14,8 @@ export function generateStaticParams() {
   return UZ_CARDS.map((c) => ({ id: c.id }));
 }
 export const dynamicParams = false;
+// プラン（ログイン）で見せる中身が変わるので、毎回サーバーで組み立てる
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const c = cardInfo((await params).id);
@@ -23,7 +26,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
   const { id } = await params;
   const c = cardInfo(id);
   if (!c) notFound();
-  const plan = await currentPlan();
+  const plan = await serverPlan();
   const lec = getUzLecture(id);
   const crumbs = uzCrumbs(c.name, { href: `${UZ_HOME}#lec`, label: "スキルカード" });
   if (!canUseCard(plan, c.lv)) {

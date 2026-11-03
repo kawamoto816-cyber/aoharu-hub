@@ -74,6 +74,7 @@ function rows(): Row[] {
             { label: "edufit", href: "https://edufit.bluespring.co.jp", external: true },
             { label: "キャンパスコープ", href: "https://campus.bluespring.co.jp", external: true },
             { label: "コーポレートスコープ", href: "https://corporate-scope.bluespring.co.jp", external: true },
+            { label: "起業の棚（ゼロワンOSユース版）", href: "/learn/unizeb", sub: "図解の教科書・スキルカード・演習" },
           ],
         },
         {
@@ -95,7 +96,7 @@ function rows(): Row[] {
       cta: { label: "裏面のスキル盤を開く", href: "/learn/apply#ura" },
       tint: "bg-[#FFF4DE]",
       cells: [
-        { items: [...advance.map((t) => ({ label: t.label, href: t.basePath })), { label: "知の図書館（名著30冊）", href: "/learn/library" }] },
+        { items: [...advance.map((t) => ({ label: t.label, href: t.basePath })), { label: "知の図書館（名著30冊）", href: "/learn/library" }, { label: "起業家列伝", href: "/learn/unizeb#den" }, { label: "起業のケーススタディー", href: "/learn/unizeb#case" }, { label: "起業の資料集", href: "/learn/unizeb/shiryo" }] },
         { items: [{ label: "2つのレンズで書く", href: "/tensaku?kind=shoronbun&learn=paradigm-quest", sub: "テンサクンで小論文" }] },
         OSHIERU,
       ],

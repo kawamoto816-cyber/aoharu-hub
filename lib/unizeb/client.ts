@@ -97,7 +97,14 @@ async function api<T>(path: string, init?: RequestInit): Promise<T | null> {
 
 export async function loadState(): Promise<UzState> {
   const local = read<UzState>(UZ_STATE_KEY, { assets: [] });
-  const server = await api<UzState>("/api/unizeb/state");
+  const server = await api<UzState & { fresh?: boolean }>("/api/unizeb/state");
+  // まだアカウントに保存がないとき（登録した直後など）は、端末の中の答えを使い、次の保存でアカウントへ移す
+  if (server?.fresh) {
+    const { fresh: _f, assets: _a, ...extra } = server;
+    void _f;
+    void _a;
+    return { ...local, ...extra, assets: local.assets ?? [] };
+  }
   return server ?? local;
 }
 

@@ -40,6 +40,9 @@ export const APP_KEYS = {
   EDUFIT: "edufit", // edufit (大学マッチング)
   CAMPUSCOPE: "campuscope", // キャンパスコープ (大学リサーチ)
   CORPORATE_SCOPE: "corporate-scope", // コーポレートスコープ (企業研究)
+  // ↓ 2026-11-04 追加（ハブの中の機能。回数の上限はそれぞれ lib/unizeb/access.ts・lib/oshieru/limits.ts）
+  UNIZEB: "unizeb", // ユニゼブ ユース版 (起業の棚。Pro: 教科書すべて＋カードLv1〜3、Max: Lv1〜15)
+  OSHIERU: "oshieru", // オシエル (AI生徒に教える。Pro 1日10回・Max 1日20回)
 } as const;
 
 export type AppKey = (typeof APP_KEYS)[keyof typeof APP_KEYS];
@@ -52,7 +55,7 @@ export const ALL_APP_KEYS: AppKey[] = Object.values(APP_KEYS);
  */
 export const PLAN_APPS: Record<Plan, "all" | AppKey[]> = {
   free: [],
-  pro: [APP_KEYS.TENSAKUN, APP_KEYS.SHIBORIYU, APP_KEYS.MENSATSU],
+  pro: [APP_KEYS.TENSAKUN, APP_KEYS.SHIBORIYU, APP_KEYS.MENSATSU, APP_KEYS.UNIZEB, APP_KEYS.OSHIERU],
   max: "all",
 };
 

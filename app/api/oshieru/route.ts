@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { checkAiBudget } from "@/lib/ai-budget";
 import { getOshieru } from "@/lib/oshieru";
 import { runScore, runTurn } from "@/lib/oshieru/ai";
 import { MAX_HARU_TURNS, checkOshieruLimit, getViewer } from "@/lib/oshieru/limits";
@@ -69,6 +70,8 @@ export async function POST(req: Request) {
     const viewer = await getViewer(req);
     const d = checkOshieruLimit(viewer, "turn");
     if (!d.allowed) return NextResponse.json({ error: d.reason, remaining: d.remaining, limit: d.limit, per: d.per }, { status: 429, headers: NO_STORE });
+    // 運営の月のAI予算をこえたら、登録なし・無料の分から止める
+    if (!(await checkAiBudget(d.tier)).allowed) return NextResponse.json({ error: "limit_budget", remaining: 0, limit: d.limit, per: d.per }, { status: 429, headers: NO_STORE });
     try {
       // 言い直しは、まちがいを残したものを6割の確率で出す
       const pick = () => {

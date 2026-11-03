@@ -21,6 +21,7 @@ import { DRILL_SETS } from "@/lib/drill";
 import { KYOKA } from "@/lib/learn/kyoka";
 import { LECTURES } from "@/lib/lecture";
 import { UNIT_MOSHI_IDS } from "@/lib/moshi/unit";
+import { UZ_CASES, UZ_DEN, UZ_LECTURES } from "@/lib/unizeb";
 import { TSUKKOMI_HOME, TSUKKOMI_UNITS, tsukkomiHref } from "@/lib/tsukkomi";
 
 // 検索エンジン向けサイトマップ。入口ページを追加したらここに足す。
@@ -74,6 +75,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...TSUKKOMI_UNITS.map((u) => ({ url: `${base}${tsukkomiHref(u)}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
     ...["", "/koritsu", "/kyotsu", "/shiritsu", "/teiki"].map((m) => ({ url: `${base}/learn/exam${m}`, lastModified: now, changeFrequency: "weekly" as const, priority: 0.7 })),
     ...UNIT_MOSHI_IDS.map((u) => ({ url: `${base}/learn/moshi/${u}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
+    // ゼロワンOSユース版（起業の棚）。カード・ボード・アセット・演習は個人の画面なので入れない
+    { url: `${base}/learn/unizeb`, lastModified: now, changeFrequency: "weekly" as const, priority: 0.7 },
+    { url: `${base}/learn/unizeb/shiryo`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 },
+    ...UZ_LECTURES.map((l) => ({ url: `${base}/learn/unizeb/lec/${l.unit.replace(/^unizeb-/, "")}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
+    ...UZ_DEN.map((d) => ({ url: `${base}/learn/unizeb/den/${d.id}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
+    ...UZ_CASES.map((c) => ({ url: `${base}/learn/unizeb/case/${c.id}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
     ...KYOKA.map((k) => ({ url: `${base}/learn/kyoka/${k.key}`, lastModified: now, changeFrequency: "weekly" as const, priority: 0.8 })),
     ...TERM_SET_KEYS.map((k) => ({ url: `${base}/learn/${k}`, lastModified: now, changeFrequency: "weekly" as const, priority: 0.7 })),
     ...Object.values(DRILL_SETS).flatMap((s) => [

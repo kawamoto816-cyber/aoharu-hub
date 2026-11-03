@@ -4,13 +4,16 @@ import { LearnShell } from "@/components/learn/LearnShell";
 import { UZ_HOME, uzCrumbs } from "@/components/unizeb/parts";
 import { V3App } from "@/components/unizeb/V3App";
 import { UZ_LECTURES } from "@/lib/unizeb";
-import { currentPlan } from "@/lib/unizeb/access";
+import { serverPlan } from "@/lib/unizeb/server";
+
+// プラン（ログイン）で見せる中身が変わるので、毎回サーバーで組み立てる
+export const dynamic = "force-dynamic";
 
 // /learn/unizeb/board：マイ事業ボード（ユニゼブ v3 のボードの画面から始める）。
 export const metadata: Metadata = { title: "マイ事業ボード｜ゼロワンOSユース版｜アオハルOS", robots: { index: false } };
 
 export default async function Page() {
-  const plan = await currentPlan();
+  const plan = await serverPlan();
   const lectureIds = UZ_LECTURES.map((l) => l.unit.replace(/^unizeb-/, ""));
   return (
     <LearnShell crumbs={uzCrumbs("マイ事業ボード")}>

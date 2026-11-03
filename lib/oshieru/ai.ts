@@ -1,3 +1,4 @@
+import { recordAiCost, type AiUsage } from "@/lib/ai-budget";
 import { maskPersonal } from "@/lib/tensaku/preview";
 import { plain, type OshieruUnit } from "./index";
 import { AXES, fallbackAdvice, isMastered, validateAxis } from "./score";
@@ -27,7 +28,9 @@ async function callClaude(opts: { model: string; system: string; user: string; m
     signal: AbortSignal.timeout(40_000),
   });
   if (!res.ok) throw new Error(`anthropic ${res.status}`);
-  const json = (await res.json()) as { content?: { type: string; text?: string }[] };
+  const json = (await res.json()) as { content?: { type: string; text?: string }[]; usage?: AiUsage };
+  // 運営の月のAI予算（全アプリ共通）に記録する。本文は残さない
+  void recordAiCost({ app: "oshieru", action: "call", model: opts.model, usage: json.usage });
   return (json.content ?? []).map((c) => c.text ?? "").join("");
 }
 
