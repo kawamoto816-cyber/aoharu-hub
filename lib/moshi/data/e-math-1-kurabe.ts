@@ -53,7 +53,8 @@ function nagasaDocchi(r: Rng): QuestionBody {
 }
 
 function nagasaSa(r: Rng): QuestionBody {
-  const [x, y] = r.pick(NAGA);
+  // けしゴムで はかるので、けしゴムを はかられる がわに しない
+  const [x, y] = r.pick(NAGA.filter((p) => !p.includes("けしゴム")));
   const [a, b] = two(r, 3, 10);
   const [hi, lo] = a > b ? [a, b] : [b, a];
   return {
@@ -92,12 +93,12 @@ function hirosa(r: Rng): QuestionBody {
   ] as [string, string][]);
   const win = a > b ? x : y;
   return {
-    prompt: `${x}は ます ${a}つぶん、${y}は ます ${b}つぶんの ひろさです。ひろい ほうは、ます なんつぶん ひろいですか。`,
-    answer: num(Math.abs(a - b), a > b ? `${a}-${b}` : `${b}-${a}`, "つぶん"),
-    point: "ひろさは、ます いくつぶんで くらべる",
+    prompt: `${x}は ます ${a}こぶん、${y}は ます ${b}こぶんの ひろさです。ひろい ほうは、ます なんこぶん ひろいですか。`,
+    answer: num(Math.abs(a - b), a > b ? `${a}-${b}` : `${b}-${a}`, "こぶん"),
+    point: "ひろさは、ます いくこぶんで くらべる",
     steps: [
       { title: "ますの かずで くらべる", body: `ますが おおい {{${win}}}の ほうが ひろい。`, back: [B_KASA] },
-      { title: "ちがい", body: `${Math.max(a, b)}−${Math.min(a, b)}＝{{${Math.abs(a - b)}}}。ます ${Math.abs(a - b)}つぶん ひろい。` },
+      { title: "ちがい", body: `${Math.max(a, b)}−${Math.min(a, b)}＝{{${Math.abs(a - b)}}}。ます ${Math.abs(a - b)}こぶん ひろい。` },
     ],
   };
 }
@@ -112,12 +113,12 @@ function san(r: Rng): QuestionBody {
   const mx = Math.max(...ns);
   const mn = Math.min(...ns);
   return {
-    prompt: `${names.map((x, i) => `${x}は ます ${ns[i]}つぶん`).join("、")}の ながさです。いちばん ながい ものと いちばん みじかい ものの ちがいは、ます なんつぶんですか。`,
-    answer: num(mx - mn, `${mx}-${mn}`, "つぶん"),
+    prompt: `${names.map((x, i) => `${x}は ます ${ns[i]}こぶん`).join("、")}の ながさです。いちばん ながい ものと いちばん みじかい ものの ちがいは、ます なんこぶんですか。`,
+    answer: num(mx - mn, `${mx}-${mn}`, "こぶん"),
     point: "いちばん ながい ものと みじかい ものを 見つけて ひく",
     steps: [
-      { title: "ながい・みじかいを 見つける", body: `いちばん ながいのは ${mx}つぶんの ${names[ns.indexOf(mx)]}、いちばん みじかいのは ${mn}つぶんの ${names[ns.indexOf(mn)]}。`, back: [B_3] },
-      { title: "ちがい", body: `${mx}−${mn}＝{{${mx - mn}}}。ます ${mx - mn}つぶんです。` },
+      { title: "ながい・みじかいを 見つける", body: `いちばん ながいのは ${mx}こぶんの ${names[ns.indexOf(mx)]}、いちばん みじかいのは ${mn}こぶんの ${names[ns.indexOf(mn)]}。`, back: [B_3] },
+      { title: "ちがい", body: `${mx}−${mn}＝{{${mx - mn}}}。ます ${mx - mn}こぶんです。` },
     ],
   };
 }
@@ -127,7 +128,7 @@ export const E_MATH_1_KURABE_MOSHI: UnitMoshi = {
   subject: "sansu",
   grade: "小1",
   minutes: 7,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "ながさくらべ",

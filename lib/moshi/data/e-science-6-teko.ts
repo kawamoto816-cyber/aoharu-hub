@@ -161,7 +161,7 @@ export const E_SCIENCE_6_TEKO_MOSHI: UnitMoshi = {
   subject: "sci",
   grade: "小6",
   minutes: 14,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "てこのつり合いを計算する",

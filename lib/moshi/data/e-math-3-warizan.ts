@@ -24,7 +24,7 @@ function keisan(r: Rng): QuestionBody {
 function hitoribun(r: Rng): QuestionBody {
   const k = r.int(3, 9);
   const q = r.int(2, 9);
-  const what = r.pick(["色紙", "クッキー", "ビー玉", "いちご"]);
+  const what = r.pick(["あめ", "クッキー", "ビー玉", "いちご"]);
   return {
     prompt: `${what}が${k * q}こあります。${k}人に同じ数ずつ分けると、1人分は何こになりますか。`,
     answer: { kind: "num", answerKind: "num", answer: [String(q)], unit: "こ", calc: `${k * q}/${k}` },
@@ -112,7 +112,7 @@ export const E_MATH_3_WARIZAN_MOSHI: UnitMoshi = {
   unit: U,
   subject: "sansu",
   grade: "小3",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "わり算の計算",

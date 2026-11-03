@@ -17,7 +17,7 @@ export const J_MATH_1_HEIMEN: Daimon[] = [
     level: 1,
     points: 20,
     minutes: 10,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     items: [
       {
         id: "1",
@@ -197,7 +197,7 @@ export const J_MATH_1_HEIMEN: Daimon[] = [
     level: 2,
     points: 20,
     minutes: 12,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     items: [
       {
         id: "1",
@@ -223,8 +223,8 @@ export const J_MATH_1_HEIMEN: Daimon[] = [
           {
             title: "円の何分の1か",
             body: "おうぎ形は円の {{a/360}}。面積は {{πr²}}×a/360、弧の長さは 2πr×a/360 です。",
-            figure: { ref: { unit: "j-math-1-heimen", section: 3 } },
-            back: [{ label: "レクチャー「おうぎ形は円の何分の1か」", href: `${LEC}#lec-s4` }],
+            figure: { ref: { unit: "j-math-1-heimen", section: 4 } },
+            back: [{ label: "レクチャー「おうぎ形は円の何分の1か」", href: `${LEC}#lec-s5` }],
           },
         ],
       },
@@ -345,7 +345,7 @@ export const J_MATH_1_HEIMEN: Daimon[] = [
     level: 2,
     points: 20,
     minutes: 12,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     material: [
       {
         kind: "text",
@@ -512,7 +512,7 @@ export const J_MATH_1_HEIMEN: Daimon[] = [
     level: 3,
     points: 20,
     minutes: 14,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     items: [
       {
         id: "1",

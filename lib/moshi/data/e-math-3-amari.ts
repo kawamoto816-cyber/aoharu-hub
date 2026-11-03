@@ -85,7 +85,7 @@ function nagaisu(r: Rng): QuestionBody {
     point: "のこった人の分も、もう1つ いる",
     steps: [
       { title: "わり算をする", body: `${n}÷${k}＝${q}あまり${m}。${k}人ずつで${q}${unit}、${m}人がのこります。`, back: [B_MOTOME] },
-      { title: "あまりをどうするか", body: `のこった${m}人も乗るので、もう1${unit}いります。${q}＋1＝{{${q + 1}}}（${unit}）です。`, trap: `答えの${q}だけを書くと、${m}人が乗れません。`, back: [B_BUN] },
+      { title: "あまりをどうするか", body: `のこった${m}人も${what === "長いす" ? "すわる" : "乗る"}ので、もう1${unit}いります。${q}＋1＝{{${q + 1}}}（${unit}）です。`, trap: `答えの${q}だけを書くと、${m}人が${what === "長いす" ? "すわれ" : "乗れ"}ません。`, back: [B_BUN] },
     ],
   };
 }
@@ -131,7 +131,7 @@ export const E_MATH_3_AMARI_MOSHI: UnitMoshi = {
   unit: U,
   subject: "sansu",
   grade: "小3",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "あまりのあるわり算の計算",

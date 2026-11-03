@@ -174,7 +174,7 @@ export const E_JAPANESE_5_BUN_KUMITATE_MOSHI: UnitMoshi = {
   subject: "ja",
   grade: "小5",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "主語・述語と文の種類",

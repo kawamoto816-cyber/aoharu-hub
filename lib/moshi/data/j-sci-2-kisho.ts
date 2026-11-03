@@ -17,7 +17,7 @@ export const J_SCI_2_KISHO: Daimon[] = [
     level: 1,
     points: 20,
     minutes: 12,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     material: [
       {
         kind: "text",
@@ -181,7 +181,7 @@ export const J_SCI_2_KISHO: Daimon[] = [
     level: 2,
     points: 20,
     minutes: 12,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     material: [
       {
         kind: "table",
@@ -221,9 +221,9 @@ export const J_SCI_2_KISHO: Daimon[] = [
           {
             title: "湿度の式に入れる",
             body: "10.9÷21.8×100＝{{50%}}。",
-            figure: { ref: { unit: "j-sci-2-kisho", section: 3 } },
+            figure: { ref: { unit: "j-sci-2-kisho", section: 4 } },
             trap: "21.8÷10.9 と逆にわる。",
-            back: [{ label: "レクチャー「湿度の求め方」", href: `${L}#lec-s4` }],
+            back: [{ label: "レクチャー「湿度の求め方」", href: `${L}#lec-s5` }],
           },
         ],
       },
@@ -240,9 +240,9 @@ export const J_SCI_2_KISHO: Daimon[] = [
           {
             title: "水蒸気量と同じ値をさがす",
             body: "露点は、飽和水蒸気量が{{いまの水蒸気量（10.0g）と等しくなる温度}}。表で10.0g/m³ なのは {{11℃}} です。",
-            figure: { ref: { unit: "j-sci-2-kisho", section: 4 } },
+            figure: { ref: { unit: "j-sci-2-kisho", section: 5 } },
             trap: "いまの気温20℃の行を見てしまう。",
-            back: [{ label: "レクチャー「露点」", href: `${L}#lec-s5` }],
+            back: [{ label: "レクチャー「露点」", href: `${L}#lec-s6` }],
           },
         ],
       },
@@ -276,7 +276,7 @@ export const J_SCI_2_KISHO: Daimon[] = [
           {
             title: "10℃で入れられる最大を読む",
             body: "10℃の飽和水蒸気量は{{9.4g/m³}}。15.2g のうち、これをこえた分がふくみきれなくなります。",
-            figure: { ref: { unit: "j-sci-2-kisho", section: 4 } },
+            figure: { ref: { unit: "j-sci-2-kisho", section: 5 } },
           },
           {
             title: "差を求める",
@@ -308,7 +308,7 @@ export const J_SCI_2_KISHO: Daimon[] = [
           {
             title: "式の分母が大きくなる",
             body: "湿度＝水蒸気量÷飽和水蒸気量×100。気温が上がると{{分母の飽和水蒸気量が大きくなる}}ので、湿度は{{下がり}}ます。",
-            back: [{ label: "レクチャー「露点」", href: `${L}#lec-s5` }],
+            back: [{ label: "レクチャー「湿度の求め方」", href: `${L}#lec-s5` }],
           },
         ],
       },
@@ -327,7 +327,7 @@ export const J_SCI_2_KISHO: Daimon[] = [
     level: 3,
     points: 26,
     minutes: 15,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     material: [
       {
         kind: "table",
@@ -357,7 +357,7 @@ export const J_SCI_2_KISHO: Daimon[] = [
             title: "くもり始めた温度を読む",
             body: "水温16℃でコップの表面が{{くもり始めた}}ので、露点は{{16℃}}です。",
             trap: "はっきり水滴がついた14℃を答える。",
-            back: [{ label: "レクチャー「露点」", href: `${L}#lec-s5` }],
+            back: [{ label: "レクチャー「露点」", href: `${L}#lec-s6` }],
           },
         ],
       },
@@ -375,7 +375,7 @@ export const J_SCI_2_KISHO: Daimon[] = [
           {
             title: "露点の行を読む",
             body: "露点では湿度100%なので、{{露点（16℃）の飽和水蒸気量}}が、いまの水蒸気量です。表から {{13.6g}}。",
-            figure: { ref: { unit: "j-sci-2-kisho", section: 4 } },
+            figure: { ref: { unit: "j-sci-2-kisho", section: 5 } },
             trap: "気温28℃の27.2g を答える（それは入れられる最大）。",
           },
         ],
@@ -394,9 +394,9 @@ export const J_SCI_2_KISHO: Daimon[] = [
           {
             title: "気温の飽和水蒸気量でわる",
             body: "分母は{{気温28℃の 27.2g/m³}}。13.6÷27.2×100＝{{50%}}。",
-            figure: { ref: { unit: "j-sci-2-kisho", section: 3 } },
+            figure: { ref: { unit: "j-sci-2-kisho", section: 4 } },
             trap: "分母に露点の13.6を使って100%にする。",
-            back: [{ label: "レクチャー「湿度の求め方」", href: `${L}#lec-s4` }],
+            back: [{ label: "レクチャー「湿度の求め方」", href: `${L}#lec-s5` }],
           },
         ],
       },

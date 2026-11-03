@@ -129,7 +129,7 @@ export const E_MATH_6_NARABEKATA_MOSHI: UnitMoshi = {
   unit: U,
   subject: "sansu",
   grade: "小6",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "並べ方と組み合わせ方の基本",

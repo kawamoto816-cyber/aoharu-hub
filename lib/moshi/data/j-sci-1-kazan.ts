@@ -13,7 +13,7 @@ export const J_SCI_1_KAZAN: Daimon[] = [
     level: 1,
     points: 20,
     minutes: 9,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     items: [
       {
         id: "1",
@@ -122,7 +122,7 @@ export const J_SCI_1_KAZAN: Daimon[] = [
     level: 2,
     points: 24,
     minutes: 12,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     material: [
       {
         kind: "table",
@@ -243,7 +243,7 @@ export const J_SCI_1_KAZAN: Daimon[] = [
     level: 3,
     points: 26,
     minutes: 14,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     material: [
       {
         kind: "table",

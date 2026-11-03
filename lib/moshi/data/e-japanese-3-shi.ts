@@ -31,7 +31,7 @@ export const E_JAPANESE_3_SHI_MOSHI: UnitMoshi = {
   subject: "ja",
   grade: "小3",
   minutes: 12,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "詩を読む「朝の水たまり」",
@@ -59,7 +59,7 @@ export const E_JAPANESE_3_SHI_MOSHI: UnitMoshi = {
           seconds: 60,
           skill: "知識・技能",
           prompt: "二つ目の連《れん》で、くり返して使われている言葉はどれですか。",
-          answer: ch(["ゆっくり", "白い", "およいでいく"], 0, ["正しい。「ゆっくり　ゆっくり」と二回続《つづ》いています。", "一回だけです。", "一回だけです。"]),
+          answer: ch(["ゆっくり", "白い", "およいでいく"], 0, ["正しい。「ゆっくり　ゆっくり」と二回｜続《つづ》いています。", "一回だけです。", "一回だけです。"]),
           point: "くり返しは、様子やリズムを強める",
           steps: [{ title: "同じ言葉をさがす", body: "{{「ゆっくり　ゆっくり」}}。くり返すと、雲がとてもゆっくり動く様子が伝《つた》わります。", back: [S2, S4] }],
         },

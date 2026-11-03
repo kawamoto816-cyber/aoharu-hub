@@ -102,7 +102,7 @@ function bunsho(r: Rng): QuestionBody {
   const speeds = [40, 45, 50, 60, 75, 80, 90, 100, 120, 150].filter((v) => d % v === 0);
   const [v1, v2] = r.sample(speeds, 2);
   return {
-    prompt: `家から図書館まで、分速 ${v1}m で歩くと ${d / v1}分かかります。同じ道を分速 ${v2}m で進むと、何分かかりますか。`,
+    prompt: `家から図書館まで、分速 ${v1}m で${v1 <= 90 ? "歩く" : "自転車で進む"}と ${d / v1}分かかります。同じ道を分速 ${v2}m で進むと、何分かかりますか。`,
     answer: num(d / v2, `${v1}*${d / v1}/${v2}`, "", "分"),
     point: "道のりが同じなら、速さと時間は反比例",
     steps: [
@@ -148,7 +148,7 @@ export const E_MATH_6_HIREI_HANPIREI_MOSHI: UnitMoshi = {
   unit: U,
   subject: "sansu",
   grade: "小6",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "比例と反比例の式",

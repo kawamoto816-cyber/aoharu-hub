@@ -113,7 +113,7 @@ export const E_ENGLISH_56_CHUMON_MOSHI: UnitMoshi = {
   subject: "eng",
   grade: "外国語（小5・6）",
   minutes: 7,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     { title: "注文と値段《ねだん》の言い方", lead: "次の問いに答えなさい。", style: "word", pick: 3, questions: IIKATA },
     { title: "お店の会話を読んで答える", lead: "放送のかわりに、会話の文がのっています。読んで答えなさい。", style: "word", pick: 3, questions: KAIWA },

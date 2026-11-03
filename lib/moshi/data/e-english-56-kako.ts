@@ -57,7 +57,7 @@ const KATACHI: QuestionB[] = [
   ], "いつ＋過去の形", ["2つ確《たし》かめる", "{{Last summer}}（いつ）＋ I {{went}}（過去の形）to the sea.", [S1, S2]], "思考・判断・表現"),
   ch("saw", 3, "see（見る）の過去の形はどれですか。", [
     ["saw", "see は形が変わって saw になります。"],
-    ["seed", "seed とは言いません。see は形が変わる言葉です。"],
+    ["seed", "see の過去の形は seed ではありません。see は形が変わる言葉です。"],
     ["sees", "sees は、今のことを he や she で言うときの形です。"],
     ["seeing", "過去の形ではありません。"],
   ], "see → saw（seed とは言わない）", ["形が変わる言葉", "{{see}} → {{saw}}。ed をつけて seed にしないよう注意します。", [S2]], "思考・判断・表現"),
@@ -111,7 +111,7 @@ export const E_ENGLISH_56_KAKO_MOSHI: UnitMoshi = {
   subject: "eng",
   grade: "外国語（小5・6）",
   minutes: 7,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     { title: "過去の形", lead: "次の問いに答えなさい。", style: "word", pick: 3, questions: KATACHI },
     { title: "したことの話を読んで答える", lead: "放送のかわりに、英語の文がのっています。読んで答えなさい。", style: "word", pick: 3, questions: YOMU },

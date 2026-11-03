@@ -35,8 +35,9 @@ function seisuWari(r: Rng): QuestionBody {
 }
 
 function shosuWari(r: Rng): QuestionBody {
-  const q10 = r.int(12, 89);
-  const b10 = r.int(12, 49);
+  const t = (x: number) => (x % 10 === 0 ? x + 1 : x); // 22÷4 のような整数どうしにしない
+  const q10 = t(r.int(12, 89));
+  const b10 = t(r.int(12, 49));
   const a = (q10 * b10) / 100;
   const q = q10 / 10;
   return {
@@ -123,7 +124,7 @@ export const E_MATH_5_SHOSU_WARI_MOSHI: UnitMoshi = {
   unit: U,
   subject: "sansu",
   grade: "小5",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "小数のわり算の計算",

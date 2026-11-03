@@ -105,7 +105,7 @@ export const E_MATH_5_ZUKEI_KAKU_MOSHI: UnitMoshi = {
   unit: U,
   subject: "sansu",
   grade: "小5",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "三角形と四角形の角",

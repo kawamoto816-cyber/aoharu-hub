@@ -25,7 +25,7 @@ function nanbai(r: Rng): QuestionBody {
 function kuraberuRyo(r: Rng): QuestionBody {
   const m = r.step(20, 300, 10);
   const k = r.int(2, 5);
-  const [x, y] = r.pick([["ノート", "ふでばこ"], ["えんぴつ", "絵の具《ぐ》"], ["シール", "本"]]);
+  const [x, y] = r.pick([["ノート", "ふでばこ"], ["ボールペン", "絵の具《ぐ》"], ["シール", "本"]]);
   return {
     prompt: `${x}のねだんは${m}円です。${y}のねだんは、${x}のねだんの${k}倍です。${y}のねだんは何円ですか。`,
     answer: { kind: "num", answerKind: "num", answer: [String(m * k)], unit: "円", calc: `${m}*${k}` },
@@ -110,8 +110,8 @@ function nidan(r: Rng): QuestionBody {
   const k1 = r.int(2, 4);
   const k2 = r.int(2, 4);
   const [A, B, C, u] = r.pick([
-    ["Aのびんの水", "Bのびんの水", "Cのびんの水", "dL"],
-    ["赤いリボン", "青いリボン", "黄色いリボン", "m"],
+    ["Aの水そうの水", "Bの水そうの水", "Cの水そうの水", "L"],
+    ["赤いリボン", "青いリボン", "黄色いリボン", "cm"],
     ["大きい箱のおはじき", "中くらいの箱のおはじき", "小さい箱のおはじき", "こ"],
   ]);
   const cc = c;
@@ -132,7 +132,7 @@ export const E_MATH_4_WARIAI_MOSHI: UnitMoshi = {
   unit: U,
   subject: "sansu",
   grade: "小4",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "何倍かを使う",

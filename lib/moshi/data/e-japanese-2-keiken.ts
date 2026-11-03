@@ -22,7 +22,7 @@ export const E_JAPANESE_2_KEIKEN_MOSHI: UnitMoshi = {
   subject: "ja",
   grade: "小2",
   minutes: 12,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "した ことを 書いた 文章《ぶんしょう》を 読む「なわとび大会」",

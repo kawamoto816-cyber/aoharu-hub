@@ -13,7 +13,7 @@ export const J_MATH_1_MOJI: Daimon[] = [
     level: 2,
     points: 20,
     minutes: 10,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     items: [
       {
         id: "1",
@@ -65,7 +65,7 @@ export const J_MATH_1_MOJI: Daimon[] = [
               ],
             },
             trap: "−2(x−4) を −2x−8 にしてしまう（−2×(−4) の符号）。",
-            back: [{ label: "レクチャー「かっこをはずす（分配法則）」", href: "/learn/lecture/j-math-1-moji#lec-s4" }],
+            back: [{ label: "レクチャー「かっこをはずす（分配法則）」", href: "/learn/lecture/j-math-1-moji#lec-s5" }],
           },
         ],
       },
@@ -147,7 +147,7 @@ export const J_MATH_1_MOJI: Daimon[] = [
     level: 1,
     points: 20,
     minutes: 10,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     items: [
       {
         id: "1",
@@ -190,7 +190,7 @@ export const J_MATH_1_MOJI: Daimon[] = [
           {
             title: "かけ算の形に直す",
             body: "−x/3 ＝ {{(−1/3)×x}}。x にかかっている数が係数なので −1/3。",
-            figure: { ref: { unit: "j-math-1-moji", section: 2 } },
+            figure: { ref: { unit: "j-math-1-moji", section: 3 } },
             trap: "−3 や 1/3 と答える（分母や符号を見落とす）。",
           },
         ],
@@ -291,7 +291,7 @@ export const J_MATH_1_MOJI: Daimon[] = [
     level: 2,
     points: 20,
     minutes: 11,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     items: [
       {
         id: "1",
@@ -306,7 +306,7 @@ export const J_MATH_1_MOJI: Daimon[] = [
           {
             title: "かっこをはずす",
             body: "−4(3x−2)＝−12x{{＋8}}、6(2x−1)＝12x−6。(−4)×(−2) は +8 です。",
-            figure: { ref: { unit: "j-math-1-moji", section: 3 } },
+            figure: { ref: { unit: "j-math-1-moji", section: 4 } },
             trap: "−4(3x−2) を −12x−8 にする（2つめの項の符号）。",
           },
           {
@@ -436,7 +436,7 @@ export const J_MATH_1_MOJI: Daimon[] = [
     level: 3,
     points: 20,
     minutes: 13,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     material: [
       {
         kind: "text",

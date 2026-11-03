@@ -41,7 +41,7 @@ function nagai(r: Rng): QuestionBody {
   return {
     prompt: `ながい はりが ${n}を さして います。なんぷんですか。`,
     answer: choice(r, [
-      [fun(m), `すうじ 1つで 5ふん。${n}なら 5が ${n}つで ${fun(m)}です。`],
+      [fun(m), `すうじ 1つで 5ふん。${n}なら 5が ${n}${n >= 10 ? "こ" : "つ"}で ${fun(m)}です。`],
       [`${n}${[1, 3, 4, 6, 8, 10, 11].includes(n) ? "ぷん" : "ふん"}`, `すうじの ${n}を そのまま よんで います。ながい はりは、すうじ 1つで 5ふんです。`],
       [fun(m + 5), `${fun(m + 5)}は、ながい はりが ${n + 1}の とき です。`],
       [fun(m - 5 || 55), m === 5 ? "55ふんは、ながい はりが 11の とき です。" : `${fun(m - 5)}は、ながい はりが ${n - 1}の とき です。`],
@@ -78,7 +78,7 @@ function yomu(r: Rng): QuestionBody {
     point: "みじかい はりで「じ」、ながい はりで「ふん」",
     steps: [
       { title: "みじかい はりで「じ」", body: `みじかい はりは ${h}と ${nextH(h)}の あいだ。まだ ${nextH(h)}に ついて いないので {{${h}じ}}。`, back: [B_AWASE] },
-      { title: "ながい はりで「ふん」", body: `ながい はりは ${n}。5が ${n}つで {{${fun(m)}}}。あわせて ${h}じ${fun(m)}です。`, back: [B_FUN] },
+      { title: "ながい はりで「ふん」", body: `ながい はりは ${n}。5が ${n}${n >= 10 ? "こ" : "つ"}で {{${fun(m)}}}。あわせて ${h}じ${fun(m)}です。`, back: [B_FUN] },
     ],
   };
 }
@@ -124,7 +124,7 @@ export const E_MATH_1_TOKEI_MOSHI: UnitMoshi = {
   subject: "sansu",
   grade: "小1",
   minutes: 7,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "時計《とけい》の はりを よむ",

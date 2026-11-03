@@ -139,7 +139,7 @@ export const E_MATH_4_OOKII_MOSHI: UnitMoshi = {
   unit: U,
   subject: "sansu",
   grade: "小4",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "億・兆の読み方と書き方",

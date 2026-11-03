@@ -16,7 +16,7 @@ export const J_SCI_3_SUIATSU: Daimon[] = [
     level: 1,
     points: 20,
     minutes: 10,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     items: [
       {
         id: "1",
@@ -145,8 +145,8 @@ export const J_SCI_3_SUIATSU: Daimon[] = [
           {
             title: "静止はつり合いのしるし",
             body: "水面に浮いて止まっているのは、下向きの重力と上向きの浮力が{{つり合っている}}からです。",
-            figure: { ref: { unit: U, section: 3 } },
-            back: [sec(4, "浮くか沈むかは、重力と浮力のくらべっこ")],
+            figure: { ref: { unit: U, section: 4 } },
+            back: [sec(5, "浮くか沈むかは、重力と浮力のくらべっこ")],
           },
         ],
       },
@@ -182,7 +182,7 @@ export const J_SCI_3_SUIATSU: Daimon[] = [
     level: 2,
     points: 20,
     minutes: 12,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     material: [
       {
         kind: "table",
@@ -327,8 +327,8 @@ export const J_SCI_3_SUIATSU: Daimon[] = [
           {
             title: "重力と浮力のくらべっこ",
             body: "円柱Aの重力は空気中の値の 1.50N、浮力は 0.60N。{{重力＞浮力}}なので沈みます。",
-            figure: { ref: { unit: U, section: 3 } },
-            back: [sec(4, "浮くか沈むかは、重力と浮力のくらべっこ")],
+            figure: { ref: { unit: U, section: 4 } },
+            back: [sec(5, "浮くか沈むかは、重力と浮力のくらべっこ")],
           },
         ],
       },
@@ -345,7 +345,7 @@ export const J_SCI_3_SUIATSU: Daimon[] = [
     level: 3,
     points: 20,
     minutes: 14,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     material: [
       {
         kind: "table",
@@ -377,8 +377,8 @@ export const J_SCI_3_SUIATSU: Daimon[] = [
           {
             title: "重力と浮力をくらべる",
             body: "空気中の値が物体の重力です。浮力1.0Nより重力が大きいのは {{Q（2.7N）}}だけです。",
-            figure: { ref: { unit: U, section: 3 } },
-            back: [sec(4, "浮くか沈むかは、重力と浮力のくらべっこ")],
+            figure: { ref: { unit: U, section: 4 } },
+            back: [sec(5, "浮くか沈むかは、重力と浮力のくらべっこ")],
           },
         ],
       },
@@ -396,7 +396,7 @@ export const J_SCI_3_SUIATSU: Daimon[] = [
             title: "静止しているので浮力＝重力",
             body: "水面に浮いて静止しているとき、浮力と重力はつり合っています。浮力は重力と同じ{{0.6N}}です。",
             trap: "全体を沈めたときの1.0Nと答える。水面に出ると水中の体積がへり、浮力も小さくなる。",
-            back: [sec(4, "浮くか沈むかは、重力と浮力のくらべっこ")],
+            back: [sec(5, "浮くか沈むかは、重力と浮力のくらべっこ")],
           },
         ],
       },
@@ -467,12 +467,12 @@ export const J_SCI_3_SUIATSU: Daimon[] = [
           {
             title: "浮力は水中の体積で決まる",
             body: "同じ重さの鉄でも、船の形にすると中が空洞になり、{{水中に入る体積が大きく}}なります。そのぶん浮力も大きくなります。",
-            back: [sec(4, "浮くか沈むかは、重力と浮力のくらべっこ")],
+            back: [sec(5, "浮くか沈むかは、重力と浮力のくらべっこ")],
           },
           {
             title: "浮力と重力のつり合い",
             body: "大きな浮力が船の{{重力とつり合う}}ところで、船は水面に浮いて静止します。",
-            figure: { ref: { unit: U, section: 3 } },
+            figure: { ref: { unit: U, section: 4 } },
           },
         ],
       },

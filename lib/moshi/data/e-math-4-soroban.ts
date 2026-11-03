@@ -86,11 +86,11 @@ function okuTasu(r: Rng): QuestionBody {
   const cnt = ds.reduce((s, d) => s + (d >= 5 ? 1 : 0) + (d % 5), 0);
   return {
     prompt: `定位点のけたを${u}の位と決めて、そろばんで ${a}${u}＋${b}${u} をしました。答えをおいたとき、はりによせている玉は、5玉と1玉を合わせていくつですか。`,
-    answer: { kind: "num", answerKind: "num", answer: [String(cnt)], unit: "つ", calc: ds.map((d) => `${d >= 5 ? 1 : 0}+${d % 5}`).join("+") },
+    answer: { kind: "num", answerKind: "num", answer: [String(cnt)], unit: "こ", calc: ds.map((d) => `${d >= 5 ? 1 : 0}+${d % 5}`).join("+") },
     point: "大きい数も、定位点で位を決めれば同じ",
     steps: [
       { title: "答え", body: `${a}＋${b}＝${a + b} なので、${a + b}${u}。一番右の${ds[ds.length - 1]}が${u}の位になるように、左から ${ds.join("・")} をおきます。`, back: [B_OKU] },
-      { title: "玉を数える", body: `${ds.map((d) => `${d}は${tama(d)}`).join("、")}。合わせて{{${cnt}つ}}です。`, trap: "5玉は5を表しますが、玉の数としては1つです。", back: [B_TAMA] },
+      { title: "玉を数える", body: `${ds.map((d) => `${d}は${tama(d)}`).join("、")}。合わせて{{${cnt}こ}}です。`, trap: "5玉は5を表しますが、玉の数としては1つです。", back: [B_TAMA] },
     ],
   };
 }
@@ -99,7 +99,7 @@ export const E_MATH_4_SOROBAN_MOSHI: UnitMoshi = {
   unit: U,
   subject: "sansu",
   grade: "小4",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "そろばんで数を表す",

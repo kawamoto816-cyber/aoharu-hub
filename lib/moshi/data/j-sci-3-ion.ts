@@ -15,7 +15,7 @@ export const J_SCI_3_ION: Daimon[] = [
     level: 1,
     points: 20,
     minutes: 10,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     material: [
       {
         kind: "table",
@@ -159,7 +159,7 @@ export const J_SCI_3_ION: Daimon[] = [
     level: 2,
     points: 25,
     minutes: 12,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     material: [
       {
         kind: "table",
@@ -304,7 +304,7 @@ export const J_SCI_3_ION: Daimon[] = [
     level: 3,
     points: 25,
     minutes: 13,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     items: [
       {
         id: "1",
@@ -346,7 +346,7 @@ export const J_SCI_3_ION: Daimon[] = [
           correct: 1,
           why: [
             "陽イオンは電子を失ってできます。受けとると−になります。",
-            "正解。−の電気をもつ電子が2個ふえるので、−の電気を2個分帯びた陰イオン（例 SO₄²⁻ のような 2−）になります。",
+            "正解。−の電気をもつ電子が2個ふえるので、−の電気を2個分帯びた陰イオン（右上に 2− と書く）になります。",
             "陰イオンは−の電気を帯びたイオンです。＋の陰イオンはありません。",
             "陽子と電子の数がずれるので、電気を帯びます。",
           ],

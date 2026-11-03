@@ -73,9 +73,9 @@ function kago(r: Rng): QuestionBody {
 function awase(r: Rng): QuestionBody {
   const a = 1000 * r.int(1, 2) + r.int(1, 9) * 100;
   const b = r.int(3, 9) * 100 + r.int(0, 9) * 10;
-  const [x, y] = r.pick([["お米", "さとう"], ["小麦《こむぎ》こ", "しお"], ["みかん", "りんご"]]);
+  const [x, y] = r.pick([["じゃがいも", "たまねぎ"], ["にんじん", "キャベツ"], ["みかん", "りんご"]]);
   return {
-    prompt: `${x} ${K(a)} と ${y} ${b}g を合わせると、何gですか。`,
+    prompt: `${x} ${K(a)} と ${y} ${b}g を合わせた重さは、何gですか。`,
     answer: { kind: "num", answerKind: "num", answer: [String(a + b)], unit: "g", calc: `${a}+${b}` },
     point: "単位《たんい》をそろえてからたす",
     steps: [{ title: "g でたす", body: `${K(a)}＝${a}g。${a}＋${b}＝{{${a + b}}}（g）＝${K(a + b)}です。`, back: [B_KEISAN, B_TANI] }],
@@ -103,7 +103,7 @@ export const E_MATH_3_OMOSA_MOSHI: UnitMoshi = {
   unit: U,
   subject: "sansu",
   grade: "小3",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "重さの単位《たんい》とはかり",

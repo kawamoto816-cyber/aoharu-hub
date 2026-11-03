@@ -26,7 +26,7 @@ export const E_JAPANESE_4_SETSUMEI_MOSHI: UnitMoshi = {
   subject: "ja",
   grade: "小4",
   minutes: 16,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "説明文を読む「かげの長さ」",

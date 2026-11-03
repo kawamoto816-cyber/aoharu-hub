@@ -17,7 +17,7 @@ export const J_MATH_3_EN: Daimon[] = [
     level: 1,
     points: 20,
     minutes: 10,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     items: [
       {
         id: "1",
@@ -178,7 +178,7 @@ export const J_MATH_3_EN: Daimon[] = [
     level: 2,
     points: 24,
     minutes: 13,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     items: [
       {
         id: "1",
@@ -309,7 +309,7 @@ export const J_MATH_3_EN: Daimon[] = [
     level: 2,
     points: 22,
     minutes: 13,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     material: [
       {
         kind: "text",
@@ -466,7 +466,7 @@ export const J_MATH_3_EN: Daimon[] = [
     level: 3,
     points: 24,
     minutes: 15,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     items: [
       {
         id: "1",

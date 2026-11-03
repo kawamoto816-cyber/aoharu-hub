@@ -18,7 +18,7 @@ export const J_MATH_2_HAKOHIGE: Daimon[] = [
     level: 1,
     points: 20,
     minutes: 10,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     material: [{ kind: "text", body: "借りた本の冊数（冊）\n2, 4, 5, 7, 8, 10, 11, 13, 14, 16, 31" }],
     items: [
       {
@@ -148,7 +148,7 @@ export const J_MATH_2_HAKOHIGE: Daimon[] = [
     level: 2,
     points: 20,
     minutes: 12,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     material: [
       {
         kind: "table",
@@ -306,7 +306,7 @@ export const J_MATH_2_HAKOHIGE: Daimon[] = [
     level: 2,
     points: 20,
     minutes: 12,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     material: [{ kind: "text", body: "自主学習の時間（分）\n3, 6, 7, 9, 11, x, 15, 16, 18, 20" }],
     items: [
       {
@@ -432,7 +432,7 @@ export const J_MATH_2_HAKOHIGE: Daimon[] = [
     level: 3,
     points: 20,
     minutes: 14,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     material: [
       {
         kind: "text",

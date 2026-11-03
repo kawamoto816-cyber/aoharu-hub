@@ -16,7 +16,7 @@ export const J_SCI_3_GORYOKU: Daimon[] = [
     level: 1,
     points: 20,
     minutes: 10,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     items: [
       {
         id: "1",
@@ -156,8 +156,8 @@ export const J_SCI_3_GORYOKU: Daimon[] = [
           {
             title: "分解は合成の逆",
             body: "1つの力を2つに分けることを{{力の分解}}、分けた力を{{分力}}といいます。",
-            figure: { ref: { unit: U, section: 2 } },
-            back: [sec(3, "力の分解：1つの力を2つに分ける")],
+            figure: { ref: { unit: U, section: 3 } },
+            back: [sec(4, "力の分解：1つの力を2つに分ける")],
           },
         ],
       },
@@ -174,7 +174,7 @@ export const J_SCI_3_GORYOKU: Daimon[] = [
     level: 2,
     points: 20,
     minutes: 12,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     material: [
       {
         kind: "table",
@@ -257,7 +257,7 @@ export const J_SCI_3_GORYOKU: Daimon[] = [
           {
             title: "表の数を読む",
             body: "角度が大きいほど値は{{大きく}}なります。同じ大きさの2力は、角度が大きいほど合力が小さくなるので、1本の力をふやさないと重力とつり合いません。",
-            figure: { ref: { unit: U, section: 1 } },
+            figure: { ref: { unit: U, section: 2 } },
             back: [sec(2, "角度のある2つの力：平行四辺形の対角線")],
           },
         ],
@@ -313,7 +313,7 @@ export const J_SCI_3_GORYOKU: Daimon[] = [
     level: 3,
     points: 20,
     minutes: 14,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     material: [
       {
         kind: "table",
@@ -336,8 +336,8 @@ export const J_SCI_3_GORYOKU: Daimon[] = [
           {
             title: "垂直な分力とつり合う力",
             body: "斜面に垂直な分力は、斜面が台車を押し返す{{垂直抗力}}とつり合っています。",
-            figure: { ref: { unit: U, section: 3 } },
-            back: [sec(4, "斜面上の物体にはたらく重力の分解")],
+            figure: { ref: { unit: U, section: 4 } },
+            back: [sec(5, "斜面上の物体にはたらく重力の分解")],
           },
         ],
       },
@@ -380,8 +380,8 @@ export const J_SCI_3_GORYOKU: Daimon[] = [
           {
             title: "平行と垂直は逆に変わる",
             body: "傾きが大きいほど平行な分力は大きく、{{垂直な分力は小さく}}なります。",
-            figure: { ref: { unit: U, section: 3 } },
-            back: [sec(4, "斜面上の物体にはたらく重力の分解")],
+            figure: { ref: { unit: U, section: 4 } },
+            back: [sec(5, "斜面上の物体にはたらく重力の分解")],
           },
         ],
       },
@@ -408,7 +408,7 @@ export const J_SCI_3_GORYOKU: Daimon[] = [
           {
             title: "重力はいつも同じ",
             body: "傾き90°の値 4.0N が重力そのもの。どの傾きでも{{重力は変わらず}}、分力の割合が変わるだけです。",
-            back: [sec(4, "斜面上の物体にはたらく重力の分解")],
+            back: [sec(5, "斜面上の物体にはたらく重力の分解")],
           },
         ],
       },
@@ -433,8 +433,8 @@ export const J_SCI_3_GORYOKU: Daimon[] = [
           {
             title: "分解は合成の逆",
             body: "もとの力（重力）が{{対角線}}になるように平行四辺形をかき、作用点から交点までの矢印が分力です。",
-            figure: { ref: { unit: U, section: 2 } },
-            back: [sec(3, "力の分解：1つの力を2つに分ける")],
+            figure: { ref: { unit: U, section: 3 } },
+            back: [sec(4, "力の分解：1つの力を2つに分ける")],
           },
         ],
       },
@@ -463,7 +463,7 @@ export const J_SCI_3_GORYOKU: Daimon[] = [
           {
             title: "角度が大きいと合力は小さくなる",
             body: "同じ力でも角度を広げると合力は小さくなります。合力を同じにするには{{1人の力を大きく}}する必要があります（表の結果と同じ）。",
-            figure: { ref: { unit: U, section: 1 } },
+            figure: { ref: { unit: U, section: 2 } },
             back: [sec(2, "角度のある2つの力：平行四辺形の対角線")],
           },
         ],

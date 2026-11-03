@@ -24,7 +24,7 @@ export const E_JAPANESE_4_SHINBUN_MOSHI: UnitMoshi = {
   subject: "ja",
   grade: "小4",
   minutes: 15,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "学級新聞の記事を読む",

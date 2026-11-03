@@ -113,7 +113,7 @@ export const E_ENGLISH_56_IKITAI_MOSHI: UnitMoshi = {
   subject: "eng",
   grade: "外国語（小5・6）",
   minutes: 7,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     { title: "I want to go to 〜. の言い方", lead: "次の問いに答えなさい。", style: "word", pick: 3, questions: IIKATA },
     { title: "話を読んで答える", lead: "放送のかわりに、英語の文がのっています。読んで答えなさい。", style: "word", pick: 3, questions: YOMU },

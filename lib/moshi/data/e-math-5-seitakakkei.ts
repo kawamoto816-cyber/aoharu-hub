@@ -47,20 +47,20 @@ function chokkei(r: Rng): QuestionBody {
 function chushin(r: Rng): QuestionBody {
   const n = r.pick([3, 4, 5, 6, 8, 9, 10, 12, 15, 18, 20]);
   return {
-    prompt: `円の中心のまわりの角を等分して、正${NAME[n]}角形をかきます。中心のまわりの角を何度ずつに分ければよいですか。`,
+    prompt: `円の中心のまわりの角を等分して、${n === 4 ? "正方形" : `正${NAME[n]}角形`}をかきます。中心のまわりの角を何度ずつに分ければよいですか。`,
     answer: num(360 / n, `360/${n}`, "°"),
     point: "中心のまわりの角360°を、辺の数で等分する",
-    steps: [{ title: "360°を等分", body: `正${NAME[n]}角形は辺が${n}本なので、360÷${n}＝{{${360 / n}}}（°）ずつに分けます。`, back: [BACK_KAKU] }],
+    steps: [{ title: "360°を等分", body: `${n === 4 ? "正方形" : `正${NAME[n]}角形`}は辺が${n}本なので、360÷${n}＝{{${360 / n}}}（°）ずつに分けます。`, back: [BACK_KAKU] }],
   };
 }
 
 function hankei(r: Rng): QuestionBody {
   const rr = r.int(2, 25);
   const c = pi(rr * 2);
-  const what = r.pick(["円", "丸い池のまわりの道", "丸いテーブル"]);
-  const unit = what === "丸い池のまわりの道" ? "m" : "cm";
+  const what = r.pick(["円", "丸い池", "丸いお皿"]);
+  const unit = what === "丸い池" ? "m" : "cm";
   return {
-    prompt: `半径が ${rr}${unit} の${what === "円" ? "円" : `形の${what}`}の、まわりの長さは何${unit}ですか。円周率は3.14とします。`,
+    prompt: what === "円" ? `半径が ${rr}${unit} の円の、まわりの長さは何${unit}ですか。円周率は3.14とします。` : `半径が ${rr}${unit} の${what}があります。${what.slice(2)}のまわりの長さは何${unit}ですか。円周率は3.14とします。`,
     answer: num(c, `${rr}*2*3.14`, unit),
     point: "半径なら、まず2倍して直径に",
     steps: [
@@ -126,7 +126,7 @@ export const E_MATH_5_SEITAKAKKEI_MOSHI: UnitMoshi = {
   unit: U,
   subject: "sansu",
   grade: "小5",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "円周と正多角形",

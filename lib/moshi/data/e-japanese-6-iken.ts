@@ -24,7 +24,7 @@ export const E_JAPANESE_6_IKEN_MOSHI: UnitMoshi = {
   subject: "ja",
   grade: "小6",
   minutes: 18,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "意見文を読む「放課後の図書室」",

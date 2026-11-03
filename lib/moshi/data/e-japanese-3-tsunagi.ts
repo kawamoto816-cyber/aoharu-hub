@@ -102,7 +102,7 @@ const POOL: QuestionB[] = [
   {
     ...base("kaku", 3),
     prompt: "「おなかがすいた。（　）、何も食べなかった。」の（　）に入る、ひらがな2字のつなぎ言葉を書きなさい。",
-    answer: { kind: "term", accept: ["でも"], script: "hira", chars: 2, near: [{ text: "だから", why: "「だから」だと、おなかがすいたから食べなかった、というおかしな意味になります。" }] },
+    answer: { kind: "term", accept: ["でも", "だが"], script: "hira", chars: 2, near: [{ text: "だから", why: "「だから」だと、おなかがすいたから食べなかった、というおかしな意味になります。" }] },
     point: "予想とちがうことが来る＝でも",
     steps: [{ title: "予想とちがう", body: "おなかがすいた → ふつうは食べる → でも食べなかった。ひらがな2字なので {{「でも」}} です。", back: [S2] }],
   },
@@ -113,6 +113,6 @@ export const E_JAPANESE_3_TSUNAGI_MOSHI: UnitMoshi = {
   subject: "ja",
   grade: "小3",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [{ title: "つなぎ言葉", lead: "次の問いに答えなさい。", style: "word", pick: 6, questions: POOL }],
 };

@@ -17,7 +17,7 @@ function yomu(r: Rng): QuestionBody {
   const t = r.int(1, 9);
   const o = r.int(0, 9);
   return {
-    prompt: `そろばんで、定位点《ていいてん》のあるけたを一の位《くらい》とします。十の位《くらい》は${tamaText(t)}、一の位《くらい》は${tamaText(o)}を入れています。いくつを表していますか。`,
+    prompt: `そろばんで、定位点《ていいてん》のあるけたを一の位《くらい》とします。十の位《くらい》は${tamaText(t)}を入れ、一の位《くらい》は${o ? `${tamaText(o)}を入れています` : "玉を入れていません"}。いくつを表していますか。`,
     answer: { kind: "num", answerKind: "num", answer: [String(t * 10 + o)], calc: `(${t >= 5 ? 5 : 0}+${t % 5})*10+${o >= 5 ? 5 : 0}+${o % 5}` },
     point: "五玉は5、一玉は1。けたごとに読む",
     steps: [
@@ -97,7 +97,7 @@ export const E_MATH_3_SOROBAN_MOSHI: UnitMoshi = {
   unit: U,
   subject: "sansu",
   grade: "小3",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "そろばんで数を表す",

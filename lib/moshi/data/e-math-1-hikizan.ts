@@ -40,7 +40,7 @@ function nokori(r: Rng): QuestionBody {
   const [a, b] = pair(r);
   const [f, v] = r.pick([
     ["あめ", "たべる"],
-    ["シール", "あげる"],
+    ["みかん", "あげる"],
     ["クッキー", "たべる"],
   ]);
   return {
@@ -129,7 +129,7 @@ export const E_MATH_1_HIKIZAN_MOSHI: UnitMoshi = {
   subject: "sansu",
   grade: "小1",
   minutes: 6,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "ひきざんの けいさん",

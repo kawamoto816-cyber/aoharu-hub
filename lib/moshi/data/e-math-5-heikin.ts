@@ -25,10 +25,10 @@ function data(r: Rng, m: number, n: number, w: number, min = 0): number[] {
 }
 
 function heikin(r: Rng): QuestionBody {
-  const m = r.int(150, 250);
-  const n = 5;
-  const xs = data(r, m, n, 30, 100);
   const who = r.pick(["みかん", "りんご", "なし"]);
+  const m = who === "みかん" ? r.int(90, 120) : r.int(250, 320); // くだものに合った重さに
+  const n = 5;
+  const xs = data(r, m, n, who === "みかん" ? 15 : 30, 60);
   return {
     prompt: `${who}5この重さをはかったら、${xs.map((x) => `${x}g`).join("、")} でした。${who}1こあたりの重さの平均は何gですか。`,
     answer: num(m, `(${xs.join("+")})/${n}`, "g"),
@@ -91,7 +91,7 @@ function nokori(r: Rng): QuestionBody {
 function hohaba(r: Rng): QuestionBody {
   const step100 = r.int(55, 68); // 1歩の平均 (cm)
   const ten = step100 * 10; // 10歩 (cm)
-  const kaisu = r.step(200, 800, 50);
+  const kaisu = r.step(200, 800, 100); // 答えが整数のmになるように
   const ans = Math.round(step100 * kaisu) / 100;
   return {
     prompt: `ゆうきさんが10歩歩いた長さをはかったら、${f(ten / 100)}m でした。家から公園まで歩いたら ${kaisu}歩でした。家から公園までの道のりは、およそ何mですか。`,
@@ -131,7 +131,7 @@ export const E_MATH_5_HEIKIN_MOSHI: UnitMoshi = {
   unit: U,
   subject: "sansu",
   grade: "小5",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "平均と合計",

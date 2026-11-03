@@ -144,7 +144,7 @@ export const E_MATH_2_TASHI_HISSAN_MOSHI: UnitMoshi = {
   subject: "sansu",
   grade: "小2",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "筆算《ひっさん》で 計算する",

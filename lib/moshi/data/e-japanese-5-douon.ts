@@ -162,7 +162,7 @@ export const E_JAPANESE_5_DOUON_MOSHI: UnitMoshi = {
   subject: "ja",
   grade: "小5",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "同音異義語《どうおんいぎご》・同訓異字《どうくんいじ》",

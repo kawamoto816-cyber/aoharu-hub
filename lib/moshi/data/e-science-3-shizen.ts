@@ -95,6 +95,6 @@ export const E_SCIENCE_3_SHIZEN_MOSHI: UnitMoshi = {
   subject: "sci",
   grade: "小3",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [{ title: "身近な自然《しぜん》の観察《かんさつ》", lead: "次の問いに答えなさい。", style: "mix", pick: 6, questions: POOL }],
 };

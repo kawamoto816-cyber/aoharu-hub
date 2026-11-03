@@ -95,7 +95,7 @@ function kimeru(r: Rng): QuestionBody {
         p * cnt < max
           ? `${cnt}目盛《めも》りで ${p * cnt}人までしか表せず、${max}人が入りません。`
           : i === correct
-            ? `${cnt}目盛《めも》りで ${p * cnt}人まで表せて、${max}人が入ります。入るものの中で一番棒《ぼう》が長くなります。`
+            ? `${cnt}目盛《めも》りで ${p * cnt}人まで表せて、${max}人が入ります。入るものの中で一番｜棒《ぼう》が長くなります。`
             : `${max}人は入りますが、${opts[correct]}にしたほうが棒《ぼう》が長くなり、くらべやすくなります。`,
       ),
     },
@@ -125,7 +125,7 @@ export const E_MATH_3_BOU_GRAPH_MOSHI: UnitMoshi = {
   unit: U,
   subject: "sansu",
   grade: "小3",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "表と棒《ぼう》グラフを読む",

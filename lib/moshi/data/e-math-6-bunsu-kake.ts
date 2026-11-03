@@ -148,7 +148,7 @@ function taibunsu(r: Rng): QuestionBody {
     const D = q * b;
     const ans = fr(N, D);
     return {
-      prompt: `たて ${a}/${b}m、横 ${w}と${p}/${q}m の長方形の花だんの面積は何m²ですか。答えは仮分数で答えなさい。`,
+      prompt: `たて ${a}/${b}m、横 ${w}と${p}/${q}m の長方形の花だんの面積は何m²ですか。答えは約分し、1より大きいときは仮分数で答えなさい。`,
       answer: num(ans, `${a}/${b}*(${w}+${p}/${q})`, "m²"),
       point: "帯分数は仮分数に直してからかける",
       steps: [
@@ -163,7 +163,7 @@ export const E_MATH_6_BUNSU_KAKE_MOSHI: UnitMoshi = {
   unit: U,
   subject: "sansu",
   grade: "小6",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "分数と整数・分数と分数",

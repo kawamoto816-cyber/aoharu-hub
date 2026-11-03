@@ -144,7 +144,7 @@ function monosashi(r: Rng): QuestionBody {
     answer: num(v, `30*${k}+${c}`, "cm"),
     point: "30cmの いくつ分と のこりを あわせる",
     steps: [
-      { title: "ものさし いくつ分", body: `30cmが ${k}つ分で 30×${k}＝${30 * k}（cm）。`, back: [B_1M] },
+      { title: "ものさし いくつ分", body: `30cmが ${k}つ分なので、${Array(k).fill("30").join("＋")}＝${30 * k}（cm）。`, back: [B_1M] },
       { title: "のこりを たす", body: `${30 * k}＋${c}＝{{${v}}}。${v}cm（${mcm(v)}）です。`, back: [B_MCM] },
     ],
   };
@@ -155,7 +155,7 @@ export const E_MATH_2_M_MOSHI: UnitMoshi = {
   subject: "sansu",
   grade: "小2",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "m と cm",

@@ -23,7 +23,7 @@ export const E_JAPANESE_3_TEGAMI_MOSHI: UnitMoshi = {
   subject: "ja",
   grade: "小3",
   minutes: 12,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "手紙を読む「おばあちゃんへのお礼の手紙」",

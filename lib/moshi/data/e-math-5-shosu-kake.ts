@@ -21,22 +21,25 @@ const mul = (a: number, da: number, b: number, db: number) => Math.round(a * 10 
 
 function seisuKake(r: Rng): QuestionBody {
   const a = r.step(20, 90, 10);
-  const b = r.int(11, 49) / 10;
+  let b10 = r.int(11, 49);
+  if (b10 % 10 === 0) b10 += 1; // 2.0 のような整数にしない
+  const b = b10 / 10;
   const ans = mul(a, 0, b, 1);
   return {
     prompt: `1mのねだんが ${a}円のリボンを ${f(b)}m 買います。代金は何円ですか。`,
     answer: num(ans, `${a}*${f(b)}`, "円"),
     point: "長さが小数でも、代金＝1mのねだん×長さ",
     steps: [
-      { title: "式をたてる", body: `1mが${a}円で、その${f(b)}つ分なので、式は ${a}×${f(b)} です。`, back: [BACK_SHIKI] },
+      { title: "式をたてる", body: `1mが${a}円で、その${f(b)}倍なので、式は ${a}×${f(b)} です。`, back: [BACK_SHIKI] },
       { title: "10倍して計算し、1/10にもどす", body: `${a}×${Math.round(b * 10)}＝${a * Math.round(b * 10)}。かける数を10倍したので、1/10にして {{${f(ans)}}}（円）です。`, back: [BACK_10] },
     ],
   };
 }
 
 function shosuKake(r: Rng): QuestionBody {
-  const a = r.int(12, 98) / 10;
-  const b = r.int(12, 98) / 10;
+  const t = (x: number) => (x % 10 === 0 ? x + 1 : x); // 3.0 のような整数にしない
+  const a = t(r.int(12, 98)) / 10;
+  const b = t(r.int(12, 98)) / 10;
   const ans = mul(a, 1, b, 1);
   return {
     prompt: `${f(a)}×${f(b)} を計算しなさい。`,
@@ -73,7 +76,7 @@ function bunsho(r: Rng): QuestionBody {
     answer: num(ans, `${f(w)}*${f(l)}`, "kg"),
     point: "全体の重さ＝1mの重さ×長さ",
     steps: [
-      { title: "式をたてる", body: `1mあたり${f(w)}kgの${f(l)}つ分なので、${f(w)}×${f(l)} です。`, back: [BACK_SHIKI] },
+      { title: "式をたてる", body: `1mあたり${f(w)}kgの${f(l)}倍なので、${f(w)}×${f(l)} です。`, back: [BACK_SHIKI] },
       { title: "計算する", body: `${Math.round(w * 10)}×${Math.round(l * 10)}＝${Math.round(w * 10) * Math.round(l * 10)}。小数点の右は2けたなので {{${f(ans)}}}（kg）です。`, back: [BACK_HISSAN] },
     ],
   };
@@ -131,7 +134,7 @@ export const E_MATH_5_SHOSU_KAKE_MOSHI: UnitMoshi = {
   unit: U,
   subject: "sansu",
   grade: "小5",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "小数のかけ算の計算",

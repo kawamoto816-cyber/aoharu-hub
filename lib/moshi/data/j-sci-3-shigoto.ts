@@ -16,7 +16,7 @@ export const J_SCI_3_SHIGOTO: Daimon[] = [
     level: 1,
     points: 20,
     minutes: 10,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     items: [
       {
         id: "1",
@@ -73,7 +73,7 @@ export const J_SCI_3_SHIGOTO: Daimon[] = [
             title: "1秒あたりの仕事",
             body: "仕事率＝90÷6＝{{15W}}です。",
             trap: "90×6 とかけてしまう。",
-            back: [sec(3, "仕事率：1秒あたりの仕事")],
+            back: [sec(4, "仕事率：1秒あたりの仕事")],
           },
         ],
       },
@@ -146,9 +146,8 @@ export const J_SCI_3_SHIGOTO: Daimon[] = [
           {
             title: "質量と高さの両方を見る",
             body: "位置エネルギーは、その高さまで持ち上げる仕事と同じ大きさです。{{重力×高さ}}でくらべると、イが 20×2＝40 で最大です。",
-            figure: { ref: { unit: U, section: 3 } },
             trap: "高さだけ見てウを選んでしまう。",
-            back: [sec(4, "位置エネルギーと運動エネルギー")],
+            back: [sec(5, "位置エネルギーと運動エネルギー")],
           },
         ],
       },
@@ -165,7 +164,7 @@ export const J_SCI_3_SHIGOTO: Daimon[] = [
     level: 2,
     points: 20,
     minutes: 12,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     material: [
       {
         kind: "table",
@@ -266,7 +265,7 @@ export const J_SCI_3_SHIGOTO: Daimon[] = [
           {
             title: "仕事率＝仕事÷時間",
             body: "仕事はどれも6Jなので、{{時間が短いほど}}仕事率は大きい。アは 6÷3＝{{2W}}で最大です。",
-            back: [sec(3, "仕事率：1秒あたりの仕事")],
+            back: [sec(4, "仕事率：1秒あたりの仕事")],
           },
         ],
       },
@@ -283,7 +282,7 @@ export const J_SCI_3_SHIGOTO: Daimon[] = [
           {
             title: "仕事÷時間",
             body: "6÷5＝{{1.2W}}です。",
-            back: [sec(3, "仕事率：1秒あたりの仕事")],
+            back: [sec(4, "仕事率：1秒あたりの仕事")],
           },
         ],
       },
@@ -332,7 +331,7 @@ export const J_SCI_3_SHIGOTO: Daimon[] = [
     level: 3,
     points: 20,
     minutes: 14,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     material: [
       {
         kind: "table",
@@ -380,8 +379,8 @@ export const J_SCI_3_SHIGOTO: Daimon[] = [
           {
             title: "和は4.0Jのまま",
             body: "力学的エネルギーは保存されるので、運動エネルギー＝4.0−2.0＝{{2.0J}}です。",
-            figure: { ref: { unit: U, section: 3 } },
-            back: [sec(4, "位置エネルギーと運動エネルギー")],
+            figure: { ref: { unit: U, section: 5 } },
+            back: [sec(5, "位置エネルギーと運動エネルギー")],
           },
         ],
       },
@@ -399,7 +398,7 @@ export const J_SCI_3_SHIGOTO: Daimon[] = [
             title: "最も低い点",
             body: "Cでは位置エネルギーが0なので、Aの4.0Jがすべて運動エネルギーになり、{{4.0J}}です。",
             trap: "低い点ではエネルギーが0になると考える。",
-            back: [sec(4, "位置エネルギーと運動エネルギー")],
+            back: [sec(5, "位置エネルギーと運動エネルギー")],
           },
         ],
       },
@@ -426,8 +425,8 @@ export const J_SCI_3_SHIGOTO: Daimon[] = [
           {
             title: "低いほど速い",
             body: "位置エネルギーが小さいほど運動エネルギーが大きくなります。最も低い{{C}}で最も速くなります。",
-            figure: { ref: { unit: U, section: 3 } },
-            back: [sec(4, "位置エネルギーと運動エネルギー")],
+            figure: { ref: { unit: U, section: 5 } },
+            back: [sec(5, "位置エネルギーと運動エネルギー")],
           },
         ],
       },
@@ -444,7 +443,7 @@ export const J_SCI_3_SHIGOTO: Daimon[] = [
           {
             title: "和から引く",
             body: "運動エネルギー＝4.0−3.0＝{{1.0J}}です。",
-            back: [sec(4, "位置エネルギーと運動エネルギー")],
+            back: [sec(5, "位置エネルギーと運動エネルギー")],
           },
         ],
       },
@@ -474,8 +473,8 @@ export const J_SCI_3_SHIGOTO: Daimon[] = [
           {
             title: "熱や音に変わる",
             body: "実際には一部が{{熱や音}}に変わるので、力学的エネルギーが小さくなり、Aと同じ高さまで上がれません。",
-            figure: { ref: { unit: U, section: 3 } },
-            back: [sec(4, "位置エネルギーと運動エネルギー")],
+            figure: { ref: { unit: U, section: 5 } },
+            back: [sec(5, "位置エネルギーと運動エネルギー")],
           },
         ],
       },

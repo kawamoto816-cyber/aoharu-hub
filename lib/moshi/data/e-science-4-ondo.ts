@@ -92,6 +92,6 @@ export const E_SCIENCE_4_ONDO_MOSHI: UnitMoshi = {
   subject: "sci",
   grade: "小4",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [{ title: "金属《きんぞく》・水・空気と温度", lead: "次の問いに答えなさい。", style: "mix", pick: 6, questions: POOL }],
 };

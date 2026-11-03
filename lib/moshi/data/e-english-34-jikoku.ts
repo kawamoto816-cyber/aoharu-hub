@@ -112,7 +112,7 @@ export const E_ENGLISH_34_JIKOKU_MOSHI: UnitMoshi = {
   subject: "eng",
   grade: "外国語活動（小3・4）",
   minutes: 6,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     { title: "時刻《じこく》と生活の言い方", lead: "次の問いに答えなさい。", style: "word", pick: 3, questions: IIKATA },
     { title: "時刻《じこく》を聞き取る", lead: "放送のかわりに、会話や英語《えいご》の文がのっています。読んで答えなさい。", style: "word", pick: 3, questions: KIKU },

@@ -49,7 +49,7 @@ const POOL: QuestionB[] = [
   {
     ...base("okosu", 2),
     prompt: "「弟を起こす。」の「起こす」の読み方はどれですか。",
-    answer: ch(["おこす", "おきす", "きこす"], 0, ["正しい。送りがなが「こす」なので「おこす」と読みます。", "そういう読み方はありません。", "「起」は「き」とは読みません（音読みは「き」ですが、ここでは訓《くん》読みです）。"]),
+    answer: ch(["おこす", "おきす", "きこす"], 0, ["正しい。送りがなが「こす」なので「おこす」と読みます。", "そういう読み方はありません。", "「き」は音読みです。送りがなのある「起こす」は、訓《くん》読みで「おこす」と読みます。"]),
     point: "送りがなで読み方が決まる",
     steps: [{ title: "送りがなを見る", body: "「起きる」は おきる、「起こす」は {{おこす}}。送りがなで読み方と意味が変《か》わります。", back: [S2] }],
   },
@@ -110,6 +110,6 @@ export const E_JAPANESE_3_KANJI_MOSHI: UnitMoshi = {
   subject: "ja",
   grade: "小3",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [{ title: "3年の漢字", lead: "次の問いに答えなさい。", style: "word", pick: 6, questions: POOL }],
 };

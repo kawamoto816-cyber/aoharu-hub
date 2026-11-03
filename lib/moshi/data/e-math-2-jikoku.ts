@@ -43,7 +43,7 @@ function aida(r: Rng): QuestionBody {
 function fun(r: Rng): QuestionBody {
   const k = r.int(0, 2);
   if (k === 0) {
-    const h = r.int(1, 3);
+    const h = 1; // 小2: 60×何 の かけ算は まだ しないので、1時間何分 だけ
     const m = r.step(5, 55, 5);
     return {
       prompt: `${h}時間${m}分は 何分ですか。`,
@@ -167,7 +167,7 @@ export const E_MATH_2_JIKOKU_MOSHI: UnitMoshi = {
   subject: "sansu",
   grade: "小2",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "時間と 時刻《じこく》を 読む",

@@ -53,7 +53,7 @@ function shiki(r: Rng): QuestionBody {
   const x = r.int(11, 30);
   const what = r.pick([
     { thing: `1こ${a * 10}gのおもり`, o: "おもりの数", ou: "こ", d: "全体の重さ", unit: "g", m: 10 },
-    { thing: `1さつの厚さが${a}cmの本`, o: "本の数", ou: "さつ", d: "積み重ねた高さ", unit: "cm", m: 1 },
+    { thing: `1さつの厚さが${a}mmの本`, o: "本の数", ou: "さつ", d: "積み重ねた高さ", unit: "mm", m: 1 },
   ]);
   const ans = a * what.m * x;
   return {
@@ -124,7 +124,7 @@ function maisu(r: Rng): QuestionBody {
     steps: [
       { title: "単位をそろえる", body: `${f(kg)}kg＝${total}g です。` },
       { title: "1枚《まい》の重さ", body: `${g * n1}÷${n1}＝${g} なので、1枚《まい》${g}gです。`, back: [BACK_SHIKI] },
-      { title: "何枚《まい》分か", body: `${total}÷${g}＝{{${n}}}（枚《まい》）です。`, trap: "kg のまま計算すると、答えが1000分の1になってしまう。", back: [BACK_BAI] },
+      { title: "何｜枚《まい》分か", body: `${total}÷${g}＝{{${n}}}（枚《まい》）です。`, trap: "kg のまま計算すると、答えが1000分の1になってしまう。", back: [BACK_BAI] },
     ],
   };
 }
@@ -133,7 +133,7 @@ export const E_MATH_5_HIREI_MOSHI: UnitMoshi = {
   unit: U,
   subject: "sansu",
   grade: "小5",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "比例する2つの量",

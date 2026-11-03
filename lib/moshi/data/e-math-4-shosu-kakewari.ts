@@ -14,7 +14,8 @@ const B_AMARI = L(4, "あまりを出すか、わり進むか");
 const f = (x: number) => String(Math.round(x * 1000) / 1000);
 
 function kake1(r: Rng): QuestionBody {
-  const t = r.int(12, 89);
+  let t = r.int(12, 89);
+  if (t % 10 === 0) t += 1; // 6.0 のような整数にしない
   const k = r.int(3, 9);
   return {
     prompt: `${f(t / 10)}×${k} を計算しなさい。`,
@@ -25,7 +26,8 @@ function kake1(r: Rng): QuestionBody {
 }
 
 function kake2(r: Rng): QuestionBody {
-  const t = r.int(105, 899);
+  let t = r.int(105, 899);
+  if (t % 10 === 0) t += 1; // 小数第2位まである数に
   const k = r.int(2, 9);
   return {
     prompt: `${f(t / 100)}×${k} を計算しなさい。`,
@@ -37,7 +39,8 @@ function kake2(r: Rng): QuestionBody {
 
 function waru(r: Rng): QuestionBody {
   const k = r.int(2, 9);
-  const q = r.int(11, 49);
+  let q = r.int(11, 49);
+  if ((q * k) % 10 === 0) q += 1; // わられる数を整数にしない
   const a = q * k;
   return {
     prompt: `${f(a / 10)}÷${k} を計算しなさい。`,
@@ -83,7 +86,7 @@ function bunsho(r: Rng): QuestionBody {
     P = r.int(3, 9); // 1人分 (0.1L が何こ)
     j = r.int(3, 8); // 人数
     k = r.int(2, 6); // 本数
-    if ((P * j) % k === 0 && ((P * j) / k) % 10 !== 0) break;
+    if ((P * j) % k === 0 && ((P * j) / k) % 10 !== 0 && j !== k) break; // 本数＝人数だと、答えが1本分と同じになる
   }
   if ((P * j) % k !== 0) [P, j, k] = [6, 4, 3];
   const bottle = (P * j) / k; // 1本 (0.1L が何こ)
@@ -102,7 +105,7 @@ export const E_MATH_4_SHOSU_KAKEWARI_MOSHI: UnitMoshi = {
   unit: U,
   subject: "sansu",
   grade: "小4",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "小数×整数・小数÷整数",

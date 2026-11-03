@@ -138,7 +138,7 @@ export const E_MATH_3_JIKOKU_MOSHI: UnitMoshi = {
   unit: U,
   subject: "sansu",
   grade: "小3",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "時刻《じこく》をもとめる",

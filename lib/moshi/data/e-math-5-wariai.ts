@@ -138,7 +138,7 @@ export const E_MATH_5_WARIAI_MOSHI: UnitMoshi = {
   unit: U,
   subject: "sansu",
   grade: "小5",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "割合《わりあい》・比べる量・百分率",

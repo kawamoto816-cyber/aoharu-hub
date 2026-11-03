@@ -25,7 +25,7 @@ export const E_JAPANESE_1_KEIKEN_MOSHI: UnitMoshi = {
   subject: "ja",
   grade: "小1",
   minutes: 12,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "した ことを かいた 文を 読《よ》む「さかなつり」",

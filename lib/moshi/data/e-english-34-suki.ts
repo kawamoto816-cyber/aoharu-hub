@@ -112,7 +112,7 @@ export const E_ENGLISH_34_SUKI_MOSHI: UnitMoshi = {
   subject: "eng",
   grade: "外国語活動（小3・4）",
   minutes: 6,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     { title: "I like 〜. と Do you like 〜?", lead: "次の問いに答えなさい。", style: "word", pick: 3, questions: IIKATA },
     { title: "会話を読んで答える", lead: "放送のかわりに、会話の文がのっています。読んで答えなさい。", style: "word", pick: 3, questions: KAIWA },

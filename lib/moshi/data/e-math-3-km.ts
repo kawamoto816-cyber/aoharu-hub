@@ -85,7 +85,7 @@ function shuu(r: Rng): QuestionBody {
     point: "km を m にそろえてから考える",
     steps: [
       { title: "m にそろえる", body: `${kms}km＝${kms * 1000}m です。`, back: [B_1000] },
-      { title: "何回分か", body: `${kms * 1000}÷${lap}＝{{${n}}}（回）。` },
+      { title: "何回分か", body: `${lap}m を何回まわると ${kms * 1000}m になるかを考えます。${lap}×${n}＝${kms * 1000} なので、{{${n}}}回です。` },
     ],
   };
 }
@@ -116,7 +116,7 @@ export const E_MATH_3_KM_MOSHI: UnitMoshi = {
   unit: U,
   subject: "sansu",
   grade: "小3",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "km と m",

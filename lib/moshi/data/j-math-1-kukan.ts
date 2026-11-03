@@ -18,7 +18,7 @@ export const J_MATH_1_KUKAN: Daimon[] = [
     level: 1,
     points: 20,
     minutes: 10,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     material: [
       {
         kind: "text",
@@ -51,9 +51,9 @@ export const J_MATH_1_KUKAN: Daimon[] = [
           {
             title: "交わる・平行を除く",
             body: "AE と交わるのは AB・AD・EF・EH、平行なのは BF・CG・DH。残りの {{BC・CD・FG・GH}} がねじれの位置です。",
-            figure: { ref: { unit: "j-math-1-kukan", section: 1 } },
+            figure: { ref: { unit: "j-math-1-kukan", section: 2 } },
             trap: "平行でない辺はすべて交わると考える。空間ではねじれの位置がある。",
-            back: [{ label: "レクチャー「2直線の位置関係は3つ」", href: `${LEC}#lec-s2` }],
+            back: [{ label: "レクチャー「2直線の位置関係は3つ」", href: `${LEC}#lec-s3` }],
           },
         ],
       },
@@ -194,7 +194,7 @@ export const J_MATH_1_KUKAN: Daimon[] = [
     level: 2,
     points: 20,
     minutes: 12,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     items: [
       {
         id: "1",
@@ -209,7 +209,7 @@ export const J_MATH_1_KUKAN: Daimon[] = [
           {
             title: "1/3 を忘れずに",
             body: "底面積は 6×6＝36。{{1/3}}×36×7＝84cm³。",
-            figure: { ref: { unit: "j-math-1-kukan", section: 3 } },
+            figure: { ref: { unit: "j-math-1-kukan", section: 5 } },
             trap: "36×7＝252 と、1/3 をかけ忘れる。",
           },
         ],
@@ -262,7 +262,7 @@ export const J_MATH_1_KUKAN: Daimon[] = [
           why: [
             "1/3×π×6²×8＝1/3×288π＝96π です。",
             "π×6²×8 で円柱の体積です。1/3 をかけていません。",
-            "1/3 を2回かけています（または半径を 2 として計算）。",
+            "1/3 を2回かけています。",
             "π×8²×6×1/3 で、半径と高さを入れかえています。",
           ],
           mistakeOf: [null, 0, null, null],
@@ -271,8 +271,8 @@ export const J_MATH_1_KUKAN: Daimon[] = [
           {
             title: "円柱の 1/3",
             body: "同じ底面・高さの円柱は 36π×8＝288π。円錐はその {{1/3}} で 96π cm³。",
-            figure: { ref: { unit: "j-math-1-kukan", section: 3 } },
-            back: [{ label: "レクチャー「錐体の体積は柱体の 1/3」", href: `${LEC}#lec-s4` }],
+            figure: { ref: { unit: "j-math-1-kukan", section: 5 } },
+            back: [{ label: "レクチャー「錐体の体積は柱体の 1/3」", href: `${LEC}#lec-s6` }],
           },
         ],
       },
@@ -328,7 +328,7 @@ export const J_MATH_1_KUKAN: Daimon[] = [
     level: 2,
     points: 20,
     minutes: 12,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     material: [{ kind: "text", body: "母線の長さが 12cm、底面の半径が 4cm の円錐がある。この円錐の展開図について考える。" }],
     items: [
       {
@@ -355,7 +355,7 @@ export const J_MATH_1_KUKAN: Daimon[] = [
           {
             title: "母線が半径",
             body: "円錐の側面を切り開くと、{{母線を半径とするおうぎ形}}になります。",
-            figure: { ref: { unit: "j-math-1-kukan", section: 2 } },
+            figure: { ref: { unit: "j-math-1-kukan", section: 4 } },
           },
         ],
       },
@@ -372,7 +372,7 @@ export const J_MATH_1_KUKAN: Daimon[] = [
           {
             title: "弧は底面のまわりに巻きつく",
             body: "組み立てると弧は底面の円周にぴったり重なるので、弧＝2π×4＝{{8π cm}}。",
-            back: [{ label: "レクチャー「円錐の展開図は、おうぎ形と円」", href: `${LEC}#lec-s3` }],
+            back: [{ label: "レクチャー「円錐の展開図は、おうぎ形と円」", href: `${LEC}#lec-s5` }],
           },
         ],
       },
@@ -390,7 +390,7 @@ export const J_MATH_1_KUKAN: Daimon[] = [
           {
             title: "割合を出す",
             body: "半径 12cm の円周は 24π。8π÷24π＝{{1/3}}。",
-            figure: { ref: { unit: "j-math-1-kukan", section: 2 } },
+            figure: { ref: { unit: "j-math-1-kukan", section: 4 } },
           },
           {
             title: "360° にかける",
@@ -471,7 +471,7 @@ export const J_MATH_1_KUKAN: Daimon[] = [
     level: 3,
     points: 20,
     minutes: 15,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     material: [{ kind: "text", body: "∠B＝90°、AB＝6cm、BC＝3cm の直角三角形 ABC がある。この三角形を、1つの辺を軸として1回転させる。" }],
     items: [
       {
@@ -497,7 +497,7 @@ export const J_MATH_1_KUKAN: Daimon[] = [
           {
             title: "軸が高さ、もう1辺が半径",
             body: "AB を軸にすると、{{高さ 6cm、底面の半径 3cm の円錐}}ができます。",
-            figure: { ref: { unit: "j-math-1-kukan", section: 0 } },
+            figure: { ref: { unit: "j-math-1-kukan", section: 3 } },
           },
         ],
       },
@@ -584,7 +584,7 @@ export const J_MATH_1_KUKAN: Daimon[] = [
           {
             title: "円柱の体積とくらべる",
             body: "円柱は π×3²×6＝54π。18π÷54π＝{{1/3}}。底面と高さが同じなら、錐体は柱体の 1/3 です。",
-            figure: { ref: { unit: "j-math-1-kukan", section: 3 } },
+            figure: { ref: { unit: "j-math-1-kukan", section: 5 } },
           },
         ],
       },

@@ -28,7 +28,7 @@ export const E_JAPANESE_3_HAIKU_MOSHI: UnitMoshi = {
   subject: "ja",
   grade: "小3",
   minutes: 12,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "俳句《はいく》を読む",

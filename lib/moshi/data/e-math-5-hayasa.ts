@@ -43,7 +43,7 @@ function michinori(r: Rng): QuestionBody {
 }
 
 function jikan(r: Rng): QuestionBody {
-  const v = r.pick([4, 5, 6, 8, 10, 12, 15]);
+  const v = r.pick([4, 5, 6, 7, 8]); // 人が走る速さ (秒速10m以上は大人のトップ選手より速い)
   const t = r.int(6, 30);
   const d = v * t;
   return {
@@ -187,7 +187,7 @@ export const E_MATH_5_HAYASA_MOSHI: UnitMoshi = {
   unit: U,
   subject: "sansu",
   grade: "小5",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "速さ・道のり・時間を求める",

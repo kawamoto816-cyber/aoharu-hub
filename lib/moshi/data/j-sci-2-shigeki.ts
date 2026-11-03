@@ -15,7 +15,7 @@ export const J_SCI_2_SHIGEKI: Daimon[] = [
     level: 1,
     points: 20,
     minutes: 8,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     items: [
       {
         id: "1",
@@ -141,8 +141,8 @@ export const J_SCI_2_SHIGEKI: Daimon[] = [
           {
             title: "意識するかどうか",
             body: "{{意識と関係なく}}起こる反応が反射。脊髄などが命令を出すので、脳で判断するより{{速い}}です。",
-            figure: { ref: { unit: "j-sci-2-shigeki", section: 2 } },
-            back: [{ label: "レクチャー「意識して起こす反応と反射」", href: `${L}#lec-s3` }],
+            figure: { ref: { unit: "j-sci-2-shigeki", section: 3 } },
+            back: [{ label: "レクチャー「意識して起こす反応と反射」", href: `${L}#lec-s4` }],
           },
         ],
       },
@@ -167,7 +167,7 @@ export const J_SCI_2_SHIGEKI: Daimon[] = [
     level: 2,
     points: 24,
     minutes: 11,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     items: [
       {
         id: "1",
@@ -220,8 +220,8 @@ export const J_SCI_2_SHIGEKI: Daimon[] = [
           {
             title: "意識して起こす反応の道すじ",
             body: "にぎられたと{{感じて判断}}するので、信号は{{脳}}まで行ってから命令が出ます。皮ふ → 感覚神経 → 脊髄 → 脳 → 脊髄 → 運動神経 → 筋肉。",
-            figure: { ref: { unit: "j-sci-2-shigeki", section: 2 } },
-            back: [{ label: "レクチャー「意識して起こす反応と反射」", href: `${L}#lec-s3` }],
+            figure: { ref: { unit: "j-sci-2-shigeki", section: 3 } },
+            back: [{ label: "レクチャー「意識して起こす反応と反射」", href: `${L}#lec-s4` }],
           },
         ],
       },
@@ -278,7 +278,7 @@ export const J_SCI_2_SHIGEKI: Daimon[] = [
           {
             title: "反射の道すじ",
             body: "反射では 皮ふ → 感覚神経 → {{脊髄}} → 運動神経 → 筋肉。{{脳を通らない}}ので道すじが短く、速く反応します。",
-            figure: { ref: { unit: "j-sci-2-shigeki", section: 2 } },
+            figure: { ref: { unit: "j-sci-2-shigeki", section: 3 } },
             trap: "反射も脳で判断していると考える（「熱い」と感じるのは手を引いたあと）。",
           },
         ],
@@ -295,14 +295,14 @@ export const J_SCI_2_SHIGEKI: Daimon[] = [
     material: [
       {
         kind: "figure",
-        figure: { ref: { unit: "j-sci-2-shigeki", section: 3 } },
+        figure: { ref: { unit: "j-sci-2-shigeki", section: 4 } },
       },
     ],
     style: "writing",
     level: 3,
     points: 24,
     minutes: 11,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     items: [
       {
         id: "1",
@@ -333,8 +333,8 @@ export const J_SCI_2_SHIGEKI: Daimon[] = [
           {
             title: "縮む側が動かす",
             body: "腕を曲げるときは{{内側の筋肉が縮み}}、外側はゆるみます。のばすときはその逆です。",
-            figure: { ref: { unit: "j-sci-2-shigeki", section: 3 } },
-            back: [{ label: "レクチャー「骨と筋肉」", href: `${L}#lec-s4` }],
+            figure: { ref: { unit: "j-sci-2-shigeki", section: 4 } },
+            back: [{ label: "レクチャー「骨と筋肉」", href: `${L}#lec-s5` }],
           },
         ],
       },
@@ -426,8 +426,8 @@ export const J_SCI_2_SHIGEKI: Daimon[] = [
           {
             title: "命令と感覚は別の道",
             body: "反射では{{脊髄}}から命令が出て、先に手が動きます。信号はそのあと{{脳}}にも届き、そこで初めて「熱い」と感じます。",
-            figure: { ref: { unit: "j-sci-2-shigeki", section: 2 } },
-            back: [{ label: "レクチャー「意識して起こす反応と反射」", href: `${L}#lec-s3` }],
+            figure: { ref: { unit: "j-sci-2-shigeki", section: 3 } },
+            back: [{ label: "レクチャー「意識して起こす反応と反射」", href: `${L}#lec-s4` }],
           },
         ],
       },

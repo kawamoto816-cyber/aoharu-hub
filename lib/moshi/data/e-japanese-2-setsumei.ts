@@ -23,7 +23,7 @@ export const E_JAPANESE_2_SETSUMEI_MOSHI: UnitMoshi = {
   subject: "ja",
   grade: "小2",
   minutes: 12,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "せつめいの 文章《ぶんしょう》を 読む「紙ひこうきの 作り方」",

@@ -15,8 +15,8 @@ export const J_SCI_3_DENCHI: Daimon[] = [
     level: 1,
     points: 20,
     minutes: 10,
-    review: { status: "draft" },
-    material: [{ kind: "figure", figure: { ref: { unit: "j-sci-3-denchi", section: 1 } } }],
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
+    material: [{ kind: "figure", figure: { ref: { unit: "j-sci-3-denchi", section: 2 } } }],
     items: [
       {
         id: "1",
@@ -40,7 +40,7 @@ export const J_SCI_3_DENCHI: Daimon[] = [
           {
             title: "電子を送り出すのが−極",
             body: "イオンへのなりやすさは {{亜鉛 ＞ 銅}}。亜鉛が電子を出すので、{{亜鉛板が−極}}です。",
-            back: [{ label: "レクチャー「ダニエル電池のしくみ」", href: `${L}#lec-s2` }],
+            back: [{ label: "レクチャー「ダニエル電池のしくみ」", href: `${L}#lec-s3` }],
           },
         ],
       },
@@ -91,7 +91,7 @@ export const J_SCI_3_DENCHI: Daimon[] = [
           {
             title: "−極では電子を失う",
             body: "亜鉛原子は電子を2個失って {{Zn²⁺}} になります。Zn → Zn²⁺ ＋ {{2e⁻}}。",
-            figure: { ref: { unit: "j-sci-3-denchi", section: 2 } },
+            figure: { ref: { unit: "j-sci-3-denchi", section: 3 } },
           },
         ],
       },
@@ -134,7 +134,7 @@ export const J_SCI_3_DENCHI: Daimon[] = [
           {
             title: "燃料電池は水の電気分解の逆",
             body: "燃料電池は {{2H₂ ＋ O₂ → 2H₂O}} の変化を利用します。出るのは水だけなので、環境への影響が小さい電池です。",
-            figure: { ref: { unit: "j-sci-3-denchi", section: 3 } },
+            figure: { ref: { unit: "j-sci-3-denchi", section: 4 } },
           },
         ],
       },
@@ -151,7 +151,7 @@ export const J_SCI_3_DENCHI: Daimon[] = [
     level: 2,
     points: 25,
     minutes: 12,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     material: [
       {
         kind: "table",
@@ -239,7 +239,7 @@ export const J_SCI_3_DENCHI: Daimon[] = [
           {
             title: "(1) の順で決める",
             body: "B ＞ C なので、電子を送り出す{{−極は B}}です。",
-            back: [{ label: "レクチャー「ダニエル電池のしくみ」", href: `${L}#lec-s2` }],
+            back: [{ label: "レクチャー「ダニエル電池のしくみ」", href: `${L}#lec-s3` }],
           },
         ],
       },
@@ -306,7 +306,7 @@ export const J_SCI_3_DENCHI: Daimon[] = [
     level: 3,
     points: 25,
     minutes: 13,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     material: [
       {
         kind: "table",
@@ -357,7 +357,7 @@ export const J_SCI_3_DENCHI: Daimon[] = [
           {
             title: "＋極で起こる変化",
             body: "銅板では {{Cu²⁺ ＋ 2e⁻ → Cu}}。水溶液中の銅イオンが電子を受けとり、銅になって板に付くので重くなります。",
-            figure: { ref: { unit: "j-sci-3-denchi", section: 2 } },
+            figure: { ref: { unit: "j-sci-3-denchi", section: 3 } },
             trap: "「銅板が電子を受けとるから」とだけ書き、銅ができることを書かない。",
           },
         ],
@@ -431,7 +431,7 @@ export const J_SCI_3_DENCHI: Daimon[] = [
           {
             title: "セロハン膜の役割",
             body: "セロハン膜には小さな穴があり、{{イオンを少しずつ通す}}ので電気のかたよりができません。水溶液がすぐに混ざるのも防ぎます。",
-            figure: { ref: { unit: "j-sci-3-denchi", section: 1 } },
+            figure: { ref: { unit: "j-sci-3-denchi", section: 2 } },
           },
         ],
       },

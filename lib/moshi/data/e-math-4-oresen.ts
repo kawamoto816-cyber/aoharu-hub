@@ -37,7 +37,7 @@ function agari(r: Rng): QuestionBody {
 
 function memori(r: Rng): QuestionBody {
   const per = r.pick([1, 2, 5]);
-  const n = r.int(4, 18);
+  const n = r.int(4, Math.min(18, Math.floor(35 / per))); // 35度までの、ありそうな温度に
   const top = per * 5;
   const what = r.pick(["気温", "水の温度", "池の水温"]);
   return {
@@ -136,7 +136,7 @@ export const E_MATH_4_ORESEN_MOSHI: UnitMoshi = {
   unit: U,
   subject: "sansu",
   grade: "小4",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "折れ線グラフを読む",

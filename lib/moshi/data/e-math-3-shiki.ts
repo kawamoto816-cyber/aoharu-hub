@@ -13,7 +13,7 @@ const B_TASHIKA = L(4, "□に入れてたしかめる");
 function tasu(r: Rng): QuestionBody {
   const x = r.int(12, 68);
   const a = r.int(11, 39);
-  const what = r.pick(["あめ", "シール", "どんぐり"]);
+  const what = r.pick(["あめ", "おはじき", "どんぐり"]);
   return {
     prompt: `${what}を何こか持っていました。${a}こもらったので、全部で${x + a}こになりました。はじめに持っていた数を□こにして式に表すと、□＋${a}＝${x + a} です。□はいくつですか。`,
     answer: { kind: "num", answerKind: "num", answer: [String(x)], calc: `${x + a}-${a}`, equations: [`x+${a}=${x + a}`] },
@@ -79,7 +79,7 @@ function waru(r: Rng): QuestionBody {
 }
 
 function nidan(r: Rng): QuestionBody {
-  const x = r.step(60, 150, 10);
+  const x = r.step(60, 90, 10); // 小3: (何十)÷(1けた) を九九でとける大きさに
   const k = r.int(2, 5);
   const a = r.step(80, 150, 10);
   const t = x * k + a;
@@ -90,7 +90,7 @@ function nidan(r: Rng): QuestionBody {
     point: "あとからたした数をひいてから、わり算",
     steps: [
       { title: `${what}の代金`, body: `全部の${t}円からジュースの${a}円をひくと、${what}${k}こ分は ${t}−${a}＝${t - a}（円）。`, back: [B_TASU] },
-      { title: "1こ分", body: `□×${k}＝${t - a} なので、□＝${t - a}÷${k}＝{{${x}}}（円）。`, back: [B_KAKE] },
+      { title: "1こ分", body: `□×${k}＝${t - a} です。${t - a}は10が${(t - a) / 10}こなので、${(t - a) / 10}÷${k}＝${x / 10} より、□＝${t - a}÷${k}＝{{${x}}}（円）。`, back: [B_KAKE] },
       { title: "たしかめる", body: `${x}×${k}＋${a}＝${x * k}＋${a}＝${t} で正しいです。`, back: [B_TASHIKA] },
     ],
   };
@@ -100,7 +100,7 @@ export const E_MATH_3_SHIKI_MOSHI: UnitMoshi = {
   unit: U,
   subject: "sansu",
   grade: "小3",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "□をもとめる",

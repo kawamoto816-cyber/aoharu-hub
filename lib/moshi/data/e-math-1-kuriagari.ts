@@ -80,7 +80,7 @@ function bun(r: Rng): QuestionBody {
   const [f, v] = r.pick([
     ["あめ", "もらいました"],
     ["どんぐり", "ひろいました"],
-    ["シール", "かいました"],
+    ["ビー玉", "かいました"],
   ]);
   return {
     prompt: `${f}が ${a}こ あります。${b}こ ${v}。ぜんぶで なんこに なりましたか。`,
@@ -131,7 +131,7 @@ export const E_MATH_1_KURIAGARI_MOSHI: UnitMoshi = {
   subject: "sansu",
   grade: "小1",
   minutes: 7,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "10を つくって たす",

@@ -16,7 +16,7 @@ export const J_MATH_1_HIREI: Daimon[] = [
     level: 1,
     points: 20,
     minutes: 10,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     items: [
       {
         id: "1",
@@ -47,9 +47,9 @@ export const J_MATH_1_HIREI: Daimon[] = [
           {
             title: "x×y と y÷x を確かめる",
             body: "それぞれ y を x の式で表します。{{y＝a/x の形（x×y が一定）}}なら反比例です。",
-            figure: { ref: { unit: "j-math-1-hirei", section: 3 } },
+            figure: { ref: { unit: "j-math-1-hirei", section: 4 } },
             trap: "エは x が増えると y が減るので反比例だと思ってしまう。",
-            back: [{ label: "レクチャー「比例と反比例を表でくらべる」", href: `${LEC}#lec-s4` }],
+            back: [{ label: "レクチャー「比例と反比例を表でくらべる」", href: `${LEC}#lec-s5` }],
           },
         ],
       },
@@ -112,8 +112,8 @@ export const J_MATH_1_HIREI: Daimon[] = [
           {
             title: "比例定数は x×y",
             body: "反比例では {{x×y がいつも a}} です。a＝(−5)×4＝−20 なので y＝−20/x。",
-            figure: { ref: { unit: "j-math-1-hirei", section: 2 } },
-            back: [{ label: "レクチャー「反比例 y＝a/x」", href: `${LEC}#lec-s3` }],
+            figure: { ref: { unit: "j-math-1-hirei", section: 3 } },
+            back: [{ label: "レクチャー「反比例 y＝a/x」", href: `${LEC}#lec-s4` }],
           },
         ],
       },
@@ -173,7 +173,7 @@ export const J_MATH_1_HIREI: Daimon[] = [
     level: 2,
     points: 20,
     minutes: 12,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     material: [
       {
         kind: "table",
@@ -213,9 +213,9 @@ export const J_MATH_1_HIREI: Daimon[] = [
           {
             title: "y÷x と x×y を計算する",
             body: "表Aは (−4)÷1＝(−8)÷2＝−4 で {{y÷x が一定}}。表Bは 1×24＝2×12＝24 で {{x×y が一定}}。",
-            figure: { ref: { unit: "j-math-1-hirei", section: 3 } },
+            figure: { ref: { unit: "j-math-1-hirei", section: 4 } },
             trap: "表Aの y が減っていくので反比例と思う。比例定数が負の比例です。",
-            back: [{ label: "レクチャー「比例と反比例を表でくらべる」", href: `${LEC}#lec-s4` }],
+            back: [{ label: "レクチャー「比例と反比例を表でくらべる」", href: `${LEC}#lec-s5` }],
           },
         ],
       },
@@ -248,7 +248,7 @@ export const J_MATH_1_HIREI: Daimon[] = [
           {
             title: "x×y＝24 を使う",
             body: "表Bの式は y＝24/x。x＝4 のとき y＝24÷4＝{{6}}。",
-            figure: { ref: { unit: "j-math-1-hirei", section: 2 } },
+            figure: { ref: { unit: "j-math-1-hirei", section: 3 } },
           },
         ],
       },
@@ -312,7 +312,7 @@ export const J_MATH_1_HIREI: Daimon[] = [
     level: 2,
     points: 20,
     minutes: 12,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     material: [
       {
         kind: "text",
@@ -404,7 +404,7 @@ export const J_MATH_1_HIREI: Daimon[] = [
           {
             title: "b＝x×y",
             body: "点 B(3, −8) を通るので、b＝3×(−8)＝{{−24}}。",
-            back: [{ label: "レクチャー「反比例 y＝a/x」", href: `${LEC}#lec-s3` }],
+            back: [{ label: "レクチャー「反比例 y＝a/x」", href: `${LEC}#lec-s4` }],
           },
         ],
       },
@@ -469,7 +469,7 @@ export const J_MATH_1_HIREI: Daimon[] = [
     level: 3,
     points: 20,
     minutes: 14,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     material: [
       {
         kind: "text",
@@ -535,8 +535,8 @@ export const J_MATH_1_HIREI: Daimon[] = [
           {
             title: "一定の量を見つける",
             body: "満水の量は 6×40＝{{240L}} で変わりません。x×y＝240 なので反比例です。",
-            figure: { ref: { unit: "j-math-1-hirei", section: 2 } },
-            back: [{ label: "レクチャー「反比例 y＝a/x」", href: `${LEC}#lec-s3` }],
+            figure: { ref: { unit: "j-math-1-hirei", section: 3 } },
+            back: [{ label: "レクチャー「反比例 y＝a/x」", href: `${LEC}#lec-s4` }],
           },
         ],
       },

@@ -26,7 +26,7 @@ export const E_JAPANESE_2_MONOGATARI_MOSHI: UnitMoshi = {
   subject: "ja",
   grade: "小2",
   minutes: 12,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "お話を 読む「雪の 野原で」",

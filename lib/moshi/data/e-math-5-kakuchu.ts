@@ -21,9 +21,9 @@ function men(r: Rng): QuestionBody {
   const n = r.pick(NS);
   return {
     prompt: `${NAME[n]}角柱の面の数は、全部でいくつですか。`,
-    answer: num(n + 2, `${n}+2`, "つ"),
+    answer: num(n + 2, `${n}+2`, "こ"),
     point: "面の数＝側面（底面の辺の数）＋底面2つ",
-    steps: [{ title: "側面と底面", body: `側面は底面の辺の数と同じ${n}つ、底面は上と下の2つ。${n}＋2＝{{${n + 2}}}（つ）です。`, back: [BACK_KAZU, BACK_NAMAE] }],
+    steps: [{ title: "側面と底面", body: `側面は底面の辺の数と同じ${n}こ、底面は上と下の2こ。${n}＋2＝{{${n + 2}}}（こ）です。`, back: [BACK_KAZU, BACK_NAMAE] }],
   };
 }
 
@@ -84,7 +84,7 @@ function sokumen(r: Rng): QuestionBody {
   const a = r.int(2, 9);
   const h = r.int(3, 12);
   return {
-    prompt: `底面が1辺 ${a}cm の正${NAME[n]}角形で、高さが ${h}cm の${NAME[n]}角柱があります。この角柱の展開図《てんかいず》で、側面を1つの長方形になるようにならべてかきました。その長方形の面積は何cm²ですか。`,
+    prompt: `底面が1辺 ${a}cm の${n === 4 ? "正方形" : `正${NAME[n]}角形`}で、高さが ${h}cm の${NAME[n]}角柱があります。この角柱の展開図《てんかいず》で、側面を1つの長方形になるようにならべてかきました。その長方形の面積は何cm²ですか。`,
     answer: num(n * a * h, `${n}*${a}*${h}`, "cm²"),
     point: "側面全体の長方形の横＝底面のまわりの長さ",
     steps: [
@@ -98,7 +98,7 @@ export const E_MATH_5_KAKUCHU_MOSHI: UnitMoshi = {
   unit: U,
   subject: "sansu",
   grade: "小5",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "面・辺・頂点《ちょうてん》の数",

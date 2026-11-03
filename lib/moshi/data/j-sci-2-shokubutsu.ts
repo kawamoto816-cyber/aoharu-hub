@@ -15,7 +15,7 @@ export const J_SCI_2_SHOKUBUTSU: Daimon[] = [
     level: 1,
     points: 20,
     minutes: 8,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     items: [
       {
         id: "1",
@@ -169,7 +169,7 @@ export const J_SCI_2_SHOKUBUTSU: Daimon[] = [
     level: 2,
     points: 24,
     minutes: 11,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     items: [
       {
         id: "1",
@@ -304,7 +304,7 @@ export const J_SCI_2_SHOKUBUTSU: Daimon[] = [
     level: 3,
     points: 26,
     minutes: 13,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     items: [
       {
         id: "1",

@@ -146,7 +146,7 @@ export const E_MATH_1_3TSU_MOSHI: UnitMoshi = {
   subject: "sansu",
   grade: "小1",
   minutes: 7,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "3つの かずの けいさん",

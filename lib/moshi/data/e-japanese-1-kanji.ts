@@ -116,6 +116,6 @@ export const E_JAPANESE_1_KANJI_MOSHI: UnitMoshi = {
   subject: "ja",
   grade: "小1",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [{ title: "1年の 漢字《かんじ》", lead: "つぎの もんだいに こたえなさい。", style: "word", pick: 6, questions: POOL }],
 };

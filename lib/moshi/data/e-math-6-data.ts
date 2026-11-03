@@ -77,7 +77,7 @@ function chuoGusu(r: Rng): QuestionBody {
   const a = s[n / 2 - 1];
   const b = s[n / 2];
   return {
-    prompt: `${n}人の50m走のあとに測った、1分間の脈はくの数は、${list(xs, "回")} でした。中央値は何回ですか。`,
+    prompt: `${n}人の、20秒間の反復横とびの回数は、${list(xs, "回")} でした。中央値は何回ですか。`,
     answer: num((a + b) / 2, `(${a}+${b})/2`, "回"),
     point: "偶数《ぐうすう》個なら、真ん中2つの平均",
     steps: [
@@ -126,7 +126,7 @@ export const E_MATH_6_DATA_MOSHI: UnitMoshi = {
   unit: U,
   subject: "sansu",
   grade: "小6",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "代表値を求める",

@@ -68,7 +68,7 @@ function sonota(r: Rng): QuestionBody {
     rest -= p;
   }
   return {
-    prompt: `「${tp.t}」の調べた結果を円グラフに表しました。${tp.items.map((x, i) => `${x}が${ps[i]}%`).join("、")}で、残りは「その他」です。「その他」は何%ですか。`,
+    prompt: `「${tp.t}」を調べた結果を円グラフに表しました。${tp.items.map((x, i) => `${x}が${ps[i]}%`).join("、")}で、残りは「その他」です。「その他」は何%ですか。`,
     answer: num(rest, `100-${ps.join("-")}`, "%"),
     point: "円グラフも帯グラフも、全体は100%",
     steps: [{ title: "100%からひく", body: `${ps.join("＋")}＝${100 - rest}（%）。100−${100 - rest}＝{{${rest}}}（%）です。`, back: [BACK_CHIGAI, BACK_KAKI] }],
@@ -143,7 +143,7 @@ export const E_MATH_5_OBI_EN_MOSHI: UnitMoshi = {
   unit: U,
   subject: "sansu",
   grade: "小5",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "百分率とグラフ",

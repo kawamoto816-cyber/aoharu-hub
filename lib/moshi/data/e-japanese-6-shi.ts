@@ -28,7 +28,7 @@ export const E_JAPANESE_6_SHI_MOSHI: UnitMoshi = {
   subject: "ja",
   grade: "小6",
   minutes: 16,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "詩の読解「雪の朝」",

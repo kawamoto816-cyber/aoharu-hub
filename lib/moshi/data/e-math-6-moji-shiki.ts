@@ -54,7 +54,7 @@ function dainyu(r: Rng): QuestionBody {
   const a = r.step(40, 150, 10);
   const b = r.step(200, 600, 50);
   const x = r.int(3, 12);
-  const thing = r.pick(["ノート", "えんぴつ", "シール"]);
+  const thing = r.pick(["けしゴム", "ボール", "おかし"]);
   const y = a * x + b;
   return {
     prompt: `1こ${a}円の${thing}を x こと、${b}円のふでばこを1つ買ったときの代金を y 円とすると、y＝${a}×x＋${b} と表せます。x が ${x} のとき、y の値を求めなさい。`,
@@ -67,7 +67,7 @@ function dainyu(r: Rng): QuestionBody {
 function erabu(r: Rng): QuestionBody {
   const n = r.int(3, 9);
   const b = r.step(50, 200, 10);
-  const thing = r.pick(["ジュース", "パン", "ノート"]);
+  const thing = r.pick(["ジュース", "パン", "おにぎり"]);
   return {
     prompt: `1こ x 円の${thing}を ${n}こと、${b}円のおかしを1つ買いました。代金の合計を表す式はどれですか。`,
     answer: choice(
@@ -175,7 +175,7 @@ export const E_MATH_6_MOJI_SHIKI_MOSHI: UnitMoshi = {
   unit: U,
   subject: "sansu",
   grade: "小6",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "xの値・yの値",

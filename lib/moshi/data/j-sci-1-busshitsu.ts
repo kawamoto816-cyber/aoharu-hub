@@ -16,7 +16,7 @@ export const J_SCI_1_BUSSHITSU: Daimon[] = [
     level: 1,
     points: 20,
     minutes: 9,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     items: [
       {
         id: "1",
@@ -94,7 +94,7 @@ export const J_SCI_1_BUSSHITSU: Daimon[] = [
           {
             title: "共通の性質と、一部だけの性質",
             body: "金属に共通なのは{{金属光沢・電気や熱をよく通す・展性と延性}}。磁石につくのは一部だけです。",
-            figure: { ref: { unit: U, section: 1 } },
+            figure: { ref: { unit: U, section: 2 } },
           },
         ],
       },
@@ -119,7 +119,7 @@ export const J_SCI_1_BUSSHITSU: Daimon[] = [
           {
             title: "ガス → 火 → 空気の順",
             body: "元栓とコックを開き、{{マッチの火を近づけてから}}ガスを出します。炎の大きさを決め、{{最後に空気}}を調節して青い炎にします。",
-            figure: { ref: { unit: U, section: 4 } },
+            figure: { ref: { unit: U, section: 5 } },
             trap: "ガスを出してからマッチをすろうとする。ガスがたまって危険。",
           },
         ],
@@ -141,7 +141,7 @@ export const J_SCI_1_BUSSHITSU: Daimon[] = [
           {
             title: "ねじの位置",
             body: "上のねじが{{空気調節ねじ}}、下のねじが{{ガス調節ねじ}}です。",
-            back: [{ label: "レクチャー「ガスバーナーの使い方」", href: L(5) }],
+            back: [{ label: "レクチャー「ガスバーナーの使い方」", href: L(6) }],
           },
         ],
       },
@@ -162,7 +162,7 @@ export const J_SCI_1_BUSSHITSU: Daimon[] = [
           {
             title: "金属の性質の1つ",
             body: "金属はみがくと特有のかがやき（{{金属光沢}}）が出ます。",
-            figure: { ref: { unit: U, section: 1 } },
+            figure: { ref: { unit: U, section: 2 } },
           },
         ],
       },
@@ -179,7 +179,7 @@ export const J_SCI_1_BUSSHITSU: Daimon[] = [
     level: 2,
     points: 20,
     minutes: 12,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     material: [
       {
         kind: "table",
@@ -231,7 +231,7 @@ export const J_SCI_1_BUSSHITSU: Daimon[] = [
           {
             title: "質量を体積でわる",
             body: "密度＝{{質量÷体積}}＝54.0÷20.0＝{{2.7 g/cm³}}。表2のアルミニウムと同じです。",
-            figure: { ref: { unit: U, section: 2 } },
+            figure: { ref: { unit: U, section: 3 } },
             trap: "体積÷質量（20÷54）で計算する。g/cm³ は「gをcm³でわる」という意味。",
           },
         ],
@@ -259,7 +259,7 @@ export const J_SCI_1_BUSSHITSU: Daimon[] = [
           {
             title: "Bの密度を求める",
             body: "体積 55.0−50.0＝5.0cm³。密度は 44.8÷5.0＝{{8.96 g/cm³}}。表2の{{銅}}と一致します。",
-            back: [{ label: "レクチャー「密度」", href: L(3) }],
+            back: [{ label: "レクチャー「密度」", href: L(4) }],
           },
         ],
       },
@@ -320,7 +320,7 @@ export const J_SCI_1_BUSSHITSU: Daimon[] = [
           {
             title: "どれが鉄かを使う",
             body: "(2)〜(4)より、Aはアルミニウム、Bは銅、C・Dは鉄。磁石につくのは{{鉄のC・D}}だけです。",
-            figure: { ref: { unit: U, section: 1 } },
+            figure: { ref: { unit: U, section: 2 } },
           },
         ],
       },
@@ -338,7 +338,7 @@ export const J_SCI_1_BUSSHITSU: Daimon[] = [
           {
             title: "密度の式を変形する",
             body: "質量＝{{密度×体積}}＝2.7×35＝{{94.5 g}}。",
-            figure: { ref: { unit: U, section: 2 } },
+            figure: { ref: { unit: U, section: 3 } },
           },
         ],
       },
@@ -355,7 +355,7 @@ export const J_SCI_1_BUSSHITSU: Daimon[] = [
     level: 3,
     points: 20,
     minutes: 14,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     material: [
       {
         kind: "table",
@@ -395,7 +395,7 @@ export const J_SCI_1_BUSSHITSU: Daimon[] = [
           {
             title: "燃えるかどうかで分ける",
             body: "砂糖・かたくり粉は有機物で燃えます。{{燃えなかった}}Yは無機物の{{食塩}}です。",
-            figure: { ref: { unit: U, section: 0 } },
+            figure: { ref: { unit: U, section: 1 } },
           },
         ],
       },
@@ -463,7 +463,7 @@ export const J_SCI_1_BUSSHITSU: Daimon[] = [
           {
             title: "質量を体積でわる",
             body: "9.2÷10.0＝{{0.92 g/cm³}}。",
-            figure: { ref: { unit: U, section: 2 } },
+            figure: { ref: { unit: U, section: 3 } },
             trap: "10.0÷9.2 と逆にわる。",
           },
         ],
@@ -491,7 +491,7 @@ export const J_SCI_1_BUSSHITSU: Daimon[] = [
           {
             title: "浮き沈みのきまり",
             body: "物体の密度が液体より{{小さいと浮き}}、{{大きいと沈み}}ます。",
-            figure: { ref: { unit: U, section: 3 } },
+            figure: { ref: { unit: U, section: 4 } },
           },
           {
             title: "数値でくらべる",
@@ -521,7 +521,7 @@ export const J_SCI_1_BUSSHITSU: Daimon[] = [
           {
             title: "密度をくらべる",
             body: "鉄 7.87 ＜ 水銀 13.5。物体のほうが密度が小さいので{{浮きます}}。",
-            back: [{ label: "レクチャー「密度で、浮くか沈むかが決まる」", href: L(4) }],
+            back: [{ label: "レクチャー「密度で、浮くか沈むかが決まる」", href: L(5) }],
           },
         ],
       },

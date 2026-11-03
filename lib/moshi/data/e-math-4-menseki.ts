@@ -36,7 +36,7 @@ function seihou(r: Rng): QuestionBody {
 function yoko(r: Rng): QuestionBody {
   const a = r.int(4, 12);
   const b = r.int(5, 18);
-  const what = r.pick(["長方形の花だん", "長方形のしき物", "長方形の紙"]);
+  const what = r.pick(["長方形の花だん", "長方形の畑", "長方形の紙"]);
   const u = what === "長方形の紙" ? "cm" : "m";
   return {
     prompt: `面積が${a * b}${u}²で、たてが${a}${u}の${what}があります。横は何${u}ですか。`,
@@ -109,7 +109,7 @@ export const E_MATH_4_MENSEKI_MOSHI: UnitMoshi = {
   unit: U,
   subject: "sansu",
   grade: "小4",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "長方形と正方形の面積",

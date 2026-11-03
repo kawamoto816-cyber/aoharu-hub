@@ -16,7 +16,7 @@ export const J_MATH_3_NIJI_HOTEISHIKI: Daimon[] = [
     level: 1,
     points: 20,
     minutes: 10,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     items: [
       {
         id: "1",
@@ -121,7 +121,7 @@ export const J_MATH_3_NIJI_HOTEISHIKI: Daimon[] = [
     level: 2,
     points: 24,
     minutes: 14,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     items: [
       {
         id: "1",
@@ -136,7 +136,7 @@ export const J_MATH_3_NIJI_HOTEISHIKI: Daimon[] = [
           {
             title: "解の公式に入れる",
             body: "b²−4ac＝25−12＝{{13}}。x＝(−5±√13)/2。",
-            figure: { ref: { unit: "j-math-3-niji-hoteishiki", section: 3 } },
+            figure: { ref: { unit: "j-math-3-niji-hoteishiki", section: 5 } },
             back: [{ label: "計算の段「解の公式」", href: "/learn/math/49" }],
           },
         ],
@@ -268,7 +268,7 @@ export const J_MATH_3_NIJI_HOTEISHIKI: Daimon[] = [
     level: 2,
     points: 24,
     minutes: 15,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     items: [
       {
         id: "1",
@@ -421,7 +421,7 @@ export const J_MATH_3_NIJI_HOTEISHIKI: Daimon[] = [
     level: 3,
     points: 20,
     minutes: 13,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     material: [
       {
         kind: "text",
@@ -452,7 +452,7 @@ export const J_MATH_3_NIJI_HOTEISHIKI: Daimon[] = [
           {
             title: "形を見て解き方を選ぶ",
             body: "{{( )²＝k → 平方根、因数分解できる → AB＝0、できない → 解の公式}} の順に考えます。",
-            figure: { ref: { unit: "j-math-3-niji-hoteishiki", section: 4 } },
+            figure: { ref: { unit: "j-math-3-niji-hoteishiki", section: 6 } },
           },
         ],
       },

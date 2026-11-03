@@ -13,7 +13,7 @@ export const J_MATH_2_RENRITSU: Daimon[] = [
     level: 2,
     points: 25,
     minutes: 12,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     items: [
       // ---------------- (1) 加減法・そのまま消せる ----------------
       {
@@ -327,7 +327,7 @@ export const J_MATH_2_RENRITSU: Daimon[] = [
     level: 1,
     points: 22,
     minutes: 12,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     items: [
       {
         id: "1",
@@ -533,7 +533,7 @@ export const J_MATH_2_RENRITSU: Daimon[] = [
     level: 2,
     points: 21,
     minutes: 14,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     items: [
       {
         id: "1-1",
@@ -709,7 +709,7 @@ export const J_MATH_2_RENRITSU: Daimon[] = [
     level: 3,
     points: 20,
     minutes: 14,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     material: [
       {
         kind: "table",

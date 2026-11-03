@@ -16,7 +16,7 @@ export const J_SCI_1_SHOKUBUTSU_BUNRUI: Daimon[] = [
     level: 1,
     points: 20,
     minutes: 9,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     items: [
       {
         id: "1",
@@ -32,7 +32,7 @@ export const J_SCI_1_SHOKUBUTSU_BUNRUI: Daimon[] = [
             title: "外側から順にはずしていく",
             body: "いちばん外で花を支えるのが{{がく}}、その内側が{{花弁}}。中心に近づくと{{おしべ}}、まん中に{{めしべ}}があります。",
             trap: "子房を並べに入れる。子房はめしべのもとのふくらんだ部分で、めしべの一部です。",
-            back: [{ label: "レクチャー「花のつくりと、種子ができるまで」", href: L(1) }],
+            back: [{ label: "レクチャー「花のつくりと、種子ができるまで」", href: L(2) }],
           },
         ],
       },
@@ -54,7 +54,7 @@ export const J_SCI_1_SHOKUBUTSU_BUNRUI: Daimon[] = [
           {
             title: "受粉は種子ができるはじまり",
             body: "花粉がめしべの{{柱頭}}につくことを{{受粉}}といいます。受粉すると、子房や胚珠が育ちはじめます。",
-            figure: { ref: { unit: U, section: 0 } },
+            figure: { ref: { unit: U, section: 1 } },
           },
         ],
       },
@@ -82,7 +82,7 @@ export const J_SCI_1_SHOKUBUTSU_BUNRUI: Daimon[] = [
           {
             title: "包まれているほうが種子",
             body: "胚珠は子房の中にあります。中の{{胚珠は種子}}に、それを包む{{子房は果実}}になります。",
-            figure: { ref: { unit: U, section: 0 } },
+            figure: { ref: { unit: U, section: 1 } },
             trap: "名前が似ているので「胚珠→果実」と逆にしてしまう。",
           },
         ],
@@ -104,7 +104,7 @@ export const J_SCI_1_SHOKUBUTSU_BUNRUI: Daimon[] = [
           {
             title: "子房 → 果実",
             body: "子房は中の種子を包むようにふくらんで{{果実}}になります。",
-            back: [{ label: "レクチャー「花のつくりと、種子ができるまで」", href: L(1) }],
+            back: [{ label: "レクチャー「花のつくりと、種子ができるまで」", href: L(2) }],
           },
         ],
       },
@@ -126,7 +126,7 @@ export const J_SCI_1_SHOKUBUTSU_BUNRUI: Daimon[] = [
           {
             title: "胚珠が包まれているか",
             body: "胚珠が子房に包まれているのが{{被子植物}}、子房がなく胚珠がむき出しなのが{{裸子植物}}です。",
-            figure: { ref: { unit: U, section: 1 } },
+            figure: { ref: { unit: U, section: 2 } },
           },
         ],
       },
@@ -153,7 +153,7 @@ export const J_SCI_1_SHOKUBUTSU_BUNRUI: Daimon[] = [
           {
             title: "子房があるかで分ける",
             body: "子房がなく{{胚珠がむき出し}}なのはマツとイチョウ。サクラとイネは果実ができる被子植物です。",
-            figure: { ref: { unit: U, section: 1 } },
+            figure: { ref: { unit: U, section: 2 } },
             trap: "「裸子植物は花が咲かない」と思いこむ。マツやイチョウにも雄花と雌花がある。",
           },
         ],
@@ -171,7 +171,7 @@ export const J_SCI_1_SHOKUBUTSU_BUNRUI: Daimon[] = [
     level: 2,
     points: 20,
     minutes: 11,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     material: [
       {
         kind: "table",
@@ -211,12 +211,12 @@ export const J_SCI_1_SHOKUBUTSU_BUNRUI: Daimon[] = [
           {
             title: "まず被子植物かを見る",
             body: "単子葉類・双子葉類に分けるのは{{被子植物}}だけ。胚珠が「子房の中」のA・B・Fが候補です。",
-            figure: { ref: { unit: U, section: 3 } },
+            figure: { ref: { unit: U, section: 4 } },
           },
           {
             title: "子葉の数で分ける",
             body: "子葉が{{2枚}}のA・Fが双子葉類。葉脈（網状脈）と根（主根と側根）もそろっています。",
-            figure: { ref: { unit: U, section: 2 } },
+            figure: { ref: { unit: U, section: 3 } },
           },
         ],
       },
@@ -238,7 +238,7 @@ export const J_SCI_1_SHOKUBUTSU_BUNRUI: Daimon[] = [
           {
             title: "胚珠の列を見る",
             body: "Cは種子をつくり、胚珠が{{むき出し}}。子房がないので{{裸子植物}}です。",
-            figure: { ref: { unit: U, section: 1 } },
+            figure: { ref: { unit: U, section: 2 } },
           },
         ],
       },
@@ -256,7 +256,7 @@ export const J_SCI_1_SHOKUBUTSU_BUNRUI: Daimon[] = [
             title: "果実ができるのは子房がある植物",
             body: "果実は{{子房}}が育ったもの。胚珠が「子房の中」のA・B・Fの{{3つ}}です。",
             trap: "種子をつくるC（裸子植物）も数えて4つにする。裸子植物には子房がないので果実はできない。",
-            back: [{ label: "レクチャー「被子植物と裸子植物」", href: L(2) }],
+            back: [{ label: "レクチャー「被子植物と裸子植物」", href: L(3) }],
           },
         ],
       },
@@ -277,7 +277,7 @@ export const J_SCI_1_SHOKUBUTSU_BUNRUI: Daimon[] = [
           {
             title: "種子をつくらない植物を2つに分ける",
             body: "胞子でふえる植物のうち、根・茎・葉の区別が{{ある}}のがシダ植物、{{ない}}のがコケ植物です。",
-            figure: { ref: { unit: U, section: 3 } },
+            figure: { ref: { unit: U, section: 4 } },
           },
         ],
       },
@@ -304,7 +304,7 @@ export const J_SCI_1_SHOKUBUTSU_BUNRUI: Daimon[] = [
           {
             title: "子葉の数から全身を予想する",
             body: "子葉の数がちがうと、葉脈・根・{{茎の維管束}}もそろって変わります。Bは単子葉類なので維管束は{{散らばっている}}。",
-            figure: { ref: { unit: U, section: 2 } },
+            figure: { ref: { unit: U, section: 3 } },
           },
         ],
       },
@@ -337,7 +337,7 @@ export const J_SCI_1_SHOKUBUTSU_BUNRUI: Daimon[] = [
           {
             title: "Eはコケ植物",
             body: "種子をつくらず、根・茎・葉の区別がないので{{コケ植物}}。維管束がなく、水は{{体の表面}}からとり入れます。",
-            back: [{ label: "レクチャー「種子をつくらない植物」", href: L(4) }],
+            back: [{ label: "レクチャー「種子をつくらない植物」", href: L(5) }],
           },
         ],
       },
@@ -354,7 +354,7 @@ export const J_SCI_1_SHOKUBUTSU_BUNRUI: Daimon[] = [
     level: 3,
     points: 20,
     minutes: 13,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     material: [
       {
         kind: "text",
@@ -385,7 +385,7 @@ export const J_SCI_1_SHOKUBUTSU_BUNRUI: Daimon[] = [
           {
             title: "雌花と雄花のりん片をくらべる",
             body: "雌花のりん片には{{胚珠}}、雄花のりん片には{{花粉のう}}があります。胚珠を包む子房はありません。",
-            figure: { ref: { unit: U, section: 1 } },
+            figure: { ref: { unit: U, section: 2 } },
           },
         ],
       },
@@ -418,7 +418,7 @@ export const J_SCI_1_SHOKUBUTSU_BUNRUI: Daimon[] = [
           {
             title: "「裸子」はむき出しという意味",
             body: "マツも{{花を咲かせて}}受粉し、種子をつくります。子房がないので、まつかさは{{果実ではありません}}。",
-            back: [{ label: "レクチャー「被子植物と裸子植物」", href: L(2) }],
+            back: [{ label: "レクチャー「被子植物と裸子植物」", href: L(3) }],
           },
         ],
       },
@@ -443,7 +443,7 @@ export const J_SCI_1_SHOKUBUTSU_BUNRUI: Daimon[] = [
           {
             title: "果実のもとは何か",
             body: "果実は{{子房}}が育ったもの。だから「子房があるか」を考えます。",
-            figure: { ref: { unit: U, section: 0 } },
+            figure: { ref: { unit: U, section: 1 } },
           },
           {
             title: "マツのつくりと結びつける",
@@ -473,7 +473,7 @@ export const J_SCI_1_SHOKUBUTSU_BUNRUI: Daimon[] = [
           {
             title: "葉の裏の袋は胞子のう",
             body: "シダ植物の葉の裏には胞子のうがあり、中に{{胞子}}が入っています。種子はつくりません。",
-            figure: { ref: { unit: U, section: 3 } },
+            figure: { ref: { unit: U, section: 4 } },
           },
         ],
       },
@@ -499,7 +499,7 @@ export const J_SCI_1_SHOKUBUTSU_BUNRUI: Daimon[] = [
           {
             title: "分類の木で位置を確かめる",
             body: "種子をつくらない植物は、{{根・茎・葉の区別があるか}}でシダ植物とコケ植物に分かれます。",
-            figure: { ref: { unit: U, section: 3 } },
+            figure: { ref: { unit: U, section: 4 } },
           },
           {
             title: "どちらがどちらかをはっきり書く",
@@ -525,7 +525,7 @@ export const J_SCI_1_SHOKUBUTSU_BUNRUI: Daimon[] = [
           {
             title: "大きな分け方から順に",
             body: "{{種子をつくるか}} → {{胚珠が包まれているか}} → {{子葉は何枚か}}の順に分けていきます。",
-            figure: { ref: { unit: U, section: 3 } },
+            figure: { ref: { unit: U, section: 4 } },
             trap: "花弁の色のように、なかまに関係ない特徴で分けようとする。",
           },
         ],

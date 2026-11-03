@@ -13,7 +13,7 @@ export const J_SCI_1_CHIKARA: Daimon[] = [
     level: 1,
     points: 20,
     minutes: 9,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     items: [
       {
         id: "1",
@@ -80,7 +80,7 @@ export const J_SCI_1_CHIKARA: Daimon[] = [
         },
         steps: [
           { title: "地球での重さ", body: "600g なので地球では{{6N}}。" },
-          { title: "月面ではどうなるか", body: "重さ（重力の大きさ）は約6分の1の{{約1N}}、質量は{{600g のまま}}です。", figure: { ref: { unit: "j-sci-1-chikara", section: 2 } } },
+          { title: "月面ではどうなるか", body: "重さ（重力の大きさ）は約6分の1の{{約1N}}、質量は{{600g のまま}}です。", figure: { ref: { unit: "j-sci-1-chikara", section: 4 } } },
         ],
       },
       {
@@ -102,7 +102,7 @@ export const J_SCI_1_CHIKARA: Daimon[] = [
             "正しい（まちがっている条件）。向きが同じだと力は合わさり、物体は動きます。",
           ],
         },
-        steps: [{ title: "3つの条件", body: "{{大きさが等しい・向きが反対・一直線上}}の3つがすべてそろうとつり合います。", figure: { ref: { unit: "j-sci-1-chikara", section: 4 } } }],
+        steps: [{ title: "3つの条件", body: "{{大きさが等しい・向きが反対・一直線上}}の3つがすべてそろうとつり合います。", figure: { ref: { unit: "j-sci-1-chikara", section: 5 } } }],
       },
     ],
   },
@@ -117,7 +117,7 @@ export const J_SCI_1_CHIKARA: Daimon[] = [
     level: 2,
     points: 25,
     minutes: 13,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     material: [
       {
         kind: "table",
@@ -243,7 +243,7 @@ export const J_SCI_1_CHIKARA: Daimon[] = [
     level: 3,
     points: 25,
     minutes: 14,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     material: [
       {
         kind: "table",
@@ -265,7 +265,7 @@ export const J_SCI_1_CHIKARA: Daimon[] = [
         level: 1,
         point: "ばねばかり＝重さ（N）、上皿てんびん＝質量（g）。",
         answer: { kind: "term", accept: ["重さ", "重力の大きさ"], near: [{ text: "質量", why: "質量は上皿てんびんではかる、物そのものの量です。" }] },
-        steps: [{ title: "器具と量", body: "ばねばかりは物体にはたらく重力の大きさ、つまり{{重さ}}をはかります。", figure: { ref: { unit: "j-sci-1-chikara", section: 2 } } }],
+        steps: [{ title: "器具と量", body: "ばねばかりは物体にはたらく重力の大きさ、つまり{{重さ}}をはかります。", figure: { ref: { unit: "j-sci-1-chikara", section: 4 } } }],
       },
       {
         id: "2",
@@ -334,8 +334,8 @@ export const J_SCI_1_CHIKARA: Daimon[] = [
           {
             title: "つり合いの条件にあてはめる",
             body: "重力（下向き4.8N）とつり合うのは、机が P をおし返す{{垂直抗力}}。大きさが等しく{{上向き}}です。",
-            figure: { ref: { unit: "j-sci-1-chikara", section: 4 } },
-            back: [{ label: "レクチャー「2力のつり合い」", href: "/learn/lecture/j-sci-1-chikara#lec-s5" }],
+            figure: { ref: { unit: "j-sci-1-chikara", section: 5 } },
+            back: [{ label: "レクチャー「2力のつり合い」", href: "/learn/lecture/j-sci-1-chikara#lec-s6" }],
           },
         ],
       },

@@ -112,7 +112,7 @@ export const E_ENGLISH_34_YOUBI_TENKI_MOSHI: UnitMoshi = {
   subject: "eng",
   grade: "外国語活動（小3・4）",
   minutes: 6,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     { title: "曜日の言葉", lead: "次の問いに答えなさい。", style: "word", pick: 3, questions: YOUBI },
     { title: "天気の言葉と会話", lead: "放送のかわりに、会話や英語《えいご》の文がのっています。読んで答えなさい。", style: "word", pick: 3, questions: TENKI },

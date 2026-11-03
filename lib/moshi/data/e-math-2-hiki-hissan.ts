@@ -42,7 +42,7 @@ const steps = (a: number, b: number) => {
     ];
   return [
     { title: "一のくらい", body: `${ao}から ${bo}は ひけないので、十のくらいから 10を 1つ かります。${10 + ao}−${bo}＝${10 + ao - bo}。`, trap: `${bo}−${ao} と ぎゃくに ひかない。`, back: [B_KURI] },
-    { title: "十のくらい", body: `10を かしたので ${at}は ${at - 1}に へって います。${at - 1}${bt ? `−${bt}` : ""}＝${at - 1 - bt}。答えは {{${a - b}}} です。`, trap: "十のくらいを へらしわすれない。" },
+    { title: "十のくらい", body: `10を かしたので ${at}は ${at - 1}に へって います。${bt ? `${at - 1}−${bt}＝${at - 1 - bt}` : `十のくらいは ${at - 1}を そのまま 書きます`}。答えは {{${a - b}}} です。`, trap: "十のくらいを へらしわすれない。" },
     { title: "たしかめ", body: `${a - b}＋${b}＝${a}。ひかれる 数に もどるので 正しいです。`, back: [B_TASHIKAME] },
   ];
 };
@@ -139,7 +139,7 @@ function nanju(r: Rng): QuestionBody {
     point: "0からも ひけない。十のくらいから かりる",
     steps: [
       { title: "一のくらい", body: `0から ${bo}は ひけないので、十のくらいから 10を かります。10−${bo}＝${10 - bo}。`, trap: `0−${bo}を 0 と しない。`, back: [B_KURI] },
-      { title: "十のくらい", body: `${a / 10}は ${a / 10 - 1}に へって います。${a / 10 - 1}${bt ? `−${bt}` : ""}＝${a / 10 - 1 - bt}。答えは {{${a - b}}} です。` },
+      { title: "十のくらい", body: `${a / 10}は ${a / 10 - 1}に へって います。${bt ? `${a / 10 - 1}−${bt}＝${a / 10 - 1 - bt}` : `十のくらいは ${a / 10 - 1}を そのまま 書きます`}。答えは {{${a - b}}} です。` },
       { title: "たしかめ", body: `${a - b}＋${b}＝${a}。`, back: [B_TASHIKAME] },
     ],
   };
@@ -150,7 +150,7 @@ export const E_MATH_2_HIKI_HISSAN_MOSHI: UnitMoshi = {
   subject: "sansu",
   grade: "小2",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "筆算《ひっさん》で 計算する",

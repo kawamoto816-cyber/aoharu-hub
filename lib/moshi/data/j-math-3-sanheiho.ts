@@ -18,7 +18,7 @@ export const J_MATH_3_SANHEIHO: Daimon[] = [
     level: 1,
     points: 20,
     minutes: 10,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     items: [
       {
         id: "1",
@@ -73,9 +73,9 @@ export const J_MATH_3_SANHEIHO: Daimon[] = [
           {
             title: "斜辺の2乗からひく",
             body: "7 が斜辺なので b²＝7²−3²＝49−9＝{{40}}。",
-            figure: { ref: { unit: "j-math-3-sanheiho", section: 1 } },
+            figure: { ref: { unit: "j-math-3-sanheiho", section: 3 } },
             trap: "3²＋7²＝58 としてしまう。斜辺がどれかを先に確かめる。",
-            back: [{ label: "レクチャー「どこを求めるかで、式の形が変わる」", href: `${L}#lec-s2` }],
+            back: [{ label: "レクチャー「どこを求めるかで、式の形が変わる」", href: `${L}#lec-s3` }],
           },
           {
             title: "a√b の形に",
@@ -124,8 +124,8 @@ export const J_MATH_3_SANHEIHO: Daimon[] = [
           {
             title: "直角二等辺三角形の比",
             body: "正方形を対角線で切ると直角二等辺三角形。辺の比は {{1:1:√2}} なので対角線は {{7√2cm}}。7²＋7²＝98、√98＝7√2 でも同じ。",
-            figure: { ref: { unit: "j-math-3-sanheiho", section: 3 } },
-            back: [{ label: "レクチャー「覚えておくと速い辺の比」", href: `${L}#lec-s4` }],
+            figure: { ref: { unit: "j-math-3-sanheiho", section: 4 } },
+            back: [{ label: "レクチャー「覚えておくと速い辺の比」", href: `${L}#lec-s5` }],
           },
         ],
       },
@@ -158,7 +158,7 @@ export const J_MATH_3_SANHEIHO: Daimon[] = [
           {
             title: "60° の向かいは √3",
             body: "60° の向かいの辺は比の √3 なので {{6√3cm}}。",
-            back: [{ label: "レクチャー「覚えておくと速い辺の比」", href: `${L}#lec-s4` }],
+            back: [{ label: "レクチャー「覚えておくと速い辺の比」", href: `${L}#lec-s5` }],
           },
         ],
       },
@@ -177,7 +177,7 @@ export const J_MATH_3_SANHEIHO: Daimon[] = [
     level: 2,
     points: 26,
     minutes: 15,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     items: [
       {
         id: "1",
@@ -218,8 +218,8 @@ export const J_MATH_3_SANHEIHO: Daimon[] = [
           {
             title: "三平方の定理",
             body: "AB²＝6²＋8²＝100 なので {{AB＝10}}。",
-            figure: { ref: { unit: "j-math-3-sanheiho", section: 4 } },
-            back: [{ label: "レクチャー「直角三角形を見つければ…」", href: `${L}#lec-s5` }],
+            figure: { ref: { unit: "j-math-3-sanheiho", section: 5 } },
+            back: [{ label: "レクチャー「直角三角形を見つければ…」", href: `${L}#lec-s6` }],
           },
         ],
       },
@@ -342,7 +342,7 @@ export const J_MATH_3_SANHEIHO: Daimon[] = [
     level: 2,
     points: 25,
     minutes: 15,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     items: [
       {
         id: "1",
@@ -357,7 +357,7 @@ export const J_MATH_3_SANHEIHO: Daimon[] = [
           {
             title: "2回直角三角形を使う",
             body: "底面の対角線² は 2²＋3²＝13。その対角線と高さ 6 を2辺とする直角三角形の斜辺が、直方体の対角線です。",
-            figure: { ref: { unit: "j-math-3-sanheiho", section: 4 } },
+            figure: { ref: { unit: "j-math-3-sanheiho", section: 5 } },
           },
           {
             title: "まとめて計算",
@@ -398,7 +398,7 @@ export const J_MATH_3_SANHEIHO: Daimon[] = [
             title: "円錐の断面の直角三角形",
             body: "頂点・底面の中心・底面の円周上の点で、{{母線を斜辺}}とする直角三角形ができます。高さ²＝13²−5²＝144、{{高さ 12cm}}。",
             trap: "5²＋13² を計算する。母線が斜辺なのでひく。",
-            back: [{ label: "レクチャー「直角三角形を見つければ…」", href: `${L}#lec-s5` }],
+            back: [{ label: "レクチャー「直角三角形を見つければ…」", href: `${L}#lec-s6` }],
           },
         ],
       },
@@ -486,7 +486,7 @@ export const J_MATH_3_SANHEIHO: Daimon[] = [
     level: 3,
     points: 22,
     minutes: 14,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     items: [
       {
         id: "1",
@@ -602,7 +602,7 @@ export const J_MATH_3_SANHEIHO: Daimon[] = [
             title: "直角三角形 ABE",
             body: "∠A＝90° なので {{6²＋x²＝(8−x)²}}。x² が両辺で消えて 36＝64−16x、x＝{{7/4}}。",
             trap: "(8−x)² を 64−x² と展開する。(a−b)²＝a²−2ab＋b²。",
-            back: [{ label: "レクチャー「直角三角形を見つければ…」", href: `${L}#lec-s5` }],
+            back: [{ label: "レクチャー「直角三角形を見つければ…」", href: `${L}#lec-s6` }],
           },
         ],
       },

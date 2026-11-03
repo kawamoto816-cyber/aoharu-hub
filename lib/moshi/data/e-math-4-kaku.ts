@@ -85,7 +85,7 @@ function hari(r: Rng): QuestionBody {
     point: "数字1つ分は 360÷12＝30°",
     steps: [
       { title: "数字1つ分の角", body: `時計《とけい》の数字は12こで1回転なので、1つ分は 360÷12＝30（°）。`, back: [B_KAKU] },
-      { title: "数字いくつ分か", body: big <= 180 ? `12から${h}まで${h}つ分で、30×${h}＝{{${ans}}}（°）。` : `12から${h}まで${h}つ分で${big}°。小さいほうは 360−${big}＝{{${ans}}}（°）。`, trap: big > 180 ? `${big}°は大きいほうの角です。` : undefined, back: [B_180] },
+      { title: "数字いくつ分か", body: big <= 180 ? `12から${h}まで${h}こ分で、30×${h}＝{{${ans}}}（°）。` : `12から${h}まで${h}こ分で${big}°。小さいほうは 360−${big}＝{{${ans}}}（°）。`, trap: big > 180 ? `${big}°は大きいほうの角です。` : undefined, back: [B_180] },
     ],
   };
 }
@@ -94,7 +94,7 @@ export const E_MATH_4_KAKU_MOSHI: UnitMoshi = {
   unit: U,
   subject: "sansu",
   grade: "小4",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "角の大きさ",

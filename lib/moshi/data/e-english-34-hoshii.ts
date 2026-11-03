@@ -35,7 +35,7 @@ const IIKATA: QuestionB[] = [
     ["ball", "ball は a ball です。"],
     ["pen", "pen は a pen です。"],
     ["cat", "cat は a cat です。"],
-  ], "ア・イ・ウ・エ・オに近い音で始まる語は an", ["はじめの音", "{{apple}} のように、はじめの音がアに近い語には {{an}} をつけます。", [S2]]),
+  ], "ア・イ・ウ・エ・オに近い音で始まる語は an", ["はじめの音", "{{apple}} のように、はじめの音がア・イ・ウ・エ・オに近い語には {{an}} をつけます。", [S2]]),
   // 標準
   ch("three-apples", 2, "「りんごが3つほしいです。」を英語《えいご》で言うと、どれですか。", [
     ["I want three apples.", "2つ以上《いじょう》なので、apple に s をつけます。"],
@@ -112,7 +112,7 @@ export const E_ENGLISH_34_HOSHII_MOSHI: UnitMoshi = {
   subject: "eng",
   grade: "外国語活動（小3・4）",
   minutes: 6,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     { title: "I want 〜. の言い方", lead: "次の問いに答えなさい。", style: "word", pick: 3, questions: IIKATA },
     { title: "お店の会話を読んで答える", lead: "放送のかわりに、会話の文がのっています。読んで答えなさい。", style: "word", pick: 3, questions: KAIWA },

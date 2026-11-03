@@ -13,7 +13,7 @@ export const J_SCI_1_CHISO: Daimon[] = [
     level: 1,
     points: 20,
     minutes: 9,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     items: [
       {
         id: "1",
@@ -56,7 +56,7 @@ export const J_SCI_1_CHISO: Daimon[] = [
         level: 1,
         point: "環境＝示相化石、時代＝示準化石。",
         answer: { kind: "term", accept: ["示相化石"], script: "kanji", near: [{ text: "示準化石", why: "示準化石は地層ができた時代を知る化石です。" }] },
-        steps: [{ title: "化石の2つの使い方", body: "環境が分かるのが{{示相化石}}、時代が分かるのが示準化石です。サンゴはあたたかく浅い海を示します。", figure: { ref: { unit: "j-sci-1-chiso", section: 3 } } }],
+        steps: [{ title: "化石の2つの使い方", body: "環境が分かるのが{{示相化石}}、時代が分かるのが示準化石です。サンゴはあたたかく浅い海を示します。", figure: { ref: { unit: "j-sci-1-chiso", section: 4 } } }],
       },
       {
         id: "4",
@@ -113,7 +113,7 @@ export const J_SCI_1_CHISO: Daimon[] = [
     level: 3,
     points: 26,
     minutes: 14,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     material: [
       {
         kind: "table",
@@ -199,7 +199,7 @@ export const J_SCI_1_CHISO: Daimon[] = [
             "火山灰は短い期間に広い範囲に降り積もるので、同じ時期の層として目印になります。",
           ],
         },
-        steps: [{ title: "凝灰岩とかぎ層", body: "凝灰岩は{{火山灰が固まった}}岩石。広い範囲に同時に積もるので、地層をつなぐ{{かぎ層}}になります。", figure: { ref: { unit: "j-sci-1-chiso", section: 2 } } }],
+        steps: [{ title: "凝灰岩とかぎ層", body: "凝灰岩は{{火山灰が固まった}}岩石。広い範囲に同時に積もるので、地層をつなぐ{{かぎ層}}になります。", figure: { ref: { unit: "j-sci-1-chiso", section: 3 } } }],
       },
       {
         id: "5",
@@ -236,7 +236,7 @@ export const J_SCI_1_CHISO: Daimon[] = [
     level: 3,
     points: 24,
     minutes: 13,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     material: [
       {
         kind: "table",
@@ -272,7 +272,7 @@ export const J_SCI_1_CHISO: Daimon[] = [
           ],
           mistakeOf: [null, 3, null, null],
         },
-        steps: [{ title: "塩酸とかたさで見分ける", body: "塩酸で{{気体が出る→石灰岩}}（R）、反応せず{{とてもかたい→チャート}}（S）。", figure: { ref: { unit: "j-sci-1-chiso", section: 2 } } }],
+        steps: [{ title: "塩酸とかたさで見分ける", body: "塩酸で{{気体が出る→石灰岩}}（R）、反応せず{{とてもかたい→チャート}}（S）。", figure: { ref: { unit: "j-sci-1-chiso", section: 3 } } }],
       },
       {
         id: "2",
@@ -328,7 +328,7 @@ export const J_SCI_1_CHISO: Daimon[] = [
             "時代も環境もちがいます。",
           ],
         },
-        steps: [{ title: "2つの化石を使い分ける", body: "アンモナイトで{{時代＝中生代}}、サンゴで{{環境＝あたたかく浅い海}}が分かります。", figure: { ref: { unit: "j-sci-1-chiso", section: 3 } } }],
+        steps: [{ title: "2つの化石を使い分ける", body: "アンモナイトで{{時代＝中生代}}、サンゴで{{環境＝あたたかく浅い海}}が分かります。", figure: { ref: { unit: "j-sci-1-chiso", section: 4 } } }],
       },
       {
         id: "5",
@@ -347,7 +347,7 @@ export const J_SCI_1_CHISO: Daimon[] = [
             { label: "土地が隆起した（もち上がった）ことを書いている", points: 4, keywords: ["隆起", "もち上げ"] },
           ],
         },
-        steps: [{ title: "大地の変化", body: "土地がもち上がることを{{隆起}}といいます。海底の地層が隆起すると、山で見られるようになります。", back: [{ label: "レクチャー「大地の変化：しゅう曲・断層・隆起」", href: "/learn/lecture/j-sci-1-chiso#lec-s5" }] }],
+        steps: [{ title: "大地の変化", body: "土地がもち上がることを{{隆起}}といいます。海底の地層が隆起すると、山で見られるようになります。", back: [{ label: "レクチャー「大地の変化：しゅう曲・断層・隆起」", href: "/learn/lecture/j-sci-1-chiso#lec-s6" }] }],
       },
     ],
   },

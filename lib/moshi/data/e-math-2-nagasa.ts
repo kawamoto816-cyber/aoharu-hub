@@ -29,7 +29,7 @@ function cmToMm(r: Rng): QuestionBody {
     prompt: `${c}cmは 何mmですか。`,
     answer: num(10 * c, `10*${c}`, "mm"),
     point: "1cm＝10mm",
-    steps: [{ title: "1cm＝10mm", body: `1cmは 10mm。${c}cmは 10mmの ${c}つ分で {{${10 * c}mm}} です。`, trap: "1cm＝100mm と しない。1cmを 10こに 分けた 1つが 1mmです。", back: [B_CM, B_MM] }],
+    steps: [{ title: "1cm＝10mm", body: `1cmは 10mm。${c}cmは 10mmの ${c}${c >= 10 ? "こ" : "つ"}分で {{${10 * c}mm}} です。`, trap: "1cm＝100mm と しない。1cmを 10こに 分けた 1つが 1mmです。", back: [B_CM, B_MM] }],
   };
 }
 
@@ -160,7 +160,7 @@ export const E_MATH_2_NAGASA_MOSHI: UnitMoshi = {
   subject: "sansu",
   grade: "小2",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "cmと mm",

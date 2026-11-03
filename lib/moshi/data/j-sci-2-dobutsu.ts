@@ -15,7 +15,7 @@ export const J_SCI_2_DOBUTSU: Daimon[] = [
     level: 1,
     points: 20,
     minutes: 8,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     items: [
       {
         id: "1",
@@ -141,8 +141,8 @@ export const J_SCI_2_DOBUTSU: Daimon[] = [
           {
             title: "排出の流れ",
             body: "アンモニア →（{{肝臓}}）→ 尿素 →（{{じん臓}}でこし出す）→ 尿 →（ぼうこう）→ 体外。",
-            figure: { ref: { unit: "j-sci-2-dobutsu", section: 3 } },
-            back: [{ label: "レクチャー「排出」", href: `${L}#lec-s4` }],
+            figure: { ref: { unit: "j-sci-2-dobutsu", section: 4 } },
+            back: [{ label: "レクチャー「排出」", href: `${L}#lec-s5` }],
           },
         ],
       },
@@ -172,7 +172,7 @@ export const J_SCI_2_DOBUTSU: Daimon[] = [
     level: 2,
     points: 24,
     minutes: 11,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     items: [
       {
         id: "1",
@@ -339,7 +339,7 @@ export const J_SCI_2_DOBUTSU: Daimon[] = [
     level: 3,
     points: 26,
     minutes: 12,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     items: [
       {
         id: "1",

@@ -17,7 +17,7 @@ export const J_SCI_2_TENKI: Daimon[] = [
     level: 1,
     points: 20,
     minutes: 10,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     items: [
       {
         id: "1",
@@ -69,8 +69,8 @@ export const J_SCI_2_TENKI: Daimon[] = [
           {
             title: "空気が上がるか下がるか",
             body: "高気圧の中心では{{下降気流}}、低気圧の中心では{{上昇気流}}。雲ができるのは上昇気流のときなので、高気圧では晴れやすくなります。",
-            figure: { ref: { unit: "j-sci-2-tenki", section: 1 } },
-            back: [{ label: "レクチャー「高気圧と低気圧」", href: `${L}#lec-s2` }],
+            figure: { ref: { unit: "j-sci-2-tenki", section: 2 } },
+            back: [{ label: "レクチャー「高気圧と低気圧」", href: `${L}#lec-s3` }],
           },
         ],
       },
@@ -98,8 +98,8 @@ export const J_SCI_2_TENKI: Daimon[] = [
           {
             title: "風は高い所から低い所へ",
             body: "低気圧の中心は気圧が低いので、まわりから{{ふきこみ}}ます。北半球では{{反時計回り}}です。",
-            figure: { ref: { unit: "j-sci-2-tenki", section: 1 } },
-            back: [{ label: "レクチャー「高気圧と低気圧」", href: `${L}#lec-s2` }],
+            figure: { ref: { unit: "j-sci-2-tenki", section: 2 } },
+            back: [{ label: "レクチャー「高気圧と低気圧」", href: `${L}#lec-s3` }],
           },
         ],
       },
@@ -121,8 +121,8 @@ export const J_SCI_2_TENKI: Daimon[] = [
           {
             title: "どちらが主役か",
             body: "寒気がもぐりこんで暖気をおし上げるのが{{寒冷前線}}、暖気が寒気の上をはい上がるのが{{温暖前線}}です。",
-            figure: { ref: { unit: "j-sci-2-tenki", section: 2 } },
-            back: [{ label: "レクチャー「寒冷前線と温暖前線」", href: `${L}#lec-s3` }],
+            figure: { ref: { unit: "j-sci-2-tenki", section: 3 } },
+            back: [{ label: "レクチャー「寒冷前線と温暖前線」", href: `${L}#lec-s4` }],
           },
         ],
       },
@@ -144,7 +144,7 @@ export const J_SCI_2_TENKI: Daimon[] = [
           {
             title: "上昇気流の強さで雲が変わる",
             body: "寒冷前線では強い上昇気流で{{積乱雲}}ができ、せまい範囲に短時間強い雨が降ります。",
-            back: [{ label: "レクチャー「寒冷前線と温暖前線」", href: `${L}#lec-s3` }],
+            back: [{ label: "レクチャー「寒冷前線と温暖前線」", href: `${L}#lec-s4` }],
           },
         ],
       },
@@ -163,7 +163,7 @@ export const J_SCI_2_TENKI: Daimon[] = [
     level: 2,
     points: 20,
     minutes: 11,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     items: [
       {
         id: "1",
@@ -188,8 +188,8 @@ export const J_SCI_2_TENKI: Daimon[] = [
           {
             title: "温帯低気圧の形",
             body: "温帯低気圧は、{{南東側に温暖前線}}、{{南西側に寒冷前線}}をともないます。",
-            figure: { ref: { unit: "j-sci-2-tenki", section: 3 } },
-            back: [{ label: "レクチャー「低気圧が通ると、天気はこう変わる」", href: `${L}#lec-s4` }],
+            figure: { ref: { unit: "j-sci-2-tenki", section: 4 } },
+            back: [{ label: "レクチャー「低気圧が通ると、天気はこう変わる」", href: `${L}#lec-s5` }],
           },
         ],
       },
@@ -217,8 +217,8 @@ export const J_SCI_2_TENKI: Daimon[] = [
           {
             title: "上昇のしかたで雲が決まる",
             body: "温暖前線では暖気が{{ゆるやかに}}はい上がるので、乱層雲などの層状の雲が広くでき、{{おだやかな雨が長時間}}降ります。",
-            figure: { ref: { unit: "j-sci-2-tenki", section: 2 } },
-            back: [{ label: "レクチャー「寒冷前線と温暖前線」", href: `${L}#lec-s3` }],
+            figure: { ref: { unit: "j-sci-2-tenki", section: 3 } },
+            back: [{ label: "レクチャー「寒冷前線と温暖前線」", href: `${L}#lec-s4` }],
           },
         ],
       },
@@ -246,8 +246,8 @@ export const J_SCI_2_TENKI: Daimon[] = [
           {
             title: "前線の後ろに何が来るか",
             body: "寒冷前線の後ろ側には{{寒気}}が入るので気温が{{下がり}}、風は南寄りから{{北寄り}}に変わります。",
-            figure: { ref: { unit: "j-sci-2-tenki", section: 3 } },
-            back: [{ label: "レクチャー「低気圧が通ると、天気はこう変わる」", href: `${L}#lec-s4` }],
+            figure: { ref: { unit: "j-sci-2-tenki", section: 4 } },
+            back: [{ label: "レクチャー「低気圧が通ると、天気はこう変わる」", href: `${L}#lec-s5` }],
           },
         ],
       },
@@ -269,7 +269,7 @@ export const J_SCI_2_TENKI: Daimon[] = [
           {
             title: "上空の西風",
             body: "上空の{{偏西風}}が低気圧などを運ぶので、日本の天気はおよそ{{西から東へ}}変わります。",
-            back: [{ label: "レクチャー「低気圧が通ると、天気はこう変わる」", href: `${L}#lec-s4` }],
+            back: [{ label: "レクチャー「低気圧が通ると、天気はこう変わる」", href: `${L}#lec-s5` }],
           },
         ],
       },
@@ -291,7 +291,7 @@ export const J_SCI_2_TENKI: Daimon[] = [
           {
             title: "寒冷前線のほうが速い",
             body: "寒冷前線は温暖前線より速く進むので、やがて追いつき{{閉塞前線}}になります。",
-            figure: { ref: { unit: "j-sci-2-tenki", section: 2 } },
+            figure: { ref: { unit: "j-sci-2-tenki", section: 3 } },
           },
         ],
       },
@@ -310,7 +310,7 @@ export const J_SCI_2_TENKI: Daimon[] = [
     level: 3,
     points: 24,
     minutes: 13,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     material: [
       {
         kind: "table",
@@ -354,8 +354,8 @@ export const J_SCI_2_TENKI: Daimon[] = [
           {
             title: "前線の種類を決める",
             body: "気温が下がり北寄りの風になるのは{{寒冷前線}}の通過です。",
-            figure: { ref: { unit: "j-sci-2-tenki", section: 3 } },
-            back: [{ label: "レクチャー「低気圧が通ると、天気はこう変わる」", href: `${L}#lec-s4` }],
+            figure: { ref: { unit: "j-sci-2-tenki", section: 4 } },
+            back: [{ label: "レクチャー「低気圧が通ると、天気はこう変わる」", href: `${L}#lec-s5` }],
           },
         ],
       },
@@ -412,7 +412,7 @@ export const J_SCI_2_TENKI: Daimon[] = [
           {
             title: "寒冷前線の通過で起こること",
             body: "寒冷前線が通ると、後ろの寒気が入って{{気温が急に下がり}}、風が{{北寄り}}に変わります。",
-            back: [{ label: "レクチャー「寒冷前線と温暖前線」", href: `${L}#lec-s3` }],
+            back: [{ label: "レクチャー「寒冷前線と温暖前線」", href: `${L}#lec-s4` }],
           },
           {
             title: "表の数値を使って書く",
@@ -445,7 +445,7 @@ export const J_SCI_2_TENKI: Daimon[] = [
           {
             title: "前線の種類から考える",
             body: "寒冷前線では{{積乱雲}}ができ、{{短時間に強い雨}}が降ります。18時には雨がやんでいることとも合います。",
-            figure: { ref: { unit: "j-sci-2-tenki", section: 2 } },
+            figure: { ref: { unit: "j-sci-2-tenki", section: 3 } },
           },
         ],
       },

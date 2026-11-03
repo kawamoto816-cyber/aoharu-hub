@@ -19,7 +19,7 @@ export const E_JAPANESE_6_HANASHI_KAKI_MOSHI: UnitMoshi = {
   subject: "ja",
   grade: "小6",
   minutes: 16,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "話し言葉を書き言葉に直す",

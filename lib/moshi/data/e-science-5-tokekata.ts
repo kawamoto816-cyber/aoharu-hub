@@ -128,7 +128,7 @@ export const E_SCIENCE_5_TOKEKATA_MOSHI: UnitMoshi = {
   subject: "sci",
   grade: "小5",
   minutes: 12,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "とけ方の計算",

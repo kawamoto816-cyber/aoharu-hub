@@ -108,7 +108,7 @@ export const E_ENGLISH_34_ALPHA_KOMOJI_MOSHI: UnitMoshi = {
   subject: "eng",
   grade: "外国語活動（小3・4）",
   minutes: 6,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     { title: "大文字と小文字のペア", lead: "次の問いに答えなさい。", style: "word", pick: 3, questions: PAIR },
     { title: "高さと向き", lead: "次の問いに答えなさい。", style: "word", pick: 3, questions: TAKASA },

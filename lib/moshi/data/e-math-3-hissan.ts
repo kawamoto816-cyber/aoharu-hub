@@ -93,14 +93,13 @@ function nikai(r: Rng): QuestionBody {
   const a = r.int(250, 480);
   const b = r.int(150, 420);
   const c = r.int(1300, 1900);
-  const who = r.pick(["みさきさん", "ゆうとさん", "はなさん"]);
   return {
-    prompt: `${who}は、きのう${a}ページ、きょう${b}ページ本を読みました。本は全部で${c}ページあります。のこりは何ページですか。`,
-    answer: { kind: "num", answerKind: "num", answer: [String(c - a - b)], unit: "ページ", calc: `${c}-(${a}+${b})` },
-    point: "読んだページを先にたしてから、全部からひく",
+    prompt: `学校に、画用紙が全部で${c}まいあります。きのう${a}まい、きょう${b}まい使いました。のこりは何まいですか。`,
+    answer: { kind: "num", answerKind: "num", answer: [String(c - a - b)], unit: "まい", calc: `${c}-(${a}+${b})` },
+    point: "使ったまい数を先にたしてから、全部からひく",
     steps: [
-      { title: "読んだページ", body: `${a}＋${b}＝${a + b}（ページ）。`, back: [B_AGARI] },
-      { title: "のこり", body: `${c}−${a + b}＝{{${c - a - b}}}（ページ）。`, back: [B_KURAI] },
+      { title: "使ったまい数", body: `${a}＋${b}＝${a + b}（まい）。`, back: [B_AGARI] },
+      { title: "のこり", body: `${c}−${a + b}＝{{${c - a - b}}}（まい）。`, back: [B_KURAI] },
     ],
   };
 }
@@ -109,7 +108,7 @@ export const E_MATH_3_HISSAN_MOSHI: UnitMoshi = {
   unit: U,
   subject: "sansu",
   grade: "小3",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "筆算の計算",

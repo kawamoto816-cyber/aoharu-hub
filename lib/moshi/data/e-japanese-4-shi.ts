@@ -28,7 +28,7 @@ export const E_JAPANESE_4_SHI_MOSHI: UnitMoshi = {
   subject: "ja",
   grade: "小4",
   minutes: 15,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "詩を読む「風」",
@@ -79,10 +79,10 @@ export const E_JAPANESE_4_SHI_MOSHI: UnitMoshi = {
           points: 16,
           seconds: 60,
           skill: "知識・技能",
-          prompt: "第一連《れん》で、風がくり返しよびかけている言葉を、詩の中から4字で書きぬきなさい。",
+          prompt: "第一｜連《れん》で、風がくり返しよびかけている言葉を、詩の中から4字で書きぬきなさい。",
           answer: { kind: "term", accept: ["あそぼう"], chars: 4 },
           point: "「 」の中の言葉に注目",
-          steps: [{ title: "「 」をさがす", body: "第一連《れん》の「{{あそぼう}}　あそぼう」が、風のよびかけです。二回くり返されています。", back: [S2] }],
+          steps: [{ title: "「 」をさがす", body: "第一｜連《れん》の「{{あそぼう}}　あそぼう」が、風のよびかけです。二回くり返されています。", back: [S2] }],
         },
         {
           id: "dokomademo",
@@ -91,7 +91,7 @@ export const E_JAPANESE_4_SHI_MOSHI: UnitMoshi = {
           points: 16,
           seconds: 90,
           skill: "思考・判断・表現",
-          prompt: "第三連《れん》の「どこまでも　どこまでも」というくり返しから、「ぼく」のどんな気持ちが読み取れますか。",
+          prompt: "第三｜連《れん》の「どこまでも　どこまでも」というくり返しから、「ぼく」のどんな気持ちが読み取れますか。",
           answer: {
             kind: "choice",
             options: ["風といっしょに、いつまでも楽しく走っていたい気持ち", "風が強くて、家に帰りたい気持ち", "風においつけなくて、くやしい気持ち", "外に出たことを、こうかいしている気持ち"],
@@ -113,7 +113,7 @@ export const E_JAPANESE_4_SHI_MOSHI: UnitMoshi = {
           points: 28,
           seconds: 240,
           skill: "思考・判断・表現",
-          prompt: "第一連《れん》から第三連《れん》へ、「ぼく」の様子はどのようにかわりましたか。それぞれの連《れん》の言葉を手がかりにして、50字以内で書きなさい。",
+          prompt: "第一｜連《れん》から第三｜連《れん》へ、「ぼく」の様子はどのようにかわりましたか。それぞれの連《れん》の言葉を手がかりにして、50字以内で書きなさい。",
           answer: {
             kind: "written",
             limit: { max: 50, unit: "字" },
@@ -126,8 +126,8 @@ export const E_JAPANESE_4_SHI_MOSHI: UnitMoshi = {
           },
           point: "連《れん》ごとに「どこで・何をしているか」",
           steps: [
-            { title: "第一連《れん》の場所", body: "「{{まどをたたいて}}」から、「ぼく」はまだ家の中にいて、風の声を聞いていると分かります。", back: [S3] },
-            { title: "第三連《れん》の様子", body: "「{{外へ　かけだす}}」「{{おいかけて}}」から、外に出て風をおいかけていると分かります。", back: [S4] },
+            { title: "第一｜連《れん》の場所", body: "「{{まどをたたいて}}」から、「ぼく」はまだ家の中にいて、風の声を聞いていると分かります。", back: [S3] },
+            { title: "第三｜連《れん》の様子", body: "「{{外へ　かけだす}}」「{{おいかけて}}」から、外に出て風をおいかけていると分かります。", back: [S4] },
           ],
         },
       ],

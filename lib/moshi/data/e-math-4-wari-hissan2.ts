@@ -124,7 +124,7 @@ export const E_MATH_4_WARI_HISSAN2_MOSHI: UnitMoshi = {
   unit: U,
   subject: "sansu",
   grade: "小4",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "÷2けたの計算",

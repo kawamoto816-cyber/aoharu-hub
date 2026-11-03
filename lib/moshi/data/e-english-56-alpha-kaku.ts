@@ -113,7 +113,7 @@ export const E_ENGLISH_56_ALPHA_KAKU_MOSHI: UnitMoshi = {
   subject: "eng",
   grade: "外国語（小5・6）",
   minutes: 7,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     { title: "4本線と文字の高さ", lead: "次の問いに答えなさい。", style: "word", pick: 3, questions: SEN },
     { title: "大文字と記号の約束", lead: "次の問いに答えなさい。", style: "word", pick: 3, questions: KIGOU },

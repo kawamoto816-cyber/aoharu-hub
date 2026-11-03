@@ -130,7 +130,7 @@ function taibunsu(r: Rng): QuestionBody {
   const s = plus ? big + small : big - small;
   const ans = fr(s, m);
   return {
-    prompt: `${A}${plus ? "＋" : "−"}${B} を計算しなさい。答えは仮分数で答えなさい。`,
+    prompt: `${A}${plus ? "＋" : "−"}${B} を計算しなさい。1より大きいときは、答えは仮分数で答えなさい。`,
     answer: num(ans, `${cA}${plus ? "+" : "-"}${cB}`),
     point: "帯分数は仮分数に直すか、整数と分数に分けて計算",
     steps: [
@@ -153,12 +153,12 @@ function bunsho(r: Rng): QuestionBody {
     if (gcd(p[0], p[1]) !== 1) continue;
     m = lcmOf(lcmOf(p[1], q[1]), t[1]);
     s = p[0] * (m / p[1]) - q[0] * (m / q[1]) + t[0] * (m / t[1]);
-    if (new Set([p[1], q[1], t[1]]).size >= 2 && p[0] * (m / p[1]) - q[0] * (m / q[1]) > 0) break;
+    if (new Set([p[1], q[1], t[1]]).size >= 2 && m <= 24 && p[0] * (m / p[1]) - q[0] * (m / q[1]) > 0) break; // 共通な分母は24まで (101/60 のような数にしない)
   }
   const ans = fr(s, m);
   const what = r.pick(["お茶", "ジュース", "水"]);
   return {
-    prompt: `ポットに${what}が ${p[0]}/${p[1]}L 入っています。そこから ${q[0]}/${q[1]}L 飲み、そのあと ${t[0]}/${t[1]}L たしました。ポットの${what}は何Lになりましたか。答えは仮分数で答えなさい。`,
+    prompt: `ポットに${what}が ${p[0]}/${p[1]}L 入っています。そこから ${q[0]}/${q[1]}L 飲み、そのあと ${t[0]}/${t[1]}L たしました。ポットの${what}は何Lになりましたか。1より大きいときは、答えは仮分数で答えなさい。`,
     answer: num(ans, `${p[0]}/${p[1]}-${q[0]}/${q[1]}+${t[0]}/${t[1]}`, "L"),
     point: "3つの分数は、3つの分母の公倍数でまとめて通分",
     steps: [
@@ -173,7 +173,7 @@ export const E_MATH_5_BUNSU_TASHIHIKI_MOSHI: UnitMoshi = {
   unit: U,
   subject: "sansu",
   grade: "小5",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "約分と通分",

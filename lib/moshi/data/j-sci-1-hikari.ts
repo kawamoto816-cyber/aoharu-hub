@@ -13,7 +13,7 @@ export const J_SCI_1_HIKARI: Daimon[] = [
     level: 1,
     points: 20,
     minutes: 9,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     items: [
       {
         id: "1",
@@ -28,7 +28,7 @@ export const J_SCI_1_HIKARI: Daimon[] = [
           {
             title: "用語を確かめる",
             body: "入射角＝反射角になるきまりを{{反射の法則}}といいます。",
-            figure: { ref: { unit: "j-sci-1-hikari", section: 0 } },
+            figure: { ref: { unit: "j-sci-1-hikari", section: 1 } },
           },
         ],
       },
@@ -79,7 +79,7 @@ export const J_SCI_1_HIKARI: Daimon[] = [
           {
             title: "進む向きを先に確かめる",
             body: "空気→水では{{屈折角＜入射角}}、水→空気では屈折角＞入射角。向きで逆になります。",
-            figure: { ref: { unit: "j-sci-1-hikari", section: 1 } },
+            figure: { ref: { unit: "j-sci-1-hikari", section: 2 } },
           },
         ],
       },
@@ -92,7 +92,7 @@ export const J_SCI_1_HIKARI: Daimon[] = [
         level: 1,
         point: "レンズの中心から焦点までが焦点距離。",
         answer: { kind: "term", accept: ["焦点"], script: "kanji" },
-        steps: [{ title: "用語を確かめる", body: "軸に平行な光が集まる点が{{焦点}}です。", back: [{ label: "レクチャー「凸レンズ」", href: "/learn/lecture/j-sci-1-hikari#lec-s3" }] }],
+        steps: [{ title: "用語を確かめる", body: "軸に平行な光が集まる点が{{焦点}}です。", back: [{ label: "レクチャー「凸レンズ」", href: "/learn/lecture/j-sci-1-hikari#lec-s5" }] }],
       },
       {
         id: "5",
@@ -135,7 +135,7 @@ export const J_SCI_1_HIKARI: Daimon[] = [
     level: 2,
     points: 24,
     minutes: 12,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     material: [
       {
         kind: "table",
@@ -164,7 +164,7 @@ export const J_SCI_1_HIKARI: Daimon[] = [
           {
             title: "同じ大きさの像をさがす",
             body: "③は像の高さが物体と同じ4cm。このとき物体もスクリーンも{{焦点距離の2倍}}の位置にあります。",
-            figure: { ref: { unit: "j-sci-1-hikari", section: 3 } },
+            figure: { ref: { unit: "j-sci-1-hikari", section: 5 } },
           },
           { title: "2でわる", body: "24÷2＝{{12cm}}が焦点距離です。", trap: "24cm をそのまま焦点距離と答える。" },
         ],
@@ -229,7 +229,7 @@ export const J_SCI_1_HIKARI: Daimon[] = [
           {
             title: "焦点の内側か外側か",
             body: "⑤の8cm は焦点12cm より{{内側}}。スクリーンにはうつらず、のぞくと{{同じ向きの大きな虚像}}が見えます。",
-            figure: { ref: { unit: "j-sci-1-hikari", section: 2 } },
+            figure: { ref: { unit: "j-sci-1-hikari", section: 4 } },
           },
         ],
       },
@@ -254,7 +254,7 @@ export const J_SCI_1_HIKARI: Daimon[] = [
           {
             title: "実像ができるしくみ",
             body: "実像は、レンズを通った光が{{実際に1点に集まって}}できます。焦点の内側からの光は、レンズを通っても広がったままです。",
-            back: [{ label: "レクチャー「凸レンズ：物体の位置で像が変わる」", href: "/learn/lecture/j-sci-1-hikari#lec-s3" }],
+            back: [{ label: "レクチャー「凸レンズ：物体の位置で像が変わる」", href: "/learn/lecture/j-sci-1-hikari#lec-s5" }],
           },
         ],
       },
@@ -271,7 +271,7 @@ export const J_SCI_1_HIKARI: Daimon[] = [
     level: 3,
     points: 24,
     minutes: 13,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     material: [
       {
         kind: "table",
@@ -345,7 +345,7 @@ export const J_SCI_1_HIKARI: Daimon[] = [
         level: 1,
         point: "水・ガラス→空気で入射角が大きいと全反射。",
         answer: { kind: "term", accept: ["全反射"], script: "kanji" },
-        steps: [{ title: "用語を確かめる", body: "光が境界面ですべて反射することを{{全反射}}といい、光ファイバーに利用されています。", figure: { ref: { unit: "j-sci-1-hikari", section: 1 } } }],
+        steps: [{ title: "用語を確かめる", body: "光が境界面ですべて反射することを{{全反射}}といい、光ファイバーに利用されています。", back: [{ label: "レクチャー「全反射と、光の色」", href: "/learn/lecture/j-sci-1-hikari#lec-s4" }] }],
       },
       {
         id: "5",
@@ -373,7 +373,7 @@ export const J_SCI_1_HIKARI: Daimon[] = [
           {
             title: "目の感じ方",
             body: "目は光が来た向きを{{まっすぐのばした先}}に物があると感じます。曲がった光をのばすと、底は実際より上に見えます。",
-            back: [{ label: "レクチャー「屈折」", href: "/learn/lecture/j-sci-1-hikari#lec-s2" }],
+            back: [{ label: "レクチャー「屈折」", href: "/learn/lecture/j-sci-1-hikari#lec-s3" }],
           },
         ],
       },

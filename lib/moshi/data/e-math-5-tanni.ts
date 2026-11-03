@@ -23,7 +23,7 @@ function komi(r: Rng): QuestionBody {
   const per10 = r.pick([5, 8, 12, 15, 16, 18, 24, 25]); // 1m²あたりの人数×10
   const s = r.pick([10, 20, 30, 40, 50, 60]);
   const p = (per10 * s) / 10;
-  const place = r.pick(["公園の広場", "体育館のコート", "プールの広場"]);
+  const place = r.pick(["公園の広場", "体育館のコート", "プールサイド"]);
   return {
     prompt: `面積が ${s}m² の${place}に、${p}人がいます。1m²あたり何人ですか。`,
     answer: num(per10 / 10, `${p}/${s}`, "人"),
@@ -68,7 +68,7 @@ function yasui(r: Rng): QuestionBody {
     nb = r.int(3, 8);
   } while (pa === pb || na === nb || (pa > pb) === (pa * na > pb * nb));
   const cheap = pa < pb ? 0 : 1;
-  const thing = r.pick(["えんぴつ", "ボールペン", "ノート"]);
+  const thing = r.pick(["えんぴつ", "ボールペン", "マーカー"]); // どれも「本」で数えるもの
   return {
     prompt: `${thing}が、Aの店では ${na}本で ${pa * na}円、Bの店では ${nb}本で ${pb * nb}円で売られています。1本あたりで考えると、どちらの店が安いですか。`,
     answer: choice(
@@ -133,7 +133,7 @@ export const E_MATH_5_TANNI_MOSHI: UnitMoshi = {
   unit: U,
   subject: "sansu",
   grade: "小5",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "1あたりの量を求める",

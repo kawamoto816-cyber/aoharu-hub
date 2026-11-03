@@ -95,6 +95,6 @@ export const E_SCIENCE_5_MI_MOSHI: UnitMoshi = {
   subject: "sci",
   grade: "小5",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [{ title: "花から実へ", lead: "次の問いに答えなさい。", style: "mix", pick: 6, questions: POOL }],
 };

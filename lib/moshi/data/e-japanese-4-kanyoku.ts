@@ -178,7 +178,7 @@ export const E_JAPANESE_4_KANYOKU_MOSHI: UnitMoshi = {
   subject: "ja",
   grade: "小4",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "慣用句《かんようく》の意味と使い方",

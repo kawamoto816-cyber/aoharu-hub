@@ -117,7 +117,7 @@ export const E_MATH_1_SEIRI_MOSHI: UnitMoshi = {
   subject: "sansu",
   grade: "小1",
   minutes: 8,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "わけて かぞえる",

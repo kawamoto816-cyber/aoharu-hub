@@ -25,7 +25,7 @@ export const E_JAPANESE_2_SHI_MOSHI: UnitMoshi = {
   subject: "ja",
   grade: "小2",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "詩《し》を 読む「ゆうやけ」",

@@ -16,7 +16,7 @@ export const J_MATH_3_HEIHOKON: Daimon[] = [
     level: 1,
     points: 20,
     minutes: 10,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     items: [
       {
         id: "1",
@@ -166,7 +166,7 @@ export const J_MATH_3_HEIHOKON: Daimon[] = [
     level: 2,
     points: 21,
     minutes: 11,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     items: [
       {
         id: "1",
@@ -291,7 +291,7 @@ export const J_MATH_3_HEIHOKON: Daimon[] = [
     level: 2,
     points: 21,
     minutes: 12,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     material: [{ kind: "text", body: "(1)・(2) は、√3 = 1.732 として計算しなさい。" }],
     items: [
       {
@@ -415,7 +415,7 @@ export const J_MATH_3_HEIHOKON: Daimon[] = [
     level: 3,
     points: 20,
     minutes: 13,
-    review: { status: "draft" },
+    review: { status: "checked", by: "ai-review", at: "2026-11-04" },
     material: [
       { kind: "text", body: "面積が 50 cm² の正方形 A と、面積が 18 cm² の正方形 B がある。" },
     ],

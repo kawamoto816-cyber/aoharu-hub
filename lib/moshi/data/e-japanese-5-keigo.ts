@@ -166,7 +166,7 @@ export const E_JAPANESE_5_KEIGO_MOSHI: UnitMoshi = {
   subject: "ja",
   grade: "小5",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "敬語《けいご》の種類と使い分け",

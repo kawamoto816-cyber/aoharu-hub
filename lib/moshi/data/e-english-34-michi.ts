@@ -100,11 +100,11 @@ const KIKU: QuestionB[] = [
     ["Go straight. Turn right at the first corner. You can see it on your left.", "first は1つ目です。2つ目は second。"],
   ], "動き→曲がる場所→見える側《がわ》の順《じゅん》", ["組み立てる", "{{Go straight.}} → Turn right {{at the second corner}}. → You can see it {{on your left}}.", [S2, S3]], "思考・判断・表現"),
   ch("left-side", 3, "道案内《みちあんない》を聞きました。\nGo straight and turn right at the first corner. The post office is on your left.\n質問《しつもん》：角を曲がったあと、郵便局《ゆうびんきょく》をさがすには、どちら側《がわ》を見ればよいですか。", [
-    ["左側《がわ》", "on your left（左に）と言っています。"],
-    ["右側《がわ》", "右（right）は曲がる向きです。見える側《がわ》は left です。"],
+    ["左側《ひだりがわ》", "on your left（左に）と言っています。"],
+    ["右側《みぎがわ》", "右（right）は曲がる向きです。見える側《がわ》は left です。"],
     ["正面", "正面とは言っていません。"],
     ["うしろ", "うしろとは言っていません。"],
-  ], "曲がる向きと見える側《がわ》はちがうことがある", ["最後《さいご》の言葉", "曲がるのは right、郵便局《ゆうびんきょく》は {{on your left}}（左側《がわ》）です。", [S3]], "思考・判断・表現"),
+  ], "曲がる向きと見える側《がわ》はちがうことがある", ["最後《さいご》の言葉", "曲がるのは right、郵便局《ゆうびんきょく》は {{on your left}}（左側《ひだりがわ》）です。", [S3]], "思考・判断・表現"),
 ];
 
 export const E_ENGLISH_34_MICHI_MOSHI: UnitMoshi = {
@@ -112,7 +112,7 @@ export const E_ENGLISH_34_MICHI_MOSHI: UnitMoshi = {
   subject: "eng",
   grade: "外国語活動（小3・4）",
   minutes: 6,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     { title: "道案内《みちあんない》の言葉", lead: "次の問いに答えなさい。", style: "word", pick: 3, questions: KOTOBA },
     { title: "道案内《みちあんない》を聞き取る", lead: "放送のかわりに、会話や英語《えいご》の文がのっています。読んで答えなさい。", style: "word", pick: 3, questions: KIKU },

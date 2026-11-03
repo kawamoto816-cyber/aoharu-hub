@@ -170,7 +170,7 @@ export const E_JAPANESE_6_KANA_YURAI_MOSHI: UnitMoshi = {
   subject: "ja",
   grade: "小6",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "平仮名・片仮名のでき方",

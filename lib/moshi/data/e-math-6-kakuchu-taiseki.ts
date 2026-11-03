@@ -80,7 +80,7 @@ function takasa(r: Rng): QuestionBody {
     point: "底面積が同じなら、体積は高さに比例する",
     steps: [
       { title: "もとの体積", body: `${s}×${h}＝${s * h}（cm³）です。`, back: [BACK_TEIMEN] },
-      { title: "高さが${k}倍なら体積も${k}倍", body: `${s * h}×${k}＝{{${s * h * k}}}（cm³）です。`, back: [BACK_HIREI] },
+      { title: `高さが${k}倍なら体積も${k}倍`, body: `${s * h}×${k}＝{{${s * h * k}}}（cm³）です。`, back: [BACK_HIREI] },
     ],
   };
 }
@@ -139,7 +139,7 @@ export const E_MATH_6_KAKUCHU_TAISEKI_MOSHI: UnitMoshi = {
   unit: U,
   subject: "sansu",
   grade: "小6",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "底面積×高さ",

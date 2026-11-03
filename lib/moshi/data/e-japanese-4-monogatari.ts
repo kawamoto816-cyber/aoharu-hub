@@ -29,7 +29,7 @@ export const E_JAPANESE_4_MONOGATARI_MOSHI: UnitMoshi = {
   subject: "ja",
   grade: "小4",
   minutes: 18,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "物語を読む「雨のあとの花だん」",

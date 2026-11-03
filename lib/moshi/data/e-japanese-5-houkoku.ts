@@ -34,7 +34,7 @@ export const E_JAPANESE_5_HOUKOKU_MOSHI: UnitMoshi = {
   subject: "ja",
   grade: "小5",
   minutes: 18,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "報告する文章を読む「五年生の読書調べ」",
