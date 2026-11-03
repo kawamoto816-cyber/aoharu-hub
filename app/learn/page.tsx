@@ -3,6 +3,8 @@ import Link from "next/link";
 import { LearnShell } from "@/components/learn/LearnShell";
 import { LegacyHashRedirect } from "@/components/learn/LegacyHashRedirect";
 import { LearnMoreMap } from "@/components/learn/LearnMoreMap";
+import { UnitPicker, type PickerEntry } from "@/components/learn/UnitPicker";
+import { LEVELS } from "@/lib/school";
 import { NoteLink } from "@/components/drill/NoteLink";
 import { LECTURES, getLecture, lectureHref, lectureUnitInfo } from "@/lib/lecture";
 import { TSUKKOMI_HOME } from "@/lib/tsukkomi";
@@ -90,6 +92,26 @@ const SUBJECTS = [
   { label: "情報", note: "しくみを図解で", href: "/learn/kyoka/joho" },
 ] as const;
 
+
+/** 表紙の「学年 → 教科 → 単元」用に、学校の地図を学年ごとに並べ直す */
+const GRADES = ["小1", "小2", "小3", "小4", "小5", "小6", "中1", "中2", "中3", "高校"];
+function pickerData(): PickerEntry[] {
+  const out: PickerEntry[] = [];
+  for (const l of LEVELS)
+    for (const s of l.subjects)
+      for (const g of s.groups) {
+        const units = g.units.filter((u) => getLecture(u.id)).map((u) => ({ id: u.id, name: u.name }));
+        if (!units.length) continue;
+        let grades: string[];
+        if (l.name === "高校") grades = ["高校"];
+        else if (GRADES.includes(g.title)) grades = [g.title];
+        else if (l.name === "中学校") grades = ["中1", "中2", "中3"];
+        else grades = (g.title.match(/[1-6]/g) ?? []).map((n) => `小${n}`);
+        for (const grade of grades) out.push({ grade, subject: s.name, group: g.title, units });
+      }
+  return out;
+}
+
 // ---- 小さな部品 ----
 
 function Arrow({ className = "" }: { className?: string }) {
@@ -138,18 +160,13 @@ export default function LearnHub() {
             <b className="text-white">学んだら、教えよう。</b>
             小・中・高の{s.units}単元、登録なしで無料。
           </p>
-          <div className="flex flex-col items-start gap-1.5">
-            <Link
-              href={lectureHref(today.unit)}
-              className="inline-flex min-h-[48px] items-center gap-2 rounded-full bg-[#FFE45C] px-[18px] text-[15px] font-black text-[#15172B] no-underline hover:bg-[#FFEC85] focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-white"
-            >
-              きょうの1単元を開く
-              <Arrow />
+          <UnitPicker entries={pickerData()} grades={GRADES} />
+          <p className="m-0 text-[12.5px] leading-relaxed text-[#DDE3FA]">
+            まよったら、きょうのおすすめ：
+            <Link href={lectureHref(today.unit)} className="font-bold text-white underline underline-offset-2">
+              {todayInfo ? `${todayInfo.subject}・${todayInfo.group}「${todayInfo.name}」` : today.title}
             </Link>
-            <p className="m-0 text-[12.5px] leading-relaxed text-[#DDE3FA]">
-              きょうは {todayInfo ? `${todayInfo.subject}・${todayInfo.group}「${todayInfo.name}」` : today.title}
-            </p>
-          </div>
+          </p>
         </section>
 
         {/* 2. AIの生徒との会話の例（準備中） */}
