@@ -1,6 +1,26 @@
 // 自動生成 (scripts/gen-moshi.ts)。手で書きかえない。
 import type { Daimon, UnitMoshi } from "./types";
 import { E_MATH_5_HAYASA_MOSHI } from "./data/e-math-5-hayasa";
+import { H_ENG_GRAM_BUNKEI_MOSHI } from "./data/h-eng-gram-bunkei";
+import { H_ENG_GRAM_BUNSHI_MOSHI } from "./data/h-eng-gram-bunshi";
+import { H_ENG_GRAM_BUNSHIKOBUN_MOSHI } from "./data/h-eng-gram-bunshikobun";
+import { H_ENG_GRAM_DAIMEISHI_MOSHI } from "./data/h-eng-gram-daimeishi";
+import { H_ENG_GRAM_DOMEISHI_MOSHI } from "./data/h-eng-gram-domeishi";
+import { H_ENG_GRAM_FUTEISHI_MOSHI } from "./data/h-eng-gram-futeishi";
+import { H_ENG_GRAM_HIKAKU_MOSHI } from "./data/h-eng-gram-hikaku";
+import { H_ENG_GRAM_JISEI_MOSHI } from "./data/h-eng-gram-jisei";
+import { H_ENG_GRAM_JODOSHI_MOSHI } from "./data/h-eng-gram-jodoshi";
+import { H_ENG_GRAM_JUDO_MOSHI } from "./data/h-eng-gram-judo";
+import { H_ENG_GRAM_KANDAI_MOSHI } from "./data/h-eng-gram-kandai";
+import { H_ENG_GRAM_KANFUKU_MOSHI } from "./data/h-eng-gram-kanfuku";
+import { H_ENG_GRAM_KANRYO_MOSHI } from "./data/h-eng-gram-kanryo";
+import { H_ENG_GRAM_KATEIHO_MOSHI } from "./data/h-eng-gram-kateiho";
+import { H_ENG_GRAM_KEIYOSHI_MOSHI } from "./data/h-eng-gram-keiyoshi";
+import { H_ENG_GRAM_MEISHI_MOSHI } from "./data/h-eng-gram-meishi";
+import { H_ENG_GRAM_SETSUZOKUSHI_MOSHI } from "./data/h-eng-gram-setsuzokushi";
+import { H_ENG_GRAM_TOKUSHU_MOSHI } from "./data/h-eng-gram-tokushu";
+import { H_ENG_GRAM_WAHO_MOSHI } from "./data/h-eng-gram-waho";
+import { H_ENG_GRAM_ZENCHISHI_MOSHI } from "./data/h-eng-gram-zenchishi";
 import { H_ENG_SKILL_CHOBUN_MOSHI } from "./data/h-eng-skill-chobun";
 import { H_ENG_SKILL_JIYU_MOSHI } from "./data/h-eng-skill-jiyu";
 import { H_ENG_SKILL_LISTENING_MOSHI } from "./data/h-eng-skill-listening";
@@ -21,6 +41,18 @@ import { H_MATH_1_SANKAKUHI_MOSHI } from "./data/h-math-1-sankakuhi";
 import { H_MATH_1_SHIKI_MOSHI } from "./data/h-math-1-shiki";
 import { H_MATH_1_SHUGO_MOSHI } from "./data/h-math-1-shugo";
 import { H_MATH_1_TEIRI_MOSHI } from "./data/h-math-1-teiri";
+import { H_MATH_2_BIBUN_MOSHI } from "./data/h-math-2-bibun";
+import { H_MATH_2_CHOKUSEN_MOSHI } from "./data/h-math-2-chokusen";
+import { H_MATH_2_EN_MOSHI } from "./data/h-math-2-en";
+import { H_MATH_2_FUKUSO_MOSHI } from "./data/h-math-2-fukuso";
+import { H_MATH_2_KAHOU_MOSHI } from "./data/h-math-2-kahou";
+import { H_MATH_2_KISEKI_MOSHI } from "./data/h-math-2-kiseki";
+import { H_MATH_2_KOJI_MOSHI } from "./data/h-math-2-koji";
+import { H_MATH_2_SANKAKU_MOSHI } from "./data/h-math-2-sankaku";
+import { H_MATH_2_SEKIBUN_MOSHI } from "./data/h-math-2-sekibun";
+import { H_MATH_2_SHISU_MOSHI } from "./data/h-math-2-shisu";
+import { H_MATH_2_SHOMEI_MOSHI } from "./data/h-math-2-shomei";
+import { H_MATH_2_TAISU_MOSHI } from "./data/h-math-2-taisu";
 import { H_MATH_A_BAAI_MOSHI } from "./data/h-math-a-baai";
 import { H_MATH_A_EN_MOSHI } from "./data/h-math-a-en";
 import { H_MATH_A_GOJO_MOSHI } from "./data/h-math-a-gojo";
@@ -30,6 +62,20 @@ import { H_MATH_A_KUKAN_MOSHI } from "./data/h-math-a-kukan";
 import { H_MATH_A_NSHIN_MOSHI } from "./data/h-math-a-nshin";
 import { H_MATH_A_SANKAKUKEI_MOSHI } from "./data/h-math-a-sankakukei";
 import { H_MATH_A_YAKUSU_MOSHI } from "./data/h-math-a-yakusu";
+import { H_MATH_B_BUNPU_MOSHI } from "./data/h-math-b-bunpu";
+import { H_MATH_B_KENTEI_MOSHI } from "./data/h-math-b-kentei";
+import { H_MATH_B_KINO_MOSHI } from "./data/h-math-b-kino";
+import { H_MATH_B_NIKOU_MOSHI } from "./data/h-math-b-nikou";
+import { H_MATH_B_SIGMA_MOSHI } from "./data/h-math-b-sigma";
+import { H_MATH_B_SUITEI_MOSHI } from "./data/h-math-b-suitei";
+import { H_MATH_B_TOSA_MOSHI } from "./data/h-math-b-tosa";
+import { H_MATH_B_ZENKA_MOSHI } from "./data/h-math-b-zenka";
+import { H_MATH_C_BAIKAI_MOSHI } from "./data/h-math-c-baikai";
+import { H_MATH_C_FUKUSO_MOSHI } from "./data/h-math-c-fukuso";
+import { H_MATH_C_HEIMEN_MOSHI } from "./data/h-math-c-heimen";
+import { H_MATH_C_KUKAN_MOSHI } from "./data/h-math-c-kukan";
+import { H_MATH_C_NIJIKYOKUSEN_MOSHI } from "./data/h-math-c-nijikyokusen";
+import { H_MATH_C_ZUKEI_MOSHI } from "./data/h-math-c-zukei";
 import { J_EN_1_BE_MOSHI } from "./data/j-en-1-be";
 import { J_EN_1_CAN_MOSHI } from "./data/j-en-1-can";
 import { J_EN_1_DAIMEISHI_MOSHI } from "./data/j-en-1-daimeishi";
@@ -284,6 +330,26 @@ export const REGISTRY: Record<string, Daimon[]> = {
 /** ファイル名 (単元id) → その単元の単元模試 */
 export const UNIT_REGISTRY: Record<string, UnitMoshi> = {
   "e-math-5-hayasa": E_MATH_5_HAYASA_MOSHI,
+  "h-eng-gram-bunkei": H_ENG_GRAM_BUNKEI_MOSHI,
+  "h-eng-gram-bunshi": H_ENG_GRAM_BUNSHI_MOSHI,
+  "h-eng-gram-bunshikobun": H_ENG_GRAM_BUNSHIKOBUN_MOSHI,
+  "h-eng-gram-daimeishi": H_ENG_GRAM_DAIMEISHI_MOSHI,
+  "h-eng-gram-domeishi": H_ENG_GRAM_DOMEISHI_MOSHI,
+  "h-eng-gram-futeishi": H_ENG_GRAM_FUTEISHI_MOSHI,
+  "h-eng-gram-hikaku": H_ENG_GRAM_HIKAKU_MOSHI,
+  "h-eng-gram-jisei": H_ENG_GRAM_JISEI_MOSHI,
+  "h-eng-gram-jodoshi": H_ENG_GRAM_JODOSHI_MOSHI,
+  "h-eng-gram-judo": H_ENG_GRAM_JUDO_MOSHI,
+  "h-eng-gram-kandai": H_ENG_GRAM_KANDAI_MOSHI,
+  "h-eng-gram-kanfuku": H_ENG_GRAM_KANFUKU_MOSHI,
+  "h-eng-gram-kanryo": H_ENG_GRAM_KANRYO_MOSHI,
+  "h-eng-gram-kateiho": H_ENG_GRAM_KATEIHO_MOSHI,
+  "h-eng-gram-keiyoshi": H_ENG_GRAM_KEIYOSHI_MOSHI,
+  "h-eng-gram-meishi": H_ENG_GRAM_MEISHI_MOSHI,
+  "h-eng-gram-setsuzokushi": H_ENG_GRAM_SETSUZOKUSHI_MOSHI,
+  "h-eng-gram-tokushu": H_ENG_GRAM_TOKUSHU_MOSHI,
+  "h-eng-gram-waho": H_ENG_GRAM_WAHO_MOSHI,
+  "h-eng-gram-zenchishi": H_ENG_GRAM_ZENCHISHI_MOSHI,
   "h-eng-skill-chobun": H_ENG_SKILL_CHOBUN_MOSHI,
   "h-eng-skill-jiyu": H_ENG_SKILL_JIYU_MOSHI,
   "h-eng-skill-listening": H_ENG_SKILL_LISTENING_MOSHI,
@@ -304,6 +370,18 @@ export const UNIT_REGISTRY: Record<string, UnitMoshi> = {
   "h-math-1-shiki": H_MATH_1_SHIKI_MOSHI,
   "h-math-1-shugo": H_MATH_1_SHUGO_MOSHI,
   "h-math-1-teiri": H_MATH_1_TEIRI_MOSHI,
+  "h-math-2-bibun": H_MATH_2_BIBUN_MOSHI,
+  "h-math-2-chokusen": H_MATH_2_CHOKUSEN_MOSHI,
+  "h-math-2-en": H_MATH_2_EN_MOSHI,
+  "h-math-2-fukuso": H_MATH_2_FUKUSO_MOSHI,
+  "h-math-2-kahou": H_MATH_2_KAHOU_MOSHI,
+  "h-math-2-kiseki": H_MATH_2_KISEKI_MOSHI,
+  "h-math-2-koji": H_MATH_2_KOJI_MOSHI,
+  "h-math-2-sankaku": H_MATH_2_SANKAKU_MOSHI,
+  "h-math-2-sekibun": H_MATH_2_SEKIBUN_MOSHI,
+  "h-math-2-shisu": H_MATH_2_SHISU_MOSHI,
+  "h-math-2-shomei": H_MATH_2_SHOMEI_MOSHI,
+  "h-math-2-taisu": H_MATH_2_TAISU_MOSHI,
   "h-math-a-baai": H_MATH_A_BAAI_MOSHI,
   "h-math-a-en": H_MATH_A_EN_MOSHI,
   "h-math-a-gojo": H_MATH_A_GOJO_MOSHI,
@@ -313,6 +391,20 @@ export const UNIT_REGISTRY: Record<string, UnitMoshi> = {
   "h-math-a-nshin": H_MATH_A_NSHIN_MOSHI,
   "h-math-a-sankakukei": H_MATH_A_SANKAKUKEI_MOSHI,
   "h-math-a-yakusu": H_MATH_A_YAKUSU_MOSHI,
+  "h-math-b-bunpu": H_MATH_B_BUNPU_MOSHI,
+  "h-math-b-kentei": H_MATH_B_KENTEI_MOSHI,
+  "h-math-b-kino": H_MATH_B_KINO_MOSHI,
+  "h-math-b-nikou": H_MATH_B_NIKOU_MOSHI,
+  "h-math-b-sigma": H_MATH_B_SIGMA_MOSHI,
+  "h-math-b-suitei": H_MATH_B_SUITEI_MOSHI,
+  "h-math-b-tosa": H_MATH_B_TOSA_MOSHI,
+  "h-math-b-zenka": H_MATH_B_ZENKA_MOSHI,
+  "h-math-c-baikai": H_MATH_C_BAIKAI_MOSHI,
+  "h-math-c-fukuso": H_MATH_C_FUKUSO_MOSHI,
+  "h-math-c-heimen": H_MATH_C_HEIMEN_MOSHI,
+  "h-math-c-kukan": H_MATH_C_KUKAN_MOSHI,
+  "h-math-c-nijikyokusen": H_MATH_C_NIJIKYOKUSEN_MOSHI,
+  "h-math-c-zukei": H_MATH_C_ZUKEI_MOSHI,
   "j-en-1-be": J_EN_1_BE_MOSHI,
   "j-en-1-can": J_EN_1_CAN_MOSHI,
   "j-en-1-daimeishi": J_EN_1_DAIMEISHI_MOSHI,
