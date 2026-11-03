@@ -109,7 +109,6 @@ function Play() {
 }
 
 const card = "flex flex-col gap-2.5 rounded-[16px] border-[1.5px] border-[#15172B] p-4 text-[#15172B] no-underline transition-shadow hover:shadow-[3px_3px_0_#15172B] focus-visible:shadow-[3px_3px_0_#15172B]";
-const pillDark = "inline-flex min-h-[44px] items-center justify-center gap-2 rounded-full bg-[#15172B] px-4 text-[14px] font-black text-white";
 
 export default function LearnHub() {
   const today = todayLecture();
@@ -118,40 +117,43 @@ export default function LearnHub() {
   const sc = showcase();
 
   return (
-    <LearnShell crumbs={[{ href: "/", label: "アオハルOS" }, { label: "まなぶ" }]}>
+    <LearnShell crumbs={[]}>
       <LegacyHashRedirect />
       <div className="mx-auto max-w-[720px] overflow-x-clip">
-        {/* 1. 表紙 */}
-        <section aria-labelledby="hero-heading" className="flex flex-col gap-3.5 pt-2">
-          <p className="m-0 text-[12px] font-black tracking-[0.12em] text-[#1533B8]">AI時代の、新しい教科書</p>
-          <h1 id="hero-heading" className="m-0 font-serif text-[38px] font-extrabold leading-[1.25] sm:text-[52px]">
+        {/* 1. 表紙（青い本の表紙） */}
+        <section
+          aria-labelledby="hero-heading"
+          className="flex flex-col gap-3.5 rounded-[6px_22px_22px_6px] border-l-[10px] border-[#0E2380] bg-[#1533B8] px-[22px] pb-6 pt-7 text-white shadow-[0_10px_0_-4px_#E3DCC8,0_18px_0_-8px_#D7CFB7] sm:px-10 sm:py-10"
+        >
+          <p className="m-0 text-[12px] font-bold tracking-[0.14em] text-[#FFE45C]">AOHARU LEARN　AI時代の新しい教科書</p>
+          <h1 id="hero-heading" className="m-0 font-serif text-[36px] font-extrabold leading-[1.3] sm:text-[48px]">
             勉強は、
             <br />
             こんなに
             <br className="sm:hidden" />
             面白かった。
           </h1>
-          <p className="m-0 max-w-[560px] text-[15px] leading-[1.9] text-[#3A3D55]">
+          <p className="m-0 max-w-[560px] text-[14px] leading-[1.9] text-[#DDE3FA] sm:text-[15px]">
             図解と物語で、わかる。ツッコんで、身につく。そして、だれかに教えたとき、知識はほんとうに自分のものになる。
-            <b className="text-[#15172B]">学んだら、教えよう。</b>
+            <b className="text-white">学んだら、教えよう。</b>
             小・中・高の{s.units}単元、登録なしで無料。
           </p>
           <div className="flex flex-col items-start gap-1.5">
             <Link
               href={lectureHref(today.unit)}
-              className="inline-flex min-h-[48px] items-center gap-2 rounded-full border-[1.5px] border-[#15172B] bg-[#FFE45C] px-[18px] text-[15px] font-black text-[#15172B] no-underline shadow-[3px_3px_0_#15172B] hover:bg-[#FFEC85] focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-[#1533B8]"
+              className="inline-flex min-h-[48px] items-center gap-2 rounded-full bg-[#FFE45C] px-[18px] text-[15px] font-black text-[#15172B] no-underline hover:bg-[#FFEC85] focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-white"
             >
               きょうの1単元を開く
               <Arrow />
             </Link>
-            <p className="m-0 text-[12.5px] leading-relaxed text-[#5A5D73]">
+            <p className="m-0 text-[12.5px] leading-relaxed text-[#DDE3FA]">
               きょうは {todayInfo ? `${todayInfo.subject}・${todayInfo.group}「${todayInfo.name}」` : today.title}
             </p>
           </div>
         </section>
 
         {/* 2. AIの生徒との会話の例（準備中） */}
-        <section aria-label="AIの生徒との会話の例" className="mt-6 flex flex-col gap-3 rounded-[18px] border-[1.5px] border-[#15172B] bg-white p-4 shadow-[4px_4px_0_#15172B]">
+        <section aria-label="AIの生徒との会話の例" className="mt-8 flex flex-col gap-3 rounded-[18px] border-[1.5px] border-[#15172B] bg-white p-4 shadow-[4px_4px_0_#15172B]">
           <div className="flex items-center gap-2.5">
             <span aria-hidden="true" className="flex h-10 w-10 items-center justify-center rounded-full border-[1.5px] border-[#15172B] bg-[#E6EAFB]">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1533B8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -213,70 +215,113 @@ export default function LearnHub() {
           </ol>
         </section>
 
-        {/* 4. 4つの楽しみ方 */}
-        <section aria-labelledby="ways-heading" className="mt-12 flex flex-col gap-3.5">
-          <h2 id="ways-heading" className="m-0 text-[19px] font-black sm:text-[22px]">
-            1単元に、4つの楽しみ方
-          </h2>
-          <div className="grid gap-3.5 sm:grid-cols-2">
-            {sc.melos && (
-              <Link href={lectureHref(sc.melos.unit)} className={`${card} bg-white`}>
-                <p className="m-0 text-[11px] font-black tracking-[0.08em] text-[#8A5A00]">名作を聴く　{unitLabel(sc.melos.unit)}</p>
-                <p className="m-0 border-l-4 border-[#C9A24A] pl-3 font-serif text-[18px] leading-[1.8]">{sc.melos.line}</p>
-                <p className="m-0 text-[12px] text-[#5A5D73]">{sc.melos.cite}　青空文庫と照合した原文を朗読</p>
-                <span className={`${pillDark} mt-auto`}>
-                  <Play />
-                  朗読を聞く
+        {/* 4. いつもの教科書とのちがい＋1単元の冒険 */}
+        <section aria-labelledby="ways-heading" className="mt-12 flex flex-col gap-4">
+          <div>
+            <p className="m-0 text-[12px] font-black tracking-[0.12em] text-[#B42318]">ここが、ちがう</p>
+            <h2 id="ways-heading" className="m-0 mt-1 text-[22px] font-black leading-[1.4] sm:text-[26px]">
+              1単元が、ひとつの冒険になる。
+            </h2>
+          </div>
+
+          {/* いつもの教科書 → この教科書 */}
+          <div className="overflow-hidden rounded-[18px] border-[1.5px] border-[#15172B] bg-white">
+            <div className="grid grid-cols-[1fr_auto_1.25fr] items-center border-b-[1.5px] border-[#15172B] text-[12px] font-black">
+              <span className="bg-[#EFEBE0] px-3 py-2.5 text-[#5A5D73]">いつもの教科書</span>
+              <span aria-hidden="true" className="h-full bg-[#EFEBE0]" />
+              <span className="bg-[#FFE45C] px-3 py-2.5">アオハルラーン</span>
+            </div>
+            {[
+              ["説明から始まる", "謎から始まる", "依頼人からの MISSION"],
+              ["太字を暗記する", "物語で覚える", "小説・4コマ・漫才"],
+              ["黙って読む", "名作を本物の声で聴く", "原文の朗読・ネイティブの名演説"],
+              ["問題を解いて終わり", "ツッコんで鍛える", "ボケのまちがいを時間内に直す"],
+              ["テストで忘れる", "教えて自分のものに", "AIの生徒に説明する（準備中）"],
+            ].map(([old, nu, note]) => (
+              <div key={nu} className="grid grid-cols-[1fr_auto_1.25fr] items-center border-b border-[#E3DCC8] last:border-b-0">
+                <span className="px-3 py-3 text-[13px] text-[#8F94B8] line-through decoration-[#C9CEF2]">{old}</span>
+                <Arrow className="text-[#B42318]" />
+                <span className="px-3 py-2.5">
+                  <span className="block text-[14px] font-black leading-[1.5]">{nu}</span>
+                  <span className="block text-[11px] leading-[1.5] text-[#5A5D73]">{note}</span>
                 </span>
-              </Link>
+              </div>
+            ))}
+          </div>
+
+          {/* 1単元の冒険（実在の単元から） */}
+          <ol className="relative m-0 flex list-none flex-col gap-3 p-0 pl-11 before:absolute before:bottom-6 before:left-[17px] before:top-6 before:w-[3px] before:rounded-full before:bg-[repeating-linear-gradient(#15172B_0_6px,transparent_6px_12px)] before:content-['']">
+            {sc.mystery && (
+              <li className="relative">
+                <span aria-hidden="true" className="absolute -left-11 top-3 flex h-9 w-9 items-center justify-center rounded-full border-[1.5px] border-[#15172B] bg-[#1533B8] text-[13px] font-black text-white">謎</span>
+                <Link href={lectureHref(sc.mystery.unit)} className={`${card} bg-[#E6EAFB]`}>
+                  <span className="text-[11px] font-black text-[#1533B8]">STEP 1　MISSION が届く　{unitLabel(sc.mystery.unit)}</span>
+                  <span className="text-[15px] font-bold leading-[1.6]">{sc.mystery.q}</span>
+                  <span className="flex items-center gap-1 text-[11px] text-[#5A5D73]">
+                    {sc.mystery.from ? `依頼人：${sc.mystery.from}` : "読み進めると解ける謎"}
+                    <Arrow className="shrink-0" />
+                  </span>
+                </Link>
+              </li>
             )}
-            {sc.fdr && (
-              <Link href={lectureHref(sc.fdr.unit)} className={`${card} bg-white`}>
-                <p className="m-0 text-[11px] font-black tracking-[0.08em] text-[#1533B8]">英語の名演説　{unitLabel(sc.fdr.unit)}</p>
-                <p lang="en" className="m-0 border-l-4 border-[#1533B8] pl-3 font-serif text-[17px] italic leading-[1.7]">
-                  …{sc.fdr.line}…
-                </p>
-                {sc.fdr.ja && <p className="m-0 text-[12.5px] leading-relaxed text-[#3A3D55]">{sc.fdr.ja}</p>}
-                <p lang="en" className="m-0 text-[12px] text-[#5A5D73]">
-                  {sc.fdr.cite}
-                </p>
-                <span className={`${pillDark} mt-auto`}>
-                  <Play />
-                  演説を聞く
-                </span>
-              </Link>
+            {(sc.melos || sc.fdr) && (
+              <li className="relative">
+                <span aria-hidden="true" className="absolute -left-11 top-3 flex h-9 w-9 items-center justify-center rounded-full border-[1.5px] border-[#15172B] bg-[#C9A24A] text-[13px] font-black text-white">聴</span>
+                <div className={`${card} bg-white`}>
+                  <span className="text-[11px] font-black text-[#8A5A00]">STEP 2　名作を、本物の声で聴く</span>
+                  <div className="grid gap-2 sm:grid-cols-2">
+                    {sc.melos && (
+                      <Link href={lectureHref(sc.melos.unit)} className="flex flex-col gap-1 rounded-[12px] border-l-4 border-[#C9A24A] bg-[#FBF7EE] px-3 py-2.5 text-[#15172B] no-underline hover:bg-[#F5EEDC]">
+                        <span className="font-serif text-[17px] leading-[1.6]">{sc.melos.line}</span>
+                        <span className="flex items-center gap-1 text-[11px] text-[#5A5D73]">
+                          <Play /> {sc.melos.cite}
+                        </span>
+                      </Link>
+                    )}
+                    {sc.fdr && (
+                      <Link href={lectureHref(sc.fdr.unit)} className="flex flex-col gap-1 rounded-[12px] border-l-4 border-[#1533B8] bg-[#F2F4FC] px-3 py-2.5 text-[#15172B] no-underline hover:bg-[#E6EAFB]">
+                        <span lang="en" className="font-serif text-[15px] italic leading-[1.6]">…{sc.fdr.line}…</span>
+                        <span className="flex items-center gap-1 text-[11px] text-[#5A5D73]">
+                          <Play /> ネイティブの声で
+                        </span>
+                      </Link>
+                    )}
+                  </div>
+                </div>
+              </li>
             )}
-            <div className="grid grid-cols-2 gap-2.5 sm:col-span-2 sm:gap-3.5">
-              {sc.manzai && (
-                <Link href={lectureHref(sc.manzai.unit)} className={`${card} gap-2 bg-[#FFF8D6] p-3.5`}>
-                  <p className="m-0 text-[11px] font-black text-[#B42318]">漫才で笑う　{unitLabel(sc.manzai.unit)}</p>
-                  <p className="m-0 text-[13px] font-bold leading-[1.6] sm:text-[15px]">「{sc.manzai.title}！」</p>
-                  <p className="m-0 mt-auto flex items-center gap-1 text-[11px] text-[#5A5D73]">
+            {sc.manzai && (
+              <li className="relative">
+                <span aria-hidden="true" className="absolute -left-11 top-3 flex h-9 w-9 items-center justify-center rounded-full border-[1.5px] border-[#15172B] bg-[#FFE45C] text-[13px] font-black">笑</span>
+                <Link href={lectureHref(sc.manzai.unit)} className={`${card} bg-[#FFF8D6]`}>
+                  <span className="text-[11px] font-black text-[#B42318]">STEP 3　漫才で笑って覚える　{unitLabel(sc.manzai.unit)}</span>
+                  <span className="text-[16px] font-black leading-[1.5]">「{sc.manzai.title}！」</span>
+                  <span className="flex items-center gap-1 text-[11px] text-[#5A5D73]">
                     {sc.manzai.cast.join("と")}、2人の声で再生
                     <Arrow className="shrink-0" />
-                  </p>
+                  </span>
                 </Link>
-              )}
-              {sc.mystery && (
-                <Link href={lectureHref(sc.mystery.unit)} className={`${card} gap-2 bg-[#E6EAFB] p-3.5`}>
-                  <p className="m-0 text-[11px] font-black text-[#1533B8]">謎を解く　{unitLabel(sc.mystery.unit)}</p>
-                  <p className="m-0 text-[13px] font-bold leading-[1.6] sm:text-[15px]">{sc.mystery.q}</p>
-                  <p className="m-0 mt-auto flex items-center gap-1 text-[11px] text-[#5A5D73]">
-                    {sc.mystery.from ? `${sc.mystery.from}から届く MISSION` : "読み進めると解ける謎"}
-                    <Arrow className="shrink-0" />
-                  </p>
-                </Link>
-              )}
-            </div>
-          </div>
-          {/* ②鍛える の新しい学び方への入口 */}
-          <Link href={TSUKKOMI_HOME} className="flex items-center gap-3 rounded-[16px] border-[1.5px] border-[#15172B] bg-[#15172B] p-4 text-white no-underline shadow-[3px_3px_0_#B42318] transition-transform hover:-translate-y-0.5 focus-visible:-translate-y-0.5">
-            <span className="min-w-0 flex-1">
-              <span className="block text-[11px] font-black text-[#FFE45C]">②鍛える　ツッコミ学習法</span>
-              <span className="mt-1 block text-[15px] font-bold leading-[1.6]">ボケのまちがいに、時間内にツッコめ。正しい文は見抜いてスルー。</span>
-            </span>
-            <Arrow className="shrink-0" />
-          </Link>
+              </li>
+            )}
+            <li className="relative">
+              <span aria-hidden="true" className="absolute -left-11 top-3 flex h-9 w-9 items-center justify-center rounded-full border-[1.5px] border-[#15172B] bg-[#B42318] text-[13px] font-black text-white">鍛</span>
+              <Link href={TSUKKOMI_HOME} className="flex flex-col gap-1.5 rounded-[16px] border-[1.5px] border-[#15172B] bg-[#15172B] p-4 text-white no-underline shadow-[3px_3px_0_#B42318] transition-transform hover:-translate-y-0.5 focus-visible:-translate-y-0.5">
+                <span className="text-[11px] font-black text-[#FFE45C]">STEP 4　ツッコんで鍛える　ツッコミ学習法</span>
+                <span className="text-[15px] font-bold leading-[1.6]">ボケのまちがいに、時間内にツッコめ。うまくツッコめたら「なんでやねん！」</span>
+                <span className="flex items-center gap-1 text-[11px] text-[#C9CEF2]">
+                  道場へ行く
+                  <Arrow className="shrink-0" />
+                </span>
+              </Link>
+            </li>
+            <li className="relative">
+              <span aria-hidden="true" className="absolute -left-11 top-3 flex h-9 w-9 items-center justify-center rounded-full border-[1.5px] border-dashed border-[#15172B] bg-white text-[13px] font-black">教</span>
+              <div className="flex flex-col gap-1 rounded-[16px] border-[1.5px] border-dashed border-[#15172B] bg-white p-4">
+                <span className="text-[11px] font-black text-[#2F7D4F]">STEP 5　AIの生徒に教える（準備中）</span>
+                <span className="text-[15px] font-bold leading-[1.6]">説明できたら、本当にわかった証拠。学んだら、教えよう。</span>
+              </div>
+            </li>
+          </ol>
         </section>
 
         {/* 5. なかみ */}

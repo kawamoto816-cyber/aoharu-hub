@@ -26,21 +26,23 @@ export function LearnShell({ crumbs: rawCrumbs, children, narrow = false, homeHr
         </div>
       </header>
       <div className={`mx-auto px-4 pb-16 pt-5 sm:px-6 ${narrow ? "max-w-[560px]" : "max-w-[1100px]"}`}>
-        <nav aria-label="パンくずリスト" className="-my-3 text-xs font-bold leading-none text-[#3A3D55]">
-          {crumbs.map((c, i) => (
-            <span key={c.label}>
-              {i > 0 && <span className="mx-1.5">/</span>}
-              {c.href ? (
-                <Link href={c.href} className="inline-block py-3 text-[#3A3D55] hover:text-[#1533B8]">
-                  {c.label}
-                </Link>
-              ) : (
-                <span aria-current="page">{c.label}</span>
-              )}
-            </span>
-          ))}
-        </nav>
-        <div className="mt-4">{children}</div>
+        {crumbs.length > 0 && (
+          <nav aria-label="パンくずリスト" className="-my-3 text-xs font-bold leading-none text-[#3A3D55]">
+            {crumbs.map((c, i) => (
+              <span key={c.label}>
+                {i > 0 && <span className="mx-1.5">/</span>}
+                {c.href ? (
+                  <Link href={c.href} className="inline-block py-3 text-[#3A3D55] hover:text-[#1533B8]">
+                    {c.label}
+                  </Link>
+                ) : (
+                  <span aria-current="page">{c.label}</span>
+                )}
+              </span>
+            ))}
+          </nav>
+        )}
+        <div className={crumbs.length > 0 ? "mt-4" : ""}>{children}</div>
         <p className="mb-0 mt-12 text-center text-xs text-[#3A3D55]">{SUPERVISION}</p>
       </div>
     </main>
