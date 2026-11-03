@@ -1,5 +1,103 @@
 // 自動生成 (scripts/gen-moshi.ts)。手で書きかえない。
 import type { Daimon, UnitMoshi } from "./types";
+import { E_ENGLISH_34_AISATSU_MOSHI } from "./data/e-english-34-aisatsu";
+import { E_ENGLISH_34_ALPHA_KOMOJI_MOSHI } from "./data/e-english-34-alpha-komoji";
+import { E_ENGLISH_34_ALPHA_OOMOJI_MOSHI } from "./data/e-english-34-alpha-oomoji";
+import { E_ENGLISH_34_HOSHII_MOSHI } from "./data/e-english-34-hoshii";
+import { E_ENGLISH_34_IRO_KATACHI_MOSHI } from "./data/e-english-34-iro-katachi";
+import { E_ENGLISH_34_JIKOKU_MOSHI } from "./data/e-english-34-jikoku";
+import { E_ENGLISH_34_KAZU_MOSHI } from "./data/e-english-34-kazu";
+import { E_ENGLISH_34_MI_NO_MAWARI_MOSHI } from "./data/e-english-34-mi-no-mawari";
+import { E_ENGLISH_34_MICHI_MOSHI } from "./data/e-english-34-michi";
+import { E_ENGLISH_34_SUKI_MOSHI } from "./data/e-english-34-suki";
+import { E_ENGLISH_34_YOUBI_TENKI_MOSHI } from "./data/e-english-34-youbi-tenki";
+import { E_ENGLISH_56_ALPHA_KAKU_MOSHI } from "./data/e-english-56-alpha-kaku";
+import { E_ENGLISH_56_CAN_MOSHI } from "./data/e-english-56-can";
+import { E_ENGLISH_56_CHUGAKU_MOSHI } from "./data/e-english-56-chugaku";
+import { E_ENGLISH_56_CHUMON_MOSHI } from "./data/e-english-56-chumon";
+import { E_ENGLISH_56_HINDO_MOSHI } from "./data/e-english-56-hindo";
+import { E_ENGLISH_56_HITO_MOSHI } from "./data/e-english-56-hito";
+import { E_ENGLISH_56_ICHI_MOSHI } from "./data/e-english-56-ichi";
+import { E_ENGLISH_56_IKITAI_MOSHI } from "./data/e-english-56-ikitai";
+import { E_ENGLISH_56_JIKOSHOKAI_MOSHI } from "./data/e-english-56-jikoshokai";
+import { E_ENGLISH_56_KAKO_MOSHI } from "./data/e-english-56-kako";
+import { E_ENGLISH_56_KYOKA_MOSHI } from "./data/e-english-56-kyoka";
+import { E_ENGLISH_56_OMOIDE_MOSHI } from "./data/e-english-56-omoide";
+import { E_ENGLISH_56_OTO_MOJI_MOSHI } from "./data/e-english-56-oto-moji";
+import { E_ENGLISH_56_TANJOBI_MOSHI } from "./data/e-english-56-tanjobi";
+import { E_ENGLISH_56_YUME_MOSHI } from "./data/e-english-56-yume";
+import { E_JAPANESE_1_HA_WO_HE_MOSHI } from "./data/e-japanese-1-ha-wo-he";
+import { E_JAPANESE_1_HIRAGANA_MOSHI } from "./data/e-japanese-1-hiragana";
+import { E_JAPANESE_1_KANA_ON_MOSHI } from "./data/e-japanese-1-kana-on";
+import { E_JAPANESE_1_KANJI_MOSHI } from "./data/e-japanese-1-kanji";
+import { E_JAPANESE_1_KATAKANA_MOSHI } from "./data/e-japanese-1-katakana";
+import { E_JAPANESE_1_KEIKEN_MOSHI } from "./data/e-japanese-1-keiken";
+import { E_JAPANESE_1_KUTOTEN_MOSHI } from "./data/e-japanese-1-kutoten";
+import { E_JAPANESE_1_MONOGATARI_MOSHI } from "./data/e-japanese-1-monogatari";
+import { E_JAPANESE_1_NAKAMA_MOSHI } from "./data/e-japanese-1-nakama";
+import { E_JAPANESE_1_SETSUMEI_MOSHI } from "./data/e-japanese-1-setsumei";
+import { E_JAPANESE_1_SHI_MOSHI } from "./data/e-japanese-1-shi";
+import { E_JAPANESE_2_HANTAI_MOSHI } from "./data/e-japanese-2-hantai";
+import { E_JAPANESE_2_KANJI_MOSHI } from "./data/e-japanese-2-kanji";
+import { E_JAPANESE_2_KANSATSU_MOSHI } from "./data/e-japanese-2-kansatsu";
+import { E_JAPANESE_2_KATAKANA_MOSHI } from "./data/e-japanese-2-katakana";
+import { E_JAPANESE_2_KEIKEN_MOSHI } from "./data/e-japanese-2-keiken";
+import { E_JAPANESE_2_MONOGATARI_MOSHI } from "./data/e-japanese-2-monogatari";
+import { E_JAPANESE_2_NAKAMA_MOSHI } from "./data/e-japanese-2-nakama";
+import { E_JAPANESE_2_SETSUMEI_MOSHI } from "./data/e-japanese-2-setsumei";
+import { E_JAPANESE_2_SHI_MOSHI } from "./data/e-japanese-2-shi";
+import { E_JAPANESE_2_SHUGO_MOSHI } from "./data/e-japanese-2-shugo";
+import { E_JAPANESE_2_TEINEI_MOSHI } from "./data/e-japanese-2-teinei";
+import { E_JAPANESE_3_HAIKU_MOSHI } from "./data/e-japanese-3-haiku";
+import { E_JAPANESE_3_HEN_TSUKURI_MOSHI } from "./data/e-japanese-3-hen-tsukuri";
+import { E_JAPANESE_3_HOUKOKU_MOSHI } from "./data/e-japanese-3-houkoku";
+import { E_JAPANESE_3_JISHO_MOSHI } from "./data/e-japanese-3-jisho";
+import { E_JAPANESE_3_KANJI_MOSHI } from "./data/e-japanese-3-kanji";
+import { E_JAPANESE_3_KOSOADO_MOSHI } from "./data/e-japanese-3-kosoado";
+import { E_JAPANESE_3_KOTOWAZA_MOSHI } from "./data/e-japanese-3-kotowaza";
+import { E_JAPANESE_3_MONOGATARI_MOSHI } from "./data/e-japanese-3-monogatari";
+import { E_JAPANESE_3_ROMAJI_MOSHI } from "./data/e-japanese-3-romaji";
+import { E_JAPANESE_3_SETSUMEI_MOSHI } from "./data/e-japanese-3-setsumei";
+import { E_JAPANESE_3_SHI_MOSHI } from "./data/e-japanese-3-shi";
+import { E_JAPANESE_3_SHUSHOKUGO_MOSHI } from "./data/e-japanese-3-shushokugo";
+import { E_JAPANESE_3_TEGAMI_MOSHI } from "./data/e-japanese-3-tegami";
+import { E_JAPANESE_3_TSUNAGI_MOSHI } from "./data/e-japanese-3-tsunagi";
+import { E_JAPANESE_4_BUN_KUMITATE_MOSHI } from "./data/e-japanese-4-bun-kumitate";
+import { E_JAPANESE_4_DOUON_MOSHI } from "./data/e-japanese-4-douon";
+import { E_JAPANESE_4_IKEN_MOSHI } from "./data/e-japanese-4-iken";
+import { E_JAPANESE_4_KANJI_JITEN_MOSHI } from "./data/e-japanese-4-kanji-jiten";
+import { E_JAPANESE_4_KANJI_MOSHI } from "./data/e-japanese-4-kanji";
+import { E_JAPANESE_4_KANYOKU_MOSHI } from "./data/e-japanese-4-kanyoku";
+import { E_JAPANESE_4_KOJI_MOSHI } from "./data/e-japanese-4-koji";
+import { E_JAPANESE_4_MONOGATARI_MOSHI } from "./data/e-japanese-4-monogatari";
+import { E_JAPANESE_4_OKURIGANA_MOSHI } from "./data/e-japanese-4-okurigana";
+import { E_JAPANESE_4_SETSUMEI_MOSHI } from "./data/e-japanese-4-setsumei";
+import { E_JAPANESE_4_SHI_MOSHI } from "./data/e-japanese-4-shi";
+import { E_JAPANESE_4_SHINBUN_MOSHI } from "./data/e-japanese-4-shinbun";
+import { E_JAPANESE_4_TANKA_MOSHI } from "./data/e-japanese-4-tanka";
+import { E_JAPANESE_5_BUN_KUMITATE_MOSHI } from "./data/e-japanese-5-bun-kumitate";
+import { E_JAPANESE_5_DENKI_MOSHI } from "./data/e-japanese-5-denki";
+import { E_JAPANESE_5_DOUON_MOSHI } from "./data/e-japanese-5-douon";
+import { E_JAPANESE_5_HOUKOKU_MOSHI } from "./data/e-japanese-5-houkoku";
+import { E_JAPANESE_5_JUKUGO_MOSHI } from "./data/e-japanese-5-jukugo";
+import { E_JAPANESE_5_KANJI_MOSHI } from "./data/e-japanese-5-kanji";
+import { E_JAPANESE_5_KEIGO_MOSHI } from "./data/e-japanese-5-keigo";
+import { E_JAPANESE_5_KOTEN_MOSHI } from "./data/e-japanese-5-koten";
+import { E_JAPANESE_5_MONOGATARI_MOSHI } from "./data/e-japanese-5-monogatari";
+import { E_JAPANESE_5_SETSUMEI_MOSHI } from "./data/e-japanese-5-setsumei";
+import { E_JAPANESE_5_SHI_MOSHI } from "./data/e-japanese-5-shi";
+import { E_JAPANESE_5_SUISEN_MOSHI } from "./data/e-japanese-5-suisen";
+import { E_JAPANESE_5_WAGO_MOSHI } from "./data/e-japanese-5-wago";
+import { E_JAPANESE_6_HANASHI_KAKI_MOSHI } from "./data/e-japanese-6-hanashi-kaki";
+import { E_JAPANESE_6_IKEN_MOSHI } from "./data/e-japanese-6-iken";
+import { E_JAPANESE_6_KANA_YURAI_MOSHI } from "./data/e-japanese-6-kana-yurai";
+import { E_JAPANESE_6_KANJI_MOSHI } from "./data/e-japanese-6-kanji";
+import { E_JAPANESE_6_KOTOBA_HENKA_MOSHI } from "./data/e-japanese-6-kotoba-henka";
+import { E_JAPANESE_6_MONOGATARI_MOSHI } from "./data/e-japanese-6-monogatari";
+import { E_JAPANESE_6_SETSUMEI_MOSHI } from "./data/e-japanese-6-setsumei";
+import { E_JAPANESE_6_SHI_MOSHI } from "./data/e-japanese-6-shi";
+import { E_JAPANESE_6_YOJIJUKUGO_MOSHI } from "./data/e-japanese-6-yojijukugo";
+import { E_JAPANESE_6_ZUIHITSU_MOSHI } from "./data/e-japanese-6-zuihitsu";
 import { E_MATH_1_100MADE_MOSHI } from "./data/e-math-1-100made";
 import { E_MATH_1_10MADE_MOSHI } from "./data/e-math-1-10made";
 import { E_MATH_1_20MADE_MOSHI } from "./data/e-math-1-20made";
@@ -129,6 +227,51 @@ import { E_SCIENCE_6_SUIYOEKI_MOSHI } from "./data/e-science-6-suiyoeki";
 import { E_SCIENCE_6_TEKO_MOSHI } from "./data/e-science-6-teko";
 import { E_SCIENCE_6_TOCHI_MOSHI } from "./data/e-science-6-tochi";
 import { E_SCIENCE_6_TSUKI_TAIYO_MOSHI } from "./data/e-science-6-tsuki-taiyo";
+import { E_SOCIAL_3_CHIZU_MOSHI } from "./data/e-social-3-chizu";
+import { E_SOCIAL_3_KEISATSU_MOSHI } from "./data/e-social-3-keisatsu";
+import { E_SOCIAL_3_MACHI_MOSHI } from "./data/e-social-3-machi";
+import { E_SOCIAL_3_MISE_MOSHI } from "./data/e-social-3-mise";
+import { E_SOCIAL_3_SEISAN_MOSHI } from "./data/e-social-3-seisan";
+import { E_SOCIAL_3_SHOBO_MOSHI } from "./data/e-social-3-shobo";
+import { E_SOCIAL_3_UTSURIKAWARI_MOSHI } from "./data/e-social-3-utsurikawari";
+import { E_SOCIAL_4_DENTO_MOSHI } from "./data/e-social-4-dento";
+import { E_SOCIAL_4_GOMI_MOSHI } from "./data/e-social-4-gomi";
+import { E_SOCIAL_4_KEN_MOSHI } from "./data/e-social-4-ken";
+import { E_SOCIAL_4_MIZU_MOSHI } from "./data/e-social-4-mizu";
+import { E_SOCIAL_4_SAIGAI_MOSHI } from "./data/e-social-4-saigai";
+import { E_SOCIAL_4_SENJIN_MOSHI } from "./data/e-social-4-senjin";
+import { E_SOCIAL_4_TODOFUKEN_MOSHI } from "./data/e-social-4-todofuken";
+import { E_SOCIAL_4_TOKUSHOKU_MOSHI } from "./data/e-social-4-tokushoku";
+import { E_SOCIAL_5_BOEKI_MOSHI } from "./data/e-social-5-boeki";
+import { E_SOCIAL_5_BOSAI_MOSHI } from "./data/e-social-5-bosai";
+import { E_SOCIAL_5_CHIKEI_MOSHI } from "./data/e-social-5-chikei";
+import { E_SOCIAL_5_JOHO_MOSHI } from "./data/e-social-5-joho";
+import { E_SOCIAL_5_KIKO_MOSHI } from "./data/e-social-5-kiko";
+import { E_SOCIAL_5_KOGAI_MOSHI } from "./data/e-social-5-kogai";
+import { E_SOCIAL_5_KOGYO_MOSHI } from "./data/e-social-5-kogyo";
+import { E_SOCIAL_5_KOME_MOSHI } from "./data/e-social-5-kome";
+import { E_SOCIAL_5_KURASHI_MOSHI } from "./data/e-social-5-kurashi";
+import { E_SOCIAL_5_SEKAI_MOSHI } from "./data/e-social-5-sekai";
+import { E_SOCIAL_5_SHINRIN_MOSHI } from "./data/e-social-5-shinrin";
+import { E_SOCIAL_5_SHOKURYO_MOSHI } from "./data/e-social-5-shokuryo";
+import { E_SOCIAL_5_SUISAN_MOSHI } from "./data/e-social-5-suisan";
+import { E_SOCIAL_6_ASUKA_NARA_MOSHI } from "./data/e-social-6-asuka-nara";
+import { E_SOCIAL_6_EDO_BUNKA_MOSHI } from "./data/e-social-6-edo-bunka";
+import { E_SOCIAL_6_EDO_SEIJI_MOSHI } from "./data/e-social-6-edo-seiji";
+import { E_SOCIAL_6_HEIAN_MOSHI } from "./data/e-social-6-heian";
+import { E_SOCIAL_6_JOMON_MOSHI } from "./data/e-social-6-jomon";
+import { E_SOCIAL_6_KAMAKURA_MOSHI } from "./data/e-social-6-kamakura";
+import { E_SOCIAL_6_KENPO_MOSHI } from "./data/e-social-6-kenpo";
+import { E_SOCIAL_6_KOKUREN_MOSHI } from "./data/e-social-6-kokuren";
+import { E_SOCIAL_6_KUNIGUNI_MOSHI } from "./data/e-social-6-kuniguni";
+import { E_SOCIAL_6_KURASHI_SEIJI_MOSHI } from "./data/e-social-6-kurashi-seiji";
+import { E_SOCIAL_6_MEIJI_MOSHI } from "./data/e-social-6-meiji";
+import { E_SOCIAL_6_MUROMACHI_MOSHI } from "./data/e-social-6-muromachi";
+import { E_SOCIAL_6_SEIJI_MOSHI } from "./data/e-social-6-seiji";
+import { E_SOCIAL_6_SEKAI_MOSHI } from "./data/e-social-6-sekai";
+import { E_SOCIAL_6_SENGO_MOSHI } from "./data/e-social-6-sengo";
+import { E_SOCIAL_6_SENSO_MOSHI } from "./data/e-social-6-senso";
+import { E_SOCIAL_6_TENKA_MOSHI } from "./data/e-social-6-tenka";
 import { H_CIV_KOKYO_CHIHO_MOSHI } from "./data/h-civ-kokyo-chiho";
 import { H_CIV_KOKYO_JINKEN_MOSHI } from "./data/h-civ-kokyo-jinken";
 import { H_CIV_KOKYO_JIZOKU_MOSHI } from "./data/h-civ-kokyo-jizoku";
@@ -767,6 +910,104 @@ export const REGISTRY: Record<string, Daimon[]> = {
 
 /** ファイル名 (単元id) → その単元の単元模試 */
 export const UNIT_REGISTRY: Record<string, UnitMoshi> = {
+  "e-english-34-aisatsu": E_ENGLISH_34_AISATSU_MOSHI,
+  "e-english-34-alpha-komoji": E_ENGLISH_34_ALPHA_KOMOJI_MOSHI,
+  "e-english-34-alpha-oomoji": E_ENGLISH_34_ALPHA_OOMOJI_MOSHI,
+  "e-english-34-hoshii": E_ENGLISH_34_HOSHII_MOSHI,
+  "e-english-34-iro-katachi": E_ENGLISH_34_IRO_KATACHI_MOSHI,
+  "e-english-34-jikoku": E_ENGLISH_34_JIKOKU_MOSHI,
+  "e-english-34-kazu": E_ENGLISH_34_KAZU_MOSHI,
+  "e-english-34-mi-no-mawari": E_ENGLISH_34_MI_NO_MAWARI_MOSHI,
+  "e-english-34-michi": E_ENGLISH_34_MICHI_MOSHI,
+  "e-english-34-suki": E_ENGLISH_34_SUKI_MOSHI,
+  "e-english-34-youbi-tenki": E_ENGLISH_34_YOUBI_TENKI_MOSHI,
+  "e-english-56-alpha-kaku": E_ENGLISH_56_ALPHA_KAKU_MOSHI,
+  "e-english-56-can": E_ENGLISH_56_CAN_MOSHI,
+  "e-english-56-chugaku": E_ENGLISH_56_CHUGAKU_MOSHI,
+  "e-english-56-chumon": E_ENGLISH_56_CHUMON_MOSHI,
+  "e-english-56-hindo": E_ENGLISH_56_HINDO_MOSHI,
+  "e-english-56-hito": E_ENGLISH_56_HITO_MOSHI,
+  "e-english-56-ichi": E_ENGLISH_56_ICHI_MOSHI,
+  "e-english-56-ikitai": E_ENGLISH_56_IKITAI_MOSHI,
+  "e-english-56-jikoshokai": E_ENGLISH_56_JIKOSHOKAI_MOSHI,
+  "e-english-56-kako": E_ENGLISH_56_KAKO_MOSHI,
+  "e-english-56-kyoka": E_ENGLISH_56_KYOKA_MOSHI,
+  "e-english-56-omoide": E_ENGLISH_56_OMOIDE_MOSHI,
+  "e-english-56-oto-moji": E_ENGLISH_56_OTO_MOJI_MOSHI,
+  "e-english-56-tanjobi": E_ENGLISH_56_TANJOBI_MOSHI,
+  "e-english-56-yume": E_ENGLISH_56_YUME_MOSHI,
+  "e-japanese-1-ha-wo-he": E_JAPANESE_1_HA_WO_HE_MOSHI,
+  "e-japanese-1-hiragana": E_JAPANESE_1_HIRAGANA_MOSHI,
+  "e-japanese-1-kana-on": E_JAPANESE_1_KANA_ON_MOSHI,
+  "e-japanese-1-kanji": E_JAPANESE_1_KANJI_MOSHI,
+  "e-japanese-1-katakana": E_JAPANESE_1_KATAKANA_MOSHI,
+  "e-japanese-1-keiken": E_JAPANESE_1_KEIKEN_MOSHI,
+  "e-japanese-1-kutoten": E_JAPANESE_1_KUTOTEN_MOSHI,
+  "e-japanese-1-monogatari": E_JAPANESE_1_MONOGATARI_MOSHI,
+  "e-japanese-1-nakama": E_JAPANESE_1_NAKAMA_MOSHI,
+  "e-japanese-1-setsumei": E_JAPANESE_1_SETSUMEI_MOSHI,
+  "e-japanese-1-shi": E_JAPANESE_1_SHI_MOSHI,
+  "e-japanese-2-hantai": E_JAPANESE_2_HANTAI_MOSHI,
+  "e-japanese-2-kanji": E_JAPANESE_2_KANJI_MOSHI,
+  "e-japanese-2-kansatsu": E_JAPANESE_2_KANSATSU_MOSHI,
+  "e-japanese-2-katakana": E_JAPANESE_2_KATAKANA_MOSHI,
+  "e-japanese-2-keiken": E_JAPANESE_2_KEIKEN_MOSHI,
+  "e-japanese-2-monogatari": E_JAPANESE_2_MONOGATARI_MOSHI,
+  "e-japanese-2-nakama": E_JAPANESE_2_NAKAMA_MOSHI,
+  "e-japanese-2-setsumei": E_JAPANESE_2_SETSUMEI_MOSHI,
+  "e-japanese-2-shi": E_JAPANESE_2_SHI_MOSHI,
+  "e-japanese-2-shugo": E_JAPANESE_2_SHUGO_MOSHI,
+  "e-japanese-2-teinei": E_JAPANESE_2_TEINEI_MOSHI,
+  "e-japanese-3-haiku": E_JAPANESE_3_HAIKU_MOSHI,
+  "e-japanese-3-hen-tsukuri": E_JAPANESE_3_HEN_TSUKURI_MOSHI,
+  "e-japanese-3-houkoku": E_JAPANESE_3_HOUKOKU_MOSHI,
+  "e-japanese-3-jisho": E_JAPANESE_3_JISHO_MOSHI,
+  "e-japanese-3-kanji": E_JAPANESE_3_KANJI_MOSHI,
+  "e-japanese-3-kosoado": E_JAPANESE_3_KOSOADO_MOSHI,
+  "e-japanese-3-kotowaza": E_JAPANESE_3_KOTOWAZA_MOSHI,
+  "e-japanese-3-monogatari": E_JAPANESE_3_MONOGATARI_MOSHI,
+  "e-japanese-3-romaji": E_JAPANESE_3_ROMAJI_MOSHI,
+  "e-japanese-3-setsumei": E_JAPANESE_3_SETSUMEI_MOSHI,
+  "e-japanese-3-shi": E_JAPANESE_3_SHI_MOSHI,
+  "e-japanese-3-shushokugo": E_JAPANESE_3_SHUSHOKUGO_MOSHI,
+  "e-japanese-3-tegami": E_JAPANESE_3_TEGAMI_MOSHI,
+  "e-japanese-3-tsunagi": E_JAPANESE_3_TSUNAGI_MOSHI,
+  "e-japanese-4-bun-kumitate": E_JAPANESE_4_BUN_KUMITATE_MOSHI,
+  "e-japanese-4-douon": E_JAPANESE_4_DOUON_MOSHI,
+  "e-japanese-4-iken": E_JAPANESE_4_IKEN_MOSHI,
+  "e-japanese-4-kanji-jiten": E_JAPANESE_4_KANJI_JITEN_MOSHI,
+  "e-japanese-4-kanji": E_JAPANESE_4_KANJI_MOSHI,
+  "e-japanese-4-kanyoku": E_JAPANESE_4_KANYOKU_MOSHI,
+  "e-japanese-4-koji": E_JAPANESE_4_KOJI_MOSHI,
+  "e-japanese-4-monogatari": E_JAPANESE_4_MONOGATARI_MOSHI,
+  "e-japanese-4-okurigana": E_JAPANESE_4_OKURIGANA_MOSHI,
+  "e-japanese-4-setsumei": E_JAPANESE_4_SETSUMEI_MOSHI,
+  "e-japanese-4-shi": E_JAPANESE_4_SHI_MOSHI,
+  "e-japanese-4-shinbun": E_JAPANESE_4_SHINBUN_MOSHI,
+  "e-japanese-4-tanka": E_JAPANESE_4_TANKA_MOSHI,
+  "e-japanese-5-bun-kumitate": E_JAPANESE_5_BUN_KUMITATE_MOSHI,
+  "e-japanese-5-denki": E_JAPANESE_5_DENKI_MOSHI,
+  "e-japanese-5-douon": E_JAPANESE_5_DOUON_MOSHI,
+  "e-japanese-5-houkoku": E_JAPANESE_5_HOUKOKU_MOSHI,
+  "e-japanese-5-jukugo": E_JAPANESE_5_JUKUGO_MOSHI,
+  "e-japanese-5-kanji": E_JAPANESE_5_KANJI_MOSHI,
+  "e-japanese-5-keigo": E_JAPANESE_5_KEIGO_MOSHI,
+  "e-japanese-5-koten": E_JAPANESE_5_KOTEN_MOSHI,
+  "e-japanese-5-monogatari": E_JAPANESE_5_MONOGATARI_MOSHI,
+  "e-japanese-5-setsumei": E_JAPANESE_5_SETSUMEI_MOSHI,
+  "e-japanese-5-shi": E_JAPANESE_5_SHI_MOSHI,
+  "e-japanese-5-suisen": E_JAPANESE_5_SUISEN_MOSHI,
+  "e-japanese-5-wago": E_JAPANESE_5_WAGO_MOSHI,
+  "e-japanese-6-hanashi-kaki": E_JAPANESE_6_HANASHI_KAKI_MOSHI,
+  "e-japanese-6-iken": E_JAPANESE_6_IKEN_MOSHI,
+  "e-japanese-6-kana-yurai": E_JAPANESE_6_KANA_YURAI_MOSHI,
+  "e-japanese-6-kanji": E_JAPANESE_6_KANJI_MOSHI,
+  "e-japanese-6-kotoba-henka": E_JAPANESE_6_KOTOBA_HENKA_MOSHI,
+  "e-japanese-6-monogatari": E_JAPANESE_6_MONOGATARI_MOSHI,
+  "e-japanese-6-setsumei": E_JAPANESE_6_SETSUMEI_MOSHI,
+  "e-japanese-6-shi": E_JAPANESE_6_SHI_MOSHI,
+  "e-japanese-6-yojijukugo": E_JAPANESE_6_YOJIJUKUGO_MOSHI,
+  "e-japanese-6-zuihitsu": E_JAPANESE_6_ZUIHITSU_MOSHI,
   "e-math-1-100made": E_MATH_1_100MADE_MOSHI,
   "e-math-1-10made": E_MATH_1_10MADE_MOSHI,
   "e-math-1-20made": E_MATH_1_20MADE_MOSHI,
@@ -896,6 +1137,51 @@ export const UNIT_REGISTRY: Record<string, UnitMoshi> = {
   "e-science-6-teko": E_SCIENCE_6_TEKO_MOSHI,
   "e-science-6-tochi": E_SCIENCE_6_TOCHI_MOSHI,
   "e-science-6-tsuki-taiyo": E_SCIENCE_6_TSUKI_TAIYO_MOSHI,
+  "e-social-3-chizu": E_SOCIAL_3_CHIZU_MOSHI,
+  "e-social-3-keisatsu": E_SOCIAL_3_KEISATSU_MOSHI,
+  "e-social-3-machi": E_SOCIAL_3_MACHI_MOSHI,
+  "e-social-3-mise": E_SOCIAL_3_MISE_MOSHI,
+  "e-social-3-seisan": E_SOCIAL_3_SEISAN_MOSHI,
+  "e-social-3-shobo": E_SOCIAL_3_SHOBO_MOSHI,
+  "e-social-3-utsurikawari": E_SOCIAL_3_UTSURIKAWARI_MOSHI,
+  "e-social-4-dento": E_SOCIAL_4_DENTO_MOSHI,
+  "e-social-4-gomi": E_SOCIAL_4_GOMI_MOSHI,
+  "e-social-4-ken": E_SOCIAL_4_KEN_MOSHI,
+  "e-social-4-mizu": E_SOCIAL_4_MIZU_MOSHI,
+  "e-social-4-saigai": E_SOCIAL_4_SAIGAI_MOSHI,
+  "e-social-4-senjin": E_SOCIAL_4_SENJIN_MOSHI,
+  "e-social-4-todofuken": E_SOCIAL_4_TODOFUKEN_MOSHI,
+  "e-social-4-tokushoku": E_SOCIAL_4_TOKUSHOKU_MOSHI,
+  "e-social-5-boeki": E_SOCIAL_5_BOEKI_MOSHI,
+  "e-social-5-bosai": E_SOCIAL_5_BOSAI_MOSHI,
+  "e-social-5-chikei": E_SOCIAL_5_CHIKEI_MOSHI,
+  "e-social-5-joho": E_SOCIAL_5_JOHO_MOSHI,
+  "e-social-5-kiko": E_SOCIAL_5_KIKO_MOSHI,
+  "e-social-5-kogai": E_SOCIAL_5_KOGAI_MOSHI,
+  "e-social-5-kogyo": E_SOCIAL_5_KOGYO_MOSHI,
+  "e-social-5-kome": E_SOCIAL_5_KOME_MOSHI,
+  "e-social-5-kurashi": E_SOCIAL_5_KURASHI_MOSHI,
+  "e-social-5-sekai": E_SOCIAL_5_SEKAI_MOSHI,
+  "e-social-5-shinrin": E_SOCIAL_5_SHINRIN_MOSHI,
+  "e-social-5-shokuryo": E_SOCIAL_5_SHOKURYO_MOSHI,
+  "e-social-5-suisan": E_SOCIAL_5_SUISAN_MOSHI,
+  "e-social-6-asuka-nara": E_SOCIAL_6_ASUKA_NARA_MOSHI,
+  "e-social-6-edo-bunka": E_SOCIAL_6_EDO_BUNKA_MOSHI,
+  "e-social-6-edo-seiji": E_SOCIAL_6_EDO_SEIJI_MOSHI,
+  "e-social-6-heian": E_SOCIAL_6_HEIAN_MOSHI,
+  "e-social-6-jomon": E_SOCIAL_6_JOMON_MOSHI,
+  "e-social-6-kamakura": E_SOCIAL_6_KAMAKURA_MOSHI,
+  "e-social-6-kenpo": E_SOCIAL_6_KENPO_MOSHI,
+  "e-social-6-kokuren": E_SOCIAL_6_KOKUREN_MOSHI,
+  "e-social-6-kuniguni": E_SOCIAL_6_KUNIGUNI_MOSHI,
+  "e-social-6-kurashi-seiji": E_SOCIAL_6_KURASHI_SEIJI_MOSHI,
+  "e-social-6-meiji": E_SOCIAL_6_MEIJI_MOSHI,
+  "e-social-6-muromachi": E_SOCIAL_6_MUROMACHI_MOSHI,
+  "e-social-6-seiji": E_SOCIAL_6_SEIJI_MOSHI,
+  "e-social-6-sekai": E_SOCIAL_6_SEKAI_MOSHI,
+  "e-social-6-sengo": E_SOCIAL_6_SENGO_MOSHI,
+  "e-social-6-senso": E_SOCIAL_6_SENSO_MOSHI,
+  "e-social-6-tenka": E_SOCIAL_6_TENKA_MOSHI,
   "h-civ-kokyo-chiho": H_CIV_KOKYO_CHIHO_MOSHI,
   "h-civ-kokyo-jinken": H_CIV_KOKYO_JINKEN_MOSHI,
   "h-civ-kokyo-jizoku": H_CIV_KOKYO_JIZOKU_MOSHI,
