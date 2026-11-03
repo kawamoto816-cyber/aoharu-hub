@@ -48,6 +48,12 @@ export function moshiWords(kids: boolean) {
         verdict: { ok: "せいかい", part: "ぶぶんてん", near: "あと すこし", wrong: "ざんねん", blank: "こたえて いない" },
         retry: "もう いちど とく",
         home: "ほかの はんいで つくる",
+        rate: (r: number, c: number, n: number) => `せいかいりつ ${r}%（${n}もん ちゅう ${c}もん）`,
+        record: (count: number, best: number) => `${count}かいめ・いままでの いちばん ${best}%`,
+        newBest: "いちばん いい てんすう！",
+        retryNew: "あたらしい もんだいで もう いちど",
+        lectureGo: (name: string) => `ずかい レクチャー「${name}」で ふくしゅう`,
+        roundNo: (s: number) => `もんだい ばんごう ${s}`,
       }
     : {
         eyebrow: "定期テスト模試",
@@ -93,6 +99,12 @@ export function moshiWords(kids: boolean) {
         verdict: { ok: "正解", part: "部分点", near: "あと一歩", wrong: "不正解", blank: "無回答" },
         retry: "もう一度解く",
         home: "ほかの範囲でつくる",
+        rate: (r: number, c: number, n: number) => `正答率 ${r}%（${n}問中 ${c}問正解）`,
+        record: (count: number, best: number) => `${count}回目・これまでの最高 ${best}%`,
+        newBest: "自己ベスト更新！",
+        retryNew: "新しい問題でもう一度",
+        lectureGo: (name: string) => `図解レクチャー「${name}」で復習する`,
+        roundNo: (s: number) => `問題番号 ${s}`,
       };
 }
 

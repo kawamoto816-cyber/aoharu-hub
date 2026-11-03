@@ -1,5 +1,7 @@
 // 自動生成 (scripts/gen-moshi.ts)。手で書きかえない。
-import type { Daimon } from "./types";
+import type { Daimon, UnitMoshi } from "./types";
+import { E_MATH_5_HAYASA_MOSHI } from "./data/e-math-5-hayasa";
+import { J_JA_1_SETSUMEI_MOSHI } from "./data/j-ja-1-setsumei";
 import { J_MATH_1_DATA } from "./data/j-math-1-data";
 import { J_MATH_1_HEIMEN } from "./data/j-math-1-heimen";
 import { J_MATH_1_HIREI } from "./data/j-math-1-hirei";
@@ -61,6 +63,7 @@ import { J_SCI_3_SUIATSU } from "./data/j-sci-3-suiatsu";
 import { J_SCI_3_TAIYOKEI } from "./data/j-sci-3-taiyokei";
 import { J_SCI_3_TENTAI } from "./data/j-sci-3-tentai";
 import { J_SCI_3_UNDO } from "./data/j-sci-3-undo";
+import { J_SOC_CIV_KENPO_MOSHI } from "./data/j-soc-civ-kenpo";
 
 /** ファイル名 (単元id) → その単元の大問 */
 export const REGISTRY: Record<string, Daimon[]> = {
@@ -125,4 +128,11 @@ export const REGISTRY: Record<string, Daimon[]> = {
   "j-sci-3-taiyokei": J_SCI_3_TAIYOKEI,
   "j-sci-3-tentai": J_SCI_3_TENTAI,
   "j-sci-3-undo": J_SCI_3_UNDO,
+};
+
+/** ファイル名 (単元id) → その単元の単元模試 */
+export const UNIT_REGISTRY: Record<string, UnitMoshi> = {
+  "e-math-5-hayasa": E_MATH_5_HAYASA_MOSHI,
+  "j-ja-1-setsumei": J_JA_1_SETSUMEI_MOSHI,
+  "j-soc-civ-kenpo": J_SOC_CIV_KENPO_MOSHI,
 };

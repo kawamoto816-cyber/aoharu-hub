@@ -1,7 +1,7 @@
 import { judge, type Answer as MathAnswer, type Verdict } from "@/lib/math/check";
 import { normalize, tryParse } from "@/lib/math/parse";
 import { pConst, type Coef } from "@/lib/math/value";
-import type { ChoiceQ, NumQ, OrderQ, TermQ, WrittenQ } from "./types";
+import type { Answer, ChoiceQ, NumQ, OrderQ, TermQ, WrittenQ } from "./types";
 
 // 模試の採点 (画面でも scripts/check-moshi.ts でも使う。AI は使わない)。
 //   choice … 全部そろって満点
@@ -165,4 +165,32 @@ export function gradeWritten(q: WrittenQ, text: string, checks: boolean[]): Item
 export function keywordHits(text: string, keywords: string[] = []): string[] {
   const t = normTerm(normalize(text));
   return keywords.filter((k) => t.includes(normTerm(normalize(k))));
+}
+
+// ---- まとめて ----
+
+/** 小問1つを採点する (答えの形式で振り分け)。記述は checks (採点基準ごとの自己チェック) の合計 */
+export function gradeAnswer(a: Answer, points: number, r: Response, checks?: boolean[]): ItemResult {
+  if (a.kind === "choice" && r.kind === "choice") return gradeChoice(a, points, r.picked);
+  if (a.kind === "num" && r.kind === "num") return gradeNum(a, points, r.inputs);
+  if (a.kind === "term" && r.kind === "term") return gradeTerm(a, points, r.text);
+  if (a.kind === "order" && r.kind === "order") return gradeOrder(a, points, r.seq);
+  if (a.kind === "written" && r.kind === "written") return gradeWritten(a, r.text, checks ?? []);
+  return { score: 0, verdict: "blank" };
+}
+
+/** 模範解答を「答えた」ことにした Response (scripts/check-moshi.ts の自己テスト用。記述は本文に模範解答) */
+export function modelResponse(a: Answer): Response {
+  switch (a.kind) {
+    case "choice":
+      return { kind: "choice", picked: correctSet(a) };
+    case "num":
+      return { kind: "num", inputs: [...a.answer] };
+    case "term":
+      return { kind: "term", text: a.accept[0] ?? "" };
+    case "order":
+      return { kind: "order", seq: a.tokens.map((_, i) => i) };
+    case "written":
+      return { kind: "written", text: a.model };
+  }
 }

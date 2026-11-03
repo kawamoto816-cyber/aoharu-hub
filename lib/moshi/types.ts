@@ -5,6 +5,7 @@
 // 文字列の {{ }} は強調 (レクチャーと同じ。components/lecture/Rich で描く)。
 
 import type { Figure } from "@/lib/lecture/types";
+import type { Rng } from "./rng";
 
 /** 教科 */
 export type Subject = "sansu" | "math" | "sci" | "eng" | "soc" | "ja";
@@ -174,4 +175,93 @@ export interface Exam {
   /** Daimon.id の並び */
   daimon: string[];
   target?: { avg: number; good: number };
+}
+
+// =====================================================================
+// 単元模試 (全単元共通の基盤)。/learn/moshi/<単元id> で解く。
+// 1単元1ファイル lib/moshi/data/<単元id>.ts に `export const XXX: UnitMoshi = {...}` を書き、
+//   npx tsx scripts/gen-moshi.ts → npx tsx scripts/check-moshi.ts <単元id>
+// (同じファイルに大問 Daimon[] を書く従来の形も、そのまま読める。UnitMoshi がない単元は大問から組む: lib/moshi/unit.ts)
+//
+// 問題のタイプ (Question.type):
+//   A … 生成型。generate(rng) が数値を入れかえた問題を返す (算数・数学・理科の計算)。シードで再現できる
+//   B … プール型。節 (MoshiSection) の pick 問だけ、プールからシードで選ぶ (社会・国語・英語の知識)。選択肢も並べかえる
+//   C … 固定型。書き下ろしの読解・記述。毎回すべて出す。記述は模範解答と採点観点で自己採点
+// 1回分 (Exam) は節ごとに1つの大問 (Daimon) にして、既存の MoshiPlay でそのまま解く (lib/moshi/unit.ts の buildRound)。
+// 入試モード・共通テストモードは、questionCatalog() で範囲・難易度・タイプ・目安時間を見て節を組みなおし、buildRound に渡す想定。
+// =====================================================================
+
+export type QType = "A" | "B" | "C";
+export type Difficulty = 1 | 2 | 3;
+
+/** 問題の中身 (小問1つ分)。A の generate が返す形で、B・C はこれを直接書く */
+export interface QuestionBody {
+  /** 問題文 (改行可・{{ }} で強調・漢字《かんじ》でルビ) */
+  prompt: string;
+  figure?: FigureOrRef;
+  answer: Answer;
+  /** 解き方 1〜4 ステップ */
+  steps: SolutionStep[];
+  /** ひとことで: この問題のポイント (40字以内) */
+  point: string;
+}
+
+/** どのタイプにも共通の情報 (出題・時間配分・集計に使う) */
+export interface QuestionMeta {
+  /** 単元の中で一意 (英小文字とハイフン。"michinori"、"kenpo-9jo") */
+  id: string;
+  type: QType;
+  /** 1=基本 2=標準 3=発展 */
+  difficulty: Difficulty;
+  points: number;
+  /** 目安時間 (秒) */
+  seconds: number;
+  skill: Skill;
+  /** 主に使う単元 (省略＝ファイルの単元) */
+  unit?: string;
+  /** 表示の番号 (省略＝節の中で (1)(2)… と自動) */
+  no?: string;
+  /** 前の小問 (同じ節の id) の答えを使う */
+  dependsOn?: string;
+  tags?: string[];
+}
+
+export interface QuestionA extends QuestionMeta {
+  type: "A";
+  /** 数値を入れかえた問題を作る。同じ rng の並びなら同じ問題を返すこと (Math.random は使わない) */
+  generate: (rng: Rng) => QuestionBody;
+}
+export interface QuestionB extends QuestionMeta, QuestionBody {
+  type: "B";
+  /** 選択肢の順番を変えない (「すべて正しい」がある・年代順など) */
+  keepOrder?: boolean;
+}
+export interface QuestionC extends QuestionMeta, QuestionBody {
+  type: "C";
+}
+export type Question = QuestionA | QuestionB | QuestionC;
+
+/** 節 (1回分の中の大問1つ分)。同じ資料を見て答える問題、同じタイプの問題をまとめる */
+export interface MoshiSection {
+  /** 大問の id (省略＝"<単元id>/s<番号>") */
+  id?: string;
+  title: string;
+  lead: string;
+  material?: Material[];
+  /** B のプールから出す問題数 (省略＝全部)。A・C はいつも全部出る */
+  pick?: number;
+  questions: Question[];
+  style?: Daimon["style"];
+}
+
+/** 1単元の模試 (lib/moshi/data/<単元id>.ts に1つ) */
+export interface UnitMoshi {
+  unit: string;
+  subject: Subject;
+  /** 学校の地図の学年の見出し ("小5"、"中1"、"公民的分野") */
+  grade: string;
+  /** 1回分の目安時間 (分)。省略＝出た問題の seconds の合計 */
+  minutes?: number;
+  sections: MoshiSection[];
+  review: { status: "draft" | "checked" | "reviewed"; by?: string; at?: string };
 }

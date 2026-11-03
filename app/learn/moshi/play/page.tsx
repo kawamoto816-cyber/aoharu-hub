@@ -41,7 +41,7 @@ export default async function MoshiPlayPage({ searchParams }: { searchParams: Pr
       <p className="m-0 text-xs font-black tracking-wider text-[#1533B8]">{kids ? "テストもし" : "定期テスト模試"}</p>
       <h1 className="m-0 mt-1 text-[22px] font-black leading-snug">{exam.title}</h1>
       <p className="m-0 mb-4 mt-1 text-[13px] font-bold text-[#3A3D55]">範囲：{exam.units.map((u) => units[u]?.name ?? u).join("・")}</p>
-      <MoshiPlay key={exam.id} exam={exam} daimon={daimon} units={units} kids={kids} homeHref={MOSHI_HOME} />
+      <MoshiPlay key={exam.id} exam={exam} daimon={daimon} units={units} kids={kids} homeHref={MOSHI_HOME} saveUnit={exam.kind === "tangen" ? exam.id.replace(/^auto:/, "") : undefined} />
     </LearnShell>
   );
 }

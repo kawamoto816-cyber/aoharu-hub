@@ -2,15 +2,13 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import type { Daimon, Exam, Item, Material, NumQ } from "@/lib/moshi/types";
 import { isFigureRef } from "@/lib/moshi/types";
 import {
   correctSet,
-  gradeChoice,
-  gradeNum,
-  gradeOrder,
+  gradeAnswer,
   gradeTerm,
-  gradeWritten,
   judgeNum,
   keywordHits,
   type ItemResult,
@@ -22,6 +20,9 @@ import { LectureFigure } from "@/components/lecture/Figure";
 import { plain, Rich } from "@/components/lecture/Rich";
 import { bigBtn, card, shuffle } from "@/components/drill/DrillPlay";
 import { KANA, moshiWords, type MoshiWords } from "./words";
+import { summarize } from "@/lib/moshi/summary";
+import { recordMoshiResult, type MoshiUnitRecord } from "@/lib/moshi/results";
+import { freshSeed } from "@/lib/moshi/rng";
 
 // 定期テスト模試の本体: 表紙 → 試験 (解説なし・残り時間の目安・答えはページ内 state) → 採点 (自動＋記述の自己採点) → 結果 → 解き方 → まちがいノート。
 
@@ -69,13 +70,7 @@ function isBlank(r: Response): boolean {
 }
 
 function gradeItem(it: Item, r: Response, checks: boolean[] | undefined): ItemResult {
-  const a = it.answer;
-  if (a.kind === "choice" && r.kind === "choice") return gradeChoice(a, it.points, r.picked);
-  if (a.kind === "num" && r.kind === "num") return gradeNum(a, it.points, r.inputs);
-  if (a.kind === "term" && r.kind === "term") return gradeTerm(a, it.points, r.text);
-  if (a.kind === "order" && r.kind === "order") return gradeOrder(a, it.points, r.seq);
-  if (a.kind === "written" && r.kind === "written") return gradeWritten(a, r.text, checks ?? []);
-  return { score: 0, verdict: "blank" };
+  return gradeAnswer(it.answer, it.points, r, checks);
 }
 
 function numText(q: NumQ, vals: string[]): string {
@@ -114,6 +109,13 @@ function mineText(it: Item, r: Response): string {
   return "";
 }
 
+/** まちがいノート (ふつうの文字で表示) に入れる文字: ルビは「漢字（かんじ）」に、{{ }} ははずす */
+function noteText(s: string): string {
+  return s
+    .replace(/｜([^｜《》\n]+?)《([^《》\n]+?)》|([\u3400-\u9FFF々〆ヶ]+)《([^《》\n]+?)》/g, (_m, b1, r1, b2, r2) => `${b1 ?? b2}（${r1 ?? r2}）`)
+    .replace(/\{\{(.+?)\}\}/g, "$1");
+}
+
 function materialAsText(ms: Material[] | undefined): string {
   return (ms ?? [])
     .map((m) =>
@@ -128,12 +130,12 @@ function materialAsText(ms: Material[] | undefined): string {
 function MaterialView({ m, figNo }: { m: Material; figNo: number }) {
   switch (m.kind) {
     case "text":
-      return <p className="m-0 mt-3 whitespace-pre-line text-[15px] leading-relaxed">{m.body}</p>;
+      return <p className="m-0 mt-3 whitespace-pre-line text-[15px] leading-relaxed"><Rich text={m.body} /></p>;
     case "passage":
       return (
         <div className="mt-3 rounded-[12px] border-[1.5px] border-[#15172B] bg-white p-3">
-          {m.title && <p className="m-0 text-[14px] font-black">{m.title}</p>}
-          <p className={`m-0 mt-1 whitespace-pre-line text-[15px] leading-[1.9] ${m.lang === "en" ? "font-sans" : ""}`}>{m.body}</p>
+          {m.title && <p className="m-0 text-[14px] font-black"><Rich text={m.title} /></p>}
+          <p className={`m-0 mt-1 whitespace-pre-line text-[15px] leading-[1.9] ${m.lang === "en" ? "font-sans" : ""}`}><Rich text={m.body} /></p>
           {m.notes?.length ? (
             <p className="m-0 mt-2 text-[12.5px] text-[#3A3D55]">
               {m.notes.map((n) => `${n.word}：${n.meaning}`).join("　")}
@@ -223,7 +225,7 @@ function ItemInput({ it, r, onChange, pool, w, label }: { it: Item; r: Response;
               <span aria-hidden="true" className={`flex h-7 w-7 flex-none items-center justify-center rounded-full border-[1.5px] text-[13px] font-black ${on ? "border-[#1533B8] bg-[#1533B8] text-white" : "border-[#15172B]"}`}>
                 {KANA[k]}
               </span>
-              <span className="min-w-0">{o}</span>
+              <span className="min-w-0"><Rich text={o} /></span>
             </button>
           );
         })}
@@ -337,12 +339,12 @@ function Solution({ it, r, res, w, figBase }: { it: Item; r: Response; res: Item
     <div className="mt-3">
       <p className="m-0 whitespace-pre-line text-[14px] leading-relaxed [overflow-wrap:anywhere]">
         <span className="font-black text-[#1533B8]">{w.correct}</span>
-        {modelText(it)}
+        <Rich text={modelText(it)} />
       </p>
       {a.kind !== "written" && (
         <p className={`m-0 mt-1 whitespace-pre-line text-[13.5px] font-bold [overflow-wrap:anywhere] ${res.verdict === "ok" ? "text-[#1533B8]" : "text-[#D9341F]"}`}>
           {w.mine}
-          {mine || w.blank}
+          <Rich text={mine || w.blank} />
         </p>
       )}
       {res.note && <p className="m-0 mt-1 text-[13px] font-bold text-[#B54708]">{res.note}</p>}
@@ -357,7 +359,7 @@ function Solution({ it, r, res, w, figBase }: { it: Item; r: Response; res: Item
                 <span className="font-black">
                   {isRight ? "○" : "✕"} {KANA[k]}
                 </span>{" "}
-                {a.why[k]}
+                <Rich text={a.why[k]} />
               </li>
             );
           })}
@@ -385,7 +387,7 @@ function Solution({ it, r, res, w, figBase }: { it: Item; r: Response; res: Item
             {s.trap && (
               <p className="m-0 mt-2 rounded-[10px] border-[1.5px] border-[#D9341F] bg-white px-3 py-2 text-[13px] font-bold leading-relaxed text-[#B42318]">
                 <span className="mr-1 font-black">{w.trap}：</span>
-                {s.trap}
+                <Rich text={s.trap} />
               </p>
             )}
             {s.back?.length ? (
@@ -444,8 +446,37 @@ const mmss = (sec: number) => `${Math.floor(sec / 60)}:${String(Math.floor(sec %
 
 // ---------------- 本体 ----------------
 
-export function MoshiPlay({ exam, daimon, units, kids, homeHref }: { exam: Exam; daimon: Daimon[]; units: Record<string, MoshiUnit>; kids: boolean; homeHref: string }) {
+/** 単元模試 (/learn/moshi/<単元id>) のとき: 結果に正答率・これまでの記録・レクチャーへの導線・新しい問題でもう一度 */
+export interface MoshiUnitPage {
+  unit: string;
+  name: string;
+  lecture?: string;
+  /** A・B があるとき: もう一度で ?seed= を変えてこのページを開きなおす */
+  regenBase?: string;
+  seed: number;
+}
+
+export function MoshiPlay({
+  exam,
+  daimon,
+  units,
+  kids,
+  homeHref,
+  saveUnit,
+  unitPage,
+}: {
+  exam: Exam;
+  daimon: Daimon[];
+  units: Record<string, MoshiUnit>;
+  kids: boolean;
+  homeHref: string;
+  /** 結果を端末に保存する単元 (1単元の回だけ) */
+  saveUnit?: string;
+  unitPage?: MoshiUnitPage;
+}) {
   const w = moshiWords(kids);
+  const router = useRouter();
+  const [record, setRecord] = useState<{ record: MoshiUnitRecord; best: boolean } | null>(null);
   const [phase, setPhase] = useState<Phase>("cover");
   const [round, setRound] = useState(0);
   const [startAt, setStartAt] = useState(0);
@@ -492,6 +523,7 @@ export function MoshiPlay({ exam, daimon, units, kids, homeHref }: { exam: Exam;
     setPools(p);
     setChecks({});
     setSaved(null);
+    setRecord(null);
     setConfirm(false);
     const t = Date.now();
     setStartAt(t);
@@ -521,7 +553,7 @@ export function MoshiPlay({ exam, daimon, units, kids, homeHref }: { exam: Exam;
       const u = units[unitId];
       const meta: MistakeMeta = { unitId, unitName: u?.name ?? unitId, href: u?.href || u?.lecture || "", subject: `テスト模試・${u?.subject ?? ""}`, kids: u?.kids };
       const needMat = /上の|表|資料|本文|グラフ/.test(it.prompt);
-      const q = `【${d.title} ${it.no}】${needMat ? `\n${materialAsText(d.material)}\n` : ""}${it.prompt}`;
+      const q = noteText(`【${d.title} ${it.no}】${needMat ? `\n${materialAsText(d.material)}\n` : ""}${it.prompt}`);
       const ex = [plain(it.point), ...it.steps.map((s) => `${plain(s.title)}：${plain(s.body)}`)].join("\n");
       if (res.score >= it.points) {
         recordRight(unitId, q);
@@ -530,11 +562,14 @@ export function MoshiPlay({ exam, daimon, units, kids, homeHref }: { exam: Exam;
       n++;
       const a = it.answer;
       if (a.kind === "choice" && !Array.isArray(a.correct) && r.kind === "choice") {
-        recordMistake(meta, { q, choices: a.options, answer: a.correct, ex: `${a.why[a.correct]}\n${ex}`, source: "moshi" }, r.picked[0] ?? -1);
-      } else recordMistakeText(meta, { q, model: modelText(it), ex, source: "moshi" }, mineText(it, r));
+        recordMistake(meta, { q, choices: a.options.map(noteText), answer: a.correct, ex: `${noteText(a.why[a.correct])}\n${ex}`, source: "moshi" }, r.picked[0] ?? -1);
+      } else recordMistakeText(meta, { q, model: noteText(modelText(it)), ex, source: "moshi" }, noteText(mineText(it, r)));
     }
     setSaved(n);
     const total = Object.values(results).reduce((s, x) => s + x.score, 0);
+    const sum = summarize(all.map(({ d, it, key }) => ({ key, points: it.points, unit: it.unit ?? d.units[0], skill: it.skill, difficulty: it.level })), results);
+    const unitToSave = unitPage?.unit ?? saveUnit;
+    setRecord(unitToSave ? recordMoshiResult(unitToSave, { score: sum.score, total: sum.total, rate: sum.rate }) : null);
     trackEvent("moshi_finish", { exam: exam.id, score: total, total: exam.total });
     setPhase("result");
   };
@@ -555,7 +590,7 @@ export function MoshiPlay({ exam, daimon, units, kids, homeHref }: { exam: Exam;
             <li key={d.id} className="flex items-baseline justify-between gap-2 rounded-[10px] bg-[#F7F6F1] px-3 py-2 text-[14px] font-bold">
               <span className="min-w-0">
                 <span className="mr-1.5 font-black">{i + 1}</span>
-                {d.title}
+                <Rich text={d.title} />
                 <span className="ml-1.5 text-[12px] text-[#5A5D73]">（{d.items.length}{kids ? "もん" : "問"}）</span>
               </span>
               <span className="shrink-0 font-black">{w.points(d.points)}</span>
@@ -563,6 +598,7 @@ export function MoshiPlay({ exam, daimon, units, kids, homeHref }: { exam: Exam;
           ))}
         </ol>
         <p className="m-0 mt-3 text-[13.5px] leading-relaxed text-[#3A3D55]">{w.coverLead}</p>
+        {unitPage?.regenBase && <p className="m-0 mt-1 text-[12px] font-bold text-[#5A5D73]">{w.roundNo(unitPage.seed)}</p>}
         <button type="button" onClick={start} className={`${bigBtn} mt-4 bg-[#1533B8] text-white shadow-[0_4px_0_#0B1F7A]`}>
           {w.start}
         </button>
@@ -593,11 +629,11 @@ export function MoshiPlay({ exam, daimon, units, kids, homeHref }: { exam: Exam;
             <h2 id={`dm-${di}`} className="m-0 flex items-baseline justify-between gap-2 text-[18px] font-black">
               <span>
                 <span className="mr-2 inline-flex h-7 w-7 items-center justify-center rounded-[8px] bg-[#15172B] text-[14px] text-white">{di + 1}</span>
-                {d.title}
+                <Rich text={d.title} />
               </span>
               <span className="shrink-0 text-[13px] font-black text-[#3A3D55]">{w.points(d.points)}</span>
             </h2>
-            <p className="m-0 mt-2 text-[14px] font-bold">{d.lead}</p>
+            <p className="m-0 mt-2 text-[14px] font-bold"><Rich text={d.lead} /></p>
             {d.material?.map((m, k) => (
               <MaterialView key={k} m={m} figNo={figNos.exam[`${di}-${k}`] ?? 0} />
             ))}
@@ -609,7 +645,7 @@ export function MoshiPlay({ exam, daimon, units, kids, homeHref }: { exam: Exam;
                   <li key={key} className="border-t border-dashed border-[#C9C6B4] pt-4">
                     <p className="m-0 whitespace-pre-line text-[15.5px] leading-relaxed [overflow-wrap:anywhere]">
                       <span className="mr-1.5 font-black text-[#1533B8]">{it.no}</span>
-                      {it.prompt}
+                      <Rich text={it.prompt} />
                       <span className="ml-1.5 whitespace-nowrap text-[12px] font-bold text-[#5A5D73]">［{w.points(it.points)}］</span>
                     </p>
                     {it.figure && !isFigureRef(it.figure) && <LectureFigure fig={it.figure} no={figNos.exam[key] ?? 0} />}
@@ -669,15 +705,15 @@ export function MoshiPlay({ exam, daimon, units, kids, homeHref }: { exam: Exam;
           return (
             <section key={key} aria-labelledby={`sf-${key}`} className={`${card} mt-4`}>
               <h3 id={`sf-${key}`} className="m-0 text-[16px] font-black">
-                {d.title} {it.no}
+                <Rich text={d.title} /> {it.no}
                 <span className="ml-2 text-[13px] text-[#3A3D55]">{w.points(it.points)}</span>
               </h3>
-              <p className="m-0 mt-1 whitespace-pre-line text-[14px] leading-relaxed text-[#3A3D55]">{it.prompt}</p>
+              <p className="m-0 mt-1 whitespace-pre-line text-[14px] leading-relaxed text-[#3A3D55]"><Rich text={it.prompt} /></p>
               <p className="m-0 mt-3 text-[12.5px] font-black text-[#3A3D55]">{w.yourAnswer}</p>
               <p className="m-0 mt-1 whitespace-pre-line rounded-[10px] border-[1.5px] border-[#15172B] bg-white p-3 text-[14.5px] leading-relaxed [overflow-wrap:anywhere]">{text || w.blank}</p>
               {autoOk !== null && <p className={`m-0 mt-2 text-[13px] font-black ${autoOk ? "text-[#1533B8]" : "text-[#D9341F]"}`}>{autoOk ? w.autoOk : w.autoNg}</p>}
               <p className="m-0 mt-3 text-[12.5px] font-black text-[#1533B8]">{w.model}</p>
-              <p className="m-0 mt-1 whitespace-pre-line rounded-[10px] bg-[#FFFBE6] p-3 text-[14.5px] font-bold leading-relaxed [overflow-wrap:anywhere]">{a.model}</p>
+              <p className="m-0 mt-1 whitespace-pre-line rounded-[10px] bg-[#FFFBE6] p-3 text-[14.5px] font-bold leading-relaxed [overflow-wrap:anywhere]"><Rich text={a.model} /></p>
               <fieldset className="m-0 mt-3 border-0 p-0">
                 <legend className="text-[13px] font-black">採点基準</legend>
                 <div className="mt-1.5 grid gap-2">
@@ -693,7 +729,7 @@ export function MoshiPlay({ exam, daimon, units, kids, homeHref }: { exam: Exam;
                           className="mt-0.5 h-6 w-6 flex-none accent-[#1533B8]"
                         />
                         <span className="min-w-0 text-[14px] font-bold leading-snug">
-                          {rb.label}
+                          <Rich text={rb.label} />
                           <span className="ml-1.5 whitespace-nowrap font-black text-[#1533B8]">{w.points(rb.points)}</span>
                           {hits.length > 0 && <span className="mt-0.5 block text-[12px] font-bold text-[#5A5D73]">{w.hit(hits.join("」「"))}</span>}
                         </span>
@@ -729,6 +765,11 @@ export function MoshiPlay({ exam, daimon, units, kids, homeHref }: { exam: Exam;
     add(byUnit, u);
     add(bySkill, it.skill);
   }
+  const rate = summarize(all.map(({ d, it, key }) => ({ key, points: it.points, unit: it.unit ?? d.units[0], skill: it.skill })), results);
+  const again = () => {
+    if (unitPage?.regenBase) router.push(`${unitPage.regenBase}?seed=${freshSeed()}`);
+    else start();
+  };
   return (
     <div ref={top} className="scroll-mt-3">
       <section aria-labelledby="mo-res" className={card} role="status" aria-live="polite">
@@ -740,6 +781,17 @@ export function MoshiPlay({ exam, daimon, units, kids, homeHref }: { exam: Exam;
         </p>
         {hasWritten && <p className="m-0 mt-1 text-[12.5px] font-bold text-[#3A3D55]">{w.autoPart(total - selfScore, selfScore)}</p>}
         {total === exam.total && <p className="m-0 mt-1 text-[18px] font-black text-[#1533B8]">{w.allOk}</p>}
+        {unitPage && (
+          <p className="m-0 mt-2 text-[15px] font-black">
+            {w.rate(rate.rate, rate.correct, rate.count)}
+          </p>
+        )}
+        {unitPage && record && (
+          <p className="m-0 mt-1 text-[13px] font-bold text-[#3A3D55]">
+            {w.record(record.record.count, record.record.bestPct)}
+            {record.best && record.record.count > 1 && <span className="ml-2 font-black text-[#1533B8]">{w.newBest}</span>}
+          </p>
+        )}
       </section>
 
       {saved !== null && saved > 0 && (
@@ -759,7 +811,7 @@ export function MoshiPlay({ exam, daimon, units, kids, homeHref }: { exam: Exam;
           </h3>
           <ul className="m-0 mt-2 grid list-none gap-2.5 p-0">
             {daimon.map((d, i) => (
-              <Bar key={d.id} label={`${i + 1}　${d.title}`} score={d.items.reduce((s, it) => s + (results[keyOf(d, it)]?.score ?? 0), 0)} total={d.points} />
+              <Bar key={d.id} label={`${i + 1}　${plain(d.title)}`} score={d.items.reduce((s, it) => s + (results[keyOf(d, it)]?.score ?? 0), 0)} total={d.points} />
             ))}
           </ul>
         </section>
@@ -786,7 +838,7 @@ export function MoshiPlay({ exam, daimon, units, kids, homeHref }: { exam: Exam;
         <section key={d.id} aria-labelledby={`ex-${di}`} className="mt-4">
           <h3 id={`ex-${di}`} className="m-0 text-[17px] font-black">
             <span className="mr-2 inline-flex h-7 w-7 items-center justify-center rounded-[8px] bg-[#15172B] text-[14px] text-white">{di + 1}</span>
-            {d.title}
+            <Rich text={d.title} />
           </h3>
           <div className="mt-2 grid gap-3">
             {d.items.map((it) => {
@@ -809,7 +861,7 @@ export function MoshiPlay({ exam, daimon, units, kids, homeHref }: { exam: Exam;
                       {res.score}/{it.points}
                     </span>
                   </summary>
-                  <p className="m-0 mt-2 whitespace-pre-line text-[14px] leading-relaxed text-[#3A3D55] [overflow-wrap:anywhere]">{it.prompt}</p>
+                  <p className="m-0 mt-2 whitespace-pre-line text-[14px] leading-relaxed text-[#3A3D55] [overflow-wrap:anywhere]"><Rich text={it.prompt} /></p>
                   {it.dependsOn && (
                     <p className="m-0 mt-1 text-[12.5px] font-bold text-[#5A5D73]">
                       {kids ? "まえの もんだいの こたえを つかうよ" : `前の小問（${d.items.find((x) => x.id === it.dependsOn)?.no ?? ""}）の答え ${modelText(d.items.find((x) => x.id === it.dependsOn) ?? it)} を使って解きます。`}
@@ -829,8 +881,13 @@ export function MoshiPlay({ exam, daimon, units, kids, homeHref }: { exam: Exam;
       ))}
 
       <div className="mt-6 grid gap-2.5">
-        <button type="button" onClick={start} className={`${bigBtn} bg-[#FFE45C] text-[#15172B] shadow-[0_3px_0_#15172B]`}>
-          {w.retry}
+        {unitPage?.lecture && (
+          <Link href={unitPage.lecture} className={`${bigBtn} bg-[#1533B8] text-white no-underline shadow-[0_4px_0_#0B1F7A]`}>
+            {w.lectureGo(unitPage.name)}
+          </Link>
+        )}
+        <button type="button" onClick={again} className={`${bigBtn} bg-[#FFE45C] text-[#15172B] shadow-[0_3px_0_#15172B]`}>
+          {unitPage?.regenBase ? w.retryNew : w.retry}
         </button>
         <Link href={homeHref} className={`${bigBtn} bg-white text-[#15172B] no-underline`}>
           {w.home}
