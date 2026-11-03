@@ -1,6 +1,35 @@
 // 自動生成 (scripts/gen-moshi.ts)。手で書きかえない。
 import type { Daimon, UnitMoshi } from "./types";
 import { E_MATH_5_HAYASA_MOSHI } from "./data/e-math-5-hayasa";
+import { H_ENG_SKILL_CHOBUN_MOSHI } from "./data/h-eng-skill-chobun";
+import { H_ENG_SKILL_JIYU_MOSHI } from "./data/h-eng-skill-jiyu";
+import { H_ENG_SKILL_LISTENING_MOSHI } from "./data/h-eng-skill-listening";
+import { H_ENG_SKILL_SPEAKING_MOSHI } from "./data/h-eng-skill-speaking";
+import { H_ENG_SKILL_WABUN_MOSHI } from "./data/h-eng-skill-wabun";
+import { H_ENG_VOCAB_2000_MOSHI } from "./data/h-eng-vocab-2000";
+import { H_ENG_VOCAB_HATSUON_MOSHI } from "./data/h-eng-vocab-hatsuon";
+import { H_ENG_VOCAB_JUKUGO_MOSHI } from "./data/h-eng-vocab-jukugo";
+import { H_ENG_VOCAB_KAIWA_MOSHI } from "./data/h-eng-vocab-kaiwa";
+import { H_MATH_1_DATA_MOSHI } from "./data/h-math-1-data";
+import { H_MATH_1_FUTOSHIKI_MOSHI } from "./data/h-math-1-futoshiki";
+import { H_MATH_1_JISSU_MOSHI } from "./data/h-math-1-jissu";
+import { H_MATH_1_KEIRYO_MOSHI } from "./data/h-math-1-keiryo";
+import { H_MATH_1_NIJIHOTEISHIKI_MOSHI } from "./data/h-math-1-nijihoteishiki";
+import { H_MATH_1_NIJIKANSU_MOSHI } from "./data/h-math-1-nijikansu";
+import { H_MATH_1_SAIDAI_MOSHI } from "./data/h-math-1-saidai";
+import { H_MATH_1_SANKAKUHI_MOSHI } from "./data/h-math-1-sankakuhi";
+import { H_MATH_1_SHIKI_MOSHI } from "./data/h-math-1-shiki";
+import { H_MATH_1_SHUGO_MOSHI } from "./data/h-math-1-shugo";
+import { H_MATH_1_TEIRI_MOSHI } from "./data/h-math-1-teiri";
+import { H_MATH_A_BAAI_MOSHI } from "./data/h-math-a-baai";
+import { H_MATH_A_EN_MOSHI } from "./data/h-math-a-en";
+import { H_MATH_A_GOJO_MOSHI } from "./data/h-math-a-gojo";
+import { H_MATH_A_JOKEN_MOSHI } from "./data/h-math-a-joken";
+import { H_MATH_A_KAKURITSU_MOSHI } from "./data/h-math-a-kakuritsu";
+import { H_MATH_A_KUKAN_MOSHI } from "./data/h-math-a-kukan";
+import { H_MATH_A_NSHIN_MOSHI } from "./data/h-math-a-nshin";
+import { H_MATH_A_SANKAKUKEI_MOSHI } from "./data/h-math-a-sankakukei";
+import { H_MATH_A_YAKUSU_MOSHI } from "./data/h-math-a-yakusu";
 import { J_EN_1_BE_MOSHI } from "./data/j-en-1-be";
 import { J_EN_1_CAN_MOSHI } from "./data/j-en-1-can";
 import { J_EN_1_DAIMEISHI_MOSHI } from "./data/j-en-1-daimeishi";
@@ -255,6 +284,35 @@ export const REGISTRY: Record<string, Daimon[]> = {
 /** ファイル名 (単元id) → その単元の単元模試 */
 export const UNIT_REGISTRY: Record<string, UnitMoshi> = {
   "e-math-5-hayasa": E_MATH_5_HAYASA_MOSHI,
+  "h-eng-skill-chobun": H_ENG_SKILL_CHOBUN_MOSHI,
+  "h-eng-skill-jiyu": H_ENG_SKILL_JIYU_MOSHI,
+  "h-eng-skill-listening": H_ENG_SKILL_LISTENING_MOSHI,
+  "h-eng-skill-speaking": H_ENG_SKILL_SPEAKING_MOSHI,
+  "h-eng-skill-wabun": H_ENG_SKILL_WABUN_MOSHI,
+  "h-eng-vocab-2000": H_ENG_VOCAB_2000_MOSHI,
+  "h-eng-vocab-hatsuon": H_ENG_VOCAB_HATSUON_MOSHI,
+  "h-eng-vocab-jukugo": H_ENG_VOCAB_JUKUGO_MOSHI,
+  "h-eng-vocab-kaiwa": H_ENG_VOCAB_KAIWA_MOSHI,
+  "h-math-1-data": H_MATH_1_DATA_MOSHI,
+  "h-math-1-futoshiki": H_MATH_1_FUTOSHIKI_MOSHI,
+  "h-math-1-jissu": H_MATH_1_JISSU_MOSHI,
+  "h-math-1-keiryo": H_MATH_1_KEIRYO_MOSHI,
+  "h-math-1-nijihoteishiki": H_MATH_1_NIJIHOTEISHIKI_MOSHI,
+  "h-math-1-nijikansu": H_MATH_1_NIJIKANSU_MOSHI,
+  "h-math-1-saidai": H_MATH_1_SAIDAI_MOSHI,
+  "h-math-1-sankakuhi": H_MATH_1_SANKAKUHI_MOSHI,
+  "h-math-1-shiki": H_MATH_1_SHIKI_MOSHI,
+  "h-math-1-shugo": H_MATH_1_SHUGO_MOSHI,
+  "h-math-1-teiri": H_MATH_1_TEIRI_MOSHI,
+  "h-math-a-baai": H_MATH_A_BAAI_MOSHI,
+  "h-math-a-en": H_MATH_A_EN_MOSHI,
+  "h-math-a-gojo": H_MATH_A_GOJO_MOSHI,
+  "h-math-a-joken": H_MATH_A_JOKEN_MOSHI,
+  "h-math-a-kakuritsu": H_MATH_A_KAKURITSU_MOSHI,
+  "h-math-a-kukan": H_MATH_A_KUKAN_MOSHI,
+  "h-math-a-nshin": H_MATH_A_NSHIN_MOSHI,
+  "h-math-a-sankakukei": H_MATH_A_SANKAKUKEI_MOSHI,
+  "h-math-a-yakusu": H_MATH_A_YAKUSU_MOSHI,
   "j-en-1-be": J_EN_1_BE_MOSHI,
   "j-en-1-can": J_EN_1_CAN_MOSHI,
   "j-en-1-daimeishi": J_EN_1_DAIMEISHI_MOSHI,
