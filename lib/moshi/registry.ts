@@ -1,6 +1,134 @@
 // 自動生成 (scripts/gen-moshi.ts)。手で書きかえない。
 import type { Daimon, UnitMoshi } from "./types";
+import { E_MATH_1_100MADE_MOSHI } from "./data/e-math-1-100made";
+import { E_MATH_1_10MADE_MOSHI } from "./data/e-math-1-10made";
+import { E_MATH_1_20MADE_MOSHI } from "./data/e-math-1-20made";
+import { E_MATH_1_3TSU_MOSHI } from "./data/e-math-1-3tsu";
+import { E_MATH_1_HIKIZAN_MOSHI } from "./data/e-math-1-hikizan";
+import { E_MATH_1_IKUTSU_MOSHI } from "./data/e-math-1-ikutsu";
+import { E_MATH_1_KATACHI_MOSHI } from "./data/e-math-1-katachi";
+import { E_MATH_1_KURABE_MOSHI } from "./data/e-math-1-kurabe";
+import { E_MATH_1_KURIAGARI_MOSHI } from "./data/e-math-1-kuriagari";
+import { E_MATH_1_KURISAGARI_MOSHI } from "./data/e-math-1-kurisagari";
+import { E_MATH_1_SEIRI_MOSHI } from "./data/e-math-1-seiri";
+import { E_MATH_1_TASHIZAN_MOSHI } from "./data/e-math-1-tashizan";
+import { E_MATH_1_TOKEI_MOSHI } from "./data/e-math-1-tokei";
+import { E_MATH_2_10000MADE_MOSHI } from "./data/e-math-2-10000made";
+import { E_MATH_2_1000MADE_MOSHI } from "./data/e-math-2-1000made";
+import { E_MATH_2_BUNSU_MOSHI } from "./data/e-math-2-bunsu";
+import { E_MATH_2_HAKO_MOSHI } from "./data/e-math-2-hako";
+import { E_MATH_2_HIKI_HISSAN_MOSHI } from "./data/e-math-2-hiki-hissan";
+import { E_MATH_2_HYO_GRAPH_MOSHI } from "./data/e-math-2-hyo-graph";
+import { E_MATH_2_JIKOKU_MOSHI } from "./data/e-math-2-jikoku";
+import { E_MATH_2_KAKEZAN_MOSHI } from "./data/e-math-2-kakezan";
+import { E_MATH_2_KASA_MOSHI } from "./data/e-math-2-kasa";
+import { E_MATH_2_M_MOSHI } from "./data/e-math-2-m";
+import { E_MATH_2_NAGASA_MOSHI } from "./data/e-math-2-nagasa";
+import { E_MATH_2_SANKAKU_SHIKAKU_MOSHI } from "./data/e-math-2-sankaku-shikaku";
+import { E_MATH_2_TASHI_HISSAN_MOSHI } from "./data/e-math-2-tashi-hissan";
+import { E_MATH_3_AMARI_MOSHI } from "./data/e-math-3-amari";
+import { E_MATH_3_BOU_GRAPH_MOSHI } from "./data/e-math-3-bou-graph";
+import { E_MATH_3_BUNSU_MOSHI } from "./data/e-math-3-bunsu";
+import { E_MATH_3_EN_KYU_MOSHI } from "./data/e-math-3-en-kyu";
+import { E_MATH_3_HISSAN_MOSHI } from "./data/e-math-3-hissan";
+import { E_MATH_3_JIKOKU_MOSHI } from "./data/e-math-3-jikoku";
+import { E_MATH_3_KAKE_HISSAN1_MOSHI } from "./data/e-math-3-kake-hissan1";
+import { E_MATH_3_KAKE_HISSAN2_MOSHI } from "./data/e-math-3-kake-hissan2";
+import { E_MATH_3_KAKE_KIMARI_MOSHI } from "./data/e-math-3-kake-kimari";
+import { E_MATH_3_KM_MOSHI } from "./data/e-math-3-km";
+import { E_MATH_3_NITOUHEN_MOSHI } from "./data/e-math-3-nitouhen";
+import { E_MATH_3_OMOSA_MOSHI } from "./data/e-math-3-omosa";
+import { E_MATH_3_OOKII_MOSHI } from "./data/e-math-3-ookii";
+import { E_MATH_3_SHIKI_MOSHI } from "./data/e-math-3-shiki";
+import { E_MATH_3_SHOSU_MOSHI } from "./data/e-math-3-shosu";
+import { E_MATH_3_SOROBAN_MOSHI } from "./data/e-math-3-soroban";
+import { E_MATH_3_WARIZAN_MOSHI } from "./data/e-math-3-warizan";
+import { E_MATH_4_BUNSU_MOSHI } from "./data/e-math-4-bunsu";
+import { E_MATH_4_CHOKUHOTAI_MOSHI } from "./data/e-math-4-chokuhotai";
+import { E_MATH_4_GAISU_MOSHI } from "./data/e-math-4-gaisu";
+import { E_MATH_4_KAKU_MOSHI } from "./data/e-math-4-kaku";
+import { E_MATH_4_KAWARIKATA_MOSHI } from "./data/e-math-4-kawarikata";
+import { E_MATH_4_KEISAN_KIMARI_MOSHI } from "./data/e-math-4-keisan-kimari";
+import { E_MATH_4_MENSEKI_MOSHI } from "./data/e-math-4-menseki";
+import { E_MATH_4_OOKII_MOSHI } from "./data/e-math-4-ookii";
+import { E_MATH_4_ORESEN_MOSHI } from "./data/e-math-4-oresen";
+import { E_MATH_4_SEIRI_MOSHI } from "./data/e-math-4-seiri";
+import { E_MATH_4_SHOSU_KAKEWARI_MOSHI } from "./data/e-math-4-shosu-kakewari";
+import { E_MATH_4_SHOSU_MOSHI } from "./data/e-math-4-shosu";
+import { E_MATH_4_SOROBAN_MOSHI } from "./data/e-math-4-soroban";
+import { E_MATH_4_SUICHOKU_MOSHI } from "./data/e-math-4-suichoku";
+import { E_MATH_4_WARI_HISSAN1_MOSHI } from "./data/e-math-4-wari-hissan1";
+import { E_MATH_4_WARI_HISSAN2_MOSHI } from "./data/e-math-4-wari-hissan2";
+import { E_MATH_4_WARIAI_MOSHI } from "./data/e-math-4-wariai";
+import { E_MATH_5_BAISU_YAKUSU_MOSHI } from "./data/e-math-5-baisu-yakusu";
+import { E_MATH_5_BUNSU_SHOSU_MOSHI } from "./data/e-math-5-bunsu-shosu";
+import { E_MATH_5_BUNSU_TASHIHIKI_MOSHI } from "./data/e-math-5-bunsu-tashihiki";
+import { E_MATH_5_GOUDOU_MOSHI } from "./data/e-math-5-goudou";
 import { E_MATH_5_HAYASA_MOSHI } from "./data/e-math-5-hayasa";
+import { E_MATH_5_HEIKIN_MOSHI } from "./data/e-math-5-heikin";
+import { E_MATH_5_HIREI_MOSHI } from "./data/e-math-5-hirei";
+import { E_MATH_5_KAKUCHU_MOSHI } from "./data/e-math-5-kakuchu";
+import { E_MATH_5_MENSEKI_MOSHI } from "./data/e-math-5-menseki";
+import { E_MATH_5_OBI_EN_MOSHI } from "./data/e-math-5-obi-en";
+import { E_MATH_5_SEISU_SHOSU_MOSHI } from "./data/e-math-5-seisu-shosu";
+import { E_MATH_5_SEITAKAKKEI_MOSHI } from "./data/e-math-5-seitakakkei";
+import { E_MATH_5_SHOSU_KAKE_MOSHI } from "./data/e-math-5-shosu-kake";
+import { E_MATH_5_SHOSU_WARI_MOSHI } from "./data/e-math-5-shosu-wari";
+import { E_MATH_5_TAISEKI_MOSHI } from "./data/e-math-5-taiseki";
+import { E_MATH_5_TANNI_MOSHI } from "./data/e-math-5-tanni";
+import { E_MATH_5_WARIAI_MOSHI } from "./data/e-math-5-wariai";
+import { E_MATH_5_ZUKEI_KAKU_MOSHI } from "./data/e-math-5-zukei-kaku";
+import { E_MATH_6_BUNSU_KAKE_MOSHI } from "./data/e-math-6-bunsu-kake";
+import { E_MATH_6_BUNSU_WARI_MOSHI } from "./data/e-math-6-bunsu-wari";
+import { E_MATH_6_DATA_MOSHI } from "./data/e-math-6-data";
+import { E_MATH_6_EN_MENSEKI_MOSHI } from "./data/e-math-6-en-menseki";
+import { E_MATH_6_HI_MOSHI } from "./data/e-math-6-hi";
+import { E_MATH_6_HIREI_HANPIREI_MOSHI } from "./data/e-math-6-hirei-hanpirei";
+import { E_MATH_6_KAKUCHU_TAISEKI_MOSHI } from "./data/e-math-6-kakuchu-taiseki";
+import { E_MATH_6_KAKUDAI_MOSHI } from "./data/e-math-6-kakudai";
+import { E_MATH_6_MOJI_SHIKI_MOSHI } from "./data/e-math-6-moji-shiki";
+import { E_MATH_6_NARABEKATA_MOSHI } from "./data/e-math-6-narabekata";
+import { E_MATH_6_OYOSO_MOSHI } from "./data/e-math-6-oyoso";
+import { E_MATH_6_TAISHO_MOSHI } from "./data/e-math-6-taisho";
+import { E_SCIENCE_3_DENKI_MOSHI } from "./data/e-science-3-denki";
+import { E_SCIENCE_3_HIKARI_MOSHI } from "./data/e-science-3-hikari";
+import { E_SCIENCE_3_JISHAKU_MOSHI } from "./data/e-science-3-jishaku";
+import { E_SCIENCE_3_KAZE_GOMU_MOSHI } from "./data/e-science-3-kaze-gomu";
+import { E_SCIENCE_3_KONCHU_MOSHI } from "./data/e-science-3-konchu";
+import { E_SCIENCE_3_OMOSA_MOSHI } from "./data/e-science-3-omosa";
+import { E_SCIENCE_3_OTO_MOSHI } from "./data/e-science-3-oto";
+import { E_SCIENCE_3_SHIZEN_MOSHI } from "./data/e-science-3-shizen";
+import { E_SCIENCE_3_SHOKUBUTSU_MOSHI } from "./data/e-science-3-shokubutsu";
+import { E_SCIENCE_3_TAIYO_MOSHI } from "./data/e-science-3-taiyo";
+import { E_SCIENCE_4_AMAMIZU_MOSHI } from "./data/e-science-4-amamizu";
+import { E_SCIENCE_4_ATATAMARI_MOSHI } from "./data/e-science-4-atatamari";
+import { E_SCIENCE_4_DENRYU_MOSHI } from "./data/e-science-4-denryu";
+import { E_SCIENCE_4_HONE_MOSHI } from "./data/e-science-4-hone";
+import { E_SCIENCE_4_KISETSU_MOSHI } from "./data/e-science-4-kisetsu";
+import { E_SCIENCE_4_KUKI_MIZU_MOSHI } from "./data/e-science-4-kuki-mizu";
+import { E_SCIENCE_4_ONDO_MOSHI } from "./data/e-science-4-ondo";
+import { E_SCIENCE_4_SUGATA_MOSHI } from "./data/e-science-4-sugata";
+import { E_SCIENCE_4_TENKI_MOSHI } from "./data/e-science-4-tenki";
+import { E_SCIENCE_4_TSUKI_HOSHI_MOSHI } from "./data/e-science-4-tsuki-hoshi";
+import { E_SCIENCE_4_YUKUE_MOSHI } from "./data/e-science-4-yukue";
+import { E_SCIENCE_5_DENJISHAKU_MOSHI } from "./data/e-science-5-denjishaku";
+import { E_SCIENCE_5_FURIKO_MOSHI } from "./data/e-science-5-furiko";
+import { E_SCIENCE_5_HATSUGA_MOSHI } from "./data/e-science-5-hatsuga";
+import { E_SCIENCE_5_HITO_MOSHI } from "./data/e-science-5-hito";
+import { E_SCIENCE_5_MEDAKA_MOSHI } from "./data/e-science-5-medaka";
+import { E_SCIENCE_5_MI_MOSHI } from "./data/e-science-5-mi";
+import { E_SCIENCE_5_NAGARERU_MOSHI } from "./data/e-science-5-nagareru";
+import { E_SCIENCE_5_TENKI_MOSHI } from "./data/e-science-5-tenki";
+import { E_SCIENCE_5_TOKEKATA_MOSHI } from "./data/e-science-5-tokekata";
+import { E_SCIENCE_6_DENKI_MOSHI } from "./data/e-science-6-denki";
+import { E_SCIENCE_6_KANKYO_MOSHI } from "./data/e-science-6-kankyo";
+import { E_SCIENCE_6_KARADA_MOSHI } from "./data/e-science-6-karada";
+import { E_SCIENCE_6_MOEKATA_MOSHI } from "./data/e-science-6-moekata";
+import { E_SCIENCE_6_SHOKUBUTSU_MOSHI } from "./data/e-science-6-shokubutsu";
+import { E_SCIENCE_6_SUIYOEKI_MOSHI } from "./data/e-science-6-suiyoeki";
+import { E_SCIENCE_6_TEKO_MOSHI } from "./data/e-science-6-teko";
+import { E_SCIENCE_6_TOCHI_MOSHI } from "./data/e-science-6-tochi";
+import { E_SCIENCE_6_TSUKI_TAIYO_MOSHI } from "./data/e-science-6-tsuki-taiyo";
 import { H_CIV_KOKYO_CHIHO_MOSHI } from "./data/h-civ-kokyo-chiho";
 import { H_CIV_KOKYO_JINKEN_MOSHI } from "./data/h-civ-kokyo-jinken";
 import { H_CIV_KOKYO_JIZOKU_MOSHI } from "./data/h-civ-kokyo-jizoku";
@@ -639,7 +767,135 @@ export const REGISTRY: Record<string, Daimon[]> = {
 
 /** ファイル名 (単元id) → その単元の単元模試 */
 export const UNIT_REGISTRY: Record<string, UnitMoshi> = {
+  "e-math-1-100made": E_MATH_1_100MADE_MOSHI,
+  "e-math-1-10made": E_MATH_1_10MADE_MOSHI,
+  "e-math-1-20made": E_MATH_1_20MADE_MOSHI,
+  "e-math-1-3tsu": E_MATH_1_3TSU_MOSHI,
+  "e-math-1-hikizan": E_MATH_1_HIKIZAN_MOSHI,
+  "e-math-1-ikutsu": E_MATH_1_IKUTSU_MOSHI,
+  "e-math-1-katachi": E_MATH_1_KATACHI_MOSHI,
+  "e-math-1-kurabe": E_MATH_1_KURABE_MOSHI,
+  "e-math-1-kuriagari": E_MATH_1_KURIAGARI_MOSHI,
+  "e-math-1-kurisagari": E_MATH_1_KURISAGARI_MOSHI,
+  "e-math-1-seiri": E_MATH_1_SEIRI_MOSHI,
+  "e-math-1-tashizan": E_MATH_1_TASHIZAN_MOSHI,
+  "e-math-1-tokei": E_MATH_1_TOKEI_MOSHI,
+  "e-math-2-10000made": E_MATH_2_10000MADE_MOSHI,
+  "e-math-2-1000made": E_MATH_2_1000MADE_MOSHI,
+  "e-math-2-bunsu": E_MATH_2_BUNSU_MOSHI,
+  "e-math-2-hako": E_MATH_2_HAKO_MOSHI,
+  "e-math-2-hiki-hissan": E_MATH_2_HIKI_HISSAN_MOSHI,
+  "e-math-2-hyo-graph": E_MATH_2_HYO_GRAPH_MOSHI,
+  "e-math-2-jikoku": E_MATH_2_JIKOKU_MOSHI,
+  "e-math-2-kakezan": E_MATH_2_KAKEZAN_MOSHI,
+  "e-math-2-kasa": E_MATH_2_KASA_MOSHI,
+  "e-math-2-m": E_MATH_2_M_MOSHI,
+  "e-math-2-nagasa": E_MATH_2_NAGASA_MOSHI,
+  "e-math-2-sankaku-shikaku": E_MATH_2_SANKAKU_SHIKAKU_MOSHI,
+  "e-math-2-tashi-hissan": E_MATH_2_TASHI_HISSAN_MOSHI,
+  "e-math-3-amari": E_MATH_3_AMARI_MOSHI,
+  "e-math-3-bou-graph": E_MATH_3_BOU_GRAPH_MOSHI,
+  "e-math-3-bunsu": E_MATH_3_BUNSU_MOSHI,
+  "e-math-3-en-kyu": E_MATH_3_EN_KYU_MOSHI,
+  "e-math-3-hissan": E_MATH_3_HISSAN_MOSHI,
+  "e-math-3-jikoku": E_MATH_3_JIKOKU_MOSHI,
+  "e-math-3-kake-hissan1": E_MATH_3_KAKE_HISSAN1_MOSHI,
+  "e-math-3-kake-hissan2": E_MATH_3_KAKE_HISSAN2_MOSHI,
+  "e-math-3-kake-kimari": E_MATH_3_KAKE_KIMARI_MOSHI,
+  "e-math-3-km": E_MATH_3_KM_MOSHI,
+  "e-math-3-nitouhen": E_MATH_3_NITOUHEN_MOSHI,
+  "e-math-3-omosa": E_MATH_3_OMOSA_MOSHI,
+  "e-math-3-ookii": E_MATH_3_OOKII_MOSHI,
+  "e-math-3-shiki": E_MATH_3_SHIKI_MOSHI,
+  "e-math-3-shosu": E_MATH_3_SHOSU_MOSHI,
+  "e-math-3-soroban": E_MATH_3_SOROBAN_MOSHI,
+  "e-math-3-warizan": E_MATH_3_WARIZAN_MOSHI,
+  "e-math-4-bunsu": E_MATH_4_BUNSU_MOSHI,
+  "e-math-4-chokuhotai": E_MATH_4_CHOKUHOTAI_MOSHI,
+  "e-math-4-gaisu": E_MATH_4_GAISU_MOSHI,
+  "e-math-4-kaku": E_MATH_4_KAKU_MOSHI,
+  "e-math-4-kawarikata": E_MATH_4_KAWARIKATA_MOSHI,
+  "e-math-4-keisan-kimari": E_MATH_4_KEISAN_KIMARI_MOSHI,
+  "e-math-4-menseki": E_MATH_4_MENSEKI_MOSHI,
+  "e-math-4-ookii": E_MATH_4_OOKII_MOSHI,
+  "e-math-4-oresen": E_MATH_4_ORESEN_MOSHI,
+  "e-math-4-seiri": E_MATH_4_SEIRI_MOSHI,
+  "e-math-4-shosu-kakewari": E_MATH_4_SHOSU_KAKEWARI_MOSHI,
+  "e-math-4-shosu": E_MATH_4_SHOSU_MOSHI,
+  "e-math-4-soroban": E_MATH_4_SOROBAN_MOSHI,
+  "e-math-4-suichoku": E_MATH_4_SUICHOKU_MOSHI,
+  "e-math-4-wari-hissan1": E_MATH_4_WARI_HISSAN1_MOSHI,
+  "e-math-4-wari-hissan2": E_MATH_4_WARI_HISSAN2_MOSHI,
+  "e-math-4-wariai": E_MATH_4_WARIAI_MOSHI,
+  "e-math-5-baisu-yakusu": E_MATH_5_BAISU_YAKUSU_MOSHI,
+  "e-math-5-bunsu-shosu": E_MATH_5_BUNSU_SHOSU_MOSHI,
+  "e-math-5-bunsu-tashihiki": E_MATH_5_BUNSU_TASHIHIKI_MOSHI,
+  "e-math-5-goudou": E_MATH_5_GOUDOU_MOSHI,
   "e-math-5-hayasa": E_MATH_5_HAYASA_MOSHI,
+  "e-math-5-heikin": E_MATH_5_HEIKIN_MOSHI,
+  "e-math-5-hirei": E_MATH_5_HIREI_MOSHI,
+  "e-math-5-kakuchu": E_MATH_5_KAKUCHU_MOSHI,
+  "e-math-5-menseki": E_MATH_5_MENSEKI_MOSHI,
+  "e-math-5-obi-en": E_MATH_5_OBI_EN_MOSHI,
+  "e-math-5-seisu-shosu": E_MATH_5_SEISU_SHOSU_MOSHI,
+  "e-math-5-seitakakkei": E_MATH_5_SEITAKAKKEI_MOSHI,
+  "e-math-5-shosu-kake": E_MATH_5_SHOSU_KAKE_MOSHI,
+  "e-math-5-shosu-wari": E_MATH_5_SHOSU_WARI_MOSHI,
+  "e-math-5-taiseki": E_MATH_5_TAISEKI_MOSHI,
+  "e-math-5-tanni": E_MATH_5_TANNI_MOSHI,
+  "e-math-5-wariai": E_MATH_5_WARIAI_MOSHI,
+  "e-math-5-zukei-kaku": E_MATH_5_ZUKEI_KAKU_MOSHI,
+  "e-math-6-bunsu-kake": E_MATH_6_BUNSU_KAKE_MOSHI,
+  "e-math-6-bunsu-wari": E_MATH_6_BUNSU_WARI_MOSHI,
+  "e-math-6-data": E_MATH_6_DATA_MOSHI,
+  "e-math-6-en-menseki": E_MATH_6_EN_MENSEKI_MOSHI,
+  "e-math-6-hi": E_MATH_6_HI_MOSHI,
+  "e-math-6-hirei-hanpirei": E_MATH_6_HIREI_HANPIREI_MOSHI,
+  "e-math-6-kakuchu-taiseki": E_MATH_6_KAKUCHU_TAISEKI_MOSHI,
+  "e-math-6-kakudai": E_MATH_6_KAKUDAI_MOSHI,
+  "e-math-6-moji-shiki": E_MATH_6_MOJI_SHIKI_MOSHI,
+  "e-math-6-narabekata": E_MATH_6_NARABEKATA_MOSHI,
+  "e-math-6-oyoso": E_MATH_6_OYOSO_MOSHI,
+  "e-math-6-taisho": E_MATH_6_TAISHO_MOSHI,
+  "e-science-3-denki": E_SCIENCE_3_DENKI_MOSHI,
+  "e-science-3-hikari": E_SCIENCE_3_HIKARI_MOSHI,
+  "e-science-3-jishaku": E_SCIENCE_3_JISHAKU_MOSHI,
+  "e-science-3-kaze-gomu": E_SCIENCE_3_KAZE_GOMU_MOSHI,
+  "e-science-3-konchu": E_SCIENCE_3_KONCHU_MOSHI,
+  "e-science-3-omosa": E_SCIENCE_3_OMOSA_MOSHI,
+  "e-science-3-oto": E_SCIENCE_3_OTO_MOSHI,
+  "e-science-3-shizen": E_SCIENCE_3_SHIZEN_MOSHI,
+  "e-science-3-shokubutsu": E_SCIENCE_3_SHOKUBUTSU_MOSHI,
+  "e-science-3-taiyo": E_SCIENCE_3_TAIYO_MOSHI,
+  "e-science-4-amamizu": E_SCIENCE_4_AMAMIZU_MOSHI,
+  "e-science-4-atatamari": E_SCIENCE_4_ATATAMARI_MOSHI,
+  "e-science-4-denryu": E_SCIENCE_4_DENRYU_MOSHI,
+  "e-science-4-hone": E_SCIENCE_4_HONE_MOSHI,
+  "e-science-4-kisetsu": E_SCIENCE_4_KISETSU_MOSHI,
+  "e-science-4-kuki-mizu": E_SCIENCE_4_KUKI_MIZU_MOSHI,
+  "e-science-4-ondo": E_SCIENCE_4_ONDO_MOSHI,
+  "e-science-4-sugata": E_SCIENCE_4_SUGATA_MOSHI,
+  "e-science-4-tenki": E_SCIENCE_4_TENKI_MOSHI,
+  "e-science-4-tsuki-hoshi": E_SCIENCE_4_TSUKI_HOSHI_MOSHI,
+  "e-science-4-yukue": E_SCIENCE_4_YUKUE_MOSHI,
+  "e-science-5-denjishaku": E_SCIENCE_5_DENJISHAKU_MOSHI,
+  "e-science-5-furiko": E_SCIENCE_5_FURIKO_MOSHI,
+  "e-science-5-hatsuga": E_SCIENCE_5_HATSUGA_MOSHI,
+  "e-science-5-hito": E_SCIENCE_5_HITO_MOSHI,
+  "e-science-5-medaka": E_SCIENCE_5_MEDAKA_MOSHI,
+  "e-science-5-mi": E_SCIENCE_5_MI_MOSHI,
+  "e-science-5-nagareru": E_SCIENCE_5_NAGARERU_MOSHI,
+  "e-science-5-tenki": E_SCIENCE_5_TENKI_MOSHI,
+  "e-science-5-tokekata": E_SCIENCE_5_TOKEKATA_MOSHI,
+  "e-science-6-denki": E_SCIENCE_6_DENKI_MOSHI,
+  "e-science-6-kankyo": E_SCIENCE_6_KANKYO_MOSHI,
+  "e-science-6-karada": E_SCIENCE_6_KARADA_MOSHI,
+  "e-science-6-moekata": E_SCIENCE_6_MOEKATA_MOSHI,
+  "e-science-6-shokubutsu": E_SCIENCE_6_SHOKUBUTSU_MOSHI,
+  "e-science-6-suiyoeki": E_SCIENCE_6_SUIYOEKI_MOSHI,
+  "e-science-6-teko": E_SCIENCE_6_TEKO_MOSHI,
+  "e-science-6-tochi": E_SCIENCE_6_TOCHI_MOSHI,
+  "e-science-6-tsuki-taiyo": E_SCIENCE_6_TSUKI_TAIYO_MOSHI,
   "h-civ-kokyo-chiho": H_CIV_KOKYO_CHIHO_MOSHI,
   "h-civ-kokyo-jinken": H_CIV_KOKYO_JINKEN_MOSHI,
   "h-civ-kokyo-jizoku": H_CIV_KOKYO_JIZOKU_MOSHI,
