@@ -23,6 +23,8 @@ import { KANA, moshiWords, type MoshiWords } from "./words";
 import { summarize } from "@/lib/moshi/summary";
 import { recordMoshiResult, type MoshiUnitRecord } from "@/lib/moshi/results";
 import { freshSeed } from "@/lib/moshi/rng";
+import { recordExamResult, type ExamAttempt } from "@/lib/exam/results";
+import { ExamResultPanel, type ExamResultData } from "@/components/exam/ExamResult";
 
 // 定期テスト模試の本体: 表紙 → 試験 (解説なし・残り時間の目安・答えはページ内 state) → 採点 (自動＋記述の自己採点) → 結果 → 解き方 → まちがいノート。
 
@@ -33,6 +35,19 @@ export interface MoshiUnit {
   lecture?: string;
   subject: string;
   kids: boolean;
+  /** 単元模試のページ (試験モードの結果から「弱い単元」を解きなおす導線) */
+  moshi?: string;
+}
+
+/** 試験モード (/learn/exam) のとき: 制限時間で自動提出・時間配分・弱い単元・端末への記録 */
+export interface MoshiExamMode {
+  mode: string;
+  specId: string;
+  seed: number;
+  /** もう一度 (シードを変える): このURLに &seed= を足して開く */
+  retryBase: string;
+  /** 範囲・教科をえらびなおす */
+  setupHref: string;
 }
 
 type Phase = "cover" | "exam" | "self" | "result";
@@ -464,6 +479,7 @@ export function MoshiPlay({
   homeHref,
   saveUnit,
   unitPage,
+  examMode,
 }: {
   exam: Exam;
   daimon: Daimon[];
@@ -473,8 +489,18 @@ export function MoshiPlay({
   /** 結果を端末に保存する単元 (1単元の回だけ) */
   saveUnit?: string;
   unitPage?: MoshiUnitPage;
+  examMode?: MoshiExamMode;
 }) {
-  const w = moshiWords(kids);
+  const w0 = moshiWords(kids);
+  const w = examMode
+    ? {
+        ...w0,
+        left: "残り時間",
+        over: "時間切れ",
+        coverLead: `制限時間は${exam.minutes}分。時間になると、その時点の答えで自動的に提出します。解いている間は解説・ヒントは出ません。答えはこのページを開いている間だけ保たれます（再読み込みすると最初からになります）。`,
+        cover: (m: number, p: number, n: number) => `制限時間 ${m}分・${p}点満点・大問 ${n}題`,
+      }
+    : w0;
   const router = useRouter();
   const [record, setRecord] = useState<{ record: MoshiUnitRecord; best: boolean } | null>(null);
   const [phase, setPhase] = useState<Phase>("cover");
@@ -486,7 +512,12 @@ export function MoshiPlay({
   const [checks, setChecks] = useState<Record<string, boolean[]>>({});
   const [confirm, setConfirm] = useState(false);
   const [saved, setSaved] = useState<number | null>(null);
+  const [examRes, setExamRes] = useState<ExamResultData | null>(null);
   const top = useRef<HTMLDivElement>(null);
+  /** 大問ごとに画面に出していた秒数 (試験中、画面のまんなかにある大問に1秒ずつ足す) */
+  const secTime = useRef<number[]>([]);
+  const timedOut = useRef(false);
+  const autoSubmit = useRef<() => void>(() => {});
 
   const all = useMemo(() => daimon.flatMap((d) => d.items.map((it) => ({ d, it, key: keyOf(d, it) }))), [daimon]);
   const figNos = useMemo(() => figureNumbers(daimon), [daimon]);
@@ -494,9 +525,25 @@ export function MoshiPlay({
   // 試験中は1秒ごとに時計を進める (残り10分・5分・0分で読み上げ)
   useEffect(() => {
     if (phase !== "exam") return;
-    const id = window.setInterval(() => setNow(Date.now()), 1000);
+    const id = window.setInterval(() => {
+      const t = Date.now();
+      setNow(t);
+      const mid = window.innerHeight * 0.45;
+      for (const el of document.querySelectorAll<HTMLElement>("[data-dm]")) {
+        const r = el.getBoundingClientRect();
+        if (r.top <= mid && r.bottom >= mid) {
+          const i = Number(el.dataset.dm);
+          secTime.current[i] = (secTime.current[i] ?? 0) + 1;
+          break;
+        }
+      }
+      if (examMode && t - startAt >= exam.minutes * 60000) {
+        timedOut.current = true;
+        autoSubmit.current();
+      }
+    }, 1000);
     return () => window.clearInterval(id);
-  }, [phase]);
+  }, [phase, examMode, startAt, exam.minutes]);
   const leftSec = exam.minutes * 60 - Math.max(0, (now - startAt) / 1000);
   const leftMin = Math.ceil(leftSec / 60);
   // 読み上げは区切り (残り10分・5分・時間切れ) が変わったときだけ
@@ -524,7 +571,10 @@ export function MoshiPlay({
     setChecks({});
     setSaved(null);
     setRecord(null);
+    setExamRes(null);
     setConfirm(false);
+    secTime.current = daimon.map(() => 0);
+    timedOut.current = false;
     const t = Date.now();
     setStartAt(t);
     setNow(t);
@@ -570,6 +620,19 @@ export function MoshiPlay({
     const sum = summarize(all.map(({ d, it, key }) => ({ key, points: it.points, unit: it.unit ?? d.units[0], skill: it.skill, difficulty: it.level })), results);
     const unitToSave = unitPage?.unit ?? saveUnit;
     setRecord(unitToSave ? recordMoshiResult(unitToSave, { score: sum.score, total: sum.total, rate: sum.rate }) : null);
+    if (examMode) {
+      const usedSec = Math.min(exam.minutes * 60, Math.round((Date.now() - startAt) / 1000));
+      const parts = daimon.map((d, i) => ({ title: plain(d.title), score: d.items.reduce((s, it) => s + (results[keyOf(d, it)]?.score ?? 0), 0), total: d.points, sec: secTime.current[i] ?? 0 }));
+      const unitsRec: ExamAttempt["units"] = {};
+      for (const [u, t] of Object.entries(sum.byUnit)) unitsRec[u] = [t.score, t.total];
+      const attempt: ExamAttempt = { spec: examMode.specId, mode: examMode.mode, title: exam.title, seed: examMode.seed, at: new Date().toISOString(), score: sum.score, total: sum.total, minutes: exam.minutes, usedSec, timeout: timedOut.current, parts, units: unitsRec };
+      const rec = recordExamResult(attempt);
+      const weak = Object.entries(sum.byUnit)
+        .map(([u, t]) => ({ unit: u, name: units[u]?.name ?? u, score: t.score, total: t.total, pct: t.total ? Math.round((t.score / t.total) * 100) : 0, lecture: units[u]?.lecture, moshi: units[u]?.moshi }))
+        .filter((x) => x.pct < 60)
+        .sort((a, b) => a.pct - b.pct || b.total - a.total);
+      setExamRes({ parts, usedSec, minutes: exam.minutes, timeout: timedOut.current, weak, count: rec?.count ?? null, prevBest: rec?.prevBest ?? null, total: exam.total });
+    }
     trackEvent("moshi_finish", { exam: exam.id, score: total, total: exam.total });
     setPhase("result");
   };
@@ -579,6 +642,9 @@ export function MoshiPlay({
     if (hasWritten) setPhase("self");
     else finish();
   };
+  useEffect(() => {
+    autoSubmit.current = submit;
+  });
 
   // ---------- 表紙 ----------
   if (phase === "cover")
@@ -625,7 +691,7 @@ export function MoshiPlay({
           {announce}
         </p>
         {daimon.map((d, di) => (
-          <section key={d.id} aria-labelledby={`dm-${di}`} className={`${card} mt-4`}>
+          <section key={d.id} data-dm={di} aria-labelledby={`dm-${di}`} className={`${card} mt-4`}>
             <h2 id={`dm-${di}`} className="m-0 flex items-baseline justify-between gap-2 text-[18px] font-black">
               <span>
                 <span className="mr-2 inline-flex h-7 w-7 items-center justify-center rounded-[8px] bg-[#15172B] text-[14px] text-white">{di + 1}</span>
@@ -767,7 +833,8 @@ export function MoshiPlay({
   }
   const rate = summarize(all.map(({ d, it, key }) => ({ key, points: it.points, unit: it.unit ?? d.units[0], skill: it.skill })), results);
   const again = () => {
-    if (unitPage?.regenBase) router.push(`${unitPage.regenBase}?seed=${freshSeed()}`);
+    if (examMode) router.push(`${examMode.retryBase}${examMode.retryBase.includes("?") ? "&" : "?"}seed=${freshSeed()}`);
+    else if (unitPage?.regenBase) router.push(`${unitPage.regenBase}?seed=${freshSeed()}`);
     else start();
   };
   return (
@@ -793,6 +860,8 @@ export function MoshiPlay({
           </p>
         )}
       </section>
+
+      {examRes && <ExamResultPanel data={examRes} />}
 
       {saved !== null && saved > 0 && (
         <Link
@@ -887,10 +956,10 @@ export function MoshiPlay({
           </Link>
         )}
         <button type="button" onClick={again} className={`${bigBtn} bg-[#FFE45C] text-[#15172B] shadow-[0_3px_0_#15172B]`}>
-          {unitPage?.regenBase ? w.retryNew : w.retry}
+          {unitPage?.regenBase || examMode ? w.retryNew : w.retry}
         </button>
-        <Link href={homeHref} className={`${bigBtn} bg-white text-[#15172B] no-underline`}>
-          {w.home}
+        <Link href={examMode?.setupHref ?? homeHref} className={`${bigBtn} bg-white text-[#15172B] no-underline`}>
+          {examMode ? "範囲・教科をえらびなおす" : w.home}
         </Link>
       </div>
     </div>

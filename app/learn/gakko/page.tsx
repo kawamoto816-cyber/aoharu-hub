@@ -40,7 +40,7 @@ export default function Gakko() {
   const rooms = [
     { name: "教室", desc: `${LECTURES.length}単元の授業。読む・聴く・笑う・謎を解く`, href: "/learn/school", bg: "bg-white" },
     { name: "ツッコミ道場", desc: "ボケのまちがいを直して、速く正しく鍛える", href: TSUKKOMI_HOME, bg: "bg-white" },
-    { name: "自習室", desc: "テスト放題ルーム。模擬試験で腕試し", href: "/learn/moshi", bg: "bg-white", note: "いまは定期テスト模試がひらいています" },
+    { name: "自習室", desc: "テスト放題ルーム。入試型・定期テスト型の模擬試験で腕試し", href: "/learn/exam", bg: "bg-white", note: "公立高校入試型・定期テスト型がひらいています" },
     { name: "未来の職員室", desc: "生徒が先生になれる場所。AIの生徒に教えて、学びをマスター", bg: "bg-[#FFF8D6]" },
   ];
 

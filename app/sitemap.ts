@@ -71,6 +71,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...LECTURES.map((l) => ({ url: `${base}/learn/lecture/${l.unit}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.7 })),
     { url: `${base}${TSUKKOMI_HOME}`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
     ...TSUKKOMI_UNITS.map((u) => ({ url: `${base}${tsukkomiHref(u)}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
+    ...["", "/koritsu", "/kyotsu", "/shiritsu", "/teiki"].map((m) => ({ url: `${base}/learn/exam${m}`, lastModified: now, changeFrequency: "weekly" as const, priority: 0.7 })),
     ...UNIT_MOSHI_IDS.map((u) => ({ url: `${base}/learn/moshi/${u}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
     ...KYOKA.map((k) => ({ url: `${base}/learn/kyoka/${k.key}`, lastModified: now, changeFrequency: "weekly" as const, priority: 0.8 })),
     ...TERM_SET_KEYS.map((k) => ({ url: `${base}/learn/${k}`, lastModified: now, changeFrequency: "weekly" as const, priority: 0.7 })),

@@ -29,6 +29,15 @@ export default function MoshiHome() {
       <p className="mb-0 mt-2 max-w-[720px] text-[15px] leading-relaxed text-[#3A3D55]">
         学校のテスト範囲の単元を選ぶと、その範囲の大問を並べて1回分のテストを組みます。本番と同じように最後まで解いてから採点し、記述は模範解答と採点基準で自己採点。小問ごとの解き方（図つき）を読み、まちがえた問題はまちがいノートで解き直せます。登録なし・無料（いまは大問 {DAIMON.length} 題。順次ふやします）。
       </p>
+      <Link href="/learn/exam" className="mt-5 flex min-h-[56px] max-w-[720px] flex-wrap items-center justify-between gap-x-3 gap-y-1 rounded-[14px] border-[1.5px] border-[#15172B] bg-[#FFFBE6] px-4 py-3 text-[#15172B] no-underline shadow-[3px_3px_0_#15172B]">
+        <span className="min-w-0">
+          <span className="block text-[16px] font-black">入試モード・テスト放題</span>
+          <span className="block text-[12.5px] font-bold text-[#3A3D55]">公立高校入試型・共通テスト型・私立入試型・定期テスト型を、制限時間つきで</span>
+        </span>
+        <span aria-hidden="true" className="text-[15px] font-black text-[#1533B8]">
+          →
+        </span>
+      </Link>
       {unitMoshi.length > 0 && (
         <section aria-labelledby="mh-unit" className="mt-8">
           <h2 id="mh-unit" className="m-0 text-[22px] font-black">
