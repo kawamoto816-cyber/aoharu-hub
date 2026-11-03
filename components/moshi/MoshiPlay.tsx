@@ -48,6 +48,8 @@ export interface MoshiExamMode {
   retryBase: string;
   /** 範囲・教科をえらびなおす */
   setupHref: string;
+  /** 「はじめる」を押したとき、始める前に呼ぶ (回数の門。components/exam/ExamGate)。false なら始めない */
+  beforeStart?: () => Promise<boolean>;
 }
 
 type Phase = "cover" | "exam" | "self" | "result";
@@ -553,6 +555,18 @@ export function MoshiPlay({
     if (phase !== "cover") top.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   }, [phase, round]);
 
+  const [starting, setStarting] = useState(false);
+  const begin = async () => {
+    if (!examMode?.beforeStart) return start();
+    if (starting) return;
+    setStarting(true);
+    try {
+      if (await examMode.beforeStart()) start();
+    } finally {
+      setStarting(false);
+    }
+  };
+
   const start = () => {
     const r: Record<string, Response> = {};
     const p: Record<string, number[]> = {};
@@ -665,7 +679,7 @@ export function MoshiPlay({
         </ol>
         <p className="m-0 mt-3 text-[13.5px] leading-relaxed text-[#3A3D55]">{w.coverLead}</p>
         {unitPage?.regenBase && <p className="m-0 mt-1 text-[12px] font-bold text-[#5A5D73]">{w.roundNo(unitPage.seed)}</p>}
-        <button type="button" onClick={start} className={`${bigBtn} mt-4 bg-[#1533B8] text-white shadow-[0_4px_0_#0B1F7A]`}>
+        <button type="button" onClick={() => void begin()} disabled={starting} aria-busy={starting} className={`${bigBtn} mt-4 bg-[#1533B8] text-white shadow-[0_4px_0_#0B1F7A] disabled:opacity-60`}>
           {w.start}
         </button>
       </div>

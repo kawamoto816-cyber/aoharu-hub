@@ -2,13 +2,16 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { LearnShell } from "@/components/learn/LearnShell";
-import { MoshiPlay, type MoshiUnit } from "@/components/moshi/MoshiPlay";
+import type { MoshiUnit } from "@/components/moshi/MoshiPlay";
+import { MoshiPlay } from "@/components/moshi/MoshiPlay";
+import { ExamGate } from "@/components/exam/ExamGate";
 import { buildExamRound, EXAM_HOME, examPlayHref, getMode, NOTICE_COMMON, type ExamChoice, type ModeId } from "@/lib/exam";
 import { hasUnitMoshi, unitMoshiHref, unitView } from "@/lib/moshi/unit";
 import { freshSeed, parseSeed } from "@/lib/moshi/rng";
 
 // /learn/exam/<mode>/play?s=教科&l=学校&u=単元,単元&m=分&seed=123: 試験モードの本番画面。
 // 組み立て (lib/exam/build.ts) はサーバー側、解く・採点・時間切れの自動提出・結果の保存はクライアント (MoshiPlay の examMode)。
+// 回数の門 (登録なし1回・無料登録 月2回・Pro・Max 無制限。lib/exam/access.ts) は ExamGate が「はじめる」の前に見る。
 
 export const metadata: Metadata = {
   title: "入試モードを解く｜アオハルラーン｜アオハルOS",
@@ -74,8 +77,20 @@ export default async function ExamPlayPage({ params, searchParams }: { params: P
         範囲：{spec.subjectName}（{spec.scopeLabel}）・問題番号 {seed}
       </p>
       <p className="m-0 mb-4 text-[11.5px] leading-relaxed text-[#5A5D73]">{NOTICE_COMMON}</p>
-      <MoshiPlay
-        key={round.exam.id}
+      {/* 定期テスト型は学校の勉強なので、回数を数えず分析も全部見せる（教科書・ドリル・単元模試と同じく無料） */}
+      {mode === "teiki" ? (
+        <MoshiPlay
+          key={`${round.exam.id}:${seed}`}
+          exam={round.exam}
+          daimon={round.daimon}
+          units={units}
+          kids={kids}
+          homeHref={setupHref}
+          examMode={{ mode, specId: spec.id, seed, retryBase: examPlayHref(mode, choice), setupHref }}
+        />
+      ) : (
+      <ExamGate
+        key={`${round.exam.id}:${seed}`}
         exam={round.exam}
         daimon={round.daimon}
         units={units}
@@ -83,6 +98,7 @@ export default async function ExamPlayPage({ params, searchParams }: { params: P
         homeHref={setupHref}
         examMode={{ mode, specId: spec.id, seed, retryBase: examPlayHref(mode, choice), setupHref }}
       />
+      )}
     </LearnShell>
   );
 }
