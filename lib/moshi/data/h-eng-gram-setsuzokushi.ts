@@ -267,7 +267,7 @@ export const H_ENG_GRAM_SETSUZOKUSHI_MOSHI: UnitMoshi = {
   subject: "eng",
   grade: "文法",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     { title: "接続詞の使い分け", lead: "次の問いに答えなさい。", style: "word", pick: 5, questions: FORMS },
     { title: "並べかえ", lead: "日本語に合うように、語（語句）を並べかえなさい。文の最初の語は大文字で始めてあります。", style: "word", pick: 2, questions: ORDER },

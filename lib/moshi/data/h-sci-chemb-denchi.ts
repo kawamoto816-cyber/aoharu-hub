@@ -168,7 +168,7 @@ export const H_SCI_CHEMB_DENCHI_MOSHI: UnitMoshi = {
   unit: U,
   subject: "sci",
   grade: "化学基礎",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     { title: "イオン化傾向と電池", lead: "次の問いに答えなさい。", style: "word", pick: 4, questions: POOL },
     { title: "電池のしくみを考える", lead: "次の問いに答えなさい。", style: "mix", questions: FIX },

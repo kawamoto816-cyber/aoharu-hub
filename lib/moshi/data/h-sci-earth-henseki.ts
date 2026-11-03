@@ -79,7 +79,7 @@ export const H_SCI_EARTH_HENSEKI_MOSHI: UnitMoshi = {
   subject: "sci",
   grade: "地学",
   minutes: 12,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "震源距離の計算",

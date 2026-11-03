@@ -49,6 +49,6 @@ export const H_SCI_EARTHB_NAIBU_MOSHI: UnitMoshi = {
   subject: "sci",
   grade: "地学基礎",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [{ title: "地球の内部構造", lead: "次の問いに答えなさい。", style: "word", pick: 6, questions: POOL }],
 };

@@ -196,7 +196,8 @@ function kyori(r: Rng): QuestionBody {
   // 頂点 A から平面 BDE までの距離＝a/√3＝a√3/3
   const ans = a % 3 === 0 ? (a / 3 === 1 ? "√3" : `${a / 3}√3`) : `${a}√3/3`;
   const vol = (a * a * a) / 6;
-  const volText = Number.isInteger(vol) ? String(vol) : `${a * a * a}/6`;
+  const g6 = a % 3 === 0 ? (a % 2 === 0 ? 6 : 3) : a % 2 === 0 ? 2 : 1; // a³/6 を約分する
+  const volText = Number.isInteger(vol) ? String(vol) : `${(a * a * a) / g6}/${6 / g6}`;
   return {
     prompt: `1辺の長さが ${a} の立方体 ABCD-EFGH（四角形 ABCD が底面で、AE、BF、CG、DH が側面の辺）がある。頂点 A から、3点 B、D、E を通る平面に下ろした垂線の長さを求めなさい。`,
     answer: { kind: "num", answerKind: "surd", answer: [ans], equations: [`x^2=${a}^2/3`] },
@@ -213,7 +214,7 @@ export const H_MATH_A_KUKAN_MOSHI: UnitMoshi = {
   unit: U,
   subject: "math",
   grade: "数学A",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "多面体の頂点・辺・面",

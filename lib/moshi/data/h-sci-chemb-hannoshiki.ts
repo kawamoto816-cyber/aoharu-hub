@@ -188,7 +188,7 @@ export const H_SCI_CHEMB_HANNOSHIKI_MOSHI: UnitMoshi = {
   unit: U,
   subject: "sci",
   grade: "化学基礎",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     { title: "反応式と法則", lead: "次の問いに答えなさい。", style: "word", pick: 2, questions: POOL },
     {

@@ -50,7 +50,7 @@ function ichiji(r: Rng): QuestionBody {
     answer: { kind: "num", answerKind: "num", answer: [String(S)], calc: `${p}*${n}*(${n}+1)/2+(${q})*${n}` },
     point: "Σ(pk＋q)＝pΣk＋qn。定数の Σ は n 倍",
     steps: [
-      { title: "分ける", body: `Σ(${term})＝${D(p)}Σk＋Σ${pa(q)} と分けます。`, back: [S4] },
+      { title: "分ける", body: `Σ(${term})＝${p === 1 ? "" : p === -1 ? "−" : D(p)}Σk＋Σ${pa(q)} と分けます。`, back: [S4] },
       { title: "公式を使う", body: `${D(p)}×${n}×${n + 1}÷2${q === 0 ? "" : `＋${pa(q)}×${n}`}＝{{${D(S)}}}。`, back: [S2, S3], trap: `定数 ${D(q)} の Σ は ${D(q)} ではなく ${D(q)}×${n}。k＝1〜${n} の ${n} 回たす。` },
     ],
   };
@@ -120,7 +120,7 @@ function kaisa(r: Rng): QuestionBody {
     point: "n≧2 で aₙ＝a₁＋Σ[k=1→n−1]bₖ。n＝1 も確かめる",
     steps: [
       { title: "階差数列", body: `となりの差は ${[1, 2, 3, 4].map((k) => D(b(k))).join(", ")}, …。公差 ${D(p)} の等差数列で、{{bₖ＝${poly([[p, "k"], [q, ""]])}}}。`, back: [S5] },
-      { title: "Σ でたす", body: `n≧2 のとき aₙ＝${D(a1)}＋Σ[k=1→n−1](${poly([[p, "k"], [q, ""]])})＝${D(a1)}＋${pa(p)}×(n−1)n/2＋${pa(q)}(n−1)。`, back: [S3], trap: "Σ の上は n−1。n にすると1項多い。" },
+      { title: "Σ でたす", body: `n≧2 のとき aₙ＝${D(a1)}＋Σ[k=1→n−1](${poly([[p, "k"], [q, ""]])})＝${D(a1)}＋${pa(p)}×(n−1)n/2＋${q === 1 ? "" : pa(q)}(n−1)。`, back: [S3], trap: "Σ の上は n−1。n にすると1項多い。" },
       { title: "整理と確認", body: `aₙ＝{{${poly(co)}}}。n＝1 を入れると ${D(a1)} になり、n＝1 でも成り立ちます。` },
     ],
   };
@@ -168,7 +168,7 @@ export const H_MATH_B_SIGMA_MOSHI: UnitMoshi = {
   unit: U,
   subject: "math",
   grade: "数学B",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "Σ の計算",

@@ -24,7 +24,7 @@ export const H_JPN_BUNGAKU_SOSAKU_MOSHI: UnitMoshi = {
   subject: "ja",
   grade: "文学国語",
   minutes: 20,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "創作の推敲「縁側の将棋」",

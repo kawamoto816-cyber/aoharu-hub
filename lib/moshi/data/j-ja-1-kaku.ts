@@ -25,7 +25,7 @@ export const J_JA_1_KAKU_MOSHI: UnitMoshi = {
   subject: "ja",
   grade: "中1",
   minutes: 18,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "報告文を読んで直す「忘れ物の傘調べ」",

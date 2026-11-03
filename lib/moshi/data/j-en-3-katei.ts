@@ -244,7 +244,7 @@ export const J_EN_3_KATEI_MOSHI: UnitMoshi = {
   subject: "eng",
   grade: "中3",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     { title: "仮定法の文法・語法", lead: "次の問いに答えなさい。", style: "mix", pick: 4, questions: GRAMMAR },
     { title: "語の並べかえ", lead: "日本文に合うように並べかえなさい。使わない語が1つふくまれています。", style: "word", pick: 2, questions: ORDER },

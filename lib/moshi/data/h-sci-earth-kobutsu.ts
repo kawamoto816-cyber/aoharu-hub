@@ -80,7 +80,7 @@ export const H_SCI_EARTH_KOBUTSU_MOSHI: UnitMoshi = {
   subject: "sci",
   grade: "地学",
   minutes: 11,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "色指数の計算",

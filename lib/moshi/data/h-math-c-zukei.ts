@@ -136,6 +136,9 @@ function en(r: Rng): QuestionBody {
   };
 }
 
+/** 文字の前の分数の係数はかっこでくくる: (3/5)u */
+const fp = (n: number, d: number) => (fr(n, d).includes("/") ? `(${fr(n, d)})` : fr(n, d));
+
 function kouten(r: Rng): QuestionBody {
   const [p1, p2] = r.pick(RATIOS.filter(([a, b]) => a + b <= 5));
   let [q1, q2] = r.pick(RATIOS.filter(([a, b]) => a + b <= 5));
@@ -157,9 +160,9 @@ function kouten(r: Rng): QuestionBody {
     answer: { kind: "num", answerKind: "pair", answer: [fr(sN, uD), fr(tN, tD)], labels: ["s =", "t ="], equations: [`s=1-(1-${pS})/(1-${pS}*${qS})`, `t=(1-${pS})/(1-${pS}*${qS})*${qS}`] },
     point: "2通りに表して、a⃗、b⃗ の係数を比べる",
     steps: [
-      { title: "AQ 上として", body: `AX:XQ＝u:(1−u) とおくと、OX→＝(1−u)a⃗＋${fr(qn, qd)}u b⃗。`, back: [S3] },
-      { title: "BP 上として", body: `BX:XP＝v:(1−v) とおくと、OX→＝${fr(pn, pd)}v a⃗＋(1−v)b⃗。` },
-      { title: "係数を比べる", body: `a⃗、b⃗ は1次独立なので、1−u＝${fr(pn, pd)}v、${fr(qn, qd)}u＝1−v。解くと u＝${fr(uN, uD)}、{{s＝${fr(sN, uD)}、t＝${fr(tN, tD)}}}。`, trap: "係数を比べてよいのは、a⃗ と b⃗ が 0⃗ でなく平行でない (1次独立) から。" },
+      { title: "AQ 上として", body: `AX:XQ＝u:(1−u) とおくと、OX→＝(1−u)a⃗＋${fp(qn, qd)}u b⃗。`, back: [S3] },
+      { title: "BP 上として", body: `BX:XP＝v:(1−v) とおくと、OX→＝${fp(pn, pd)}v a⃗＋(1−v)b⃗。` },
+      { title: "係数を比べる", body: `a⃗、b⃗ は1次独立なので、1−u＝${fp(pn, pd)}v、${fp(qn, qd)}u＝1−v。解くと u＝${fr(uN, uD)}、{{s＝${fr(sN, uD)}、t＝${fr(tN, tD)}}}。`, trap: "係数を比べてよいのは、a⃗ と b⃗ が 0⃗ でなく平行でない (1次独立) から。" },
     ],
   };
 }
@@ -168,7 +171,7 @@ export const H_MATH_C_ZUKEI_MOSHI: UnitMoshi = {
   unit: U,
   subject: "math",
   grade: "数学C",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "内分・外分・重心",

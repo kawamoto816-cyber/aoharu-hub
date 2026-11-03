@@ -15,6 +15,8 @@ const S4 = L(4, "f′(x) の符号で増減がわかり、極値が求まる");
 
 const D = (s: string | number) => String(s).replace(/-/g, "−");
 const pa = (n: number) => (n < 0 ? `(−${-n})` : String(n));
+/** (x − a) を (x + 3)・x のように書く */
+const xm = (a: number) => (a === 0 ? "x" : `(x ${a < 0 ? "+" : "−"} ${Math.abs(a)})`);
 const nz = (r: Rng, a: number, b: number) => {
   let v = 0;
   while (v === 0) v = r.int(a, b);
@@ -122,9 +124,9 @@ function kyokuchi(r: Rng): QuestionBody {
     answer: { kind: "num", answerKind: "num", answer: [String(v)], calc: sub3(f, x0) },
     point: "f′(x)＝0 の解の前後で符号を調べる",
     steps: [
-      { title: "f′(x)＝0 を解く", body: `f′(x)＝${poly([[3 * f[0], "x²"], [2 * f[1], "x"], [f[2], ""]])}＝${3 * k}(x − ${pa(al)})(x − ${pa(be)}) なので、x＝${D(al)}、${D(be)}。`, back: [S4] },
+      { title: "f′(x)＝0 を解く", body: `f′(x)＝${poly([[3 * f[0], "x²"], [2 * f[1], "x"], [f[2], ""]])}＝${3 * k}${xm(al)}${xm(be)} なので、x＝${D(al)}、${D(be)}。`, back: [S4] },
       { title: "増減表", body: `x³ の係数が正なので、f′ の符号は ＋、−、＋。x＝${D(al)} で極大、x＝${D(be)} で極小。` },
-      { title: "値を出す", body: `f(${D(x0)})＝{{${D(v)}}}。`, trap: "極大値は x の値ではなく f(x) の値。" },
+      { title: "値を出す", body: `f(${D(x0)})＝{{${D(v)}}}。`, trap: `極${askMax ? "大" : "小"}値は x の値ではなく f(x) の値。` },
     ],
   };
 }
@@ -146,7 +148,7 @@ function gaibu(r: Rng): QuestionBody {
     point: "接点を (t, f(t)) とおき、点を通る条件で t を決める",
     steps: [
       { title: "接点を t とおく", body: `y′＝2x なので、x＝t での接線は y＝2tx − t²${c === 0 ? "" : ` ${c < 0 ? "−" : "＋"} ${Math.abs(c)}`}。`, back: [S3] },
-      { title: "点を通る条件", body: `(${D(p)}, ${D(q)}) を代入すると t² − ${pa(2 * p)}t ＋ ${pa(q - c)}＝0 から t＝${D(t1)}、${D(t2)}。` },
+      { title: "点を通る条件", body: `(${D(p)}, ${D(q)}) を代入すると ${poly([[1, "t²"], [-2 * p, "t"], [q - c, ""]])}＝0 から t＝${D(t1)}、${D(t2)}。` },
       { title: "傾き", body: `傾き 2t は {{${D(2 * t1)}、${D(2 * t2)}}}。`, trap: "点 (" + D(p) + ", " + D(q) + ") は放物線の上にないので、そこでの微分係数を傾きにしない。" },
     ],
   };
@@ -159,18 +161,19 @@ function saidai(r: Rng): QuestionBody {
   const Lx = al - r.int(0, 2);
   const Rx = be + r.int(1, 2);
   const askMax = r.bool();
-  const cands = [Lx, al, be, Rx];
+  const cands = [...new Set([Lx, al, be, Rx])]; // 区間の端が極値の x と重なるときは1つにする
   const vals = cands.map((x) => val3(f, x));
   const best = askMax ? Math.max(...vals) : Math.min(...vals);
   const x0 = cands[vals.indexOf(best)];
+  const xs = cands.filter((_, i) => vals[i] === best).map(D).join("、");
   return {
     prompt: `関数 f(x)＝${show3(f)} の ${D(Lx)} ≦ x ≦ ${D(Rx)} における${askMax ? "最大値" : "最小値"}を求めなさい。`,
     answer: { kind: "num", answerKind: "num", answer: [String(best)], calc: sub3(f, x0) },
     point: "極値と区間の両端の値を、すべて比べる",
     steps: [
-      { title: "極値をとる x", body: `f′(x)＝6(x − ${pa(al)})(x − ${pa(be)}) なので、x＝${D(al)} で極大、x＝${D(be)} で極小。`, back: [S4] },
+      { title: "極値をとる x", body: `f′(x)＝6${xm(al)}${xm(be)} なので、x＝${D(al)} で極大、x＝${D(be)} で極小。`, back: [S4] },
       { title: "候補の値", body: cands.map((x, i) => `f(${D(x)})＝${D(vals[i])}`).join("、") + "。" },
-      { title: "比べる", body: `${askMax ? "最大値" : "最小値"}は {{${D(best)}}}（x＝${D(x0)}）。`, trap: `極${askMax ? "大" : "小"}値がそのまま${askMax ? "最大" : "最小"}値とは限らない。区間の端も必ず調べる。` },
+      { title: "比べる", body: `${askMax ? "最大値" : "最小値"}は {{${D(best)}}}（x＝${xs}）。`, trap: `極${askMax ? "大" : "小"}値がそのまま${askMax ? "最大" : "最小"}値とは限らない。区間の端も必ず調べる。` },
     ],
   };
 }
@@ -179,7 +182,7 @@ export const H_MATH_2_BIBUN_MOSHI: UnitMoshi = {
   unit: U,
   subject: "math",
   grade: "数学Ⅱ",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "平均変化率と導関数",

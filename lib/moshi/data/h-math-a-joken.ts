@@ -180,7 +180,7 @@ export const H_MATH_A_JOKEN_MOSHI: UnitMoshi = {
   unit: U,
   subject: "math",
   grade: "数学A",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "条件付き確率の基本",

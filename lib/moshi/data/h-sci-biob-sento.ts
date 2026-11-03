@@ -160,7 +160,7 @@ export const H_SCI_BIOB_SENTO_MOSHI: UnitMoshi = {
   unit: U,
   subject: "sci",
   grade: "生物基礎",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     { title: "植生と遷移", lead: "次の問いに答えなさい。", style: "word", pick: 4, questions: POOL },
     { title: "遷移の道すじを考える", lead: "次の問いに答えなさい。", style: "mix", questions: FIX },

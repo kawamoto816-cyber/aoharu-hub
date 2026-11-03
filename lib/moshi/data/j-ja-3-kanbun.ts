@@ -160,7 +160,7 @@ export const J_JA_3_KANBUN_MOSHI: UnitMoshi = {
   subject: "ja",
   grade: "中3",
   minutes: 12,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "返り点と書き下し文",

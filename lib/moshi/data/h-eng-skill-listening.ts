@@ -232,7 +232,7 @@ export const H_ENG_SKILL_LISTENING_MOSHI: UnitMoshi = {
   subject: "eng",
   grade: "技能",
   minutes: 12,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "放送文を読んで答える",

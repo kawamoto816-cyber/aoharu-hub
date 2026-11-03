@@ -27,6 +27,9 @@ const SUB: Record<string, string> = { "0": "₀", "1": "₁", "2": "₂", "3": "
 const log = (b: number) => `log${[...String(b)].map((c) => SUB[c]).join("")}`;
 const pv = (c: number, e: number) => (e >= 0 ? String(c ** e) : `1/${c ** -e}`);
 const xm = (a: number) => (a === 0 ? "x" : `(x ${a < 0 ? "＋" : "−"} ${Math.abs(a)})`);
+const tm = (a: number) => xm(a).replace("x", "t");
+/** log の前の係数 (1 は書かない) */
+const cl = (n: number) => (n === 1 ? "" : String(n));
 
 function teigi(r: Rng): QuestionBody {
   const c = r.pick([2, 3, 5]);
@@ -43,7 +46,7 @@ function teigi(r: Rng): QuestionBody {
     point: "底と真数を同じ数の累乗で表す",
     steps: [
       { title: "同じ底の累乗に", body: `${a}＝${c}${sup(i)}、${M}＝${c}${sup(j)}。`, back: [S1] },
-      { title: "何乗か", body: `${a}ᵖ＝${c}${sup(i)}ᵖ＝${c}${sup(j)} なので ${i}p＝${D(j)}、p＝{{${frac(j, i)}}}。`, trap: "真数が1より小さいとき、対数は負になる。" },
+      { title: "何乗か", body: `${a}ᵖ＝${c}${i === 1 ? "" : sup(i)}ᵖ＝${c}${sup(j)} なので ${i === 1 ? "" : i}p＝${D(j)}、p＝{{${frac(j, i)}}}。`, trap: "真数が1より小さいとき、対数は負になる。" },
     ],
   };
 }
@@ -101,7 +104,7 @@ function teikan(r: Rng): QuestionBody {
     answer: { kind: "num", answerKind: "num", answer: [ans], calc: `${j}*${l}/(${i}*${k})` },
     point: "底の変換公式で、同じ底（たとえば 10）にそろえる",
     steps: [
-      { title: "底をそろえる", body: `logₐb＝log b/log a を使うと、(${j}log ${q}/${i}log ${p}) × (${l}log ${p}/${k}log ${q})。`, back: [S2] },
+      { title: "底をそろえる", body: `logₐb＝log b/log a を使うと、(${cl(j)}log ${q}/${cl(i)}log ${p}) × (${cl(l)}log ${p}/${cl(k)}log ${q})。`, back: [S2] },
       { title: "約分する", body: `log ${p} と log ${q} が消えて、${j}×${l}/(${i}×${k})＝{{${frac(j * l, i * k)}}}。`, trap: "底の指数は分母に、真数の指数は分子に出る。" },
     ],
   };
@@ -120,7 +123,7 @@ function hoteishiki(r: Rng): QuestionBody {
     answer: { kind: "num", answerKind: "num", answer: [String(x0)], labels: ["x ="], equations: [`(x-(${a}))*(x-(${c}))=${b}^${k}`] },
     point: "真数の条件を先に書き、最後に解を確かめる",
     steps: [
-      { title: "真数の条件", body: `x − ${D(a)}＞0 かつ x − ${D(c)}＞0 から、{{x＞${Math.max(a, c)}}}。`, back: [S3] },
+      { title: "真数の条件", body: `${xm(a).replace(/[()]/g, "")}＞0 かつ ${xm(c).replace(/[()]/g, "")}＞0 から、{{x＞${Math.max(a, c)}}}。`, back: [S3] },
       { title: "1つの log にまとめる", body: `${log(b)}${xm(a)}${xm(c)}＝${log(b)}${b ** k} なので、${xm(a)}${xm(c)}＝${b ** k}。これを解くと x＝${D(x0)}、${D(x1)}。` },
       { title: "条件で選ぶ", body: `x＞${Math.max(a, c)} をみたすのは {{x＝${D(x0)}}}。`, trap: `x＝${D(x1)} は真数が負になるので解ではない。` },
     ],
@@ -180,8 +183,8 @@ function nijiho(r: Rng): QuestionBody {
     answer: { kind: "num", answerKind: "roots", answer: [v1, v2], labels: ["x =", "x ="], equations: [`(x-${b}^${s >= 0 ? s : 0}${s < 0 ? `/${b}^${-s}` : ""})*(x-${b}^${t >= 0 ? t : 0}${t < 0 ? `/${b}^${-t}` : ""})=0`] },
     point: "t＝logₐx とおくと、t の2次方程式",
     steps: [
-      { title: "おきかえ", body: `真数の条件は x＞0。t＝${X} とおくと t² ${sm === 0 ? "" : `${sm > 0 ? "−" : "＋"} ${Math.abs(sm) === 1 ? "" : Math.abs(sm)}t `}${cst} ＝ 0。`, back: [S3] },
-      { title: "t を求める", body: `(t − ${D(s)})(t − ${D(t)})＝0 を整理した形なので、t＝${D(s)}、${D(t)}。` },
+      { title: "おきかえ", body: `真数の条件は x＞0。t＝${X} とおくと t² ${sm === 0 ? "" : `${sm > 0 ? "−" : "＋"} ${Math.abs(sm) === 1 ? "" : Math.abs(sm)}t`}${cst} ＝ 0。`, back: [S3] },
+      { title: "t を求める", body: `${tm(s)}${tm(t)}＝0 なので、t＝${D(s)}、${D(t)}。` },
       { title: "x にもどす", body: `${X}＝${D(s)} から x＝${b}${sup(s)}＝${v1}、${X}＝${D(t)} から x＝${b}${sup(t)}＝${v2}。答えは {{x＝${v1}、${v2}}}。`, back: [S1], trap: "t の値をそのまま答えにしない。x＝aᵗ にもどす。" },
     ],
   };
@@ -191,7 +194,7 @@ export const H_MATH_2_TAISU_MOSHI: UnitMoshi = {
   unit: U,
   subject: "math",
   grade: "数学Ⅱ",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "対数の値と計算",

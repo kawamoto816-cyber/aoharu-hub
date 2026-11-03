@@ -188,7 +188,7 @@ export const J_EN_2_BUNKEI_MOSHI: UnitMoshi = {
   subject: "eng",
   grade: "中2",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "文型（SVOO・SVOC）",

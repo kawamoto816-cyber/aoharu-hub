@@ -143,7 +143,7 @@ export const H_SCI_CHEMB_SAN_MOSHI: UnitMoshi = {
   unit: U,
   subject: "sci",
   grade: "化学基礎",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     { title: "酸・塩基の定義と性質", lead: "次の問いに答えなさい。", style: "word", pick: 2, questions: POOL },
     {

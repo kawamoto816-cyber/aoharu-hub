@@ -257,7 +257,7 @@ export const H_MATH_1_SHUGO_MOSHI: UnitMoshi = {
   unit: U,
   subject: "math",
   grade: "数学Ⅰ",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "集合の要素",

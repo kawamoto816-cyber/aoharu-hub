@@ -25,7 +25,7 @@ export const H_JPN_RONRI_SHORONBUN_MOSHI: UnitMoshi = {
   subject: "ja",
   grade: "論理国語",
   minutes: 20,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "小論文の推敲「地域の行事への参加」",

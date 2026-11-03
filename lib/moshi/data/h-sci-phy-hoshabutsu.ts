@@ -203,7 +203,7 @@ export const H_SCI_PHY_HOSHABUTSU_MOSHI: UnitMoshi = {
   subject: "sci",
   grade: "物理",
   minutes: 14,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "放物運動の計算",

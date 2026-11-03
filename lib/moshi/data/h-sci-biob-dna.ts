@@ -174,7 +174,7 @@ export const H_SCI_BIOB_DNA_MOSHI: UnitMoshi = {
   unit: U,
   subject: "sci",
   grade: "生物基礎",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     { title: "遺伝子と DNA", lead: "次の問いに答えなさい。", style: "word", pick: 4, questions: POOL },
     {

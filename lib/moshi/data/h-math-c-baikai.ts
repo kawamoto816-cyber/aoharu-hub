@@ -158,7 +158,7 @@ function kyori(r: Rng): QuestionBody {
     point: "原点 O と A、B の三角形で余弦定理",
     steps: [
       { title: "∠AOB", body: `∠AOB＝${rad(k2)}−${rad(k1)}＝{{${rad(dk)}}}。`, back: [S3] },
-      { title: "余弦定理", body: `AB²＝${r1}²＋${r2}²−2×${r1}×${r2}×cos ${rad(dk)}＝${d2}。AB＝{{${surd(d2)}}}。`, trap: dk === 3 ? "∠AOB が直角なので三平方の定理でもよい。" : "cos(2π/3) は負。符号に注意。" },
+      { title: "余弦定理", body: `AB²＝${r1}²＋${r2}²−2×${r1}×${r2}×cos ${rad(dk)}＝${d2}。AB＝{{${surd(d2)}}}。`, trap: dk === 3 ? "∠AOB が直角なので三平方の定理でもよい。" : dk === 4 ? "cos(2π/3) は負。符号に注意。" : dk === 6 ? "∠AOB＝π のとき O、A、B は一直線に並ぶ。cos π＝−1 で、AB は2つの r の和になる。" : "cos(π/3)＝1/2。−2×r₁×r₂×1/2 で −r₁r₂ になる。" },
     ],
   };
 }
@@ -187,7 +187,7 @@ export const H_MATH_C_BAIKAI_MOSHI: UnitMoshi = {
   unit: U,
   subject: "math",
   grade: "数学C",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "媒介変数表示",

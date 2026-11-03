@@ -167,7 +167,7 @@ export const H_SCI_BIOB_HATSUGEN_MOSHI: UnitMoshi = {
   unit: U,
   subject: "sci",
   grade: "生物基礎",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     { title: "転写と翻訳", lead: "次の問いに答えなさい。", style: "word", pick: 4, questions: POOL },
     { title: "塩基配列を写す", lead: "次の問いに答えなさい。", style: "mix", questions: [{ id: "tensha-hairetsu", type: "A", difficulty: 2, points: 17, seconds: 75, skill: "知識・技能", generate: tenshaA }] },

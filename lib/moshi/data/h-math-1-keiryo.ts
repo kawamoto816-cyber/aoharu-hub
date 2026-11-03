@@ -181,7 +181,7 @@ export const H_MATH_1_KEIRYO_MOSHI: UnitMoshi = {
   unit: U,
   subject: "math",
   grade: "数学Ⅰ",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "三角形の面積と内接円",

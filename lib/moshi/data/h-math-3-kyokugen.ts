@@ -35,11 +35,11 @@ function yakubun(r: Rng): QuestionBody {
   const q = a * c;
   const v = a - c;
   return {
-    prompt: `極限 lim[x→${D(a)}] (${quad(p, q)})/(${xm(a)}) を求めなさい。`,
+    prompt: `極限 lim[x→${D(a)}] (${quad(p, q)})/${a === 0 ? "x" : `(${xm(a)})`} を求めなさい。`,
     answer: { kind: "num", answerKind: "num", answer: [String(v)], calc: `${a}-(${c})` },
     point: "分子を因数分解して、0 になる因数を約分する",
     steps: [
-      { title: "因数分解", body: `分子＝(${xm(a)})(${xm(c)})。x≠${D(a)} なので ${xm(a)} で約分できます。`, back: [S1] },
+      { title: "因数分解", body: `分子＝${a === 0 ? "x" : `(${xm(a)})`}${c === 0 ? "x" : `(${xm(c)})`}。x≠${D(a)} なので ${xm(a)} で約分できます。`, back: [S1] },
       { title: "代入する", body: `lim (${xm(c)})＝${D(a)} ${pm(-c)}＝{{${D(v)}}}。`, trap: "そのまま代入すると 0/0。値が決まらないので、先に約分する。" },
     ],
   };
@@ -106,12 +106,12 @@ function exp(r: Rng): QuestionBody {
   const [a, b] = r.sample([1, 2, 3, 4, 5, 6], 2);
   const v = frac(a, b);
   return {
-    prompt: `極限 lim[x→0] (e^(${kx(a)}) − 1)/${b === 1 ? "x" : `(${b}x)`} を求めなさい。`,
+    prompt: `極限 lim[x→0] (${a === 1 ? "eˣ" : `e^(${kx(a)})`} − 1)/${b === 1 ? "x" : `(${b}x)`} を求めなさい。`,
     answer: { kind: "num", answerKind: "num", answer: [v], calc: `${a}/${b}` },
     point: "lim[t→0] (eᵗ−1)/t＝1 を、t＝" + kx(a) + " で使う",
     steps: [
-      { title: "形をそろえる", body: `{(e^(${kx(a)}) − 1)/${a === 1 ? "x" : `(${a}x)`}}・(${a}/${b}) と変形します。`, back: [S5] },
-      { title: "極限をとる", body: `x→0 のとき ${kx(a)}→0 なので、前の因数は 1。答えは {{${v}}}。` },
+      { title: "形をそろえる", body: `{(${a === 1 ? "eˣ" : `e^(${kx(a)})`} − 1)/${a === 1 ? "x" : `(${a}x)`}}・(${a}/${b}) と変形します。`, back: [S5] },
+      { title: "極限をとる", body: `${a === 1 ? "" : `x→0 のとき ${kx(a)}→0 なので、`}前の因数は 1 に近づく。答えは {{${v}}}。` },
     ],
   };
 }
@@ -139,7 +139,7 @@ export const H_MATH_3_KYOKUGEN_MOSHI: UnitMoshi = {
   unit: U,
   subject: "math",
   grade: "数学Ⅲ",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "不定形の極限",

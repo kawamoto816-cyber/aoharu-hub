@@ -51,6 +51,6 @@ export const H_SCI_BIO_JUYO_MOSHI: UnitMoshi = {
   subject: "sci",
   grade: "生物",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [{ title: "刺激の受容と神経のしくみ", lead: "次の問いに答えなさい。", style: "word", pick: 6, questions: POOL }],
 };

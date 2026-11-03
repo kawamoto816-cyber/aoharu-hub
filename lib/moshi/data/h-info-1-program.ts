@@ -20,7 +20,7 @@ const code = (lines: string[]) => lines.map((l, i) => `(${i + 1}) ${l}`).join("\
 function dainyu(r: Rng): QuestionBody {
   const a = r.int(2, 9);
   const b = r.int(2, 9);
-  const k = r.int(1, 3);
+  const k = r.int(2, 3); // 1 だと「x * 1 + y」になって不自然
   let x = a;
   let y = b;
   const kind = r.int(0, 2);
@@ -55,8 +55,9 @@ function dainyu(r: Rng): QuestionBody {
 }
 
 function amari(r: Rng): QuestionBody {
-  const a = r.int(20, 99);
   const b = r.int(3, 9);
+  let a = r.int(20, 99);
+  if (a % b === 0) a += 1; // わり切れると余り 0・商が整数で、問いの意味がうすい
   const c = r.int(2, 5);
   const q = Math.floor(a / b);
   const m = a % b;
@@ -194,7 +195,7 @@ export const H_INFO_1_PROGRAM_MOSHI: UnitMoshi = {
   unit: U,
   subject: "math",
   grade: "情報Ⅰ",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "変数と演算",

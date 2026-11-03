@@ -34,6 +34,8 @@ const sup = (n: number) => [...String(n)].map((c) => SUP[c]).join("");
 const powv = (c: number, e: number, ascii = false) => (e >= 0 ? String(c ** e) : ascii ? `1/${c ** -e}` : `1/${c ** -e}`);
 const rootSym = (n: number) => (n === 2 ? "√" : `${sup(n)}√`);
 const xe = (p: number) => (p === 0 ? "x" : `x ${p < 0 ? "−" : "＋"} ${Math.abs(p)}`);
+/** 指数 k(x＋p) の書き方: k＝1 ならかっこを外す、p＝0 なら kx */
+const ke = (k: number, p: number) => (k === 1 ? xe(p) : p === 0 ? `${k}x` : `${k}(${xe(p)})`);
 
 function keisan(r: Rng): QuestionBody {
   const a = r.pick([2, 3, 5]);
@@ -82,7 +84,7 @@ function ruijo(r: Rng): QuestionBody {
     point: "底を素数の累乗に直して (aʳ)ˢ＝aʳˢ",
     steps: [
       { title: "底を累乗に", body: `${b}＝{{${c}${sup(k)}}}。`, back: [S3] },
-      { title: "指数をかける", body: `(${c}${sup(k)})^(${frac(p, k)})＝${c}^(${k}×${frac(p, k)})＝${c}${sup(p)}＝{{${ans}}}。`, back: [S2], trap: p < 0 ? "指数が負なので、最後に逆数になる。" : "分母の数で累乗根、分子の数で累乗。" },
+      { title: "指数をかける", body: `(${c}${sup(k)})^(${frac(p, k)})＝${c}^(${k}×${p < 0 ? `(${frac(p, k)})` : frac(p, k)})＝${c}${sup(p)}＝{{${ans}}}。`, back: [S2], trap: p < 0 ? "指数が負なので、最後に逆数になる。" : "分母の数で累乗根、分子の数で累乗。" },
     ],
   };
 }
@@ -139,8 +141,8 @@ function hoteishiki(r: Rng): QuestionBody {
     answer: { kind: "num", answerKind: "num", answer: [String(x0)], labels: ["x ="], equations: [`${u}*(x+(${p}))=${v}*(x+(${q}))`] },
     point: "両辺の底をそろえ、指数どうしを等しくおく",
     steps: [
-      { title: "底をそろえる", body: `${A}＝${c}${sup(u)}、${B}＝${c}${sup(v)} なので、${c}^(${u}(${xe(p)})) ＝ ${c}^(${v}(${xe(q)}))。`, back: [S1] },
-      { title: "指数を比べる", body: `{{${u}(${xe(p)})＝${v}(${xe(q)})}} を解いて x＝{{${D(x0)}}}。`, back: [S4], trap: "指数に係数をかけるとき、かっこの中の全部の項にかける。" },
+      { title: "底をそろえる", body: `${A}＝${c}${sup(u)}、${B}＝${c}${sup(v)} なので、${c}^(${ke(u, p)}) ＝ ${c}^(${ke(v, q)})。`, back: [S1] },
+      { title: "指数を比べる", body: `{{${ke(u, p)}＝${ke(v, q)}}} を解いて x＝{{${D(x0)}}}。`, back: [S4], trap: "指数に係数をかけるとき、かっこの中の全部の項にかける。" },
     ],
   };
 }
@@ -203,7 +205,7 @@ function nijiho(r: Rng): QuestionBody {
     point: "t＝aˣ とおくと2次方程式。t＞0 に注意",
     steps: [
       { title: "おきかえ", body: `${c * c}ˣ＝(${cx})² なので、t＝${cx} とおくと t² ${sumC === 0 ? "" : `${sumC > 0 ? "−" : "＋"} ${Math.abs(sumC) === 1 ? "" : Math.abs(sumC)}t `}− ${prod} ＝ 0。{{t＞0}} です。`, back: [S4] },
-      { title: "t を求める", body: `(t − ${P})(t ＋ ${n})＝0 から t＝${P}、${-n}。t＞0 なので {{t＝${P}}}。`, trap: `t＝${-n} は ${cx}＞0 に反するので捨てる。` },
+      { title: "t を求める", body: `(t − ${P})(t ＋ ${n})＝0 から t＝${P}、−${n}。t＞0 なので {{t＝${P}}}。`, trap: `t＝−${n} は ${cx}＞0 に反するので捨てる。` },
       { title: "x にもどす", body: `${cx}＝${P}＝${c}${sup(s)} なので {{x＝${s}}}。` },
     ],
   };
@@ -213,7 +215,7 @@ export const H_MATH_2_SHISU_MOSHI: UnitMoshi = {
   unit: U,
   subject: "math",
   grade: "数学Ⅱ",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "指数の計算",

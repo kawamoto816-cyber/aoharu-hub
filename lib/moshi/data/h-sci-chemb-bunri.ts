@@ -173,7 +173,7 @@ export const H_SCI_CHEMB_BUNRI_MOSHI: UnitMoshi = {
   unit: U,
   subject: "sci",
   grade: "化学基礎",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     { title: "分離・精製の方法", lead: "次の問いに答えなさい。", style: "word", pick: 4, questions: POOL },
     { title: "再結晶の計算", lead: "次の問いに答えなさい。", style: "calc", questions: [{ id: "saikessho", type: "A", difficulty: 2, points: 17, seconds: 120, skill: "思考・判断・表現", generate: saikessho }] },

@@ -92,6 +92,6 @@ export const H_JPN_BUNKA_SHIIKA_MOSHI: UnitMoshi = {
   subject: "ja",
   grade: "言語文化",
   minutes: 8,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [{ title: "詩・短歌・俳句のきまり", lead: "次の問いに答えなさい。", style: "word", pick: 6, questions: POOL }],
 };

@@ -150,7 +150,7 @@ export const H_SCI_CHEMB_MOL_MOSHI: UnitMoshi = {
   unit: U,
   subject: "sci",
   grade: "化学基礎",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "質量・個数・体積と mol",

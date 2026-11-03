@@ -73,7 +73,7 @@ export const H_SCI_EARTH_PLATE_MOSHI: UnitMoshi = {
   subject: "sci",
   grade: "地学",
   minutes: 11,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "海洋底の拡大の計算",

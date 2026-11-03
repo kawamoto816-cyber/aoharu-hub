@@ -104,9 +104,10 @@ function sankaku(r: Rng): QuestionBody {
     why = [`正しい。(e^(${a}x))′＝${a}e^(${a}x) と積の微分を組み合わせる。`, `e^(${a}x) の微分で中身の微分 ${a} を忘れている。`, "積の微分は、それぞれの微分をかけるのではない。", "(sin x)′＝cos x なので符号は ＋。"];
     back = S4;
   }
+  const idx = r.shuffle([0, 1, 2, 3]);
   return {
     prompt: `関数 y＝${f} の導関数として正しいものはどれですか。`,
-    answer: { kind: "choice", options: opts, correct: 0, why },
+    answer: { kind: "choice", options: idx.map((i) => opts[i]), correct: idx.indexOf(0), why: idx.map((i) => why[i]) },
     point: "積・合成のルールと、基本の導関数を組み合わせる",
     steps: [
       { title: "基本の導関数", body: "(sin x)′＝cos x、(cos x)′＝−sin x、(eˣ)′＝eˣ。中身があれば{{中身の微分をかける}}。", back: [S3, back] },
@@ -171,7 +172,7 @@ export const H_MATH_3_BIBUN_MOSHI: UnitMoshi = {
   unit: U,
   subject: "math",
   grade: "数学Ⅲ",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "積・商・合成関数の微分",

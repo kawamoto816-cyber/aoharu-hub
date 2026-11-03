@@ -193,7 +193,7 @@ export const H_SCI_CHEMB_SANKA_MOSHI: UnitMoshi = {
   unit: U,
   subject: "sci",
   grade: "化学基礎",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     { title: "酸化と還元", lead: "次の問いに答えなさい。", style: "word", pick: 4, questions: POOL },
     {

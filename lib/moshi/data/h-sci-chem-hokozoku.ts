@@ -167,7 +167,7 @@ export const H_SCI_CHEM_HOKOZOKU_MOSHI: UnitMoshi = {
   unit: U,
   subject: "sci",
   grade: "化学",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "芳香族化合物の性質と反応",

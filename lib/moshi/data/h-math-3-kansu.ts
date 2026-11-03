@@ -94,12 +94,12 @@ function bunsuHoteishiki(r: Rng): QuestionBody {
   const { p, r1, r2, m, k } = setup(r);
   const rhs = m === 0 ? "x" : `x ${pm(m)}`;
   return {
-    prompt: `方程式 ${k}/(${xm(p)})＝${rhs} を解きなさい。`,
+    prompt: `方程式 ${k}/${p === 0 ? "x" : `(${xm(p)})`}＝${rhs} を解きなさい。`,
     answer: { kind: "num", answerKind: "roots", answer: [String(r1), String(r2)], labels: ["x =", "x ="], equations: [`(x-(${p}))*(x+(${m}))-(${k})=0`] },
     point: "分母をはらって2次方程式。分母≠0 も確かめる",
     steps: [
-      { title: "分母をはらう", body: `両辺に ${xm(p)} をかけて、${k}＝(${xm(p)})(${rhs})。`, back: [S3] },
-      { title: "2次方程式を解く", body: `整理すると (x ${pm(-r1)})(x ${pm(-r2)})＝0 なので、{{x＝${D(r1)}、${D(r2)}}}。どちらも x≠${D(p)} なので解として適します。` },
+      { title: "分母をはらう", body: `両辺に ${xm(p)} をかけて、${k}＝${p === 0 ? "x" : `(${xm(p)})`}(${rhs})。`, back: [S3] },
+      { title: "2次方程式を解く", body: `整理すると ${r1 === 0 ? "x" : `(x ${pm(-r1)})`}${r2 === 0 ? "x" : `(x ${pm(-r2)})`}＝0 なので、{{x＝${D(r1)}、${D(r2)}}}。どちらも x≠${D(p)} なので解として適します。` },
     ],
   };
 }
@@ -113,7 +113,7 @@ function murihoteishiki(r: Rng): QuestionBody {
   const inside = a === 0 ? "x" : `x ${pm(a)}`;
   const rhs = b === 0 ? "x" : `x ${pm(-b)}`;
   return {
-    prompt: `方程式 √(${inside})＝${rhs} を解きなさい。`,
+    prompt: `方程式 ${a === 0 ? "√x" : `√(${inside})`}＝${rhs} を解きなさい。`,
     answer: { kind: "num", answerKind: "num", answer: [String(s)], labels: ["x ="], equations: [`x+(${a})=(x-(${b}))^2`] },
     point: "2乗して解いたら、もとの式に代入して確かめる",
     steps: [
@@ -130,23 +130,20 @@ function futoshiki(r: Rng): QuestionBody {
   const P = D(p);
   const B = D(r2);
   const opts = [`x＜${A}、${P}＜x＜${B}`, `${A}＜x＜${P}、x＞${B}`, `${A}＜x＜${B}`, `x＜${A}、x＞${B}`];
+  const whys = [
+    `正しい。双曲線が直線より上にあるのは、x＜${A} と ${P}＜x＜${B}。`,
+    "双曲線が直線より下にある範囲（不等号が逆のとき）。",
+    `分母 ${xm(p)} の符号を考えずに両辺にかけると、この範囲になる。x＝${P} では左辺が定義されず、x＜${P} では不等号の向きが変わる。`,
+    "交点の外側をとっている。漸近線の左右に分けて、双曲線と直線の上下を見なおす。",
+  ];
+  const idx = r.shuffle([0, 1, 2, 3]);
   return {
-    prompt: `不等式 ${k}/(${xm(p)})＞${rhs} を解きなさい。`,
-    answer: {
-      kind: "choice",
-      options: opts,
-      correct: 0,
-      why: [
-        `正しい。双曲線が直線より上にあるのは、x＜${A} と ${P}＜x＜${B}。`,
-        "双曲線が直線より下にある範囲（不等号が逆のとき）。",
-        `x＝${P} では左辺が定義されない。漸近線をまたいで1つの区間にしない。`,
-        "分母の符号を考えずに両辺に分母をかけたときの誤り。",
-      ],
-    },
+    prompt: `不等式 ${k}/${p === 0 ? "x" : `(${xm(p)})`}＞${rhs} を解きなさい。`,
+    answer: { kind: "choice", options: idx.map((i) => opts[i]), correct: idx.indexOf(0), why: idx.map((i) => whys[i]) },
     point: "グラフの上下で読む。漸近線の左右で分けて考える",
     steps: [
-      { title: "交点を求める", body: `${k}/(${xm(p)})＝${rhs} を解くと x＝${A}、${B}。漸近線は x＝${P}。`, back: [S3] },
-      { title: "グラフの上下を読む", body: `y＝${k}/(${xm(p)}) が直線 y＝${rhs} より上にあるのは {{x＜${A}、${P}＜x＜${B}}}。`, trap: "両辺に x−p をかけるときは、x−p の符号で不等号の向きが変わる。" },
+      { title: "交点を求める", body: `${k}/${p === 0 ? "x" : `(${xm(p)})`}＝${rhs} を解くと x＝${A}、${B}。漸近線は x＝${P}。`, back: [S3] },
+      { title: "グラフの上下を読む", body: `y＝${k}/${p === 0 ? "x" : `(${xm(p)})`} が直線 y＝${rhs} より上にあるのは {{x＜${A}、${P}＜x＜${B}}}。`, trap: "両辺に x−p をかけるときは、x−p の符号で不等号の向きが変わる。" },
     ],
   };
 }
@@ -155,7 +152,7 @@ export const H_MATH_3_KANSU_MOSHI: UnitMoshi = {
   unit: U,
   subject: "math",
   grade: "数学Ⅲ",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "分数関数のグラフ",

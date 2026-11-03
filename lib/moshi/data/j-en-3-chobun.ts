@@ -163,7 +163,7 @@ export const J_EN_3_CHOBUN_MOSHI: UnitMoshi = {
   subject: "eng",
   grade: "中3",
   minutes: 18,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "長文読解「バス停の小さな図書館」",

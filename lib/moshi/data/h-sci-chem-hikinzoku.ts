@@ -183,7 +183,7 @@ export const H_SCI_CHEM_HIKINZOKU_MOSHI: UnitMoshi = {
   unit: U,
   subject: "sci",
   grade: "化学",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "非金属元素の性質と気体",

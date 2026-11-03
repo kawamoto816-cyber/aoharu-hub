@@ -31,7 +31,7 @@ export const J_JA_3_SHOSETSU_MOSHI: UnitMoshi = {
   subject: "ja",
   grade: "中3",
   minutes: 20,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "小説の読解「止まった時計」",

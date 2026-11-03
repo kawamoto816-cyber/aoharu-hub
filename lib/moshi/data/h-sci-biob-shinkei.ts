@@ -175,7 +175,7 @@ export const H_SCI_BIOB_SHINKEI_MOSHI: UnitMoshi = {
   unit: U,
   subject: "sci",
   grade: "生物基礎",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     { title: "自律神経とホルモン", lead: "次の問いに答えなさい。", style: "word", pick: 4, questions: POOL },
     { title: "調節のしくみを考える", lead: "次の問いに答えなさい。", style: "mix", questions: FIX },

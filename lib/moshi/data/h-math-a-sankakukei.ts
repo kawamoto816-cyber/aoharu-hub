@@ -167,7 +167,7 @@ export const H_MATH_A_SANKAKUKEI_MOSHI: UnitMoshi = {
   unit: U,
   subject: "math",
   grade: "数学A",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "三角形の成立条件と重心",

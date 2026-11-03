@@ -216,7 +216,7 @@ export const H_ENG_SKILL_CHOBUN_MOSHI: UnitMoshi = {
   subject: "eng",
   grade: "技能",
   minutes: 15,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "記事を読んで答える",

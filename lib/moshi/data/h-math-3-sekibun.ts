@@ -102,13 +102,14 @@ function bubun(r: Rng): QuestionBody {
   const ex = (k: number, m: number) => `${bx(k)}${m === 0 ? "" : ` ${pm(m)}`}`;
   const opts = [ex(b, a - b), ex(a + b, -a - b), ex(a + b, -b), ex(b, -a - b)];
   const uniq = [...new Set(opts)];
+  const idx = r.shuffle(uniq.map((_, i) => i));
   return {
     prompt: `定積分 ∫[0→1] (${a === 1 ? "" : a}x ＋ ${b})eˣ dx を求めなさい。`,
     answer: {
       kind: "choice",
-      options: uniq,
-      correct: 0,
-      why: uniq.map((o, i) => (i === 0 ? `正しい。[(${a === 1 ? "" : a}x ＋ ${b})eˣ]₀¹ − ${a}[eˣ]₀¹＝(${a + b})e − ${b} − ${a}(e − 1)。` : "部分積分のあとの「− ∫f′g dx」の項を落としたか、符号をまちがえた値。")),
+      options: idx.map((i) => uniq[i]),
+      correct: idx.indexOf(0),
+      why: idx.map((i) => (i === 0 ? `正しい。[(${a === 1 ? "" : a}x ＋ ${b})eˣ]₀¹ − ${a === 1 ? "" : a}[eˣ]₀¹＝(${a + b})e − ${b} − ${a === 1 ? "" : a}(e − 1)。` : "部分積分のあとの「− ∫f′g dx」の項を落としたか、符号をまちがえた値。")),
     },
     point: "多項式を微分する側、eˣ を積分する側にする",
     steps: [
@@ -134,7 +135,7 @@ function bibunBunsu(r: Rng): QuestionBody {
 }
 
 function chikanRoot(r: Rng): QuestionBody {
-  const u = r.int(0, 2);
+  const u = r.int(1, 2); // u＝0 だと x√x になり、置きかえがいらない
   const w = r.int(u + 1, 3);
   const m = r.int(0, 3);
   const b = u * u;
@@ -151,7 +152,7 @@ function chikanRoot(r: Rng): QuestionBody {
     point: "√ の中を t とおき、x を t で表す",
     steps: [
       { title: "置きかえる", body: `t＝${inside} とおくと ${m === 0 ? "x" : "x ＋ " + m}＝${tk}、dx＝dt。x：0→${c} のとき t：${b}→${w * w}。`, back: [S2, S4] },
-      { title: "t で積分", body: `∫(${tk})√t dt＝(2/5)t^(5/2)${k === 0 ? "" : ` ${k < 0 ? "−" : "＋"} (2/3)・${Math.abs(k)}t^(3/2)`}。`, trap: "t^(5/2) は (√t)⁵。t＝" + w * w + " なら " + w + "⁵。" },
+      { title: "t で積分", body: `∫(${tk})√t dt＝(2/5)t^(5/2)${k === 0 ? "" : ` ${k < 0 ? "−" : "＋"} (2/3)${Math.abs(k) === 1 ? "" : `・${Math.abs(k)}`}t^(3/2)`}。`, trap: "t^(5/2) は (√t)⁵。t＝" + w * w + " なら " + w + "⁵。" },
       { title: "代入する", body: `区間 ${b}→${w * w} で計算して {{${F(v)}}}。` },
     ],
   };
@@ -177,7 +178,7 @@ export const H_MATH_3_SEKIBUN_MOSHI: UnitMoshi = {
   unit: U,
   subject: "math",
   grade: "数学Ⅲ",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "基本の積分",

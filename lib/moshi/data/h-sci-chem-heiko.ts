@@ -186,7 +186,7 @@ export const H_SCI_CHEM_HEIKO_MOSHI: UnitMoshi = {
   unit: U,
   subject: "sci",
   grade: "化学",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "平衡定数の計算",

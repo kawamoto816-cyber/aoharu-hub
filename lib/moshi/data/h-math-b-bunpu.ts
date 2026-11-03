@@ -43,7 +43,7 @@ function kitaichi(r: Rng): QuestionBody {
     point: "E(X)＝Σ(値×確率)",
     steps: [
       { title: "分母をそろえる", body: `確率の分母を ${N} にそろえると、重みは ${ws.join("、")}。合計 ${N} で確率の和は 1 です。`, back: [S1] },
-      { title: "値×確率をたす", body: `E(X)＝(${xs.map((x, i) => `${pa(x)}×${ws[i]}`).join("＋")})÷${N}＝${s}/${N}＝{{${D(fr(s, N))}}}。`, back: [S2], trap: "値をただ平均する (確率を考えない) のはまちがい。" },
+      { title: "値×確率をたす", body: `E(X)＝(${xs.map((x, i) => `${pa(x)}×${ws[i]}`).join("＋")})÷${N}＝${D(s)}/${N}＝{{${D(fr(s, N))}}}。`, back: [S2], trap: "値をただ平均する (確率を考えない) のはまちがい。" },
     ],
   };
 }
@@ -117,7 +117,7 @@ function michi(r: Rng): QuestionBody {
     },
     point: "確率の和が1、期待値の式の2本で連立",
     steps: [
-      { title: "2つの式", body: `確率の和から {{a＋b＝${fr(N - p, N)}}}。期待値から ${xs[0] === 0 ? "" : `${xs[0]}×${fr(p, N)}＋`}${xs[1]}a＋${xs[2]}b＝${fr(E, N)}。`, back: [S1, S2] },
+      { title: "2つの式", body: `確率の和から {{a＋b＝${fr(N - p, N)}}}。期待値から ${xs[0] === 0 ? "" : `${xs[0]}×${fr(p, N)}＋`}${xs[1] === 1 ? "" : xs[1]}a＋${xs[2]}b＝${fr(E, N)}。`, back: [S1, S2] },
       { title: "連立方程式を解く", body: `{{a＝${fr(ws[1], N)}、b＝${fr(ws[2], N)}}}。`, trap: "確率の和が 1 であることを使い忘れると、式が1本しかなく解けない。" },
     ],
   };
@@ -153,7 +153,7 @@ export const H_MATH_B_BUNPU_MOSHI: UnitMoshi = {
   unit: U,
   subject: "math",
   grade: "数学B",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "期待値と分散",

@@ -87,7 +87,7 @@ export const H_SCI_EARTH_KOSEI_MOSHI: UnitMoshi = {
   subject: "sci",
   grade: "地学",
   minutes: 12,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "恒星の計算",

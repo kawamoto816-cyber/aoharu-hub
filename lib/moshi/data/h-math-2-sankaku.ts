@@ -235,7 +235,7 @@ function shuki(r: Rng): QuestionBody {
     point: f === "tan" ? "tan(bθ＋c) の周期は π/b" : `${f}(bθ＋c) の周期は 2π/b`,
     steps: [
       { title: "θ の係数を見る", body: `θ の係数は ${frac(bn, bd)}。振幅 ${A} や、ずらし ${cn === 0 ? "（なし）" : rad(cn, cd)} は周期に関係しません。`, back: [S5] },
-      { title: "周期", body: `${f === "tan" ? "π" : "2π"}÷${frac(bn, bd)}＝{{${rad(base * bd, bn)}}}。`, trap: f === "tan" ? "tan のもとの周期は 2π ではなく π。" : "係数でわる。かけるとグラフが縮む向きが逆になる。" },
+      { title: "周期", body: `${f === "tan" ? "π" : "2π"}÷${bd === 1 ? frac(bn, bd) : `(${frac(bn, bd)})`}＝{{${rad(base * bd, bn)}}}。`, trap: f === "tan" ? "tan のもとの周期は 2π ではなく π。" : "係数でわる。かけるとグラフが縮む向きが逆になる。" },
     ],
   };
 }
@@ -297,7 +297,7 @@ export const H_MATH_2_SANKAKU_MOSHI: UnitMoshi = {
   unit: U,
   subject: "math",
   grade: "数学Ⅱ",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "弧度法と三角関数の値",

@@ -150,7 +150,7 @@ export const H_SCI_PHYB_HOSOKU_MOSHI: UnitMoshi = {
   subject: "sci",
   grade: "物理基礎",
   minutes: 12,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "運動方程式の計算",

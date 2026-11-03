@@ -182,7 +182,7 @@ export const H_SCI_CHEM_SOKUDO_MOSHI: UnitMoshi = {
   unit: U,
   subject: "sci",
   grade: "化学",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "反応速度の計算",

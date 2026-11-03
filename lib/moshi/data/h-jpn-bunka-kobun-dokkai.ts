@@ -115,7 +115,7 @@ export const H_JPN_BUNKA_KOBUN_DOKKAI_MOSHI: UnitMoshi = {
   subject: "ja",
   grade: "言語文化",
   minutes: 12,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "随筆を読む（『徒然草』）",

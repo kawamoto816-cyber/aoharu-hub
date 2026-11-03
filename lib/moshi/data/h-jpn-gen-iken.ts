@@ -25,7 +25,7 @@ export const H_JPN_GEN_IKEN_MOSHI: UnitMoshi = {
   subject: "ja",
   grade: "現代の国語",
   minutes: 20,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "意見文の推敲「土曜日の図書室」",

@@ -167,7 +167,7 @@ export const J_EN_1_TANGO_MOSHI: UnitMoshi = {
   subject: "eng",
   grade: "中1",
   minutes: 8,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     { title: "意味とつづり", lead: "次の問いに答えなさい。曜日・月は大文字で始めなさい。", style: "word", pick: 3, questions: TSUZURI },
     { title: "組み合わせと、にている語", lead: "次の問いに答えなさい。", style: "word", pick: 3, questions: KUMI },

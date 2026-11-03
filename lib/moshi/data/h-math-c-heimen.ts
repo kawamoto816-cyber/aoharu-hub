@@ -14,6 +14,8 @@ const S4 = L(4, "平行と垂直は、成分の式1本で判定できる");
 
 const D = (s: string | number) => String(s).replace(/-/g, "−");
 const pa = (n: number) => (n < 0 ? `(−${-n})` : String(n));
+/** ベクトルの前の係数 (1 は書かない、−1 は −) */
+const cf = (n: number) => (n === 1 ? "" : n === -1 ? "−" : D(n));
 const nz = (r: Rng, a: number, b: number) => {
   let v = 0;
   while (v === 0) v = r.int(a, b);
@@ -42,7 +44,7 @@ function seibun(r: Rng): QuestionBody {
     answer: { kind: "num", answerKind: "pair", answer: [String(x), String(y)], labels: ["x 成分", "y 成分"], equations: [`x=${s}*(${a[0]})+(${t})*(${b[0]})`, `y=${s}*(${a[1]})+(${t})*(${b[1]})`] },
     point: "実数倍・たし算は成分ごとに計算する",
     steps: [
-      { title: "実数倍", body: `${D(s)}a⃗＝${V(s * a[0], s * a[1])}、${D(t)}b⃗＝${V(t * b[0], t * b[1])}。`, back: [S1] },
+      { title: "実数倍", body: `${cf(s)}a⃗＝${V(s * a[0], s * a[1])}、${cf(t)}b⃗＝${V(t * b[0], t * b[1])}。`, back: [S1] },
       { title: "たす", body: `x 成分 ${D(s * a[0])}＋${pa(t * b[0])}、y 成分 ${D(s * a[1])}＋${pa(t * b[1])} で {{${V(x, y)}}}。`, trap: "負の数をかけるときは、両方の成分の符号を変える。" },
     ],
   };
@@ -69,7 +71,7 @@ function naiseki(r: Rng): QuestionBody {
     prompt: `|a⃗|＝${A}、|b⃗|＝${B} で、a⃗ と b⃗ のなす角が ${th}° のとき、内積 a⃗·b⃗ を求めなさい。`,
     answer: { kind: "num", answerKind: "num", answer: [String(d)], calc: `${A}*${B}*(${cos})`, labels: ["a⃗·b⃗ ="] },
     point: "a⃗·b⃗＝|a⃗||b⃗|cos θ",
-    steps: [{ title: "定義に入れる", body: `${A}×${B}×cos ${th}°＝${A * B}×${D(cos)}＝{{${D(d)}}}。`, back: [S2, S3], trap: th > 90 ? "90° より大きい角では cos が負なので、内積も負になる。" : "cos 60°＝1/2、cos 90°＝0 を正確に。" }],
+    steps: [{ title: "定義に入れる", body: `${A}×${B}×cos ${th}°＝${A * B}×${cos.startsWith("-") ? `(${D(cos)})` : cos}＝{{${D(d)}}}。`, back: [S2, S3], trap: th > 90 ? "90° より大きい角では cos が負なので、内積も負になる。" : "cos 60°＝1/2、cos 90°＝0 を正確に。" }],
   };
 }
 
@@ -129,7 +131,7 @@ function cosQ(r: Rng): QuestionBody {
     answer: { kind: "num", answerKind: "surd", answer: [coefStr], calc: `${d}*√${N}/${N}`, labels: ["cos θ ="] },
     point: "cos θ＝a⃗·b⃗/(|a⃗||b⃗|)",
     steps: [
-      { title: "内積と大きさ", body: `a⃗·b⃗＝${D(d)}、|a⃗|＝√${a[0] ** 2 + a[1] ** 2}、|b⃗|＝√${b[0] ** 2 + b[1] ** 2}。`, back: [S2] },
+      { title: "内積と大きさ", body: `a⃗·b⃗＝${D(d)}、|a⃗|＝${surd(a[0] ** 2 + a[1] ** 2)}、|b⃗|＝${surd(b[0] ** 2 + b[1] ** 2)}。`, back: [S2] },
       { title: "公式に入れる", body: `cos θ＝${D(d)}/√${N}＝{{${D(coefStr)}}}。${d < 0 ? "負なので θ は鈍角です。" : "正なので θ は鋭角です。"}`, back: [S3], trap: "√ をかけ合わせてから簡単にする。分母の √ は有理化する。" },
     ],
   };
@@ -147,7 +149,7 @@ function heiko(r: Rng): QuestionBody {
       answer: { kind: "num", answerKind: "num", answer: [String(kk)], labels: ["k ="], equations: [`${a[0]}*(${b2})-(${a[1]})*k=0`] },
       point: "平行 ⇔ x₁y₂−x₂y₁＝0",
       steps: [
-        { title: "平行の条件", body: `${D(a[0])}×${pa(b2)}−${D(a[1])}×k＝0。`, back: [S4] },
+        { title: "平行の条件", body: `${D(a[0])}×${pa(b2)}−${pa(a[1])}×k＝0。`, back: [S4] },
         { title: "解く", body: `${D(a[1])}k＝${D(a[0] * b2)} より {{k＝${D(kk)}}}。`, trap: "垂直の条件 (x₁x₂＋y₁y₂＝0) と取りちがえない。" },
       ],
     };
@@ -195,7 +197,7 @@ export const H_MATH_C_HEIMEN_MOSHI: UnitMoshi = {
   unit: U,
   subject: "math",
   grade: "数学C",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "成分と内積",

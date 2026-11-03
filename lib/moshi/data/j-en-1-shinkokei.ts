@@ -163,7 +163,7 @@ const POOL: QuestionB[] = [
   {
     ...base("ken-emi", 3),
     prompt: "日本語に合うように、語を並べかえなさい（使わない語が1つあります）。\nケンとエミは今、図書館で勉強しています。",
-    answer: { kind: "order", tokens: ["Ken", "and", "Emi", "are", "studying", "in", "the", "library", "now."], distractor: "is" },
+    answer: { kind: "order", tokens: ["Ken", "and", "Emi", "are", "studying", "in", "the", "library", "now."], alsoOk: [[2, 1, 0, 3, 4, 5, 6, 7, 8]], distractor: "is" },
     point: "2人が主語なら be動詞は are",
     steps: [
       { title: "主語は2人", body: "Ken and Emi は2人なので、be動詞は {{are}}。is は使わない語です。", back: [S1] },
@@ -199,6 +199,6 @@ export const J_EN_1_SHINKOKEI_MOSHI: UnitMoshi = {
   subject: "eng",
   grade: "中1",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [{ title: "現在進行形の文", lead: "次の問いに答えなさい。", style: "word", pick: 6, questions: POOL }],
 };

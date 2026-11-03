@@ -27,7 +27,7 @@ export const J_JA_2_SETSUMEI_MOSHI: UnitMoshi = {
   subject: "ja",
   grade: "中2",
   minutes: 20,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "説明文の読解「ちょうどよい不便」",

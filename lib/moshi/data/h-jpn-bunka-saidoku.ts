@@ -86,6 +86,6 @@ export const H_JPN_BUNKA_SAIDOKU_MOSHI: UnitMoshi = {
   subject: "ja",
   grade: "言語文化",
   minutes: 8,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [{ title: "再読文字と置き字", lead: "次の問いに答えなさい。", style: "word", pick: 6, questions: POOL }],
 };

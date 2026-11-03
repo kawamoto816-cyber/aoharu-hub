@@ -17,6 +17,12 @@ const S5 = L(5, "球面の方程式と、球面どうしの交わり");
 
 const D = (s: string | number) => String(s).replace(/-/g, "−");
 const pa = (n: number) => (n < 0 ? `(−${-n})` : String(n));
+/** as＋bt の書き方 ("−3s − 2t"、"s − 2t"、"−3s") */
+const st = (a: number, b: number) => {
+  const c = (n: number, v: string) => (n === 1 ? v : n === -1 ? `−${v}` : `${D(n)}${v}`);
+  if (a === 0) return b === 0 ? "0" : c(b, "t");
+  return b === 0 ? c(a, "s") : `${c(a, "s")} ${b < 0 ? "−" : "＋"} ${Math.abs(b) === 1 ? "" : Math.abs(b)}t`;
+};
 const nz = (r: Rng, a: number, b: number) => {
   let v = 0;
   while (v === 0) v = r.int(a, b);
@@ -204,7 +210,7 @@ function kyomen(r: Rng): QuestionBody {
     point: "AP→＝sAB→＋tAC→ とおき、x, y 成分で s, t を決める",
     steps: [
       { title: "ベクトルで表す", body: `AB→＝${V(u)}、AC→＝${V(v)}、AP→＝(${D(ap[0])}, ${D(ap[1])}, ${A[2] === 0 ? "k" : `k${A[2] < 0 ? "＋" : "−"}${Math.abs(A[2])}`})。AP→＝sAB→＋tAC→ とおきます。`, back: [S3, S4] },
-      { title: "x, y 成分", body: `${D(ap[0])}＝${D(u[0])}s＋${pa(v[0])}t、${D(ap[1])}＝${D(u[1])}s＋${pa(v[1])}t を解いて {{s＝${D(s)}、t＝${D(t)}}}。` },
+      { title: "x, y 成分", body: `${D(ap[0])}＝${st(u[0], v[0])}、${D(ap[1])}＝${st(u[1], v[1])} を解いて {{s＝${D(s)}、t＝${D(t)}}}。` },
       { title: "z 成分", body: `${A[2] === 0 ? "k" : `k${A[2] < 0 ? "＋" : "−"}${Math.abs(A[2])}`}＝${D(u[2])}×${pa(s)}＋${pa(v[2])}×${pa(t)}＝${D(ap[2])} より {{k＝${D(P[2])}}}。`, trap: "s, t は x, y 成分だけで決め、z 成分は k を求めるのに使う。" },
     ],
   };
@@ -214,7 +220,7 @@ export const H_MATH_C_KUKAN_MOSHI: UnitMoshi = {
   unit: U,
   subject: "math",
   grade: "数学C",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "距離と内積",

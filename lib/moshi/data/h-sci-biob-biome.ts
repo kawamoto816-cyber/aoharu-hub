@@ -196,7 +196,7 @@ export const H_SCI_BIOB_BIOME_MOSHI: UnitMoshi = {
   unit: U,
   subject: "sci",
   grade: "生物基礎",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     { title: "バイオームと気候", lead: "次の問いに答えなさい。", style: "word", pick: 4, questions: POOL },
     {

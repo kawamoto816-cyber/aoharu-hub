@@ -228,7 +228,7 @@ export const J_EN_1_IPPAN_MOSHI: UnitMoshi = {
   subject: "eng",
   grade: "中1",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     { title: "動詞の形を選ぶ", lead: "次の問いに答えなさい。", style: "word", pick: 3, questions: SELECT },
     { title: "書きかえ・並べかえ", lead: "次の問いに答えなさい。英文は最初の文字を大文字にし、最後に . や ? をつけなさい。", style: "word", pick: 3, questions: WRITE },

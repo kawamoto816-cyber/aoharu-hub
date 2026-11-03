@@ -16,6 +16,20 @@ const S5 = L(5, "2つのグラフの間の面積は ∫(上−下)dx");
 
 const gcd = (a: number, b: number): number => (b ? gcd(b, a % b) : Math.abs(a));
 const D = (s: string | number) => String(s).replace(/-/g, "−");
+const pa = (n: number) => (n < 0 ? `(−${-n})` : String(n));
+/** (x − a) を (x + 3)・x のように書く */
+const xm = (a: number) => (a === 0 ? "x" : `(x ${a < 0 ? "+" : "−"} ${Math.abs(a)})`);
+/** 分数の係数つきの式: [分子, 分母, 文字] の並び → "x³ − (1/2)x² + 5x" */
+function fpoly(ts: [number, number, string][]): string {
+  let out = "";
+  for (const [n, d, m] of ts) {
+    if (n === 0) continue;
+    const a = frac(Math.abs(n), d);
+    const body = a === "1" ? m : a.includes("/") ? `(${a})${m}` : `${a}${m}`;
+    out += out ? ` ${n < 0 ? "−" : "+"} ${body}` : `${n < 0 ? "−" : ""}${body}`;
+  }
+  return out || "0";
+}
 const nz = (r: Rng, a: number, b: number) => {
   let v = 0;
   while (v === 0) v = r.int(a, b);
@@ -67,7 +81,7 @@ function futei(r: Rng): QuestionBody {
     answer: { kind: "num", answerKind: "expr", answer: [`${poly(F, true)}+c`] },
     point: "指数を1ふやし、ふやした数でわる。最後に ＋C",
     steps: [
-      { title: "項ごとに積分", body: `∫xⁿdx＝xⁿ⁺¹/(n＋1)＋C を使うと、${D(3 * a)}x²→${poly([[a, "x³"]])}、${D(2 * b)}x→${poly([[b, "x²"]])}、${D(c)}→${poly([[c, "x"]])}。`, back: [S1] },
+      { title: "項ごとに積分", body: `∫xⁿdx＝xⁿ⁺¹/(n＋1)＋C を使うと、${([[3 * a, "x²", a, "x³"], [2 * b, "x", b, "x²"], [c, "", c, "x"]] as [number, string, number, string][]).filter((t) => t[0] !== 0).map(([p, m, q, n]) => `${poly([[p, m]])}→${poly([[q, n]])}`).join("、")}。`, back: [S1] },
       { title: "まとめる", body: `{{${poly(F)} ＋ C}}。微分して ${f} にもどることを確かめます。`, trap: "積分定数 C を書き忘れない。" },
     ],
   };
@@ -86,7 +100,7 @@ function teiseki(r: Rng): QuestionBody {
     answer: { kind: "num", answerKind: "num", answer: [ans], calc: Ic(A, B, C, p, q) },
     point: "原始関数 F を求め、F(上端)−F(下端)",
     steps: [
-      { title: "原始関数", body: `F(x)＝${[A ? `(${frac(A, 3)})x³` : "", B ? `(${frac(B, 2)})x²` : "", C ? `${D(C)}x` : ""].filter(Boolean).join(" ＋ ")} とします。`, back: [S1] },
+      { title: "原始関数", body: `F(x)＝${fpoly([[A, 3, "x³"], [B, 2, "x²"], [C, 1, "x"]])} とします。`, back: [S1] },
       { title: "上端 − 下端", body: `F(${D(q)}) − F(${D(p)})＝{{${frac(n6, 6)}}}。`, back: [S2], trap: "下端が負のとき、(−a)³ の符号に気をつける。引く順番は上端が先。" },
     ],
   };
@@ -129,7 +143,7 @@ function menseki(r: Rng): QuestionBody {
     steps: [
       { title: "x 軸との交点", body: `${quad(A, B, C)}＝0 を解くと x＝${D(al)}、${D(be)}。`, back: [S3] },
       { title: "上下を見る", body: `${D(al)}＜x＜${D(be)} では y ${k > 0 ? "＜" : "＞"} 0。面積は ${k > 0 ? "−" : ""}∫${sub(al)}${sup(be)}(${quad(A, B, C)})dx。`, back: [k > 0 ? S4 : S3] },
-      { title: "計算", body: `{{${frac(n6, 6)}}}。（(1/6)${Math.abs(k) === 1 ? "" : `×${Math.abs(k)}`}×(${D(be)}−${D(al)})³ と一致します）`, trap: "x 軸より下の部分をそのまま積分すると負になる。面積は正。" },
+      { title: "計算", body: `{{${frac(n6, 6)}}}。（(1/6)${Math.abs(k) === 1 ? "" : `×${Math.abs(k)}`}×(${D(be)}−${pa(al)})³ と一致します）`, trap: "x 軸より下の部分をそのまま積分すると負になる。面積は正。" },
     ],
   };
 }
@@ -146,7 +160,7 @@ function xjiku(r: Rng): QuestionBody {
     answer: { kind: "num", answerKind: "num", answer: [ans], calc: `-(${Ic(A, B, C, al, be)})+(${Ic(A, B, C, be, R)})` },
     point: "x 軸との交点で区間を分け、下の部分は −∫",
     steps: [
-      { title: "区間を分ける", body: `y＝(x − ${al < 0 ? `(${D(al)})` : al})(x − ${be < 0 ? `(${D(be)})` : be}) は ${D(al)}＜x＜${D(be)} で負、${D(be)}＜x＜${D(R)} で正。`, back: [S4] },
+      { title: "区間を分ける", body: `y＝${xm(al)}${xm(be)} は ${D(al)}＜x＜${D(be)} で負、${D(be)}＜x＜${D(R)} で正。`, back: [S4] },
       { title: "それぞれ計算", body: `−∫${sub(al)}${sup(be)} y dx＝${frac(-I6(A, B, C, al, be), 6)}、∫${sub(be)}${sup(R)} y dx＝${frac(I6(A, B, C, be, R), 6)}。`, back: [S2] },
       { title: "たす", body: `面積の和は {{${frac(n6, 6)}}}。`, trap: `∫${sub(al)}${sup(R)} を一度に計算すると、上と下が打ち消し合って面積にならない。` },
     ],
@@ -180,9 +194,9 @@ function futatsu(r: Rng): QuestionBody {
     answer: { kind: "num", answerKind: "num", answer: [ans], calc: Ic(dA, dB, dC, al, be) },
     point: "交点の x 座標を出し、∫(上−下)dx",
     steps: [
-      { title: "交点の x 座標", body: `2式から y を消すと ${quad(k, -dB, -dC)}＝0、つまり ${k === 1 ? "" : `${k}`}(x − ${al < 0 ? `(${D(al)})` : al})(x − ${be < 0 ? `(${D(be)})` : be})＝0。x＝${D(al)}、${D(be)}。`, back: [S5] },
-      { title: "上−下を積分", body: `${D(al)}＜x＜${D(be)} では ${two ? `y＝${upper}` : "直線"} が上。∫${sub(al)}${sup(be)}(${quad(dA, dB, dC)})dx を計算します。` },
-      { title: "答え", body: `{{${frac(n6, 6)}}}。(1/6)${k === 1 ? "" : `×${k}`}×(${D(be)}−${D(al)})³ でも確かめられます。`, trap: "上と下を逆にすると負の値になる。交点の間でどちらが上かを先に確かめる。" },
+      { title: "交点の x 座標", body: `2式から y を消すと ${quad(k, -dB, -dC)}＝0、つまり ${k === 1 ? "" : `${k}`}${xm(al)}${xm(be)}＝0。x＝${D(al)}、${D(be)}。`, back: [S5] },
+      { title: "上−下を積分", body: `${D(al)}＜x＜${D(be)} では ${two ? `y＝${upper} ` : "直線"}が上。∫${sub(al)}${sup(be)}(${quad(dA, dB, dC)})dx を計算します。` },
+      { title: "答え", body: `{{${frac(n6, 6)}}}。(1/6)${k === 1 ? "" : `×${k}`}×(${D(be)}−${pa(al)})³ でも確かめられます。`, trap: "上と下を逆にすると負の値になる。交点の間でどちらが上かを先に確かめる。" },
     ],
   };
 }
@@ -191,7 +205,7 @@ export const H_MATH_2_SEKIBUN_MOSHI: UnitMoshi = {
   unit: U,
   subject: "math",
   grade: "数学Ⅱ",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "不定積分と定積分",

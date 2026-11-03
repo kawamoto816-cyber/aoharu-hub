@@ -181,7 +181,7 @@ export const H_SCI_CHEM_DENRI_MOSHI: UnitMoshi = {
   unit: U,
   subject: "sci",
   grade: "化学",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "pH と電離定数の計算",

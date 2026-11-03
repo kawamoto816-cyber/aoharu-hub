@@ -95,7 +95,7 @@ function junkan(r: Rng): QuestionBody {
 }
 
 function zettai(r: Rng): QuestionBody {
-  const n = r.pick(nonSquares(5, 60));
+  const n = r.pick(nonSquares(5, 60).filter((v) => sq(v)[0] === 1));
   const m = Math.floor(Math.sqrt(n));
   const [a, b] = r.sample([m - 1, m, m + 1, m + 2], 2).sort((x, y) => x - y);
   // |√n − c| は c ≦ m なら √n − c、c ≧ m+1 なら c − √n
@@ -224,7 +224,7 @@ function yurika(r: Rng): QuestionBody {
 }
 
 function seisu(r: Rng): QuestionBody {
-  const n = r.pick(nonSquares(3, 40));
+  const n = r.pick(nonSquares(3, 40).filter((v) => sq(v)[0] === 1)); // √27 のような簡単にできる数は使わない
   const c = Math.floor(Math.sqrt(n));
   const m = r.int(1, c);
   const d = n - m * m;
@@ -249,7 +249,7 @@ export const H_MATH_1_JISSU_MOSHI: UnitMoshi = {
   unit: U,
   subject: "math",
   grade: "数学Ⅰ",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "循環小数・絶対値",

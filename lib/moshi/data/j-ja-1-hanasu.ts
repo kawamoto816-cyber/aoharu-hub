@@ -30,7 +30,7 @@ export const J_JA_1_HANASU_MOSHI: UnitMoshi = {
   subject: "ja",
   grade: "中1",
   minutes: 15,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "スピーチの原稿を読む",

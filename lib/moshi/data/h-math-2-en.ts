@@ -139,7 +139,7 @@ function iti(r: Rng): QuestionBody {
   const Dv = (2 * m * k) ** 2 - 4 * (1 + m * m) * (k * k - R);
   const line = poly([[m, "x"], [k, ""]]);
   const why = [0, 1, 2].map((i) =>
-    i === kind ? `D/4＝${D(Dv / 4)} ${kind === 0 ? "＞" : kind === 1 ? "＝" : "＜"} 0（d ${kind === 0 ? "＜" : kind === 1 ? "＝" : "＞"} r）なので正しい。` : `${IKIND[i]}のは D ${i === 0 ? "＞" : i === 1 ? "＝" : "＜"} 0 のとき。この場合 D/4＝${D(Dv / 4)}。`,
+    i === kind ? `D/4＝${D(Dv / 4)}${kind === 1 ? "" : kind === 0 ? " ＞ 0" : " ＜ 0"}（d ${kind === 0 ? "＜" : kind === 1 ? "＝" : "＞"} r）なので正しい。` : `${IKIND[i]}のは D ${i === 0 ? "＞" : i === 1 ? "＝" : "＜"} 0 のとき。この場合 D/4＝${D(Dv / 4)}。`,
   );
   return {
     prompt: `円 x² ＋ y² ＝ ${R} と直線 y ＝ ${line} の位置関係として正しいものを選びなさい。`,
@@ -240,7 +240,7 @@ export const H_MATH_2_EN_MOSHI: UnitMoshi = {
   unit: U,
   subject: "math",
   grade: "数学Ⅱ",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "円の方程式",

@@ -22,11 +22,12 @@ const fr = (n: number, d: number) => {
 };
 
 const CTX = [
-  { what: "ある工場でつくる菓子袋1袋の重さ", unit: "g" },
-  { what: "ある町の高校生の1日の通学時間", unit: "分" },
-  { what: "ある果樹園でとれるりんご1個の重さ", unit: "g" },
-  { what: "ある地域の家庭の1か月の水道使用量", unit: "m³" },
-  { what: "ある学校の生徒の1週間の読書時間", unit: "分" },
+  // lo〜hi は母平均としてありそうな範囲 (通学時間が 248 分などにならないように)
+  { what: "ある工場でつくる菓子袋1袋の重さ", unit: "g", lo: 100, hi: 300 },
+  { what: "ある町の高校生の1日の通学時間", unit: "分", lo: 30, hi: 80 },
+  { what: "ある果樹園でとれるりんご1個の重さ", unit: "g", lo: 250, hi: 350 },
+  { what: "ある地域の家庭の1か月の水道使用量", unit: "m³", lo: 15, hi: 40 },
+  { what: "ある学校の生徒の1週間の読書時間", unit: "分", lo: 60, hi: 300 },
 ];
 
 function hyohon(r: Rng): QuestionBody {
@@ -35,7 +36,7 @@ function hyohon(r: Rng): QuestionBody {
   const n = rn * rn;
   const k = r.pick([1, 2, 3, 0.5, 1.5]);
   const s = Math.round(k * rn * 10) / 10;
-  const m = r.int(20, 300);
+  const m = r.int(Math.max(c.lo, Math.ceil(3 * s)), Math.max(c.hi, Math.ceil(3 * s) + 20));
   return {
     prompt: `${c.what}は、平均 ${m}${c.unit}、標準偏差 ${s}${c.unit} の母集団とみなせる。ここから大きさ ${n} の無作為標本をとるとき、標本平均 X̄ の期待値 E(X̄) と標準偏差 σ(X̄) を求めなさい。`,
     answer: { kind: "num", answerKind: "pair", answer: [String(m), String(k)], labels: ["E(X̄) =", "σ(X̄) ="], unit: c.unit, equations: [`x=${m}`, `y=${s}/√${n}`] },
@@ -53,7 +54,7 @@ function heikin(r: Rng): QuestionBody {
   const n = rn * rn;
   const k = r.pick([1, 2, 0.5, 3]);
   const s = Math.round(k * rn * 10) / 10;
-  const xb = r.int(30, 250) + r.pick([0, 0.5]);
+  const xb = r.int(Math.max(c.lo, Math.ceil(3 * s)), Math.max(c.hi, Math.ceil(3 * s) + 20)) + r.pick([0, 0.5]);
   const e = Math.round(1.96 * k * 1000) / 1000;
   const lo = f3(xb - e);
   const hi = f3(xb + e);
@@ -83,7 +84,12 @@ const PROP: { p: number; n: number; se: number }[] = [
   { p: 0.8, n: 400, se: 0.02 },
   { p: 0.9, n: 900, se: 0.01 },
 ];
-const PCTX = ["ある市の有権者のうち、ある政策に賛成の人", "ある工場の製品のうち、不良品", "ある町の世帯のうち、ペットを飼っている世帯", "ある種の苗のうち、1か月以内に花が咲いたもの"];
+const PCTX = [
+  { what: "ある市の有権者のうち、ある政策に賛成の人", u: "人" },
+  { what: "ある工場の製品のうち、規格より重いもの", u: "個" },
+  { what: "ある町の世帯のうち、ペットを飼っている世帯", u: "世帯" },
+  { what: "ある種の苗のうち、1か月以内に花が咲いたもの", u: "本" },
+];
 
 function hiritsu(r: Rng): QuestionBody {
   const t = r.pick(PROP);
@@ -94,7 +100,7 @@ function hiritsu(r: Rng): QuestionBody {
   const lo = f3(pct - e);
   const hi = f3(pct + e);
   return {
-    prompt: `${ctx}の割合 p を調べるため、無作為に ${t.n} 個 (人) を選んだところ、${k} 個 (人) があてはまった。母比率 p に対する信頼度95%の信頼区間を、百分率で A%≦p≦B% と表すとき、A、B を求めなさい。`,
+    prompt: `${ctx.what}の割合 p を調べるため、無作為に ${t.n} ${ctx.u}を選んだところ、${k} ${ctx.u}があてはまった。母比率 p に対する信頼度95%の信頼区間を、百分率で A%≦p≦B% と表すとき、A、B を求めなさい。`,
     answer: { kind: "num", answerKind: "pair", answer: [lo, hi], labels: ["A =", "B ="], equations: [`x=100*(${k}/${t.n}-1.96*${t.se})`, `y=100*(${k}/${t.n}+1.96*${t.se})`] },
     point: "p̂ ± 1.96√{p̂(1−p̂)/n}",
     steps: [
@@ -165,7 +171,7 @@ export const H_MATH_B_SUITEI_MOSHI: UnitMoshi = {
   unit: U,
   subject: "math",
   grade: "数学B",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "標本平均と信頼区間",

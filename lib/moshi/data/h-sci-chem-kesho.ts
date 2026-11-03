@@ -144,7 +144,7 @@ export const H_SCI_CHEM_KESHO_MOSHI: UnitMoshi = {
   unit: U,
   subject: "sci",
   grade: "化学",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "単位格子の粒子と長さ",

@@ -87,7 +87,7 @@ export const H_SCI_BIO_SEITAIKEI_MOSHI: UnitMoshi = {
   subject: "sci",
   grade: "生物",
   minutes: 12,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "物質生産とエネルギーの計算",

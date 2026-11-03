@@ -166,7 +166,7 @@ export const J_EN_1_GIMONSHI_MOSHI: UnitMoshi = {
   subject: "eng",
   grade: "中1",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "疑問詞",

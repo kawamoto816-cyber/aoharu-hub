@@ -164,7 +164,7 @@ export const J_EN_2_EISAKUBUN_MOSHI: UnitMoshi = {
   subject: "eng",
   grade: "中2",
   minutes: 15,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     { title: "正しい英文を選ぶ", lead: "次の問いに答えなさい。", style: "word", pick: 3, questions: SELECT },
     { title: "英文を書く・並べかえ", lead: "次の問いに答えなさい。英文は最初の文字を大文字にし、最後に . や ? をつけなさい。", style: "writing", pick: 2, questions: WRITE },

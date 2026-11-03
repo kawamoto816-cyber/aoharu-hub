@@ -120,7 +120,7 @@ export const H_JPN_KOTEN_NIKKI_MOSHI: UnitMoshi = {
   subject: "ja",
   grade: "古典探究",
   minutes: 12,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "日記を読む（『土佐日記』）",

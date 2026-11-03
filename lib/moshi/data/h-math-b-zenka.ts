@@ -66,9 +66,10 @@ function kihon(r: Rng): QuestionBody {
 
 function kou(r: Rng): QuestionBody {
   if (r.bool()) {
-    const a1 = r.int(-3, 5);
+    let a1 = r.int(-3, 5);
     const p = r.pick([2, 3, -2]);
     const q = nz(r, -5, 5);
+    if (p * a1 + q === a1) a1 += 1; // a₁＝α だと、ずっと同じ数がならぶだけになる
     const a = [a1];
     for (let i = 0; i < 3; i++) a.push(p * a[i] + q);
     return {
@@ -103,14 +104,15 @@ function tokusei(r: Rng): QuestionBody {
   const q = al * (1 - p);
   let a1 = r.int(-3, 6);
   if (a1 === al) a1 += 1;
+  const ma = al < 0 ? `＋${-al}` : `−${al}`; // 「−α」の書き方
   return {
     prompt: `a₁＝${D(a1)}、aₙ₊₁＝${D(p)}aₙ ${q < 0 ? "−" : "＋"} ${Math.abs(q)} (n＝1, 2, 3, …) で定められる数列の一般項を aₙ＝A·${pa(p)}ⁿ⁻¹＋B と表すとき、定数 A、B の値を求めなさい。`,
     answer: { kind: "num", answerKind: "pair", answer: [String(a1 - al), String(al)], labels: ["A =", "B ="], equations: [`x=${a1}-(${q})/(1-(${p}))`, `y=(${q})/(1-(${p}))`] },
     point: "α＝pα＋q の α をひくと、aₙ−α が等比数列",
     steps: [
       { title: "α を求める", body: `α＝${D(p)}α${q < 0 ? "−" : "＋"}${Math.abs(q)} を解くと {{α＝${D(al)}}}。`, back: [S3] },
-      { title: "等比数列にする", body: `2式をひくと aₙ₊₁−${pa(al)}＝${D(p)}(aₙ−${pa(al)})。{aₙ−${pa(al)}} は初項 ${D(a1)}−${pa(al)}＝${D(a1 - al)}、公比 ${D(p)} の等比数列。`, trap: "初項は a₁ ではなく a₁−α。ここをまちがえやすい。" },
-      { title: "一般項", body: `aₙ＝${D(a1 - al)}·${pa(p)}ⁿ⁻¹＋${pa(al)}。{{A＝${D(a1 - al)}、B＝${D(al)}}}。` },
+      { title: "等比数列にする", body: `2式をひくと aₙ₊₁${ma}＝${D(p)}(aₙ${ma})。{aₙ${ma}} は初項 ${D(a1)}${ma}＝${D(a1 - al)}、公比 ${D(p)} の等比数列。`, trap: "初項は a₁ ではなく a₁−α。ここをまちがえやすい。" },
+      { title: "一般項", body: `aₙ＝${D(a1 - al)}·${pa(p)}ⁿ⁻¹${al < 0 ? `−${-al}` : `＋${al}`}。{{A＝${D(a1 - al)}、B＝${D(al)}}}。` },
     ],
   };
 }
@@ -187,7 +189,7 @@ export const H_MATH_B_ZENKA_MOSHI: UnitMoshi = {
   unit: U,
   subject: "math",
   grade: "数学B",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "漸化式と項",

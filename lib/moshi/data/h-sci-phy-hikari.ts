@@ -78,7 +78,7 @@ function makuhaku(r: Rng): QuestionBody {
     const lam = r.pick([400, 480, 500, 600, 640]);
     const d = lam / (4 * n);
     if (!nice(d)) continue;
-    const film = r.pick(["石けん膜", "薄い透明な膜"]);
+    const film = "薄い透明な膜";
     if (r.bool())
       return {
         prompt: `空気中にある屈折率 ${f(n)} の${film}に、波長 ${lam} nm の光を垂直に当てた。反射光が強め合うような膜の厚さのうち、最も薄いものは何 nm ですか。`,
@@ -180,7 +180,7 @@ export const H_SCI_PHY_HIKARI_MOSHI: UnitMoshi = {
   subject: "sci",
   grade: "物理",
   minutes: 15,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "光の干渉の計算",

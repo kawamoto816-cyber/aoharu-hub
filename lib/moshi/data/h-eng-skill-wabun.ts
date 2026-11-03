@@ -258,7 +258,7 @@ export const H_ENG_SKILL_WABUN_MOSHI: UnitMoshi = {
   subject: "eng",
   grade: "技能",
   minutes: 12,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     { title: "英訳を選ぶ・並べる", lead: "次の日本語の英訳について、問いに答えなさい。", style: "word", pick: 4, questions: POOL },
     { title: "日本語を英語にする", lead: "次の日本語を英語にしなさい。", style: "writing", questions: WRITE },

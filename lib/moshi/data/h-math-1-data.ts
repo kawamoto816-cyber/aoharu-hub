@@ -17,6 +17,7 @@ const S6 = L(6, "仮説検定の考え方：偶然でも起こるか");
 
 // ---- 式の書き方 (表示は −・²、答えと calc は ASCII) ----
 const D = (s: string | number) => String(s).replace(/-/g, "−");
+const pa = (n: number) => (n < 0 ? `(−${-n})` : String(n));
 function poly(ts: [number, string][], ascii = false): string {
   let out = "";
   for (const [c, m0] of ts) {
@@ -102,7 +103,7 @@ function henkan(r: Rng): QuestionBody {
     answer: { kind: "num", answerKind: "num", answer: [String(ans)], calc },
     point: "y＝ax＋b なら 平均は a倍＋b、分散は a²倍、標準偏差は |a|倍",
     steps: [
-      { title: "変換のきまり", body: `平均値は ${a}×${mx}${b === 0 ? "" : ` ${b < 0 ? "−" : "+"} ${Math.abs(b)}`}、分散は ${a}²×${sx}²、標準偏差は |${D(a)}|×${sx}。b は散らばりに関係しない。`, back: [S3] },
+      { title: "変換のきまり", body: `平均値は ${pa(a)}×${mx}${b === 0 ? "" : ` ${b < 0 ? "−" : "+"} ${Math.abs(b)}`}、分散は ${pa(a)}²×${sx}²、標準偏差は |${D(a)}|×${sx}。b は散らばりに関係しない。`, back: [S3] },
       { title: "計算する", body: `y の${names[kind]}は {{${D(ans)}}}。`, trap: kind === 2 && a < 0 ? `標準偏差は負にならない。${D(a)} 倍ではなく |${D(a)}|＝${-a} 倍。` : kind === 1 ? "分散は a 倍ではなく a² 倍。b を足しても変わらない。" : "平均値には b もそのまま足される。" },
     ],
   };
@@ -233,7 +234,7 @@ export const H_MATH_1_DATA_MOSHI: UnitMoshi = {
   unit: U,
   subject: "math",
   grade: "数学Ⅰ",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "四分位数と分散",

@@ -15,6 +15,8 @@ const S5 = L(5, "3次方程式の解と係数の関係");
 
 const gcd = (a: number, b: number): number => (b ? gcd(b, a % b) : Math.abs(a));
 const D = (s: string | number) => String(s).replace(/-/g, "−");
+/** p の係数: 1 → ""、−1 → "−" */
+const cp = (n: number) => (n === 1 ? "" : n === -1 ? "−" : D(n));
 const pa = (n: number) => (n < 0 ? `(−${-n})` : String(n));
 const nz = (r: Rng, a: number, b: number) => {
   let v = 0;
@@ -119,7 +121,7 @@ function amari(r: Rng): QuestionBody {
     point: "2次式で割った余りは px＋q とおける",
     steps: [
       { title: "余りを px＋q とおく", body: `P(x)＝(${xm(a)})(${xm(b)})Q(x) ＋ px ＋ q と書けます。`, back: [S1] },
-      { title: "代入して連立", body: `P(${D(a)})＝${D(a)}p＋q＝${D(A)}、P(${D(b)})＝${D(b)}p＋q＝${D(B)}。` },
+      { title: "代入して連立", body: `P(${D(a)})＝${cp(a)}p＋q＝${D(A)}、P(${D(b)})＝${cp(b)}p＋q＝${D(B)}。` },
       { title: "解く", body: `p＝${D(p)}、q＝${D(q)} なので、余りは {{${poly([[p, "x"], [q, ""]])}}}。`, trap: "2次式で割った余りは1次以下。定数だけとおかない。" },
     ],
   };
@@ -216,7 +218,7 @@ export const H_MATH_2_KOJI_MOSHI: UnitMoshi = {
   unit: U,
   subject: "math",
   grade: "数学Ⅱ",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "剰余の定理と因数定理",

@@ -114,7 +114,7 @@ export const H_JPN_BUNKA_KINDAI_MOSHI: UnitMoshi = {
   subject: "ja",
   grade: "言語文化",
   minutes: 12,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "小説を読む（語り手と心情）",

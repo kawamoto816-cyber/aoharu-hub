@@ -175,7 +175,7 @@ export const J_EN_2_TANGO_MOSHI: UnitMoshi = {
   subject: "eng",
   grade: "中2",
   minutes: 8,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     { title: "動詞の変化形と比較の形", lead: "次の問いに答えなさい。", style: "word", pick: 3, questions: HENKA },
     { title: "語の家族と熟語", lead: "次の問いに答えなさい。", style: "word", pick: 3, questions: KAZOKU },

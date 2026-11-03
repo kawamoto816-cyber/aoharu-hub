@@ -29,7 +29,7 @@ export const J_JA_3_RONSETSU_MOSHI: UnitMoshi = {
   subject: "ja",
   grade: "中3",
   minutes: 20,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "論説文の読解「地図を閉じて歩く」",

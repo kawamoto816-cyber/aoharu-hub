@@ -39,11 +39,11 @@ const SET: { n: number; pn: number; pd: number; s: number }[] = [
 const ps = (t: { pn: number; pd: number }) => fr(t.pn, t.pd);
 const scene = (t: { n: number; pn: number; pd: number }) =>
   t.pd === 2
-    ? { act: `ある硬貨を ${t.n} 回投げたところ、表が`, h0: "表の出る確率は 1/2", what: "表の出る確率" }
+    ? { act: `ある硬貨を ${t.n} 回投げたところ、表が `, h0: "表の出る確率は 1/2", what: "表の出る確率" }
     : t.pd === 6
-      ? { act: `あるさいころを ${t.n} 回投げたところ、1の目が`, h0: "1の目の出る確率は 1/6", what: "1の目の出る確率" }
+      ? { act: `あるさいころを ${t.n} 回投げたところ、1の目が `, h0: "1の目の出る確率は 1/6", what: "1の目の出る確率" }
       : t.pd === 3
-        ? { act: `あるさいころを ${t.n} 回投げたところ、5以上の目が`, h0: "5以上の目の出る確率は 1/3", what: "5以上の目の出る確率" }
+        ? { act: `あるさいころを ${t.n} 回投げたところ、5以上の目が `, h0: "5以上の目の出る確率は 1/3", what: "5以上の目の出る確率" }
         : { act: `これまで ${ps(t)} の割合で起こっていたことについて、新しい方法で ${t.n} 回試したところ、`, h0: `起こる確率は ${ps(t)}`, what: "起こる確率" };
 
 /** z を 0.2 刻みで選び、X＝m＋zσ が整数になるものを返す */
@@ -211,7 +211,7 @@ export const H_MATH_B_KENTEI_MOSHI: UnitMoshi = {
   unit: U,
   subject: "math",
   grade: "数学B",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "仮説と検定統計量",

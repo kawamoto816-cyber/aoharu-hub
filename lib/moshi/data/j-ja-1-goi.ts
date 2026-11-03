@@ -232,7 +232,7 @@ export const J_JA_1_GOI_MOSHI: UnitMoshi = {
   subject: "ja",
   grade: "中1",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "語句・語彙",

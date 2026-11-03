@@ -65,13 +65,22 @@ function ronri(r: Rng): QuestionBody {
   const a = r.int(0, 1);
   const b = r.int(0, 1);
   const y = g.f(a, b, 0);
+  // 途中の計算 (NOT やかっこの中を先に)
+  const ex: Record<string, string> = {
+    "A AND B": `${a} AND ${b}＝${y}`,
+    "A OR B": `${a} OR ${b}＝${y}`,
+    "(NOT A) AND B": `NOT A＝${1 - a}、${1 - a} AND ${b}＝${y}`,
+    "A OR (NOT B)": `NOT B＝${1 - b}、${a} OR ${1 - b}＝${y}`,
+    "NOT (A AND B)": `A AND B＝${a & b}、NOT ${a & b}＝${y}`,
+    "NOT (A OR B)": `A OR B＝${a | b}、NOT ${a | b}＝${y}`,
+  };
   return {
     prompt: `AND 回路は入力が両方 1 のときだけ 1、OR 回路はどちらかが 1 なら 1、NOT 回路は 0 と 1 を反転する。出力 Y＝${g.s} の回路に、A＝${a}、B＝${b} を入力したときの出力 Y を答えなさい。`,
     answer: { kind: "num", answerKind: "num", answer: [String(y)], labels: ["Y ="], calc: String(y) },
     point: "かっこの中から順に、0 と 1 を書きこんで計算する",
     steps: [
       { title: "かっこの中から", body: `A＝${a}、B＝${b} を入れ、NOT やかっこの中を先に計算します。`, back: [S6] },
-      { title: "出力", body: `Y＝{{${y}}}。`, trap: "OR は「どちらか一方だけ」ではない。両方 1 でも 1。" },
+      { title: "出力", body: `${ex[g.s] ?? ""}${ex[g.s] ? "。" : ""}Y＝{{${y}}}。`, trap: g.s.includes("OR") ? "OR は「どちらか一方だけ」ではない。両方 1 でも 1。" : "AND は両方 1 のときだけ 1。片方だけ 1 なら 0。" },
     ],
   };
 }
@@ -178,7 +187,7 @@ export const H_INFO_1_COMPUTER_MOSHI: UnitMoshi = {
   unit: U,
   subject: "math",
   grade: "情報Ⅰ",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "CPU と論理回路",

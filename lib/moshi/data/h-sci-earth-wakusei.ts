@@ -94,7 +94,7 @@ export const H_SCI_EARTH_WAKUSEI_MOSHI: UnitMoshi = {
   subject: "sci",
   grade: "地学",
   minutes: 13,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "惑星の運動の計算",

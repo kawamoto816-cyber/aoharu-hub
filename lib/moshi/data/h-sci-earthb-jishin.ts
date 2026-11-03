@@ -158,7 +158,7 @@ export const H_SCI_EARTHB_JISHIN_MOSHI: UnitMoshi = {
   subject: "sci",
   grade: "地学基礎",
   minutes: 12,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "P波とS波の計算",

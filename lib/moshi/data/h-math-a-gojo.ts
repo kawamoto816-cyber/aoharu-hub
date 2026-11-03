@@ -80,7 +80,7 @@ function kaiumu(r: Rng): QuestionBody {
     point: "ax＋by＝c は、c が gcd(a, b) の倍数のときだけ解をもつ",
     steps: [
       { title: "係数の最大公約数", body: `${a} と ${b} の最大公約数は {{${G}}}。x, y が整数なら、左辺 ${a}x＋${b}y はいつも ${G} の倍数です。`, back: [BACK_GYAKU] },
-      { title: "解をもつ c", body: `逆に c が ${G} の倍数なら、${a / G}x＋${b / G}y＝c/${G} は互除法で解が見つかる。1〜${N} の ${G} の倍数は {{${ans}個}}。`, trap: "c が a や b の倍数のときだけ、と考えない。最大公約数の倍数ならすべて解をもつ。", back: [BACK_FUTEI] },
+      { title: "解をもつ c", body: `逆に c が ${G} の倍数なら、${a / G === 1 ? "" : a / G}x＋${b / G === 1 ? "" : b / G}y＝c/${G} は互除法で解が見つかる。1〜${N} の ${G} の倍数は {{${ans}個}}。`, trap: "c が a や b の倍数のときだけ、と考えない。最大公約数の倍数ならすべて解をもつ。", back: [BACK_FUTEI] },
     ],
   };
 }
@@ -191,7 +191,7 @@ export const H_MATH_A_GOJO_MOSHI: UnitMoshi = {
   unit: U,
   subject: "math",
   grade: "数学A",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "互除法と解の有無",

@@ -178,7 +178,7 @@ export const H_MATH_C_NIJIKYOKUSEN_MOSHI: UnitMoshi = {
   unit: U,
   subject: "math",
   grade: "数学C",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "放物線・楕円・双曲線の焦点",

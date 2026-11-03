@@ -183,7 +183,7 @@ export const J_JA_2_KANJI_MOSHI: UnitMoshi = {
   subject: "ja",
   grade: "中2",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     { title: "漢字の書き取り", lead: "次の問いに答えなさい。", style: "word", pick: 3, questions: KAKI },
     { title: "漢字の読み・使い分け", lead: "次の問いに答えなさい。", style: "word", pick: 3, questions: YOMI },

@@ -14,11 +14,13 @@ const S5 = L(5, "数値年代：放射性同位体の半減期を使う");
 
 const f = (x: number) => String(Math.round(x * 1000) / 1000);
 const FR = ["1/2", "1/4", "1/8", "1/16"];
-const HL: [number, string][] = [[5700, "年"], [1.3, "億年"], [7, "億年"], [45, "億年"], [5000, "年"], [2.5, "億年"]];
+const HL: [number, string][] = [[5700, "年"], [13, "億年"], [7, "億年"], [45, "億年"], [5000, "年"], [2.5, "億年"]];
+/** 半減期の回数の上限。億年の単位では、年代が地球の年齢 (約46億年) をこえないようにする */
+const maxN = (h: number, u: string) => (u === "億年" ? Math.min(4, Math.floor(46 / h)) : 4);
 
 function nendai(r: Rng): QuestionBody {
-  const n = r.int(1, 4);
   const [h, u] = r.pick(HL);
+  const n = r.int(1, maxN(h, u));
   const age = h * n;
   const what = u === "年" ? r.pick(["木片", "貝殻", "骨"]) : r.pick(["火成岩", "鉱物", "花こう岩"]);
   return {
@@ -49,8 +51,8 @@ function nokoru(r: Rng): QuestionBody {
 }
 
 function musume(r: Rng): QuestionBody {
-  const n = r.int(1, 4);
   const [h] = r.pick(HL.filter((x) => x[1] === "億年"));
+  const n = r.int(1, maxN(h, "億年"));
   const ratio = 2 ** n - 1;
   return {
     prompt: `ある鉱物で、放射性の親元素がこわれてできた娘元素の量が、残っている親元素の量の ${ratio} 倍であった。はじめ娘元素はなく、娘元素は鉱物の外へ出ていないとする。親元素の半減期を ${h} 億年とすると、この鉱物ができたのは何億年前ですか。`,
@@ -88,7 +90,7 @@ export const H_SCI_EARTH_CHISHI_MOSHI: UnitMoshi = {
   subject: "sci",
   grade: "地学",
   minutes: 13,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "年代測定の計算",

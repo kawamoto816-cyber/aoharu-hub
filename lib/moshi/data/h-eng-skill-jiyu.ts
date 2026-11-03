@@ -230,7 +230,7 @@ export const H_ENG_SKILL_JIYU_MOSHI: UnitMoshi = {
   subject: "eng",
   grade: "技能",
   minutes: 15,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     { title: "型と英文を選ぶ", lead: "意見文を書く場面を考えて、次の問いに答えなさい。", style: "word", pick: 4, questions: POOL },
     { title: "意見文を書く", lead: "次の問いについて、英語で意見文を書きなさい。", style: "writing", questions: ESSAY },

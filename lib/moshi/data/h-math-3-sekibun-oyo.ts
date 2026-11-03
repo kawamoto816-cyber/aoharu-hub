@@ -16,6 +16,8 @@ const S4 = L(4, "曲線の長さと道のりも、微小な部分の和");
 
 const D = (n: number) => (n < 0 ? `−${-n}` : String(n));
 const pm = (n: number) => (n < 0 ? `− ${-n}` : `＋ ${n}`);
+/** 「1/3」と π → π/3、「8」と π → 8π */
+const piv = (v: string) => (v.includes("/") ? `${v.split("/")[0] === "1" ? "" : v.split("/")[0]}π/${v.split("/")[1]}` : `${v === "1" ? "" : v}π`);
 const gcd = (a: number, b: number): number => (b === 0 ? Math.abs(a) : gcd(b, a % b));
 function frac(n: number, d: number): string {
   if (d < 0) [n, d] = [-n, -d];
@@ -86,7 +88,7 @@ function taiseki(r: Rng): QuestionBody {
       point: "V＝π∫y²dx。切り口は半径 y の円",
       steps: [
         { title: "式を立てる", body: `V＝π∫[0→${a}] (√x)² dx＝π∫[0→${a}] x dx。`, back: [S3] },
-        { title: "計算する", body: `π・${a * a}/2＝{{${v}π}}。`, trap: "y を2乗し忘れない。断面積は πy²。" },
+        { title: "計算する", body: `π・${a * a}/2＝{{${piv(v)}}}。`, trap: "y を2乗し忘れない。断面積は πy²。" },
       ],
     };
   }
@@ -99,7 +101,7 @@ function taiseki(r: Rng): QuestionBody {
       point: "V＝π∫y²dx。切り口は半径 y の円",
       steps: [
         { title: "式を立てる", body: `V＝π∫[0→${b}] (x²)² dx＝π∫[0→${b}] x⁴ dx。`, back: [S3] },
-        { title: "計算する", body: `π・${b ** 5}/5＝{{${v}π}}。`, trap: "y を2乗し忘れない。(x²)²＝x⁴。" },
+        { title: "計算する", body: `π・${b ** 5}/5＝{{${piv(v)}}}。`, trap: "y を2乗し忘れない。(x²)²＝x⁴。" },
       ],
     };
   }
@@ -111,7 +113,7 @@ function taiseki(r: Rng): QuestionBody {
     point: "V＝π∫y²dx。円錐の公式 (1/3)πr²h と一致する",
     steps: [
       { title: "式を立てる", body: `V＝π∫[0→${a}] (${k === 1 ? "" : k}x)² dx＝${k * k === 1 ? "" : k * k}π∫[0→${a}] x² dx。`, back: [S3] },
-      { title: "計算する", body: `${k * k}π・${a ** 3}/3＝{{${v}π}}。底面の半径 ${k * a}、高さ ${a} の円錐の体積と一致します。`, trap: "y を2乗し忘れない。" },
+      { title: "計算する", body: `${k * k === 1 ? "" : k * k}π・${a ** 3}/3＝{{${piv(v)}}}。底面の半径 ${k * a}、高さ ${a} の円錐の体積と一致します。`, trap: "y を2乗し忘れない。" },
     ],
   };
 }
@@ -169,7 +171,7 @@ export const H_MATH_3_SEKIBUN_OYO_MOSHI: UnitMoshi = {
   unit: U,
   subject: "math",
   grade: "数学Ⅲ",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "面積と区分求積法",

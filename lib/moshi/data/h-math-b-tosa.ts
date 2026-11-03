@@ -91,7 +91,7 @@ function tohiWa(r: Rng): QuestionBody {
     point: "等比数列の和は a(rⁿ−1)/(r−1)。指数は項数 n",
     steps: [
       { title: "はじめの項", body: `${seq(f, 3)}, … と続きます。`, back: [S2] },
-      { title: "和の公式", body: `Sₙ＝a(rⁿ−1)/(r−1)＝${D(a)}×{${pa(q)}^${n}−1}÷(${D(q)}−1)＝${D(a)}×${D(q ** n - 1)}÷${pa(q - 1)}＝{{${D(S)}}}。`, back: [S4], trap: "指数は項数の n。一般項の n−1 と取りちがえやすい。" },
+      { title: "和の公式", body: `Sₙ＝a(rⁿ−1)/(r−1)＝${D(a)}×{${pa(q)}^${n}−1}÷(${D(q)}−1)＝${D(a)}×${pa(q ** n - 1)}÷${pa(q - 1)}＝{{${D(S)}}}。`, back: [S4], trap: "指数は項数の n。一般項の n−1 と取りちがえやすい。" },
     ],
   };
 }
@@ -111,7 +111,7 @@ function chuko(r: Rng): QuestionBody {
       point: "a, b, c が等比数列 ⇔ b²＝ac",
       steps: [
         { title: "比が等しい", body: `x/${p}＝${q}/x なので、{{x²＝${p}×${q}}}＝${p * q}。`, back: [S2, S5] },
-        { title: "正の数を選ぶ", body: `x＞0 より x＝{{${x}}}。`, trap: "等差数列とまちがえて (p＋q)÷2 にしない。" },
+        { title: "正の数を選ぶ", body: `x＞0 より x＝{{${x}}}。`, trap: `等差数列とまちがえて (${p}＋${q})÷2 にしない。` },
       ],
     };
   }
@@ -154,7 +154,7 @@ export const H_MATH_B_TOSA_MOSHI: UnitMoshi = {
   unit: U,
   subject: "math",
   grade: "数学B",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "一般項",

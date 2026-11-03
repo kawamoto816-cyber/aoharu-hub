@@ -169,7 +169,7 @@ export const H_SCI_CHEMB_KINZOKU_MOSHI: UnitMoshi = {
   unit: U,
   subject: "sci",
   grade: "化学基礎",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     { title: "金属結合と金属の性質", lead: "次の問いに答えなさい。", style: "word", pick: 4, questions: POOL },
     { title: "結合を見分ける・説明する", lead: "次の問いに答えなさい。", style: "mix", questions: FIX },

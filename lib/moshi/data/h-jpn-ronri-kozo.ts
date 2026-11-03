@@ -24,7 +24,7 @@ export const H_JPN_RONRI_KOZO_MOSHI: UnitMoshi = {
   subject: "ja",
   grade: "論理国語",
   minutes: 20,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "論理構造の読解「人が集まる場所」",

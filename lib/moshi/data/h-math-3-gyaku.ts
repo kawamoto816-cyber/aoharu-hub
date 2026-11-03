@@ -78,7 +78,7 @@ function goseiShiki(r: Rng): QuestionBody {
     answer: { kind: "num", answerKind: "expr", answer: [ans], labels: [`${gf ? "(g∘f)" : "(f∘g)"}(x) =`] },
     point: "中身に関数の式をまるごと入れてから整理する",
     steps: [
-      { title: "中身に入れる", body: gf ? `g(f(x))＝(${fs})²${c === 0 ? "" : ` ${pm(c)}`}。` : `f(g(x))＝${D(a)}(${gs}) ${pm(b)}。`, back: [S1] },
+      { title: "中身に入れる", body: gf ? `g(f(x))＝(${fs})²${c === 0 ? "" : ` ${pm(c)}`}。` : `f(g(x))＝${a === 1 ? "" : a === -1 ? "−" : D(a)}(${gs}) ${pm(b)}。`, back: [S1] },
       { title: "展開して整理", body: `{{${show(ans)}}}。`, trap: "(g∘f) と (f∘g) は一般に別の関数。順番を確かめる。" },
     ],
   };
@@ -115,7 +115,7 @@ function gyakuBunsu(r: Rng): QuestionBody {
       point: "f⁻¹(t) は「f(x)＝t となる x」",
       steps: [
         { title: "意味に直す", body: `f⁻¹(${D(t)})＝x とおくと、f(x)＝${D(t)}。`, back: [S2] },
-        { title: "方程式を解く", body: `(${lin(a, b)})＝${D(t)}(${xm(c)}) を解いて、{{x＝${D(s)}}}。`, trap: "f(" + D(t) + ") を計算するのではない。出力が " + D(t) + " になる入力をさがす。" },
+        { title: "方程式を解く", body: `${lin(a, b)}＝${t === 1 ? `${xm(c)}` : t === -1 ? `−(${xm(c)})` : `${D(t)}(${xm(c)})`} を解いて、{{x＝${D(s)}}}。`, trap: "f(" + D(t) + ") を計算するのではない。出力が " + D(t) + " になる入力をさがす。" },
       ],
     };
   }
@@ -159,7 +159,7 @@ export const H_MATH_3_GYAKU_MOSHI: UnitMoshi = {
   unit: U,
   subject: "math",
   grade: "数学Ⅲ",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "合成関数",

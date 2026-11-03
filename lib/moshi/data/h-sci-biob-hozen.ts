@@ -175,7 +175,7 @@ export const H_SCI_BIOB_HOZEN_MOSHI: UnitMoshi = {
   unit: U,
   subject: "sci",
   grade: "生物基礎",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     { title: "生態系のバランスと保全", lead: "次の問いに答えなさい。", style: "word", pick: 4, questions: POOL },
     { title: "生物濃縮", lead: "次の問いに答えなさい。", style: "calc", questions: [{ id: "noshuku", type: "A", difficulty: 2, points: 17, seconds: 90, skill: "思考・判断・表現", generate: noshuku }] },

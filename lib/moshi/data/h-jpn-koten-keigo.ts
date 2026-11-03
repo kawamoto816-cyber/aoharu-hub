@@ -85,6 +85,6 @@ export const H_JPN_KOTEN_KEIGO_MOSHI: UnitMoshi = {
   subject: "ja",
   grade: "古典探究",
   minutes: 8,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [{ title: "敬語の種類と敬意の向き", lead: "次の問いに答えなさい。", style: "word", pick: 6, questions: POOL }],
 };

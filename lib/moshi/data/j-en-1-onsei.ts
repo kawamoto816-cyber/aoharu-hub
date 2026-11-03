@@ -184,7 +184,7 @@ export const J_EN_1_ONSEI_MOSHI: UnitMoshi = {
   subject: "eng",
   grade: "中1",
   minutes: 8,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     { title: "文字", lead: "次の問いに答えなさい。", style: "word", pick: 3, questions: MOJI },
     { title: "音とアクセント", lead: "次の問いに答えなさい。", style: "word", pick: 3, questions: OTO },

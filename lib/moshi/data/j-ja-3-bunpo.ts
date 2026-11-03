@@ -263,7 +263,7 @@ export const J_JA_3_BUNPO_MOSHI: UnitMoshi = {
   subject: "ja",
   grade: "中3",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "品詞の識別",

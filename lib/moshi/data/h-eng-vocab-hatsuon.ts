@@ -194,6 +194,6 @@ export const H_ENG_VOCAB_HATSUON_MOSHI: UnitMoshi = {
   subject: "eng",
   grade: "語彙",
   minutes: 8,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [{ title: "発音・アクセント", lead: "次の問いに答えなさい。", style: "word", pick: 6, questions: POOL }],
 };

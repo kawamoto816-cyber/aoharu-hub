@@ -50,6 +50,6 @@ export const H_SCI_EARTH_KISHO_MOSHI: UnitMoshi = {
   subject: "sci",
   grade: "地学",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [{ title: "日本の天気と気象", lead: "次の問いに答えなさい。", style: "word", pick: 6, questions: POOL }],
 };

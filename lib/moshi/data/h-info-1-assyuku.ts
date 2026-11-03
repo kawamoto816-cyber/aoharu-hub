@@ -67,7 +67,11 @@ const LET = ["A", "B", "C", "D"];
 const CODE = ["0", "10", "110", "111"];
 
 function hufBits(r: Rng): QuestionBody {
-  const counts = r.sample([2, 3, 4, 5, 6, 7, 8, 9, 10, 12], 4).sort((x, y) => y - x);
+  // 3位と4位の回数の和が1位より少ないときだけ、0・10・110・111 が本当のハフマン符号 (最短) になる。
+  // そうでないと (例: 12, 8, 7, 6) 2ビット固定のほうが短く、ハフマン符号化の答えと食いちがう
+  let counts = r.sample([2, 3, 4, 5, 6, 7, 8, 9, 10, 12], 4).sort((x, y) => y - x);
+  for (let i = 0; i < 50 && counts[2] + counts[3] >= counts[0]; i++) counts = r.sample([2, 3, 4, 5, 6, 7, 8, 9, 10, 12], 4).sort((x, y) => y - x);
+  if (counts[2] + counts[3] >= counts[0]) counts = [10, 8, 6, 3];
   const order = r.shuffle(LET);
   const lens = CODE.map((c) => c.length);
   const total = counts.reduce((a, c, i) => a + c * lens[i], 0);
@@ -158,7 +162,7 @@ export const H_INFO_1_ASSYUKU_MOSHI: UnitMoshi = {
   unit: U,
   subject: "math",
   grade: "情報Ⅰ",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "圧縮率とランレングス圧縮",

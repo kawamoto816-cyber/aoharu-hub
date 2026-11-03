@@ -167,13 +167,14 @@ function gousei(r: Rng): QuestionBody {
   const R2 = a * a + b * b;
   const [k, m] = sq(R2);
   const ans = surd(c, mx ? k : -k, m, 1, true);
-  const f = `${a < 0 ? "−" : ""}${Math.abs(a) === 1 ? "" : Math.abs(a)}sinθ ${b < 0 ? "−" : "＋"} ${Math.abs(b) === 1 ? "" : Math.abs(b)}cosθ${c === 0 ? "" : ` ${c < 0 ? "−" : "＋"} ${Math.abs(c)}`}`;
+  const ab = `${a < 0 ? "−" : ""}${Math.abs(a) === 1 ? "" : Math.abs(a)}sinθ ${b < 0 ? "−" : "＋"} ${Math.abs(b) === 1 ? "" : Math.abs(b)}cosθ`;
+  const f = `${ab}${c === 0 ? "" : ` ${c < 0 ? "−" : "＋"} ${Math.abs(c)}`}`;
   return {
     prompt: `関数 y＝${f} の${mx ? "最大値" : "最小値"}を求めなさい。（θ は実数全体を動く）`,
     answer: { kind: "num", answerKind: "surd", answer: [ans], calc: `${c}${mx ? "+" : "-"}√${R2}` },
     point: "a sinθ＋b cosθ＝√(a²＋b²) sin(θ＋α)",
     steps: [
-      { title: "合成する", body: `${D(a)}sinθ ＋ ${D(b)}cosθ＝{{√${R2} sin(θ＋α)}}（α は cosα＝${D(a)}/√${R2}、sinα＝${D(b)}/√${R2} をみたす角）。`, back: [S5] },
+      { title: "合成する", body: `${ab}＝{{√${R2} sin(θ＋α)}}（α は cosα＝${D(a)}/√${R2}、sinα＝${D(b)}/√${R2} をみたす角）。`, back: [S5] },
       { title: "sin の範囲", body: `−1 ≦ sin(θ＋α) ≦ 1 なので、y は ${D(surd(c, -k, m))} 以上 ${D(surd(c, k, m))} 以下。${mx ? "最大値" : "最小値"}は {{${D(ans)}}}。`, trap: "最大値を a＋b としない。合成すると振幅は √(a²＋b²)。" },
     ],
   };
@@ -210,7 +211,7 @@ function hankaku(r: Rng): QuestionBody {
     point: askSin ? "sin²(α/2)＝(1−cosα)/2" : "cos²(α/2)＝(1＋cosα)/2",
     steps: [
       { title: "半角の公式", body: `${f}²(α/2)＝(1 ${askSin ? "−" : "＋"} cosα)/2＝(1 ${askSin ? "−" : "＋"} (${frac(p, q)}))/2＝{{${frac(N, Dn)}}}。`, back: [S4] },
-      { title: "符号と有理化", body: `0＜α/2＜π/2 なので ${f}(α/2)＞0。√(${frac(N, Dn)}) を有理化して {{${D(ans)}}}。`, trap: "α/2 の範囲で符号を決める。α の範囲で決めない。" },
+      { title: "符号と有理化", body: `0＜α/2＜π/2 なので ${f}(α/2)＞0。√(${frac(N, Dn)})${ans.includes("√") ? " を有理化して" : "＝"} {{${D(ans)}}}。`, trap: "α/2 の範囲で符号を決める。α の範囲で決めない。" },
     ],
   };
 }
@@ -275,7 +276,10 @@ function sin30(x: number): [number, number] {
 const cos30 = (x: number) => sin30(x + 90);
 
 function sekiwa(r: Rng): QuestionBody {
-  const [A, B] = r.sample(ODD, 2).sort((x, y) => y - x);
+  let [A, B] = r.sample(ODD, 2).sort((x, y) => y - x);
+  // 45°・135° どうしの積は値をそのままかければすむので、片方は 15°・75° などにする
+  for (let i = 0; i < 20 && A % 45 === 0 && B % 45 === 0; i++) [A, B] = r.sample(ODD, 2).sort((x, y) => y - x);
+  if (A % 45 === 0 && B % 45 === 0) [A, B] = [75, 45];
   const kind = r.int(0, 2);
   let u: [number, number];
   let v: [number, number];
@@ -325,7 +329,7 @@ export const H_MATH_2_KAHOU_MOSHI: UnitMoshi = {
   unit: U,
   subject: "math",
   grade: "数学Ⅱ",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "加法定理と2倍角",

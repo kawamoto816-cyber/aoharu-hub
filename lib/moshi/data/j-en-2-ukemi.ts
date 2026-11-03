@@ -208,7 +208,7 @@ export const J_EN_2_UKEMI_MOSHI: UnitMoshi = {
   subject: "eng",
   grade: "中2",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     { title: "受け身の文法", lead: "次の問いに答えなさい。", style: "mix", pick: 4, questions: GRAMMAR },
     { title: "書きかえ・並べかえ", lead: "次の問いに答えなさい。並べかえでは、文の最初の語は大文字で始まっています。", style: "mix", pick: 2, questions: REWRITE },

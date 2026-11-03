@@ -117,7 +117,7 @@ function ichiji(r: Rng): QuestionBody {
     answer: { kind: "choice", options: sh.map((o) => o.t), correct: sh.findIndex((o) => o.ok), why: sh.map((o) => o.why) },
     point: "x の項を左へ集め、係数が負なら向きを逆に",
     steps: [
-      { title: "移項して ax ? b の形に", body: `x の項を左辺、数を右辺に集めると {{${poly([[diff, "x"]])} ${op} ${D(de - be)}}}。`, back: [S2] },
+      { title: "移項して x の項と数に分ける", body: `x の項を左辺、数を右辺に集めると {{${poly([[diff, "x"]])} ${op} ${D(de - be)}}}。`, back: [S2] },
       {
         title: "x の係数でわる",
         body: diff < 0 ? `負の数 ${D(diff)} でわるので、{{向きが逆}}になって x ${sol} ${kk}。` : `${diff} でわって x ${sol} ${kk}。`,
@@ -235,7 +235,7 @@ export const H_MATH_1_FUTOSHIKI_MOSHI: UnitMoshi = {
   unit: U,
   subject: "math",
   grade: "数学Ⅰ",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "不等式の性質と一次不等式",

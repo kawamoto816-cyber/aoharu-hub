@@ -31,7 +31,7 @@ export const H_JPN_BUNGAKU_SHI_MOSHI: UnitMoshi = {
   subject: "ja",
   grade: "文学国語",
   minutes: 20,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "詩の読解「灯」「竹」",

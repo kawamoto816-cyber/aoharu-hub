@@ -221,7 +221,7 @@ export const H_JPN_GEN_GOI_MOSHI: UnitMoshi = {
   subject: "ja",
   grade: "現代の国語",
   minutes: 12,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "語彙と言葉のしくみ",

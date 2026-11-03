@@ -173,7 +173,7 @@ export const H_SCI_CHEMB_GENSO_MOSHI: UnitMoshi = {
   unit: U,
   subject: "sci",
   grade: "化学基礎",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     { title: "元素・単体・化合物", lead: "次の問いに答えなさい。", style: "word", pick: 4, questions: POOL },
     { title: "実験から考える", lead: "次の問いに答えなさい。", style: "mix", questions: FIX },

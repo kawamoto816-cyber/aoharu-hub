@@ -16,6 +16,8 @@ const S6 = L(6, "平均の速さは、もう1つの平均");
 // ---- 式の書き方 (表示は −・²、答えと calc は ASCII) ----
 const gcd = (a: number, b: number): number => (b ? gcd(b, a % b) : Math.abs(a));
 const D = (s: string | number) => String(s).replace(/-/g, "−");
+/** ma ＋ nb の書き方 (係数 ±1 は数字を書かない) */
+const cab = (m: number, n: number) => `${m === 1 ? "" : m === -1 ? "−" : D(m)}a ${n < 0 ? "−" : "+"} ${Math.abs(n) === 1 ? "" : Math.abs(n)}b`;
 const pa = (n: number) => (n < 0 ? `(−${-n})` : String(n));
 const nz = (r: Rng, a: number, b: number) => {
   let v = 0;
@@ -64,13 +66,13 @@ function nikou(r: Rng): QuestionBody {
   const v = C * a ** k * b ** (n - k);
   const ax = a === 1 ? "x" : `${a}x`;
   return {
-    prompt: `(${ax} ${b < 0 ? "−" : "+"} ${Math.abs(b)})${sup(n)} を展開したときの x${sup(k)} の係数を求めなさい。`,
+    prompt: `(${ax} ${b < 0 ? "−" : "+"} ${Math.abs(b)})${sup(n)} を展開したときの x${k === 1 ? "" : sup(k)} の係数を求めなさい。`,
     answer: { kind: "num", answerKind: "num", answer: [String(v)], calc: `${C}*${a}^${k}*(${b})^${n - k}` },
     point: "一般項 ₙCᵣ aⁿ⁻ʳ bʳ から、x の指数が合う項を選ぶ",
     steps: [
       {
         title: "一般項を書く",
-        body: `一般項は ${"ₙ"}C${"ᵣ"}(${ax})${"ⁿ⁻ʳ"}(${D(b)})ʳ。x${sup(k)} になるのは ${ax} を ${k} 個選ぶとき、つまり {{${sub(n)}C${sub(n - k)}×${a}${sup(k)}×${pa(b)}${sup(n - k)}}}。`,
+        body: `一般項は ${"ₙ"}C${"ᵣ"}(${ax})${"ⁿ⁻ʳ"}(${D(b)})ʳ。x${k === 1 ? "" : sup(k)} になるのは ${ax} を ${k} 個選ぶとき、つまり {{${sub(n)}C${sub(n - k)}×${a}${sup(k)}×${pa(b)}${sup(n - k)}}}。`,
         back: [S1],
       },
       {
@@ -126,8 +128,8 @@ function koto(r: Rng): QuestionBody {
     answer: { kind: "num", answerKind: "pair", answer: [String(a), String(b)], labels: ["a =", "b ="], equations: [`a+b=${p}`, `${m}*a+(${n})*b=${q}`] },
     point: "左辺を整理して、同じ次数の係数を等しくおく",
     steps: [
-      { title: "左辺を整理する", body: `左辺＝(a＋b)x ＋ (${D(m)}a ${n < 0 ? "−" : "+"} ${Math.abs(n)}b)。`, back: [S3] },
-      { title: "係数を比べる", body: `{{a＋b＝${D(p)}}}、{{${D(m)}a ${n < 0 ? "−" : "+"} ${Math.abs(n)}b＝${D(q)}}} を連立します。` },
+      { title: "左辺を整理する", body: `左辺＝(a＋b)x ＋ (${cab(m, n)})。`, back: [S3] },
+      { title: "係数を比べる", body: `{{a＋b＝${D(p)}}}、{{${cab(m, n)}＝${D(q)}}} を連立します。` },
       { title: "解く", body: `a＝{{${D(a)}}}、b＝{{${D(b)}}}。x＝${D(-m)} を代入すると b の式だけになり、早く確かめられます。` },
     ],
   };
@@ -153,10 +155,10 @@ function sokan(r: Rng): QuestionBody {
       { title: "積が定数の2数を見つける", body: `${a === 1 ? "" : a}x と ${b}/x は正で、積は ${a * b}（x が消える）。`, back: [S5] },
       {
         title: "相加平均≧相乗平均",
-        body: `${a === 1 ? "" : a}x ＋ ${b}/x ≧ 2√(${a}x×${b}/x)＝2√${a * b}＝${m === 1 ? 2 * k : `${2 * k}√${m}`}。等号は ${a === 1 ? "" : a}x＝${b}/x のとき成り立ちます。`,
+        body: `${a === 1 ? "" : a}x ＋ ${b}/x ≧ 2√(${a === 1 ? "" : a}x×${b}/x)＝2√${a * b}${k === 1 ? "" : `＝${m === 1 ? 2 * k : `${2 * k}√${m}`}`}。等号は ${a === 1 ? "" : a}x＝${b}/x のとき成り立ちます。`,
         trap: "等号が成り立つ x があるかを確かめないと、最小値とはいえない。",
       },
-      { title: "定数を加える", body: `最小値は {{${D(ansA)}}}。` },
+      { title: c === 0 ? "最小値" : "定数を加える", body: `${c === 0 ? "" : `${c < 0 ? `${-c} を引いて` : `${c} を加えて`}、`}最小値は {{${D(ansA)}}}。` },
     ],
   };
 }
@@ -234,7 +236,7 @@ export const H_MATH_2_SHOMEI_MOSHI: UnitMoshi = {
   unit: U,
   subject: "math",
   grade: "数学Ⅱ",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "二項定理と整式の割り算",

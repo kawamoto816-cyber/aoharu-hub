@@ -53,8 +53,8 @@ function molkg(r: Rng): QuestionBody {
     answer: { kind: "num", answerKind: "num", answer: [f(m)], unit: "mol/kg", calc: `${w}/${M}/(${W}/1000)` },
     point: "質量モル濃度＝溶質の mol ÷ 溶媒の kg",
     steps: [
-      { title: "溶質を mol に", body: `${w}÷${M}＝{{${f(n)} mol}}。`, back: [S2] },
-      { title: "溶媒の kg で割る", body: `水 ${W} g＝${f(W / 1000)} kg。${f(n)}÷${f(W / 1000)}＝{{${f(m)} mol/kg}}。`, trap: "溶液の体積や質量で割らない。分母は溶媒の質量〔kg〕。", back: [S2] },
+      { title: "溶質を mol に", body: `${w}÷${M}＝{{${String(Math.round(n * 1e6) / 1e3)} mmol}}（1 mmol＝1/1000 mol）。`, back: [S2] },
+      { title: "溶媒の kg で割る", body: `水 ${W} g＝${f(W / 1000)} kg。${String(Math.round(n * 1e6) / 1e3)} mmol÷${f(W / 1000)} kg＝${String(Math.round(m * 1e6) / 1e3)} mmol/kg＝{{${f(m)} mol/kg}}。`, trap: "溶液の体積や質量で割らない。分母は溶媒の質量〔kg〕。", back: [S2] },
     ],
   };
 }
@@ -144,7 +144,7 @@ export const H_SCI_CHEM_YOEKI_MOSHI: UnitMoshi = {
   unit: U,
   subject: "sci",
   grade: "化学",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "濃度と溶解度",

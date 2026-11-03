@@ -33,7 +33,7 @@ export const J_JA_3_HANASU_MOSHI: UnitMoshi = {
   subject: "ja",
   grade: "中3",
   minutes: 18,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "合意形成の話し合い",

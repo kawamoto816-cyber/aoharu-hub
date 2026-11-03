@@ -101,7 +101,7 @@ export const H_SCI_BIO_GENBUN_MOSHI: UnitMoshi = {
   subject: "sci",
   grade: "生物",
   minutes: 13,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "遺伝の計算",

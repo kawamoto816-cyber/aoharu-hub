@@ -166,7 +166,7 @@ function fugo(r: Rng): QuestionBody {
   const correct = opts.findIndex((t) => t.join() === tri.join());
   return {
     prompt: `二次関数 y＝ax²＋bx＋c のグラフは${a > 0 ? "下に凸" : "上に凸"}の放物線で、頂点は${QUAD[quad0]}にあり、y 軸と y 座標が${sgn(c)}の点で交わる。a、b、c の符号の組として正しいものはどれですか。`,
-    answer: { kind: "choice", options: opts.map(triText), correct, why: opts.map((t, i) => (i === correct ? "正しい。" : `${t[0] !== tri[0] ? "a（グラフの向き）" : t[1] !== tri[1] ? "b（軸の位置と a の符号）" : "c（y 軸との交点）"}の符号がちがう。`)) },
+    answer: { kind: "choice", options: opts.map(triText), correct, why: opts.map((t, i) => (i === correct ? "正しい。" : `${[t[0] !== tri[0] ? "a（グラフの向き）" : "", t[1] !== tri[1] ? "b（軸の位置と a の符号）" : "", t[2] !== tri[2] ? "c（y 軸との交点）" : ""].filter(Boolean).join("と")}の符号がちがう。`)) },
     point: "向き→a、y軸との交点→c、軸の位置と a から b",
     steps: [
       { title: "a と c", body: `${a > 0 ? "下に凸なので a は正" : "上に凸なので a は負"}。x＝0 のとき y＝c なので、c は${sgn(c)}。`, back: [S1, S4] },
@@ -208,7 +208,7 @@ export const H_MATH_1_NIJIKANSU_MOSHI: UnitMoshi = {
   unit: U,
   subject: "math",
   grade: "数学Ⅰ",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "頂点と平行移動",

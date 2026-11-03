@@ -98,7 +98,7 @@ function teigi(r: Rng): QuestionBody {
   const s = p + r.int(-3, 1);
   const t = s + r.int(2, 5);
   const f = (x: number) => a * (x - p) ** 2 + q;
-  const cand = [s, t, ...(p >= s && p <= t ? [p] : [])];
+  const cand = [s, t, ...(p > s && p < t ? [p] : [])]; // 頂点が端にあるときは2つだけ
   const xmax = cand.reduce((m, x) => (f(x) > f(m) ? x : m), cand[0]);
   const xmin = cand.reduce((m, x) => (f(x) < f(m) ? x : m), cand[0]);
   const b = -2 * a * p;
@@ -107,9 +107,9 @@ function teigi(r: Rng): QuestionBody {
   return {
     prompt: `二次関数 y＝${quad([a, b, c])}（${D(s)} ≦ x ≦ ${D(t)}）の最大値と最小値を求めなさい。`,
     answer: { kind: "num", answerKind: "pair", answer: [String(f(xmax)), String(f(xmin))], labels: ["最大値", "最小値"], equations: [`x=${a}*(${xmax}-(${p}))^2+${q}`, `y=${a}*(${xmin}-(${p}))^2+${q}`] },
-    point: "頂点と両端の y を比べる。軸から遠い端が、もう一方の極値",
+    point: "頂点と両端の y を比べる。軸から遠い端で、もう一方をとる",
     steps: [
-      { title: "平方完成", body: `y＝${vform(a, p, q)}。軸は x＝${D(p)} で、定義域の${inside ? "中" : "外"}にあります。`, back: [S2] },
+      { title: "平方完成", body: `y＝${vform(a, p, q)}。軸は x＝${D(p)} で、定義域の${inside ? (p === s || p === t ? "端" : "中") : "外"}にあります。`, back: [S2] },
       { title: "候補の値", body: `${cand.map((x) => `x＝${D(x)} で y＝${D(f(x))}`).join("、")}。`, trap: inside ? "端の値だけを比べて、頂点の値を見落とさない。" : "定義域の外にある頂点の値を、答えにしない。" },
       { title: "比べる", body: `{{最大値 ${D(f(xmax))}（x＝${D(xmax)}）、最小値 ${D(f(xmin))}（x＝${D(xmin)}）}}。` },
     ],
@@ -225,7 +225,7 @@ export const H_MATH_1_SAIDAI_MOSHI: UnitMoshi = {
   unit: U,
   subject: "math",
   grade: "数学Ⅰ",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "頂点と定義域",

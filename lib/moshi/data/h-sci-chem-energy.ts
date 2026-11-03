@@ -127,7 +127,7 @@ export const H_SCI_CHEM_ENERGY_MOSHI: UnitMoshi = {
   unit: U,
   subject: "sci",
   grade: "化学",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "反応の熱と熱量の測定",

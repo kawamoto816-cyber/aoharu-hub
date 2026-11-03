@@ -16,7 +16,8 @@ const S5 = L(5, "領域を使った最大・最小");
 
 const gcd = (a: number, b: number): number => (b ? gcd(b, a % b) : Math.abs(a));
 const D = (s: string | number) => String(s).replace(/-/g, "−");
-const pa = (n: number) => (n < 0 ? `(−${-n})` : String(n));
+/** 「− n」を、n が負なら「+ |n|」、0 なら空にする */
+const mn = (n: number) => (n === 0 ? "" : n < 0 ? ` + ${-n}` : ` − ${n}`);
 const nz = (r: Rng, a: number, b: number) => {
   let v = 0;
   while (v === 0) v = r.int(a, b);
@@ -141,8 +142,8 @@ function apollo(r: Rng): QuestionBody {
     point: "PA²＝k²PB² を整理して平方完成",
     steps: [
       { title: "条件を式にする", body: `P(x, y) とおくと、PA＝${k}PB から ${sh("x", a)} ＋ y² ＝ ${kk}{${sh("x", b)} ＋ y²}。`, back: [S2] },
-      { title: "整理する", body: `${kk - 1}x² ＋ ${kk - 1}y² ${2 * a - 2 * kk * b < 0 ? "−" : "＋"} ${Math.abs(2 * a - 2 * kk * b)}x ＋ ${pa(kk * b * b - a * a)} ＝ 0 を ${kk - 1} でわって平方完成します。` },
-      { title: "中心と半径", body: `(x − ${pa(cx)})² ＋ y² ＝ ${rad * rad}。中心の x 座標は {{${D(cx)}}}、半径は {{${rad}}}。`, trap: "A と B の中点が中心になるわけではない。比が 1：1 でないときは円になる。" },
+      { title: "整理する", body: `${kk - 1}x² ＋ ${kk - 1}y² ${2 * a - 2 * kk * b < 0 ? "−" : "＋"} ${Math.abs(2 * a - 2 * kk * b)}x ${kk * b * b - a * a < 0 ? "−" : "＋"} ${Math.abs(kk * b * b - a * a)} ＝ 0 を ${kk - 1} でわって平方完成します。` },
+      { title: "中心と半径", body: `${cx === 0 ? "x" : `(x${mn(cx)})`}² ＋ y² ＝ ${rad * rad}。中心の x 座標は {{${D(cx)}}}、半径は {{${rad}}}。`, trap: "A と B の中点が中心になるわけではない。比が 1：1 でないときは円になる。" },
     ],
   };
 }
@@ -165,7 +166,7 @@ function tomonau(r: Rng): QuestionBody {
     X = (a + c) / 2;
     Y = (b + d) / 2;
     eqs = [`x=(${a}+(${c}))/2`, `y=(${b}+(${d}))/2`];
-    how = `M(x, y) とすると x＝(${D(a)}＋s)/2、y＝(${D(b)}＋t)/2 なので、s＝2x − ${pa(a)}、t＝2y − ${pa(b)}`;
+    how = `M(x, y) とすると x＝(${D(a)}＋s)/2、y＝(${D(b)}＋t)/2 なので、s＝2x${mn(a)}、t＝2y${mn(b)}`;
     rad = frac(R, 2);
   } else {
     a = c + 3 * r.int(-2, 2);
@@ -173,7 +174,7 @@ function tomonau(r: Rng): QuestionBody {
     X = (a + 2 * c) / 3;
     Y = (b + 2 * d) / 3;
     eqs = [`x=(${a}+2*(${c}))/3`, `y=(${b}+2*(${d}))/3`];
-    how = `Q(x, y) とすると x＝(${D(a)}＋2s)/3、y＝(${D(b)}＋2t)/3 なので、s＝(3x − ${pa(a)})/2、t＝(3y − ${pa(b)})/2`;
+    how = `Q(x, y) とすると x＝(${D(a)}＋2s)/3、y＝(${D(b)}＋2t)/3 なので、s＝(3x${mn(a)})/2、t＝(3y${mn(b)})/2`;
     rad = frac(2 * R, 3);
   }
   const circ = `${sh("x", c)} ＋ ${sh("y", d)} ＝ ${R * R}`;
@@ -235,7 +236,7 @@ export const H_MATH_2_KISEKI_MOSHI: UnitMoshi = {
   unit: U,
   subject: "math",
   grade: "数学Ⅱ",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "軌跡と領域の基本",

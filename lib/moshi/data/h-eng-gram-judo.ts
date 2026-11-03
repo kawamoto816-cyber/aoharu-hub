@@ -201,6 +201,6 @@ export const H_ENG_GRAM_JUDO_MOSHI: UnitMoshi = {
   subject: "eng",
   grade: "文法",
   minutes: 8,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [{ title: "受動態の形と使い方", lead: "次の問いに答えなさい。", style: "word", pick: 6, questions: POOL }],
 };

@@ -157,7 +157,7 @@ function newton(r: Rng): QuestionBody {
     steps: [
       { title: "漸化式にする", body: `xₙ₊₁＝xₙ − (xₙ² − ${A})/(2xₙ)＝(xₙ ＋ ${A}/xₙ)/2。`, back: [S6] },
       { title: "1回目", body: `x₁＝(${x0} ＋ ${A}/${x0})/2＝${x1}。` },
-      { title: "2回目", body: `x₂＝(${x1} ＋ ${A}÷${x1})/2＝{{${v}}}。`, trap: "x₁ を求めて終わりにしない。もう1回くり返す。" },
+      { title: "2回目", body: `x₂＝(${x1} ＋ ${A}÷${x1.includes("/") ? `(${x1})` : x1})/2＝{{${v}}}。`, trap: "x₁ を求めて終わりにしない。もう1回くり返す。" },
     ],
   };
 }
@@ -166,7 +166,7 @@ export const H_MATH_3_BIBUN_OYO_MOSHI: UnitMoshi = {
   unit: U,
   subject: "math",
   grade: "数学Ⅲ",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "接線と速度",

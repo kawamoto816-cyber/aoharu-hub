@@ -171,7 +171,7 @@ export const H_INFO_1_CHIZAI_MOSHI: UnitMoshi = {
   unit: U,
   subject: "math",
   grade: "情報Ⅰ",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "著作権の保護期間",

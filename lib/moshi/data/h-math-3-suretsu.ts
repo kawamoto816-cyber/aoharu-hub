@@ -61,13 +61,14 @@ function shisu(r: Rng): QuestionBody {
   const k = r.int(1, 5);
   const v = frac(a, b);
   const P = (co: number, first: boolean) => term(co, `${p}ⁿ`, first);
+  const qp = q * 2 === p ? "1/2" : `${q}/${p}`; // 2/4 は 1/2 と書く
   return {
     prompt: `極限 lim[n→∞] (${P(a, true)}${term(c, `${q}ⁿ`, false)})/(${P(b, true)} ${pm(k)}) を求めなさい。`,
     answer: { kind: "num", answerKind: "num", answer: [v], calc: `${a}/${b}` },
-    point: "いちばん大きい底 " + p + "ⁿ で割り、(" + q + "/" + p + ")ⁿ→0 を使う",
+    point: `いちばん大きい底 ${p}ⁿ で割り、(${qp})ⁿ→0 を使う`,
     steps: [
-      { title: `${p}ⁿ で割る`, body: `(${D(a)}${term(c, `(${q}/${p})ⁿ`, false)})/(${b} ${pm(k)}/${p}ⁿ)。`, back: [S4] },
-      { title: "極限をとる", body: `−1＜${q}/${p}＜1 なので (${q}/${p})ⁿ→0、1/${p}ⁿ→0。極限は {{${F(v)}}}。`, trap: `${q}ⁿ の項を残したままにしない。r の範囲で rⁿ の行き先を判断する。` },
+      { title: `${p}ⁿ で割る`, body: `(${D(a)}${term(c, `(${qp})ⁿ`, false)})/(${b} ${pm(k)}/${p}ⁿ)。`, back: [S4] },
+      { title: "極限をとる", body: `−1＜${qp}＜1 なので (${qp})ⁿ→0、1/${p}ⁿ→0。極限は {{${F(v)}}}。`, trap: `${q}ⁿ の項を残したままにしない。r の範囲で rⁿ の行き先を判断する。` },
     ],
   };
 }
@@ -154,7 +155,7 @@ export const H_MATH_3_SURETSU_MOSHI: UnitMoshi = {
   unit: U,
   subject: "math",
   grade: "数学Ⅲ",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "数列の極限",

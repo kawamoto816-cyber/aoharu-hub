@@ -238,7 +238,7 @@ export const J_EN_2_JODOSHI_MOSHI: UnitMoshi = {
   subject: "eng",
   grade: "中2",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     { title: "助動詞の形と意味", lead: "次の問いに答えなさい。", style: "word", pick: 5, questions: FORMS },
     { title: "並べかえ", lead: "日本語に合うように、語を並べかえなさい。文の最初の語は大文字で始めてあります。", style: "word", pick: 2, questions: ORDER },

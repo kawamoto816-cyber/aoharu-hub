@@ -269,7 +269,7 @@ export const H_MATH_1_SANKAKUHI_MOSHI: UnitMoshi = {
   unit: U,
   subject: "math",
   grade: "数学Ⅰ",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "三角比の定義と値",

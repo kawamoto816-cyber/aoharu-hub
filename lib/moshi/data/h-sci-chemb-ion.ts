@@ -61,7 +61,7 @@ const POOL: QuestionB[] = [
     prompt: "イオン化エネルギーについて正しい説明はどれですか。",
     answer: {
       kind: "choice",
-      options: ["小さい原子ほど陽イオンになりやすい", "大きい原子ほど陽イオンになりやすい", "貴ガスで最も小さくなる", "周期表の右上ほど小さい"],
+      options: ["イオン化エネルギーが小さい原子ほど陽イオンになりやすい", "イオン化エネルギーが大きい原子ほど陽イオンになりやすい", "貴ガスで最も小さくなる", "周期表の右上ほど小さい"],
       correct: 0,
       why: ["電子1個を取り去るのに必要なエネルギーが小さいほど、電子を失いやすい＝陽イオンになりやすい。", "大きいと電子を取り去りにくい。", "貴ガスでは大きくなる。", "左下ほど小さく、右上ほど大きい傾向がある。"],
     },
@@ -202,7 +202,7 @@ export const H_SCI_CHEMB_ION_MOSHI: UnitMoshi = {
   unit: U,
   subject: "sci",
   grade: "化学基礎",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     { title: "イオンとイオン結合", lead: "次の問いに答えなさい。", style: "word", pick: 4, questions: POOL },
     { title: "組成式", lead: "次の問いに答えなさい。", style: "mix", questions: [{ id: "soseishiki", type: "A", difficulty: 2, points: 17, seconds: 75, skill: "知識・技能", generate: soseishiki }] },

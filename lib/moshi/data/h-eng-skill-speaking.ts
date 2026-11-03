@@ -215,7 +215,7 @@ export const H_ENG_SKILL_SPEAKING_MOSHI: UnitMoshi = {
   subject: "eng",
   grade: "技能",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     { title: "やり取り・発表の言い方", lead: "話す場面を思いうかべて、次の問いに答えなさい。", style: "word", pick: 4, questions: POOL },
     { title: "話す内容を書く", lead: "声に出して話すつもりで、英語で書きなさい。", style: "writing", questions: OPEN },

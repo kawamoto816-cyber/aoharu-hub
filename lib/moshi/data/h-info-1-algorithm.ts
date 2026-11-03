@@ -87,19 +87,16 @@ function bubble(r: Rng): QuestionBody {
     const rev = [...b.slice(0, -1)].reverse().concat(b[b.length - 1]);
     const opts = [b, s, full, rev].map((x) => x.join(", "));
     if (new Set(opts).size !== 4 || opts[0] === a.join(", ")) continue;
+    const whys = [
+      `正しい。1周すると最大の ${Math.max(...a)} がいちばん右に決まる。`,
+      "最小値を選んで先頭と交換する選択ソートの1回目の並び。",
+      "すべて並べ終わった並び。1周目だけではふつう完成しない。",
+      "右はしは正しいが、左の部分の並びがちがう。隣どうしの交換を1つずつ追う。",
+    ];
+    const idx = r.shuffle([0, 1, 2, 3]); // 正解がいつも先頭にならないように並べかえる
     return {
       prompt: `データ ${a.join(", ")} を小さい順に並べるバブルソートで、左から順に隣どうしを比べ、左が大きければ交換する。1周目（右はしまで比べ終わったところ）の並びとして正しいものはどれですか。`,
-      answer: {
-        kind: "choice",
-        options: opts,
-        correct: 0,
-        why: [
-          `正しい。1周すると最大の ${Math.max(...a)} がいちばん右に決まる。`,
-          "最小値を選んで先頭と交換する選択ソートの1回目の並び。",
-          "すべて並べ終わった並び。1周目だけではふつう完成しない。",
-          "右はしは正しいが、左の部分の並びがちがう。隣どうしの交換を1つずつ追う。",
-        ],
-      },
+      answer: { kind: "choice", options: idx.map((i) => opts[i]), correct: idx.indexOf(0), why: idx.map((i) => whys[i]) },
       point: "1周目で最大の値がいちばん右に決まる",
       steps: [
         { title: "隣どうしを比べる", body: "左から (1番目, 2番目)、(2番目, 3番目)、… と比べ、左が大きければ交換します。", back: [S4] },
@@ -145,7 +142,7 @@ export const H_INFO_1_ALGORITHM_MOSHI: UnitMoshi = {
   unit: U,
   subject: "math",
   grade: "情報Ⅰ",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "探索",

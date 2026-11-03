@@ -88,7 +88,7 @@ export const H_SCI_BIO_SHINKA_MOSHI: UnitMoshi = {
   subject: "sci",
   grade: "生物",
   minutes: 12,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "遺伝子頻度の計算",

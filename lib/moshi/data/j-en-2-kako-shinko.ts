@@ -210,6 +210,6 @@ export const J_EN_2_KAKO_SHINKO_MOSHI: UnitMoshi = {
   subject: "eng",
   grade: "中2",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [{ title: "過去進行形の文", lead: "次の問いに答えなさい。", style: "word", pick: 6, questions: POOL }],
 };

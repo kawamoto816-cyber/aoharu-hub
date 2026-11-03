@@ -181,10 +181,10 @@ function kaiten(r: Rng): QuestionBody {
   const u = [z[0] - w[0], z[1] - w[1]];
   const x = u[0] * o.c - u[1] * o.d + w[0];
   const y = u[0] * o.d + u[1] * o.c + w[1];
-  const center = w[0] === 0 && w[1] === 0 ? "原点" : `点 w＝${cx(String(w[0]), String(w[1]))}`;
+  const center = w[0] === 0 && w[1] === 0 ? "原点" : `点 w＝${cx(String(w[0]), String(w[1]))} `;
   const om = cx(String(o.c), String(o.d));
   return {
-    prompt: `点 z＝${cx(String(z[0]), String(z[1]))} を、${center}を中心として${o.say}した点を a＋bi と表すとき、a と b を求めなさい。`,
+    prompt: `点 z＝${cx(String(z[0]), String(z[1]))} を、${center}を中心として ${o.say}した点を a＋bi と表すとき、a と b を求めなさい。`,
     answer: { kind: "num", answerKind: "pair", answer: [String(x), String(y)], labels: ["a =", "b ="], equations: [`a=(${u[0]})*(${o.c})-(${u[1]})*(${o.d})+(${w[0]})`, `b=(${u[0]})*(${o.d})+(${u[1]})*(${o.c})+(${w[1]})`] },
     point: "中心 w のまわりの回転は (z−w)×ω＋w",
     steps: [
@@ -226,7 +226,7 @@ export const H_MATH_C_FUKUSO_MOSHI: UnitMoshi = {
   unit: U,
   subject: "math",
   grade: "数学C",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "絶対値と極形式",

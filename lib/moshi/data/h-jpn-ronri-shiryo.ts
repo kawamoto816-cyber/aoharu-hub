@@ -18,7 +18,7 @@ export const H_JPN_RONRI_SHIRYO_MOSHI: UnitMoshi = {
   subject: "ja",
   grade: "論理国語",
   minutes: 20,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "資料の読解「図書館と読書」",

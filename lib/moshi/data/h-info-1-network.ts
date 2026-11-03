@@ -34,7 +34,7 @@ function ip(r: Rng): QuestionBody {
     point: "IPv4 は 8ビット×4＝32ビット。区切りは 0〜255",
     steps: [
       { title: "2進数にする", body: `${a[k]} を2で割り続け、余りを下から並べると ${a[k].toString(2)}。`, back: [S4] },
-      { title: "8けたにそろえる", body: `左に 0 を足して8けたにすると {{${bin}}}。`, trap: "8ビットなので、けたが足りなければ左に 0 を足す。" },
+      { title: "8けたにそろえる", body: bin.startsWith("0") ? `左に 0 を足して8けたにすると {{${bin}}}。` : `もう8けたあるので、そのまま {{${bin}}}。`, trap: "8ビットなので、けたが足りなければ左に 0 を足す。" },
     ],
   };
 }
@@ -176,7 +176,7 @@ export const H_INFO_1_NETWORK_MOSHI: UnitMoshi = {
   unit: U,
   subject: "math",
   grade: "情報Ⅰ",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "アドレスと通信の速さ",

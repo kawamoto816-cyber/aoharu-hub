@@ -291,7 +291,7 @@ export const H_JPN_BUNGAKU_HYOGEN_MOSHI: UnitMoshi = {
   subject: "ja",
   grade: "文学国語",
   minutes: 12,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "表現の技法",

@@ -28,7 +28,7 @@ export const J_JA_1_MONOGATARI_MOSHI: UnitMoshi = {
   subject: "ja",
   grade: "中1",
   minutes: 20,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "物語の読解「あと三日」",

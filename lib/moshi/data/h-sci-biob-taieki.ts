@@ -140,7 +140,9 @@ for (let a = 90; a <= 100; a++) for (let c = 20; c <= 60; c += 2) {
 }
 
 function sanso(r: Rng): QuestionBody {
-  const [a, c] = r.pick(SANSO);
+  // 肺が 100％ の組は差がそのまま答えになるので、100％ でない組を多めに出す
+  const not100 = r.bool(0.7);
+  const [a, c] = r.pick(SANSO.filter(([x]) => (x !== 100) === not100));
   const ans = ((a - c) / a) * 100;
   return {
     prompt: `肺では、ヘモグロビンの ${a}％ が酸素ヘモグロビンになっていました。ある組織では、それが ${c}％ でした。肺で酸素と結合していたヘモグロビンのうち、何％ がこの組織で酸素を離しましたか。`,
@@ -148,7 +150,7 @@ function sanso(r: Rng): QuestionBody {
     point: "分母は肺で結合していた量",
     steps: [
       { title: "離した量", body: `${a} − ${c} ＝ ${a - c}（％ぶん）が組織で酸素を離した。`, back: [S4] },
-      { title: "割合にする", body: `肺で結合していた ${a} に対する割合なので、${a - c} ÷ ${a} × 100 ＝ {{${ans}％}}。`, trap: `${a - c}％ を答えにしない。「肺で結合していたうちの」割合なので ${a} でわる。` },
+      { title: "割合にする", body: `肺で結合していた ${a} に対する割合なので、${a - c} ÷ ${a} × 100 ＝ {{${ans}％}}。`, trap: a === 100 ? "肺が 100％ でないときは、差をそのまま答えにせず、肺での割合でわる。" : `${a - c}％ を答えにしない。「肺で結合していたうちの」割合なので ${a} でわる。` },
     ],
   };
 }
@@ -176,7 +178,7 @@ export const H_SCI_BIOB_TAIEKI_MOSHI: UnitMoshi = {
   unit: U,
   subject: "sci",
   grade: "生物基礎",
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     { title: "体液と器官のはたらき", lead: "次の問いに答えなさい。", style: "word", pick: 4, questions: POOL },
     {

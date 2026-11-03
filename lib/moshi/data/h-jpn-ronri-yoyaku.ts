@@ -24,7 +24,7 @@ export const H_JPN_RONRI_YOYAKU_MOSHI: UnitMoshi = {
   subject: "ja",
   grade: "論理国語",
   minutes: 20,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "要約「記録と記憶」",
