@@ -30,6 +30,49 @@ import { H_ENG_VOCAB_2000_MOSHI } from "./data/h-eng-vocab-2000";
 import { H_ENG_VOCAB_HATSUON_MOSHI } from "./data/h-eng-vocab-hatsuon";
 import { H_ENG_VOCAB_JUKUGO_MOSHI } from "./data/h-eng-vocab-jukugo";
 import { H_ENG_VOCAB_KAIWA_MOSHI } from "./data/h-eng-vocab-kaiwa";
+import { H_JPN_BUNGAKU_HYOGEN_MOSHI } from "./data/h-jpn-bungaku-hyogen";
+import { H_JPN_BUNGAKU_HYORON_MOSHI } from "./data/h-jpn-bungaku-hyoron";
+import { H_JPN_BUNGAKU_SHI_MOSHI } from "./data/h-jpn-bungaku-shi";
+import { H_JPN_BUNGAKU_SHOSETSU_MOSHI } from "./data/h-jpn-bungaku-shosetsu";
+import { H_JPN_BUNGAKU_SOSAKU_MOSHI } from "./data/h-jpn-bungaku-sosaku";
+import { H_JPN_BUNGAKU_TANKA_MOSHI } from "./data/h-jpn-bungaku-tanka";
+import { H_JPN_BUNKA_JODOSHI_MOSHI } from "./data/h-jpn-bunka-jodoshi";
+import { H_JPN_BUNKA_KANSHI_MOSHI } from "./data/h-jpn-bunka-kanshi";
+import { H_JPN_BUNKA_KINDAI_MOSHI } from "./data/h-jpn-bunka-kindai";
+import { H_JPN_BUNKA_KOBUN_DOKKAI_MOSHI } from "./data/h-jpn-bunka-kobun-dokkai";
+import { H_JPN_BUNKA_KOBUN_NYUMON_MOSHI } from "./data/h-jpn-bunka-kobun-nyumon";
+import { H_JPN_BUNKA_KOBUN_TANGO_MOSHI } from "./data/h-jpn-bunka-kobun-tango";
+import { H_JPN_BUNKA_KOJI_MOSHI } from "./data/h-jpn-bunka-koji";
+import { H_JPN_BUNKA_KUNDOKU_MOSHI } from "./data/h-jpn-bunka-kundoku";
+import { H_JPN_BUNKA_SAIDOKU_MOSHI } from "./data/h-jpn-bunka-saidoku";
+import { H_JPN_BUNKA_SHIIKA_MOSHI } from "./data/h-jpn-bunka-shiika";
+import { H_JPN_BUNKA_YOGEN_MOSHI } from "./data/h-jpn-bunka-yogen";
+import { H_JPN_GEN_GOI_MOSHI } from "./data/h-jpn-gen-goi";
+import { H_JPN_GEN_HANASU_MOSHI } from "./data/h-jpn-gen-hanasu";
+import { H_JPN_GEN_HOKOKU_MOSHI } from "./data/h-jpn-gen-hokoku";
+import { H_JPN_GEN_IKEN_MOSHI } from "./data/h-jpn-gen-iken";
+import { H_JPN_GEN_JITSUYO_MOSHI } from "./data/h-jpn-gen-jitsuyo";
+import { H_JPN_GEN_KANJI_MOSHI } from "./data/h-jpn-gen-kanji";
+import { H_JPN_GEN_RONRI_MOSHI } from "./data/h-jpn-gen-ronri";
+import { H_JPN_KOTEN_GENTEI_MOSHI } from "./data/h-jpn-koten-gentei";
+import { H_JPN_KOTEN_GIMON_MOSHI } from "./data/h-jpn-koten-gimon";
+import { H_JPN_KOTEN_HIKAKU_MOSHI } from "./data/h-jpn-koten-hikaku";
+import { H_JPN_KOTEN_HITEI_MOSHI } from "./data/h-jpn-koten-hitei";
+import { H_JPN_KOTEN_JOSHI_MOSHI } from "./data/h-jpn-koten-joshi";
+import { H_JPN_KOTEN_JOSHIKI_MOSHI } from "./data/h-jpn-koten-joshiki";
+import { H_JPN_KOTEN_KEIGO_MOSHI } from "./data/h-jpn-koten-keigo";
+import { H_JPN_KOTEN_MONOGATARI_MOSHI } from "./data/h-jpn-koten-monogatari";
+import { H_JPN_KOTEN_NIKKI_MOSHI } from "./data/h-jpn-koten-nikki";
+import { H_JPN_KOTEN_SHIEKI_MOSHI } from "./data/h-jpn-koten-shieki";
+import { H_JPN_KOTEN_SHIKIBETSU_MOSHI } from "./data/h-jpn-koten-shikibetsu";
+import { H_JPN_KOTEN_SHISO_MOSHI } from "./data/h-jpn-koten-shiso";
+import { H_JPN_KOTEN_WAKA_MOSHI } from "./data/h-jpn-koten-waka";
+import { H_JPN_RONRI_HYORON_MOSHI } from "./data/h-jpn-ronri-hyoron";
+import { H_JPN_RONRI_KOZO_MOSHI } from "./data/h-jpn-ronri-kozo";
+import { H_JPN_RONRI_SHIRYO_MOSHI } from "./data/h-jpn-ronri-shiryo";
+import { H_JPN_RONRI_SHORONBUN_MOSHI } from "./data/h-jpn-ronri-shoronbun";
+import { H_JPN_RONRI_YOGO_MOSHI } from "./data/h-jpn-ronri-yogo";
+import { H_JPN_RONRI_YOYAKU_MOSHI } from "./data/h-jpn-ronri-yoyaku";
 import { H_MATH_1_DATA_MOSHI } from "./data/h-math-1-data";
 import { H_MATH_1_FUTOSHIKI_MOSHI } from "./data/h-math-1-futoshiki";
 import { H_MATH_1_JISSU_MOSHI } from "./data/h-math-1-jissu";
@@ -76,6 +119,52 @@ import { H_MATH_C_HEIMEN_MOSHI } from "./data/h-math-c-heimen";
 import { H_MATH_C_KUKAN_MOSHI } from "./data/h-math-c-kukan";
 import { H_MATH_C_NIJIKYOKUSEN_MOSHI } from "./data/h-math-c-nijikyokusen";
 import { H_MATH_C_ZUKEI_MOSHI } from "./data/h-math-c-zukei";
+import { H_SCI_BIOB_BIOME_MOSHI } from "./data/h-sci-biob-biome";
+import { H_SCI_BIOB_BUNRETSU_MOSHI } from "./data/h-sci-biob-bunretsu";
+import { H_SCI_BIOB_DNA_MOSHI } from "./data/h-sci-biob-dna";
+import { H_SCI_BIOB_HATSUGEN_MOSHI } from "./data/h-sci-biob-hatsugen";
+import { H_SCI_BIOB_HOZEN_MOSHI } from "./data/h-sci-biob-hozen";
+import { H_SCI_BIOB_MENEKI_MOSHI } from "./data/h-sci-biob-meneki";
+import { H_SCI_BIOB_SAIBO_MOSHI } from "./data/h-sci-biob-saibo";
+import { H_SCI_BIOB_SEITAIKEI_MOSHI } from "./data/h-sci-biob-seitaikei";
+import { H_SCI_BIOB_SENTO_MOSHI } from "./data/h-sci-biob-sento";
+import { H_SCI_BIOB_SHINKEI_MOSHI } from "./data/h-sci-biob-shinkei";
+import { H_SCI_BIOB_TAIEKI_MOSHI } from "./data/h-sci-biob-taieki";
+import { H_SCI_BIOB_TAISHA_MOSHI } from "./data/h-sci-biob-taisha";
+import { H_SCI_BIOB_TAYOSEI_MOSHI } from "./data/h-sci-biob-tayosei";
+import { H_SCI_CHEMB_BUNRI_MOSHI } from "./data/h-sci-chemb-bunri";
+import { H_SCI_CHEMB_CHUWA_MOSHI } from "./data/h-sci-chemb-chuwa";
+import { H_SCI_CHEMB_DENCHI_MOSHI } from "./data/h-sci-chemb-denchi";
+import { H_SCI_CHEMB_GENSHI_MOSHI } from "./data/h-sci-chemb-genshi";
+import { H_SCI_CHEMB_GENSO_MOSHI } from "./data/h-sci-chemb-genso";
+import { H_SCI_CHEMB_HANNOSHIKI_MOSHI } from "./data/h-sci-chemb-hannoshiki";
+import { H_SCI_CHEMB_ION_MOSHI } from "./data/h-sci-chemb-ion";
+import { H_SCI_CHEMB_KINZOKU_MOSHI } from "./data/h-sci-chemb-kinzoku";
+import { H_SCI_CHEMB_KYOYU_MOSHI } from "./data/h-sci-chemb-kyoyu";
+import { H_SCI_CHEMB_MOL_MOSHI } from "./data/h-sci-chemb-mol";
+import { H_SCI_CHEMB_SAN_MOSHI } from "./data/h-sci-chemb-san";
+import { H_SCI_CHEMB_SANKA_MOSHI } from "./data/h-sci-chemb-sanka";
+import { H_SCI_EARTHB_CHISO_MOSHI } from "./data/h-sci-earthb-chiso";
+import { H_SCI_EARTHB_JISHIN_MOSHI } from "./data/h-sci-earthb-jishin";
+import { H_SCI_EARTHB_JUNKAN_MOSHI } from "./data/h-sci-earthb-junkan";
+import { H_SCI_EARTHB_KATACHI_MOSHI } from "./data/h-sci-earthb-katachi";
+import { H_SCI_EARTHB_KAZAN_MOSHI } from "./data/h-sci-earthb-kazan";
+import { H_SCI_EARTHB_NAIBU_MOSHI } from "./data/h-sci-earthb-naibu";
+import { H_SCI_EARTHB_PLATE_MOSHI } from "./data/h-sci-earthb-plate";
+import { H_SCI_EARTHB_REKISHI_MOSHI } from "./data/h-sci-earthb-rekishi";
+import { H_SCI_EARTHB_SAIGAI_MOSHI } from "./data/h-sci-earthb-saigai";
+import { H_SCI_EARTHB_TAIKI_MOSHI } from "./data/h-sci-earthb-taiki";
+import { H_SCI_EARTHB_TAIYOKEI_MOSHI } from "./data/h-sci-earthb-taiyokei";
+import { H_SCI_EARTHB_UCHU_MOSHI } from "./data/h-sci-earthb-uchu";
+import { H_SCI_PHYB_DENRYU_MOSHI } from "./data/h-sci-phyb-denryu";
+import { H_SCI_PHYB_ENERGY_MOSHI } from "./data/h-sci-phyb-energy";
+import { H_SCI_PHYB_HOSOKU_MOSHI } from "./data/h-sci-phyb-hosoku";
+import { H_SCI_PHYB_KORYU_MOSHI } from "./data/h-sci-phyb-koryu";
+import { H_SCI_PHYB_NAMI_MOSHI } from "./data/h-sci-phyb-nami";
+import { H_SCI_PHYB_NETSU_MOSHI } from "./data/h-sci-phyb-netsu";
+import { H_SCI_PHYB_OTO_MOSHI } from "./data/h-sci-phyb-oto";
+import { H_SCI_PHYB_RIYO_MOSHI } from "./data/h-sci-phyb-riyo";
+import { H_SCI_PHYB_UNDO_MOSHI } from "./data/h-sci-phyb-undo";
 import { J_EN_1_BE_MOSHI } from "./data/j-en-1-be";
 import { J_EN_1_CAN_MOSHI } from "./data/j-en-1-can";
 import { J_EN_1_DAIMEISHI_MOSHI } from "./data/j-en-1-daimeishi";
@@ -359,6 +448,49 @@ export const UNIT_REGISTRY: Record<string, UnitMoshi> = {
   "h-eng-vocab-hatsuon": H_ENG_VOCAB_HATSUON_MOSHI,
   "h-eng-vocab-jukugo": H_ENG_VOCAB_JUKUGO_MOSHI,
   "h-eng-vocab-kaiwa": H_ENG_VOCAB_KAIWA_MOSHI,
+  "h-jpn-bungaku-hyogen": H_JPN_BUNGAKU_HYOGEN_MOSHI,
+  "h-jpn-bungaku-hyoron": H_JPN_BUNGAKU_HYORON_MOSHI,
+  "h-jpn-bungaku-shi": H_JPN_BUNGAKU_SHI_MOSHI,
+  "h-jpn-bungaku-shosetsu": H_JPN_BUNGAKU_SHOSETSU_MOSHI,
+  "h-jpn-bungaku-sosaku": H_JPN_BUNGAKU_SOSAKU_MOSHI,
+  "h-jpn-bungaku-tanka": H_JPN_BUNGAKU_TANKA_MOSHI,
+  "h-jpn-bunka-jodoshi": H_JPN_BUNKA_JODOSHI_MOSHI,
+  "h-jpn-bunka-kanshi": H_JPN_BUNKA_KANSHI_MOSHI,
+  "h-jpn-bunka-kindai": H_JPN_BUNKA_KINDAI_MOSHI,
+  "h-jpn-bunka-kobun-dokkai": H_JPN_BUNKA_KOBUN_DOKKAI_MOSHI,
+  "h-jpn-bunka-kobun-nyumon": H_JPN_BUNKA_KOBUN_NYUMON_MOSHI,
+  "h-jpn-bunka-kobun-tango": H_JPN_BUNKA_KOBUN_TANGO_MOSHI,
+  "h-jpn-bunka-koji": H_JPN_BUNKA_KOJI_MOSHI,
+  "h-jpn-bunka-kundoku": H_JPN_BUNKA_KUNDOKU_MOSHI,
+  "h-jpn-bunka-saidoku": H_JPN_BUNKA_SAIDOKU_MOSHI,
+  "h-jpn-bunka-shiika": H_JPN_BUNKA_SHIIKA_MOSHI,
+  "h-jpn-bunka-yogen": H_JPN_BUNKA_YOGEN_MOSHI,
+  "h-jpn-gen-goi": H_JPN_GEN_GOI_MOSHI,
+  "h-jpn-gen-hanasu": H_JPN_GEN_HANASU_MOSHI,
+  "h-jpn-gen-hokoku": H_JPN_GEN_HOKOKU_MOSHI,
+  "h-jpn-gen-iken": H_JPN_GEN_IKEN_MOSHI,
+  "h-jpn-gen-jitsuyo": H_JPN_GEN_JITSUYO_MOSHI,
+  "h-jpn-gen-kanji": H_JPN_GEN_KANJI_MOSHI,
+  "h-jpn-gen-ronri": H_JPN_GEN_RONRI_MOSHI,
+  "h-jpn-koten-gentei": H_JPN_KOTEN_GENTEI_MOSHI,
+  "h-jpn-koten-gimon": H_JPN_KOTEN_GIMON_MOSHI,
+  "h-jpn-koten-hikaku": H_JPN_KOTEN_HIKAKU_MOSHI,
+  "h-jpn-koten-hitei": H_JPN_KOTEN_HITEI_MOSHI,
+  "h-jpn-koten-joshi": H_JPN_KOTEN_JOSHI_MOSHI,
+  "h-jpn-koten-joshiki": H_JPN_KOTEN_JOSHIKI_MOSHI,
+  "h-jpn-koten-keigo": H_JPN_KOTEN_KEIGO_MOSHI,
+  "h-jpn-koten-monogatari": H_JPN_KOTEN_MONOGATARI_MOSHI,
+  "h-jpn-koten-nikki": H_JPN_KOTEN_NIKKI_MOSHI,
+  "h-jpn-koten-shieki": H_JPN_KOTEN_SHIEKI_MOSHI,
+  "h-jpn-koten-shikibetsu": H_JPN_KOTEN_SHIKIBETSU_MOSHI,
+  "h-jpn-koten-shiso": H_JPN_KOTEN_SHISO_MOSHI,
+  "h-jpn-koten-waka": H_JPN_KOTEN_WAKA_MOSHI,
+  "h-jpn-ronri-hyoron": H_JPN_RONRI_HYORON_MOSHI,
+  "h-jpn-ronri-kozo": H_JPN_RONRI_KOZO_MOSHI,
+  "h-jpn-ronri-shiryo": H_JPN_RONRI_SHIRYO_MOSHI,
+  "h-jpn-ronri-shoronbun": H_JPN_RONRI_SHORONBUN_MOSHI,
+  "h-jpn-ronri-yogo": H_JPN_RONRI_YOGO_MOSHI,
+  "h-jpn-ronri-yoyaku": H_JPN_RONRI_YOYAKU_MOSHI,
   "h-math-1-data": H_MATH_1_DATA_MOSHI,
   "h-math-1-futoshiki": H_MATH_1_FUTOSHIKI_MOSHI,
   "h-math-1-jissu": H_MATH_1_JISSU_MOSHI,
@@ -405,6 +537,52 @@ export const UNIT_REGISTRY: Record<string, UnitMoshi> = {
   "h-math-c-kukan": H_MATH_C_KUKAN_MOSHI,
   "h-math-c-nijikyokusen": H_MATH_C_NIJIKYOKUSEN_MOSHI,
   "h-math-c-zukei": H_MATH_C_ZUKEI_MOSHI,
+  "h-sci-biob-biome": H_SCI_BIOB_BIOME_MOSHI,
+  "h-sci-biob-bunretsu": H_SCI_BIOB_BUNRETSU_MOSHI,
+  "h-sci-biob-dna": H_SCI_BIOB_DNA_MOSHI,
+  "h-sci-biob-hatsugen": H_SCI_BIOB_HATSUGEN_MOSHI,
+  "h-sci-biob-hozen": H_SCI_BIOB_HOZEN_MOSHI,
+  "h-sci-biob-meneki": H_SCI_BIOB_MENEKI_MOSHI,
+  "h-sci-biob-saibo": H_SCI_BIOB_SAIBO_MOSHI,
+  "h-sci-biob-seitaikei": H_SCI_BIOB_SEITAIKEI_MOSHI,
+  "h-sci-biob-sento": H_SCI_BIOB_SENTO_MOSHI,
+  "h-sci-biob-shinkei": H_SCI_BIOB_SHINKEI_MOSHI,
+  "h-sci-biob-taieki": H_SCI_BIOB_TAIEKI_MOSHI,
+  "h-sci-biob-taisha": H_SCI_BIOB_TAISHA_MOSHI,
+  "h-sci-biob-tayosei": H_SCI_BIOB_TAYOSEI_MOSHI,
+  "h-sci-chemb-bunri": H_SCI_CHEMB_BUNRI_MOSHI,
+  "h-sci-chemb-chuwa": H_SCI_CHEMB_CHUWA_MOSHI,
+  "h-sci-chemb-denchi": H_SCI_CHEMB_DENCHI_MOSHI,
+  "h-sci-chemb-genshi": H_SCI_CHEMB_GENSHI_MOSHI,
+  "h-sci-chemb-genso": H_SCI_CHEMB_GENSO_MOSHI,
+  "h-sci-chemb-hannoshiki": H_SCI_CHEMB_HANNOSHIKI_MOSHI,
+  "h-sci-chemb-ion": H_SCI_CHEMB_ION_MOSHI,
+  "h-sci-chemb-kinzoku": H_SCI_CHEMB_KINZOKU_MOSHI,
+  "h-sci-chemb-kyoyu": H_SCI_CHEMB_KYOYU_MOSHI,
+  "h-sci-chemb-mol": H_SCI_CHEMB_MOL_MOSHI,
+  "h-sci-chemb-san": H_SCI_CHEMB_SAN_MOSHI,
+  "h-sci-chemb-sanka": H_SCI_CHEMB_SANKA_MOSHI,
+  "h-sci-earthb-chiso": H_SCI_EARTHB_CHISO_MOSHI,
+  "h-sci-earthb-jishin": H_SCI_EARTHB_JISHIN_MOSHI,
+  "h-sci-earthb-junkan": H_SCI_EARTHB_JUNKAN_MOSHI,
+  "h-sci-earthb-katachi": H_SCI_EARTHB_KATACHI_MOSHI,
+  "h-sci-earthb-kazan": H_SCI_EARTHB_KAZAN_MOSHI,
+  "h-sci-earthb-naibu": H_SCI_EARTHB_NAIBU_MOSHI,
+  "h-sci-earthb-plate": H_SCI_EARTHB_PLATE_MOSHI,
+  "h-sci-earthb-rekishi": H_SCI_EARTHB_REKISHI_MOSHI,
+  "h-sci-earthb-saigai": H_SCI_EARTHB_SAIGAI_MOSHI,
+  "h-sci-earthb-taiki": H_SCI_EARTHB_TAIKI_MOSHI,
+  "h-sci-earthb-taiyokei": H_SCI_EARTHB_TAIYOKEI_MOSHI,
+  "h-sci-earthb-uchu": H_SCI_EARTHB_UCHU_MOSHI,
+  "h-sci-phyb-denryu": H_SCI_PHYB_DENRYU_MOSHI,
+  "h-sci-phyb-energy": H_SCI_PHYB_ENERGY_MOSHI,
+  "h-sci-phyb-hosoku": H_SCI_PHYB_HOSOKU_MOSHI,
+  "h-sci-phyb-koryu": H_SCI_PHYB_KORYU_MOSHI,
+  "h-sci-phyb-nami": H_SCI_PHYB_NAMI_MOSHI,
+  "h-sci-phyb-netsu": H_SCI_PHYB_NETSU_MOSHI,
+  "h-sci-phyb-oto": H_SCI_PHYB_OTO_MOSHI,
+  "h-sci-phyb-riyo": H_SCI_PHYB_RIYO_MOSHI,
+  "h-sci-phyb-undo": H_SCI_PHYB_UNDO_MOSHI,
   "j-en-1-be": J_EN_1_BE_MOSHI,
   "j-en-1-can": J_EN_1_CAN_MOSHI,
   "j-en-1-daimeishi": J_EN_1_DAIMEISHI_MOSHI,
