@@ -1,6 +1,20 @@
 // 自動生成 (scripts/gen-moshi.ts)。手で書きかえない。
 import type { Daimon, UnitMoshi } from "./types";
 import { E_MATH_5_HAYASA_MOSHI } from "./data/e-math-5-hayasa";
+import { H_CIV_KOKYO_CHIHO_MOSHI } from "./data/h-civ-kokyo-chiho";
+import { H_CIV_KOKYO_JINKEN_MOSHI } from "./data/h-civ-kokyo-jinken";
+import { H_CIV_KOKYO_JIZOKU_MOSHI } from "./data/h-civ-kokyo-jizoku";
+import { H_CIV_KOKYO_KEIYAKU_MOSHI } from "./data/h-civ-kokyo-keiyaku";
+import { H_CIV_KOKYO_KENPO_MOSHI } from "./data/h-civ-kokyo-kenpo";
+import { H_CIV_KOKYO_KINYU_MOSHI } from "./data/h-civ-kokyo-kinyu";
+import { H_CIV_KOKYO_KOKUSAI_KEIZAI_MOSHI } from "./data/h-civ-kokyo-kokusai-keizai";
+import { H_CIV_KOKYO_KOKUSAI_SEIJI_MOSHI } from "./data/h-civ-kokyo-kokusai-seiji";
+import { H_CIV_KOKYO_RODO_MOSHI } from "./data/h-civ-kokyo-rodo";
+import { H_CIV_KOKYO_SEINEN_MOSHI } from "./data/h-civ-kokyo-seinen";
+import { H_CIV_KOKYO_SENKYO_MOSHI } from "./data/h-civ-kokyo-senkyo";
+import { H_CIV_KOKYO_SHIJO_MOSHI } from "./data/h-civ-kokyo-shijo";
+import { H_CIV_KOKYO_SHISO_MOSHI } from "./data/h-civ-kokyo-shiso";
+import { H_CIV_KOKYO_TOSEI_MOSHI } from "./data/h-civ-kokyo-tosei";
 import { H_ENG_GRAM_BUNKEI_MOSHI } from "./data/h-eng-gram-bunkei";
 import { H_ENG_GRAM_BUNSHI_MOSHI } from "./data/h-eng-gram-bunshi";
 import { H_ENG_GRAM_BUNSHIKOBUN_MOSHI } from "./data/h-eng-gram-bunshikobun";
@@ -30,6 +44,47 @@ import { H_ENG_VOCAB_2000_MOSHI } from "./data/h-eng-vocab-2000";
 import { H_ENG_VOCAB_HATSUON_MOSHI } from "./data/h-eng-vocab-hatsuon";
 import { H_ENG_VOCAB_JUKUGO_MOSHI } from "./data/h-eng-vocab-jukugo";
 import { H_ENG_VOCAB_KAIWA_MOSHI } from "./data/h-eng-vocab-kaiwa";
+import { H_GEO_SOGO_BOSAI_MOSHI } from "./data/h-geo-sogo-bosai";
+import { H_GEO_SOGO_CHIKEI_MOSHI } from "./data/h-geo-sogo-chikei";
+import { H_GEO_SOGO_CHOSA_MOSHI } from "./data/h-geo-sogo-chosa";
+import { H_GEO_SOGO_GIS_MOSHI } from "./data/h-geo-sogo-gis";
+import { H_GEO_SOGO_JINKO_MOSHI } from "./data/h-geo-sogo-jinko";
+import { H_GEO_SOGO_JISA_MOSHI } from "./data/h-geo-sogo-jisa";
+import { H_GEO_SOGO_KANKYO_MOSHI } from "./data/h-geo-sogo-kankyo";
+import { H_GEO_SOGO_KIKO_MOSHI } from "./data/h-geo-sogo-kiko";
+import { H_GEO_SOGO_MUSUBI_MOSHI } from "./data/h-geo-sogo-musubi";
+import { H_GEO_SOGO_SHIGEN_MOSHI } from "./data/h-geo-sogo-shigen";
+import { H_GEO_SOGO_SHUKYO_MOSHI } from "./data/h-geo-sogo-shukyo";
+import { H_GEO_SOGO_TOSHI_MOSHI } from "./data/h-geo-sogo-toshi";
+import { H_HIST_SOGO_18C_MOSHI } from "./data/h-hist-sogo-18c";
+import { H_HIST_SOGO_DATSU_MOSHI } from "./data/h-hist-sogo-datsu";
+import { H_HIST_SOGO_GLOBAL_MOSHI } from "./data/h-hist-sogo-global";
+import { H_HIST_SOGO_KAKUMEI_MOSHI } from "./data/h-hist-sogo-kakumei";
+import { H_HIST_SOGO_KODO_MOSHI } from "./data/h-hist-sogo-kodo";
+import { H_HIST_SOGO_KYOKO_MOSHI } from "./data/h-hist-sogo-kyoko";
+import { H_HIST_SOGO_MEIJI_MOSHI } from "./data/h-hist-sogo-meiji";
+import { H_HIST_SOGO_NISSHIN_MOSHI } from "./data/h-hist-sogo-nisshin";
+import { H_HIST_SOGO_REISEN_MOSHI } from "./data/h-hist-sogo-reisen";
+import { H_HIST_SOGO_SANGYO_MOSHI } from "./data/h-hist-sogo-sangyo";
+import { H_HIST_SOGO_SENGO_MOSHI } from "./data/h-hist-sogo-sengo";
+import { H_HIST_SOGO_TAISHU_MOSHI } from "./data/h-hist-sogo-taishu";
+import { H_HIST_SOGO_TEIKOKU_MOSHI } from "./data/h-hist-sogo-teikoku";
+import { H_HIST_SOGO_WW1_MOSHI } from "./data/h-hist-sogo-ww1";
+import { H_HIST_SOGO_WW2_MOSHI } from "./data/h-hist-sogo-ww2";
+import { H_INFO_1_ALGORITHM_MOSHI } from "./data/h-info-1-algorithm";
+import { H_INFO_1_ASSYUKU_MOSHI } from "./data/h-info-1-assyuku";
+import { H_INFO_1_CHIZAI_MOSHI } from "./data/h-info-1-chizai";
+import { H_INFO_1_COMPUTER_MOSHI } from "./data/h-info-1-computer";
+import { H_INFO_1_DATA_MOSHI } from "./data/h-info-1-data";
+import { H_INFO_1_DESIGN_MOSHI } from "./data/h-info-1-design";
+import { H_INFO_1_DIGITAL_MOSHI } from "./data/h-info-1-digital";
+import { H_INFO_1_HYOGEN_MOSHI } from "./data/h-info-1-hyogen";
+import { H_INFO_1_MEDIA_MOSHI } from "./data/h-info-1-media";
+import { H_INFO_1_MODEL_MOSHI } from "./data/h-info-1-model";
+import { H_INFO_1_MORAL_MOSHI } from "./data/h-info-1-moral";
+import { H_INFO_1_NETWORK_MOSHI } from "./data/h-info-1-network";
+import { H_INFO_1_PROGRAM_MOSHI } from "./data/h-info-1-program";
+import { H_INFO_1_SYSTEM_MOSHI } from "./data/h-info-1-system";
 import { H_JPN_BUNGAKU_HYOGEN_MOSHI } from "./data/h-jpn-bungaku-hyogen";
 import { H_JPN_BUNGAKU_HYORON_MOSHI } from "./data/h-jpn-bungaku-hyoron";
 import { H_JPN_BUNGAKU_SHI_MOSHI } from "./data/h-jpn-bungaku-shi";
@@ -96,6 +151,14 @@ import { H_MATH_2_SEKIBUN_MOSHI } from "./data/h-math-2-sekibun";
 import { H_MATH_2_SHISU_MOSHI } from "./data/h-math-2-shisu";
 import { H_MATH_2_SHOMEI_MOSHI } from "./data/h-math-2-shomei";
 import { H_MATH_2_TAISU_MOSHI } from "./data/h-math-2-taisu";
+import { H_MATH_3_BIBUN_OYO_MOSHI } from "./data/h-math-3-bibun-oyo";
+import { H_MATH_3_BIBUN_MOSHI } from "./data/h-math-3-bibun";
+import { H_MATH_3_GYAKU_MOSHI } from "./data/h-math-3-gyaku";
+import { H_MATH_3_KANSU_MOSHI } from "./data/h-math-3-kansu";
+import { H_MATH_3_KYOKUGEN_MOSHI } from "./data/h-math-3-kyokugen";
+import { H_MATH_3_SEKIBUN_OYO_MOSHI } from "./data/h-math-3-sekibun-oyo";
+import { H_MATH_3_SEKIBUN_MOSHI } from "./data/h-math-3-sekibun";
+import { H_MATH_3_SURETSU_MOSHI } from "./data/h-math-3-suretsu";
 import { H_MATH_A_BAAI_MOSHI } from "./data/h-math-a-baai";
 import { H_MATH_A_EN_MOSHI } from "./data/h-math-a-en";
 import { H_MATH_A_GOJO_MOSHI } from "./data/h-math-a-gojo";
@@ -419,6 +482,20 @@ export const REGISTRY: Record<string, Daimon[]> = {
 /** ファイル名 (単元id) → その単元の単元模試 */
 export const UNIT_REGISTRY: Record<string, UnitMoshi> = {
   "e-math-5-hayasa": E_MATH_5_HAYASA_MOSHI,
+  "h-civ-kokyo-chiho": H_CIV_KOKYO_CHIHO_MOSHI,
+  "h-civ-kokyo-jinken": H_CIV_KOKYO_JINKEN_MOSHI,
+  "h-civ-kokyo-jizoku": H_CIV_KOKYO_JIZOKU_MOSHI,
+  "h-civ-kokyo-keiyaku": H_CIV_KOKYO_KEIYAKU_MOSHI,
+  "h-civ-kokyo-kenpo": H_CIV_KOKYO_KENPO_MOSHI,
+  "h-civ-kokyo-kinyu": H_CIV_KOKYO_KINYU_MOSHI,
+  "h-civ-kokyo-kokusai-keizai": H_CIV_KOKYO_KOKUSAI_KEIZAI_MOSHI,
+  "h-civ-kokyo-kokusai-seiji": H_CIV_KOKYO_KOKUSAI_SEIJI_MOSHI,
+  "h-civ-kokyo-rodo": H_CIV_KOKYO_RODO_MOSHI,
+  "h-civ-kokyo-seinen": H_CIV_KOKYO_SEINEN_MOSHI,
+  "h-civ-kokyo-senkyo": H_CIV_KOKYO_SENKYO_MOSHI,
+  "h-civ-kokyo-shijo": H_CIV_KOKYO_SHIJO_MOSHI,
+  "h-civ-kokyo-shiso": H_CIV_KOKYO_SHISO_MOSHI,
+  "h-civ-kokyo-tosei": H_CIV_KOKYO_TOSEI_MOSHI,
   "h-eng-gram-bunkei": H_ENG_GRAM_BUNKEI_MOSHI,
   "h-eng-gram-bunshi": H_ENG_GRAM_BUNSHI_MOSHI,
   "h-eng-gram-bunshikobun": H_ENG_GRAM_BUNSHIKOBUN_MOSHI,
@@ -448,6 +525,47 @@ export const UNIT_REGISTRY: Record<string, UnitMoshi> = {
   "h-eng-vocab-hatsuon": H_ENG_VOCAB_HATSUON_MOSHI,
   "h-eng-vocab-jukugo": H_ENG_VOCAB_JUKUGO_MOSHI,
   "h-eng-vocab-kaiwa": H_ENG_VOCAB_KAIWA_MOSHI,
+  "h-geo-sogo-bosai": H_GEO_SOGO_BOSAI_MOSHI,
+  "h-geo-sogo-chikei": H_GEO_SOGO_CHIKEI_MOSHI,
+  "h-geo-sogo-chosa": H_GEO_SOGO_CHOSA_MOSHI,
+  "h-geo-sogo-gis": H_GEO_SOGO_GIS_MOSHI,
+  "h-geo-sogo-jinko": H_GEO_SOGO_JINKO_MOSHI,
+  "h-geo-sogo-jisa": H_GEO_SOGO_JISA_MOSHI,
+  "h-geo-sogo-kankyo": H_GEO_SOGO_KANKYO_MOSHI,
+  "h-geo-sogo-kiko": H_GEO_SOGO_KIKO_MOSHI,
+  "h-geo-sogo-musubi": H_GEO_SOGO_MUSUBI_MOSHI,
+  "h-geo-sogo-shigen": H_GEO_SOGO_SHIGEN_MOSHI,
+  "h-geo-sogo-shukyo": H_GEO_SOGO_SHUKYO_MOSHI,
+  "h-geo-sogo-toshi": H_GEO_SOGO_TOSHI_MOSHI,
+  "h-hist-sogo-18c": H_HIST_SOGO_18C_MOSHI,
+  "h-hist-sogo-datsu": H_HIST_SOGO_DATSU_MOSHI,
+  "h-hist-sogo-global": H_HIST_SOGO_GLOBAL_MOSHI,
+  "h-hist-sogo-kakumei": H_HIST_SOGO_KAKUMEI_MOSHI,
+  "h-hist-sogo-kodo": H_HIST_SOGO_KODO_MOSHI,
+  "h-hist-sogo-kyoko": H_HIST_SOGO_KYOKO_MOSHI,
+  "h-hist-sogo-meiji": H_HIST_SOGO_MEIJI_MOSHI,
+  "h-hist-sogo-nisshin": H_HIST_SOGO_NISSHIN_MOSHI,
+  "h-hist-sogo-reisen": H_HIST_SOGO_REISEN_MOSHI,
+  "h-hist-sogo-sangyo": H_HIST_SOGO_SANGYO_MOSHI,
+  "h-hist-sogo-sengo": H_HIST_SOGO_SENGO_MOSHI,
+  "h-hist-sogo-taishu": H_HIST_SOGO_TAISHU_MOSHI,
+  "h-hist-sogo-teikoku": H_HIST_SOGO_TEIKOKU_MOSHI,
+  "h-hist-sogo-ww1": H_HIST_SOGO_WW1_MOSHI,
+  "h-hist-sogo-ww2": H_HIST_SOGO_WW2_MOSHI,
+  "h-info-1-algorithm": H_INFO_1_ALGORITHM_MOSHI,
+  "h-info-1-assyuku": H_INFO_1_ASSYUKU_MOSHI,
+  "h-info-1-chizai": H_INFO_1_CHIZAI_MOSHI,
+  "h-info-1-computer": H_INFO_1_COMPUTER_MOSHI,
+  "h-info-1-data": H_INFO_1_DATA_MOSHI,
+  "h-info-1-design": H_INFO_1_DESIGN_MOSHI,
+  "h-info-1-digital": H_INFO_1_DIGITAL_MOSHI,
+  "h-info-1-hyogen": H_INFO_1_HYOGEN_MOSHI,
+  "h-info-1-media": H_INFO_1_MEDIA_MOSHI,
+  "h-info-1-model": H_INFO_1_MODEL_MOSHI,
+  "h-info-1-moral": H_INFO_1_MORAL_MOSHI,
+  "h-info-1-network": H_INFO_1_NETWORK_MOSHI,
+  "h-info-1-program": H_INFO_1_PROGRAM_MOSHI,
+  "h-info-1-system": H_INFO_1_SYSTEM_MOSHI,
   "h-jpn-bungaku-hyogen": H_JPN_BUNGAKU_HYOGEN_MOSHI,
   "h-jpn-bungaku-hyoron": H_JPN_BUNGAKU_HYORON_MOSHI,
   "h-jpn-bungaku-shi": H_JPN_BUNGAKU_SHI_MOSHI,
@@ -514,6 +632,14 @@ export const UNIT_REGISTRY: Record<string, UnitMoshi> = {
   "h-math-2-shisu": H_MATH_2_SHISU_MOSHI,
   "h-math-2-shomei": H_MATH_2_SHOMEI_MOSHI,
   "h-math-2-taisu": H_MATH_2_TAISU_MOSHI,
+  "h-math-3-bibun-oyo": H_MATH_3_BIBUN_OYO_MOSHI,
+  "h-math-3-bibun": H_MATH_3_BIBUN_MOSHI,
+  "h-math-3-gyaku": H_MATH_3_GYAKU_MOSHI,
+  "h-math-3-kansu": H_MATH_3_KANSU_MOSHI,
+  "h-math-3-kyokugen": H_MATH_3_KYOKUGEN_MOSHI,
+  "h-math-3-sekibun-oyo": H_MATH_3_SEKIBUN_OYO_MOSHI,
+  "h-math-3-sekibun": H_MATH_3_SEKIBUN_MOSHI,
+  "h-math-3-suretsu": H_MATH_3_SURETSU_MOSHI,
   "h-math-a-baai": H_MATH_A_BAAI_MOSHI,
   "h-math-a-en": H_MATH_A_EN_MOSHI,
   "h-math-a-gojo": H_MATH_A_GOJO_MOSHI,
