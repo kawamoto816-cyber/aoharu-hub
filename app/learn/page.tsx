@@ -13,7 +13,7 @@ import type { Lecture, Recitation } from "@/lib/lecture/types";
 // /learn: アオハルラーンの入口（A案）。「勉強は、こんなに面白かった。」を表紙に、上から
 //   1. 表紙 (学んだら、教えよう／きょうの1単元)  2. AIの生徒との会話の例 (準備中)
 //   3. 学び方は、3ステップ (1 覚える・2 鍛える・3 教える)  4. 1単元に、4つの楽しみ方 (実在する単元の朗読・名演説・漫才・謎)
-//   5. この教科書のなかみ (LECTURES から数える)  6. 教科から選ぶ  7. あたらしいがっこう への入口 (準備中)
+//   5. この教科書のなかみ (LECTURES から数える)  6. 教科から選ぶ  7. あたらしいがっこう (/learn/gakko) への入口
 // のあとに「もっと学ぶ」として、もとの 3×3 の表 (components/learn/LearnMoreMap) を置く。
 // 数字と作品はすべて lib/lecture のデータから引く (つくらない)。
 
@@ -380,19 +380,21 @@ export default function LearnHub() {
           </ul>
         </section>
 
-        {/* 7. あたらしいがっこう（準備中） */}
-        <section aria-labelledby="school-heading" className="mt-12 flex flex-col gap-2.5 rounded-[18px] bg-[#15172B] p-[18px] text-white">
-          <p className="m-0 text-[12px] font-black tracking-[0.1em] text-[#FFE45C]">あたらしいがっこう（準備中）</p>
-          <h2 id="school-heading" className="m-0 text-[18px] font-black leading-[1.5]">
-            ここで学んだ一日が、そのまま出席になる。
-          </h2>
-          <p className="m-0 text-[13px] leading-[1.8] text-[#C9CEF2]">
-            時間割も、教室も、先生役も。学んだ記録が出席簿になり、AIの生徒に教えた単元が「先生レベル」に育つ、あなたのための自分だけの学校。
-          </p>
-          <div className="h-2.5 overflow-hidden rounded-full bg-[#3A3D55]" aria-hidden="true">
-            <div className="h-2.5 w-[32%] bg-[#FFE45C]" />
-          </div>
-          <p className="m-0 text-[12px] text-[#C9CEF2]">見習い先生　→　一人前　→　名人</p>
+        {/* 7. あたらしいがっこう */}
+        <section aria-labelledby="school-heading" className="mt-12">
+          <Link href="/learn/gakko" className="flex flex-col gap-2.5 rounded-[18px] bg-[#15172B] p-[18px] text-white no-underline shadow-[4px_4px_0_#1533B8] transition-transform hover:-translate-y-0.5 focus-visible:-translate-y-0.5">
+            <p className="m-0 text-[12px] font-black tracking-[0.1em] text-[#FFE45C]">あたらしいがっこう</p>
+            <h2 id="school-heading" className="m-0 text-[18px] font-black leading-[1.5]">
+              ここで学んだ一日が、あなたの出席になる。
+            </h2>
+            <p className="m-0 text-[13px] leading-[1.8] text-[#C9CEF2]">
+              毎日自動でできる4コマの時間割。読み終えたら、きょうの出席。時間割も、教室も、先生役も。あなたがひらく、自分だけの学校。
+            </p>
+            <span className="mt-1 inline-flex min-h-[44px] w-fit items-center gap-2 rounded-full bg-[#FFE45C] px-5 text-[15px] font-black text-[#15172B]">
+              まなぶ
+              <Arrow />
+            </span>
+          </Link>
         </section>
 
         <div className="mt-8 flex flex-wrap items-center gap-2">

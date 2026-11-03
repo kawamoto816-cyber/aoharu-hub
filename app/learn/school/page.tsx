@@ -91,6 +91,11 @@ export default function SchoolMap() {
                 定期テスト模試：テスト範囲を選んで本番形式で解く →
               </Link>
             </p>
+            <p className="m-0 mt-2 text-[13px] font-bold">
+              <Link href="/learn/gakko" className="text-[#1533B8]">
+                あたらしいがっこう：学年の単元から、きょうの時間割を自動で組む →
+              </Link>
+            </p>
 
             <nav aria-label="教科ごとの入口" className="mt-4 flex flex-wrap items-center gap-2">
               <span className="text-[13px] font-bold text-[#3A3D55]">教科ごとの入口：</span>

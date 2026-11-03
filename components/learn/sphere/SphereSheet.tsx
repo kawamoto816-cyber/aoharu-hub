@@ -169,6 +169,9 @@ export function SphereSheet({
           一覧で見る
         </a>
       </div>
+      <Link href="/learn/gakko" className="self-center py-1 text-[12px] font-bold text-[#1533B8]">
+        あたらしいがっこうで、きょうの時間割から学ぶ →
+      </Link>
     </div>
   );
 }
