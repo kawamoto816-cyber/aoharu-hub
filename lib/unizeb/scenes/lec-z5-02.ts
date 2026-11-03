@@ -6,7 +6,7 @@ export const SC_LEC_Z5_02: Scene[] = [
       at: 0,
       caption: "部活のあとの中学生が選べるのは、塾だけではない。無料の動画や家族に聞くこと、そして「何もしない」も、同じ相手のお金と時間を取り合う競合。",
       alt: "部活帰りの中学生が、駅前の塾の建物と、無料の動画が映ったスマートフォンを見比べて、首をかしげている。",
-      art: { bg: "outdoor", cast: [{ who: "ハル", look: "boy", x: 270, face: "think", fx: "?" }] },
+      art: { bg: "outdoor", cast: [{ who: "ハル", look: "girl", x: 270, face: "think", fx: "?" }] },
       extras: [
         { kind: "shop", x: 70, y: 150, s: 0.8, text: "塾" },
         { kind: "phone", x: 165, y: 130, s: 1.4, text: "動画" },
@@ -25,7 +25,7 @@ export const SC_LEC_Z5_02: Scene[] = [
         bg: "class",
         cast: [
           { who: "先生", look: "teacher", x: 270, face: "smile" },
-          { who: "アオ", look: "girl", x: 70, face: "surprise", fx: "idea" },
+          { who: "アオ", look: "boy", x: 70, face: "surprise", fx: "idea" },
         ],
         props: [{ kind: "table", x: 0, y: 240 }],
       },

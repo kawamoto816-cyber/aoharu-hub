@@ -6,7 +6,7 @@ export const SC_LEC_Z6_03: Scene[] = [
       at: 2,
       caption: "1人の手残りが−120円のまま、お客さんが10人から100人に増えると、損も1,200円から12,000円へと10倍になる。",
       alt: "AIの添削アプリの画面と、下がっていくグラフを前に、高校生が汗をかいて驚いている。",
-      art: { bg: "plain", cast: [{ who: "ハル", look: "boy", x: 275, face: "sweat", fx: "!" }] },
+      art: { bg: "plain", cast: [{ who: "ハル", look: "girl", x: 275, face: "sweat", fx: "!" }] },
       extras: [
         { kind: "laptop", x: 70, y: 120, s: 1.1, text: "AI添削" },
         { kind: "chartDown", x: 170, y: 100, s: 1.1, text: "手残り" },

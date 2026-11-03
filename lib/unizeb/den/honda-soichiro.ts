@@ -21,6 +21,13 @@ export const DEN_HONDA_SOICHIRO: Den = {
           alt: "眼鏡をかけて笑っている本田宗一郎の写真。白黒。",
           caption: "本田宗一郎（1964年の雑誌に載った写真）。社長として本田技研工業を率いていたころです。",
           credit: { author: "撮影者不明（雑誌『財界』1964年新年特大号、財界研究社）", license: "Public domain", source: "https://commons.wikimedia.org/wiki/File:Honda_Souichiro_zaikai_1964.jpg" },
+        }, {
+          src: "/media/unizeb/den/honda-soichiro/art-shokai-hamamatsu.webp",
+          width: 500,
+          height: 333,
+          alt: "「ART. Automobile Service station」と「アート商会」の看板を掲げた店の前に、古い自動車3台と大勢の人が並んでいる白黒写真。",
+          caption: "浜松のアート商会の支店（1935年ごろ）。宗一郎がのれん分けを受けて開いた自動車修理の店で、看板には「エンジン再生」「車体塗装」とあります。",
+          credit: { author: "アート商会（団体著作物）", license: "Public domain", source: "https://commons.wikimedia.org/wiki/File:Art_Shokai_Hamamatsu_1935.jpg" },
         }],
       body: "宗一郎は1906年に静岡県に生まれ、15歳で東京の自動車修理工場{{アート商会}}に見習いとして入りました。浜松で独立したあと、部品の製造に挑み、終戦後の1946年に{{本田技術研究所}}、1948年に{{本田技研工業}}を設立しました。",
       reading: [
