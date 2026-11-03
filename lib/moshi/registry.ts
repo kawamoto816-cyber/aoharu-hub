@@ -39,8 +39,39 @@ import { J_EN_3_KATEI_MOSHI } from "./data/j-en-3-katei";
 import { J_EN_3_LISTENING_MOSHI } from "./data/j-en-3-listening";
 import { J_EN_3_TANGO_MOSHI } from "./data/j-en-3-tango";
 import { J_JA_1_BUNPO_HINSHI_MOSHI } from "./data/j-ja-1-bunpo-hinshi";
+import { J_JA_1_BUNPO_SEIBUN_MOSHI } from "./data/j-ja-1-bunpo-seibun";
+import { J_JA_1_BUNPO_TANI_MOSHI } from "./data/j-ja-1-bunpo-tani";
+import { J_JA_1_GOI_MOSHI } from "./data/j-ja-1-goi";
+import { J_JA_1_HANASU_MOSHI } from "./data/j-ja-1-hanasu";
+import { J_JA_1_KAKU_MOSHI } from "./data/j-ja-1-kaku";
+import { J_JA_1_KANBUN_MOSHI } from "./data/j-ja-1-kanbun";
+import { J_JA_1_KANJI_MOSHI } from "./data/j-ja-1-kanji";
+import { J_JA_1_KOBUN_MOSHI } from "./data/j-ja-1-kobun";
+import { J_JA_1_MONOGATARI_MOSHI } from "./data/j-ja-1-monogatari";
 import { J_JA_1_SETSUMEI_MOSHI } from "./data/j-ja-1-setsumei";
+import { J_JA_1_SHI_MOSHI } from "./data/j-ja-1-shi";
+import { J_JA_2_BUNPO_FUZOKU_MOSHI } from "./data/j-ja-2-bunpo-fuzoku";
 import { J_JA_2_BUNPO_YOGEN_MOSHI } from "./data/j-ja-2-bunpo-yogen";
+import { J_JA_2_GOI_MOSHI } from "./data/j-ja-2-goi";
+import { J_JA_2_HANASU_MOSHI } from "./data/j-ja-2-hanasu";
+import { J_JA_2_IKENBUN_MOSHI } from "./data/j-ja-2-ikenbun";
+import { J_JA_2_KANJI_MOSHI } from "./data/j-ja-2-kanji";
+import { J_JA_2_KANSHI_MOSHI } from "./data/j-ja-2-kanshi";
+import { J_JA_2_KEIGO_MOSHI } from "./data/j-ja-2-keigo";
+import { J_JA_2_KOBUN_MOSHI } from "./data/j-ja-2-kobun";
+import { J_JA_2_SETSUMEI_MOSHI } from "./data/j-ja-2-setsumei";
+import { J_JA_2_SHOSETSU_MOSHI } from "./data/j-ja-2-shosetsu";
+import { J_JA_2_TANKA_MOSHI } from "./data/j-ja-2-tanka";
+import { J_JA_3_BUNPO_MOSHI } from "./data/j-ja-3-bunpo";
+import { J_JA_3_GOI_MOSHI } from "./data/j-ja-3-goi";
+import { J_JA_3_HAIKU_MOSHI } from "./data/j-ja-3-haiku";
+import { J_JA_3_HANASU_MOSHI } from "./data/j-ja-3-hanasu";
+import { J_JA_3_HIHYO_MOSHI } from "./data/j-ja-3-hihyo";
+import { J_JA_3_KANBUN_MOSHI } from "./data/j-ja-3-kanbun";
+import { J_JA_3_KANJI_MOSHI } from "./data/j-ja-3-kanji";
+import { J_JA_3_KOBUN_MOSHI } from "./data/j-ja-3-kobun";
+import { J_JA_3_RONSETSU_MOSHI } from "./data/j-ja-3-ronsetsu";
+import { J_JA_3_SHOSETSU_MOSHI } from "./data/j-ja-3-shosetsu";
 import { J_MATH_1_DATA } from "./data/j-math-1-data";
 import { J_MATH_1_HEIMEN } from "./data/j-math-1-heimen";
 import { J_MATH_1_HIREI } from "./data/j-math-1-hirei";
@@ -262,8 +293,39 @@ export const UNIT_REGISTRY: Record<string, UnitMoshi> = {
   "j-en-3-listening": J_EN_3_LISTENING_MOSHI,
   "j-en-3-tango": J_EN_3_TANGO_MOSHI,
   "j-ja-1-bunpo-hinshi": J_JA_1_BUNPO_HINSHI_MOSHI,
+  "j-ja-1-bunpo-seibun": J_JA_1_BUNPO_SEIBUN_MOSHI,
+  "j-ja-1-bunpo-tani": J_JA_1_BUNPO_TANI_MOSHI,
+  "j-ja-1-goi": J_JA_1_GOI_MOSHI,
+  "j-ja-1-hanasu": J_JA_1_HANASU_MOSHI,
+  "j-ja-1-kaku": J_JA_1_KAKU_MOSHI,
+  "j-ja-1-kanbun": J_JA_1_KANBUN_MOSHI,
+  "j-ja-1-kanji": J_JA_1_KANJI_MOSHI,
+  "j-ja-1-kobun": J_JA_1_KOBUN_MOSHI,
+  "j-ja-1-monogatari": J_JA_1_MONOGATARI_MOSHI,
   "j-ja-1-setsumei": J_JA_1_SETSUMEI_MOSHI,
+  "j-ja-1-shi": J_JA_1_SHI_MOSHI,
+  "j-ja-2-bunpo-fuzoku": J_JA_2_BUNPO_FUZOKU_MOSHI,
   "j-ja-2-bunpo-yogen": J_JA_2_BUNPO_YOGEN_MOSHI,
+  "j-ja-2-goi": J_JA_2_GOI_MOSHI,
+  "j-ja-2-hanasu": J_JA_2_HANASU_MOSHI,
+  "j-ja-2-ikenbun": J_JA_2_IKENBUN_MOSHI,
+  "j-ja-2-kanji": J_JA_2_KANJI_MOSHI,
+  "j-ja-2-kanshi": J_JA_2_KANSHI_MOSHI,
+  "j-ja-2-keigo": J_JA_2_KEIGO_MOSHI,
+  "j-ja-2-kobun": J_JA_2_KOBUN_MOSHI,
+  "j-ja-2-setsumei": J_JA_2_SETSUMEI_MOSHI,
+  "j-ja-2-shosetsu": J_JA_2_SHOSETSU_MOSHI,
+  "j-ja-2-tanka": J_JA_2_TANKA_MOSHI,
+  "j-ja-3-bunpo": J_JA_3_BUNPO_MOSHI,
+  "j-ja-3-goi": J_JA_3_GOI_MOSHI,
+  "j-ja-3-haiku": J_JA_3_HAIKU_MOSHI,
+  "j-ja-3-hanasu": J_JA_3_HANASU_MOSHI,
+  "j-ja-3-hihyo": J_JA_3_HIHYO_MOSHI,
+  "j-ja-3-kanbun": J_JA_3_KANBUN_MOSHI,
+  "j-ja-3-kanji": J_JA_3_KANJI_MOSHI,
+  "j-ja-3-kobun": J_JA_3_KOBUN_MOSHI,
+  "j-ja-3-ronsetsu": J_JA_3_RONSETSU_MOSHI,
+  "j-ja-3-shosetsu": J_JA_3_SHOSETSU_MOSHI,
   "j-soc-civ-bunka": J_SOC_CIV_BUNKA_MOSHI,
   "j-soc-civ-chiho": J_SOC_CIV_CHIHO_MOSHI,
   "j-soc-civ-chikyu": J_SOC_CIV_CHIKYU_MOSHI,
