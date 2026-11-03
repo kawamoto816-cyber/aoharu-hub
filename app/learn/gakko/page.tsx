@@ -7,7 +7,7 @@ import { LECTURES } from "@/lib/lecture";
 import { TSUKKOMI_HOME } from "@/lib/tsukkomi";
 
 // /learn/gakko: あたらしいがっこう (第1段階)。アオハルラーンが入口、ここは「通う」層。
-//   1. 校門 (コピー・まなぶ)  2. 学年  3. きょうの時間割 (自動・4コマ)・きょうの出席  ← components/learn/gakko/GakkoToday
+//   1. 校門 (コピー・まなぶ)  2. 学年  3. きょうの時間割 (自動4コマ／自分で組む1〜6コマ)・きょうの出席・時間割を自分で組む (#kumu)  ← components/learn/gakko/GakkoToday・GakkoPlanner
 //   4. 教室マップ (教室・ツッコミ道場・自習室・未来の職員室・学びのダッシュボード・時間割を自分で組む)
 // 記録は登録なしで、この端末の localStorage だけに置く。
 
@@ -86,15 +86,13 @@ export default function Gakko() {
             </span>
             <Arrow />
           </Link>
-          {[{ name: "時間割を自分で組む", desc: "教科・時間・順番を、自分で決める" }].map((r) => (
-            <div key={r.name} className="flex items-center justify-between gap-3 rounded-[16px] border-[1.5px] border-dashed border-[#15172B] bg-white p-3.5">
-              <span className="min-w-0">
-                <b className="block text-[15px]">{r.name}</b>
-                <span className="text-[12px] text-[#5A5D73]">{r.desc}</span>
-              </span>
-              <Soon />
-            </div>
-          ))}
+          <Link href="/learn/gakko#kumu" className={`flex items-center justify-between gap-3 rounded-[16px] border-[1.5px] border-[#15172B] bg-white p-3.5 text-[#15172B] no-underline ${link}`}>
+            <span className="min-w-0">
+              <b className="block text-[15px]">時間割を自分で組む</b>
+              <span className="text-[12px] text-[#5A5D73]">曜日ごとの教科・コマ数・順番を、自分で決める</span>
+            </span>
+            <Arrow />
+          </Link>
         </section>
 
         <p className="mb-0 mt-8 rounded-[14px] bg-white/70 px-3.5 py-3 text-center text-[12px] leading-[1.7] text-[#3A3D55]">

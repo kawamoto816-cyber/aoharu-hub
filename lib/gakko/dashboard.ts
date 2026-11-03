@@ -1,7 +1,7 @@
 // あたらしいがっこうの「学びのダッシュボード」(/learn/gakko/dashboard) の集計。
 // localStorage の生の文字列を受けとって数えるだけの純粋な関数 (読み書きは components/learn/gakko/GakkoDashboard)。
 // 使う記録 (すべてこの端末の localStorage。サーバーには送らない):
-//   aoharu.gakko.attendance.v1   出席 (その日の時間割4コマ完了)       lib/gakko/store
+//   aoharu.gakko.attendance.v1   出席 (その日の時間割のコマをぜんぶ読んだ日。自動・自分で組む どちらでも GakkoToday が書く)  lib/gakko/store
 //   aoharu_lecture_read_v1       読んだ単元 { read: { id: 時刻 } }    lib/lecture/readLog
 //   aoharu.moshi.results.v1      単元模試の結果 (単元ごとの最新・最高) lib/moshi/results
 //   aoharu.exam.results.v1       入試・定期テストモードの1回ごとの結果 lib/exam/results
@@ -101,7 +101,7 @@ export function shiftMonth(month: string, n: number): string {
 // ---- 出席簿 ----
 
 export interface Days {
-  /** 出席した日 (4コマ完了) */
+  /** 出席した日 (その日の時間割のコマをぜんぶ読んだ日。コマ数は自動4・自分で組むと1〜6) */
   attended: Set<string>;
   /** 1単元以上読んだ日 → その日に読んだ単元 */
   learned: Map<string, string[]>;

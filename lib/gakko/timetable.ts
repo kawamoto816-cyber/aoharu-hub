@@ -1,6 +1,7 @@
 // あたらしいがっこう (/learn/gakko) の「きょうの時間割」。
 // 学年ごとの単元 (図解レクチャーのある単元だけ) を、日付と学年をシードにした決まった乱数で並べ、
 // 教科がばらけるように 1〜4時間目へ置く。同じ日・同じ学年・同じ記録なら、何度開いても同じ時間割になる。
+// 自分で組む時間割 (曜日ごとの教科の並び) は ./custom。
 // ここはクライアントからも読む (lib/school・lib/lecture は読まない。単元の情報は index.ts の gakkoData でサーバーが引いて渡す)。
 
 /** 学年 (components/learn/UnitPicker と同じ並び・同じ名前) */
@@ -41,7 +42,7 @@ export function jstDayStart(dateKey: string): number {
 
 // ---- 決まった乱数 ----
 
-function hash(s: string): number {
+export function hash(s: string): number {
   let h = 2166136261;
   for (let i = 0; i < s.length; i++) {
     h ^= s.charCodeAt(i);
@@ -74,8 +75,14 @@ function shuffle<T>(xs: T[], r: () => number): T[] {
 
 export interface Period {
   unit: string;
-  /** すでに読んだ単元の復習コマ (学年の単元をぜんぶ読んだときだけ出る) */
+  /** すでに読んだ単元の復習コマ (自動では学年の単元をぜんぶ読んだときだけ出る。自分で組むでは、固定・入れかえた単元が読んだものだったときも) */
   review: boolean;
+  /** 自分で組む: このコマの教科 */
+  subject?: string;
+  /** 自分で組む: 単元を固定したコマ */
+  pinned?: boolean;
+  /** 自分で組む: きょうだけ入れかえたコマ */
+  swapped?: boolean;
 }
 
 /**

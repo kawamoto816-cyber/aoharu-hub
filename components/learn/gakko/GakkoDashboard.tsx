@@ -239,7 +239,7 @@ function Calendar({ d, today }: { d: ReturnType<typeof toDays>; today: string })
         <div className="mx-auto flex w-full max-w-[460px] flex-wrap gap-x-4 gap-y-1 text-[11.5px] text-[#5A5D73]">
           <span className="flex items-center gap-1.5">
             <span aria-hidden="true" className="h-3.5 w-3.5 rounded-[4px] bg-[#1533B8]" />
-            出席（時間割の4コマを読んだ日） {att}日
+            出席（時間割のコマをぜんぶ読んだ日） {att}日
           </span>
           <span className="flex items-center gap-1.5">
             <span aria-hidden="true" className="h-3.5 w-3.5 rounded-[4px] border-[1.5px] border-[#1533B8] bg-[#E6EBFB]" />
@@ -520,7 +520,7 @@ function ReportSection({ data, rec, today }: { data: DashData; rec: Records; tod
                             {a.text}
                           </span>
                         ))
-                      : "時間割の4コマ（復習）"}
+                      : "時間割のコマ（復習）"}
                   </td>
                 </tr>
               ))}
@@ -531,7 +531,7 @@ function ReportSection({ data, rec, today }: { data: DashData; rec: Records; tod
         )}
 
         <footer className="mt-4 border-t border-[#15172B] pt-2 text-[10.5px] leading-[1.7] text-[#3A3D55]">
-          この記録は利用者の端末に保存されたものです。「出席」はアオハルラーンの時間割の4コマを読み終えた日、「学んだ日」は図解レクチャーの単元を1つ以上読み終えた日です。単元模試は単元ごとの最新の結果だけを記録しています。
+          この記録は利用者の端末に保存されたものです。「出席」はアオハルラーンのその日の時間割のコマ（自動は4コマ、自分で組んだときはそのコマ数）をぜんぶ読み終えた日、「学んだ日」は図解レクチャーの単元を1つ以上読み終えた日です。単元模試は単元ごとの最新の結果だけを記録しています。
           <br />
           アオハルラーン https://app.bluespring.co.jp/learn/gakko
         </footer>

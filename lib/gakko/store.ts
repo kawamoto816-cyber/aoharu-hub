@@ -3,13 +3,15 @@
 import { useSyncExternalStore } from "react";
 
 // あたらしいがっこうの記録。この端末の localStorage だけに置く (登録なし)。使えない環境でも画面は動く。
-//   aoharu.gakko.attendance.v1 : { [日付 YYYY-MM-DD]: その日の時間割で読んだ単元id[] }  ← 4コマそろった日だけ書く (出席)
+//   aoharu.gakko.attendance.v1 : { [日付 YYYY-MM-DD]: その日の時間割で読んだ単元id[] }  ← その日のコマをぜんぶ読んだ日だけ書く (出席。自動は4コマ、自分で組むは1〜6コマ)
 //   aoharu.gakko.grade         : 選んだ学年 (なければ /learn の UnitPicker の学年を使う)
 //   aoharu.gakko.review.v1     : { date, ids } きょう開いた復習コマ (読んだ記録が更新されない単元のため)
+//   aoharu.gakko.plan.v1       : 時間割を自分で組む { mode: "auto"|"custom", weeks: { [学年]: 曜日(0=日…6=土)ごとの [{ s: 教科, pin?: 単元id }] }, swap?: { date, grade, slots: { [コマ番号]: 単元id } } }  (lib/gakko/custom)
 
 export const ATTENDANCE_KEY = "aoharu.gakko.attendance.v1";
 export const GRADE_KEY = "aoharu.gakko.grade";
 export const REVIEW_KEY = "aoharu.gakko.review.v1";
+export const PLAN_KEY = "aoharu.gakko.plan.v1";
 export const PICKER_KEY = "aoharu.learn.picker";
 
 const EVENT = "aoharu-gakko";
