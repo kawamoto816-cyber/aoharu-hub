@@ -51,7 +51,7 @@ export const AXIS_A: AxisA = {
     { unit: "h-math-2-bibun", short: "微分", line: "a5" },
     // ⑥ 動きをとらえる
     { unit: "e-math-5-hayasa", short: "速さ", line: "a6" },
-    { unit: "j-sci-3-undo", short: "運動(中)", line: "a6" },
+    { unit: "j-sci-3-undo", short: "運動(中)", line: "a6", label: "t" },
     { unit: "h-sci-phyb-undo", short: "運動(高)", line: "a6" },
     // ⑦ 力とエネルギー
     { unit: "e-science-6-teko", short: "てこ", line: "a7" },

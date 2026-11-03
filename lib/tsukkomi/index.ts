@@ -23,6 +23,18 @@ import { J_SOC_GEO_EUROPE } from "./data/j-soc-geo-europe";
 import { J_SOC_GEO_NIHON_SUGATA } from "./data/j-soc-geo-nihon-sugata";
 import { J_SOC_HIST_EDO_SEIRITSU } from "./data/j-soc-hist-edo-seiritsu";
 import { J_SOC_HIST_MEIJI_ISHIN } from "./data/j-soc-hist-meiji-ishin";
+import { J_MATH_1_MOJI } from "./data/j-math-1-moji";
+import { J_MATH_2_SHIKI } from "./data/j-math-2-shiki";
+import { J_MATH_3_TENKAI } from "./data/j-math-3-tenkai";
+import { J_MATH_3_NIJI_HOTEISHIKI } from "./data/j-math-3-niji-hoteishiki";
+import { J_MATH_3_KANSU_AX2 } from "./data/j-math-3-kansu-ax2";
+import { J_SCI_1_CHIKARA } from "./data/j-sci-1-chikara";
+import { J_SCI_2_GENSHI } from "./data/j-sci-2-genshi";
+import { J_SCI_2_JIKAI } from "./data/j-sci-2-jikai";
+import { J_SCI_3_CHUWA } from "./data/j-sci-3-chuwa";
+import { J_SOC_HIST_HEIAN } from "./data/j-soc-hist-heian";
+import { J_SOC_HIST_MUROMACHI } from "./data/j-soc-hist-muromachi";
+import { J_SOC_HIST_TENKA_TOITSU } from "./data/j-soc-hist-tenka-toitsu";
 
 // ツッコミ学習法のボケ（単元ごと）。単元を足すときは data/<単元>.ts を作って、ここに並べる。
 
@@ -33,18 +45,27 @@ export const tsukkomiHref = (unit: string) => `${TSUKKOMI_HOME}/${unit}`;
 export const TSUKKOMI: Record<string, Boke[]> = {
   "j-math-1-hirei": J_MATH_1_HIREI,
   "j-math-1-hoteishiki": J_MATH_1_HOTEISHIKI,
+  "j-math-1-moji": J_MATH_1_MOJI,
   "j-math-1-seifu": J_MATH_1_SEIFU,
   "j-math-2-ichiji-kansu": J_MATH_2_ICHIJI_KANSU,
   "j-math-2-kakuritsu": J_MATH_2_KAKURITSU,
   "j-math-2-renritsu": J_MATH_2_RENRITSU,
+  "j-math-2-shiki": J_MATH_2_SHIKI,
   "j-math-3-heihokon": J_MATH_3_HEIHOKON,
+  "j-math-3-kansu-ax2": J_MATH_3_KANSU_AX2,
+  "j-math-3-niji-hoteishiki": J_MATH_3_NIJI_HOTEISHIKI,
   "j-math-3-sanheiho": J_MATH_3_SANHEIHO,
+  "j-math-3-tenkai": J_MATH_3_TENKAI,
+  "j-sci-1-chikara": J_SCI_1_CHIKARA,
   "j-sci-1-hikari": J_SCI_1_HIKARI,
   "j-sci-1-kazan": J_SCI_1_KAZAN,
   "j-sci-1-suiyoeki": J_SCI_1_SUIYOEKI,
   "j-sci-2-denryu": J_SCI_2_DENRYU,
+  "j-sci-2-genshi": J_SCI_2_GENSHI,
+  "j-sci-2-jikai": J_SCI_2_JIKAI,
   "j-sci-2-kagaku-henka": J_SCI_2_KAGAKU_HENKA,
   "j-sci-2-tenki": J_SCI_2_TENKI,
+  "j-sci-3-chuwa": J_SCI_3_CHUWA,
   "j-sci-3-ion": J_SCI_3_ION,
   "j-sci-3-undo": J_SCI_3_UNDO,
   "j-soc-civ-kenpo": J_SOC_CIV_KENPO,
@@ -53,8 +74,11 @@ export const TSUKKOMI: Record<string, Boke[]> = {
   "j-soc-geo-europe": J_SOC_GEO_EUROPE,
   "j-soc-geo-nihon-sugata": J_SOC_GEO_NIHON_SUGATA,
   "j-soc-hist-edo-seiritsu": J_SOC_HIST_EDO_SEIRITSU,
+  "j-soc-hist-heian": J_SOC_HIST_HEIAN,
   "j-soc-hist-kamakura": J_SOC_HIST_KAMAKURA,
   "j-soc-hist-meiji-ishin": J_SOC_HIST_MEIJI_ISHIN,
+  "j-soc-hist-muromachi": J_SOC_HIST_MUROMACHI,
+  "j-soc-hist-tenka-toitsu": J_SOC_HIST_TENKA_TOITSU,
 };
 
 export const TSUKKOMI_UNITS = Object.keys(TSUKKOMI);
