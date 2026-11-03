@@ -7,16 +7,26 @@ import { J_EN_1_DAIMEISHI_MOSHI } from "./data/j-en-1-daimeishi";
 import { J_EN_1_GIMONSHI_MOSHI } from "./data/j-en-1-gimonshi";
 import { J_EN_1_IPPAN_MOSHI } from "./data/j-en-1-ippan";
 import { J_EN_1_KAKOKEI_MOSHI } from "./data/j-en-1-kakokei";
+import { J_EN_1_MEIREI_MOSHI } from "./data/j-en-1-meirei";
 import { J_EN_1_MEISHI_MOSHI } from "./data/j-en-1-meishi";
 import { J_EN_1_SHINKOKEI_MOSHI } from "./data/j-en-1-shinkokei";
+import { J_EN_2_BUNKEI_MOSHI } from "./data/j-en-2-bunkei";
 import { J_EN_2_DOMEISHI_MOSHI } from "./data/j-en-2-domeishi";
 import { J_EN_2_FUTEISHI_MOSHI } from "./data/j-en-2-futeishi";
 import { J_EN_2_HIKAKU_MOSHI } from "./data/j-en-2-hikaku";
 import { J_EN_2_JODOSHI_MOSHI } from "./data/j-en-2-jodoshi";
+import { J_EN_2_KAKO_SHINKO_MOSHI } from "./data/j-en-2-kako-shinko";
 import { J_EN_2_MIRAI_MOSHI } from "./data/j-en-2-mirai";
+import { J_EN_2_SETSUZOKUSHI_MOSHI } from "./data/j-en-2-setsuzokushi";
+import { J_EN_2_THERE_MOSHI } from "./data/j-en-2-there";
 import { J_EN_2_UKEMI_MOSHI } from "./data/j-en-2-ukemi";
+import { J_EN_3_BUNSHI_MOSHI } from "./data/j-en-3-bunshi";
+import { J_EN_3_FUTEISHI_MOSHI } from "./data/j-en-3-futeishi";
 import { J_EN_3_KANKEI_MOSHI } from "./data/j-en-3-kankei";
+import { J_EN_3_KANRYO_SHINKO_MOSHI } from "./data/j-en-3-kanryo-shinko";
 import { J_EN_3_KANRYO_MOSHI } from "./data/j-en-3-kanryo";
+import { J_EN_3_KANSETSU_MOSHI } from "./data/j-en-3-kansetsu";
+import { J_EN_3_KATEI_MOSHI } from "./data/j-en-3-katei";
 import { J_JA_1_BUNPO_HINSHI_MOSHI } from "./data/j-ja-1-bunpo-hinshi";
 import { J_JA_1_SETSUMEI_MOSHI } from "./data/j-ja-1-setsumei";
 import { J_JA_2_BUNPO_YOGEN_MOSHI } from "./data/j-ja-2-bunpo-yogen";
@@ -81,20 +91,26 @@ import { J_SCI_3_SUIATSU } from "./data/j-sci-3-suiatsu";
 import { J_SCI_3_TAIYOKEI } from "./data/j-sci-3-taiyokei";
 import { J_SCI_3_TENTAI } from "./data/j-sci-3-tentai";
 import { J_SCI_3_UNDO } from "./data/j-sci-3-undo";
+import { J_SOC_CIV_JINKEN_MOSHI } from "./data/j-soc-civ-jinken";
 import { J_SOC_CIV_KENPO_MOSHI } from "./data/j-soc-civ-kenpo";
 import { J_SOC_CIV_KOKKAI_MOSHI } from "./data/j-soc-civ-kokkai";
 import { J_SOC_CIV_NAIKAKU_MOSHI } from "./data/j-soc-civ-naikaku";
+import { J_SOC_CIV_SENKYO_MOSHI } from "./data/j-soc-civ-senkyo";
 import { J_SOC_CIV_SHIJO_MOSHI } from "./data/j-soc-civ-shijo";
 import { J_SOC_CIV_ZAISEI_MOSHI } from "./data/j-soc-civ-zaisei";
 import { J_SOC_GEO_NIHON_SUGATA_MOSHI } from "./data/j-soc-geo-nihon-sugata";
 import { J_SOC_GEO_SEKAI_SUGATA_MOSHI } from "./data/j-soc-geo-sekai-sugata";
 import { J_SOC_HIST_EDO_SEIRITSU_MOSHI } from "./data/j-soc-hist-edo-seiritsu";
+import { J_SOC_HIST_EDO_TENKAI_MOSHI } from "./data/j-soc-hist-edo-tenkai";
 import { J_SOC_HIST_HEIAN_MOSHI } from "./data/j-soc-hist-heian";
+import { J_SOC_HIST_KAIKOKU_MOSHI } from "./data/j-soc-hist-kaikoku";
 import { J_SOC_HIST_KAMAKURA_MOSHI } from "./data/j-soc-hist-kamakura";
 import { J_SOC_HIST_KODAI_KOKKA_MOSHI } from "./data/j-soc-hist-kodai-kokka";
 import { J_SOC_HIST_MEIJI_ISHIN_MOSHI } from "./data/j-soc-hist-meiji-ishin";
 import { J_SOC_HIST_MUROMACHI_MOSHI } from "./data/j-soc-hist-muromachi";
 import { J_SOC_HIST_RIKKEN_MOSHI } from "./data/j-soc-hist-rikken";
+import { J_SOC_HIST_SEKAI_TAISEN_MOSHI } from "./data/j-soc-hist-sekai-taisen";
+import { J_SOC_HIST_TAISHO_MOSHI } from "./data/j-soc-hist-taisho";
 import { J_SOC_HIST_TENKA_TOITSU_MOSHI } from "./data/j-soc-hist-tenka-toitsu";
 
 /** ファイル名 (単元id) → その単元の大問 */
@@ -171,32 +187,48 @@ export const UNIT_REGISTRY: Record<string, UnitMoshi> = {
   "j-en-1-gimonshi": J_EN_1_GIMONSHI_MOSHI,
   "j-en-1-ippan": J_EN_1_IPPAN_MOSHI,
   "j-en-1-kakokei": J_EN_1_KAKOKEI_MOSHI,
+  "j-en-1-meirei": J_EN_1_MEIREI_MOSHI,
   "j-en-1-meishi": J_EN_1_MEISHI_MOSHI,
   "j-en-1-shinkokei": J_EN_1_SHINKOKEI_MOSHI,
+  "j-en-2-bunkei": J_EN_2_BUNKEI_MOSHI,
   "j-en-2-domeishi": J_EN_2_DOMEISHI_MOSHI,
   "j-en-2-futeishi": J_EN_2_FUTEISHI_MOSHI,
   "j-en-2-hikaku": J_EN_2_HIKAKU_MOSHI,
   "j-en-2-jodoshi": J_EN_2_JODOSHI_MOSHI,
+  "j-en-2-kako-shinko": J_EN_2_KAKO_SHINKO_MOSHI,
   "j-en-2-mirai": J_EN_2_MIRAI_MOSHI,
+  "j-en-2-setsuzokushi": J_EN_2_SETSUZOKUSHI_MOSHI,
+  "j-en-2-there": J_EN_2_THERE_MOSHI,
   "j-en-2-ukemi": J_EN_2_UKEMI_MOSHI,
+  "j-en-3-bunshi": J_EN_3_BUNSHI_MOSHI,
+  "j-en-3-futeishi": J_EN_3_FUTEISHI_MOSHI,
   "j-en-3-kankei": J_EN_3_KANKEI_MOSHI,
+  "j-en-3-kanryo-shinko": J_EN_3_KANRYO_SHINKO_MOSHI,
   "j-en-3-kanryo": J_EN_3_KANRYO_MOSHI,
+  "j-en-3-kansetsu": J_EN_3_KANSETSU_MOSHI,
+  "j-en-3-katei": J_EN_3_KATEI_MOSHI,
   "j-ja-1-bunpo-hinshi": J_JA_1_BUNPO_HINSHI_MOSHI,
   "j-ja-1-setsumei": J_JA_1_SETSUMEI_MOSHI,
   "j-ja-2-bunpo-yogen": J_JA_2_BUNPO_YOGEN_MOSHI,
+  "j-soc-civ-jinken": J_SOC_CIV_JINKEN_MOSHI,
   "j-soc-civ-kenpo": J_SOC_CIV_KENPO_MOSHI,
   "j-soc-civ-kokkai": J_SOC_CIV_KOKKAI_MOSHI,
   "j-soc-civ-naikaku": J_SOC_CIV_NAIKAKU_MOSHI,
+  "j-soc-civ-senkyo": J_SOC_CIV_SENKYO_MOSHI,
   "j-soc-civ-shijo": J_SOC_CIV_SHIJO_MOSHI,
   "j-soc-civ-zaisei": J_SOC_CIV_ZAISEI_MOSHI,
   "j-soc-geo-nihon-sugata": J_SOC_GEO_NIHON_SUGATA_MOSHI,
   "j-soc-geo-sekai-sugata": J_SOC_GEO_SEKAI_SUGATA_MOSHI,
   "j-soc-hist-edo-seiritsu": J_SOC_HIST_EDO_SEIRITSU_MOSHI,
+  "j-soc-hist-edo-tenkai": J_SOC_HIST_EDO_TENKAI_MOSHI,
   "j-soc-hist-heian": J_SOC_HIST_HEIAN_MOSHI,
+  "j-soc-hist-kaikoku": J_SOC_HIST_KAIKOKU_MOSHI,
   "j-soc-hist-kamakura": J_SOC_HIST_KAMAKURA_MOSHI,
   "j-soc-hist-kodai-kokka": J_SOC_HIST_KODAI_KOKKA_MOSHI,
   "j-soc-hist-meiji-ishin": J_SOC_HIST_MEIJI_ISHIN_MOSHI,
   "j-soc-hist-muromachi": J_SOC_HIST_MUROMACHI_MOSHI,
   "j-soc-hist-rikken": J_SOC_HIST_RIKKEN_MOSHI,
+  "j-soc-hist-sekai-taisen": J_SOC_HIST_SEKAI_TAISEN_MOSHI,
+  "j-soc-hist-taisho": J_SOC_HIST_TAISHO_MOSHI,
   "j-soc-hist-tenka-toitsu": J_SOC_HIST_TENKA_TOITSU_MOSHI,
 };
