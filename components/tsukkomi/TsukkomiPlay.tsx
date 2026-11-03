@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import type { BokeWithAudio, TsukkomiKind, TsukkomiMode } from "@/lib/tsukkomi/types";
 import { type Answer, type Scored, TIME_LIMIT, TITLES, accuracy, isRightChoice, isWrongToken, pickRound, roundTotal, scoreAnswer, shuffle, titleOf } from "@/lib/tsukkomi/score";
-import { bestKey, parseSave, readRaw, subscribeSave, updateSave, type TsukkomiSave } from "@/lib/tsukkomi/storage";
+import { LOG_MAX, bestKey, parseSave, readRaw, subscribeSave, updateSave, type TsukkomiSave } from "@/lib/tsukkomi/storage";
 import { Stage, StageBubble } from "./Stage";
 import { pickKakegoe } from "@/lib/tsukkomi/kakegoe";
 
@@ -186,7 +186,8 @@ export function TsukkomiPlay(p: TsukkomiPlayProps) {
         if (r.correct) delete miss[r.id];
         else miss[r.id] = Date.now();
       }
-      return { ...s, best: { ...s.best, [key]: Math.max(s.best[key] ?? 0, total) }, total: s.total + total, miss };
+      const entry = { unit: p.unit, mode, at: Date.now(), points: total, correct: results.filter((r) => r.correct).length, n: results.length };
+      return { ...s, best: { ...s.best, [key]: Math.max(s.best[key] ?? 0, total) }, total: s.total + total, miss, log: [entry, ...s.log].slice(0, LOG_MAX) };
     });
     setSummary({ total, prevBest, save: saved, prevTitle });
     setPhase("result");

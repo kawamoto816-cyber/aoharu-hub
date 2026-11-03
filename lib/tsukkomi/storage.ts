@@ -5,16 +5,38 @@
 //   total  これまでにためたツッコミポイントの合計（称号に使う）
 //   miss   ツッコみそこねたボケ（id → 記録した時刻）。次の回で先に出す。正しく訂正できたら消す
 //   voice  声を鳴らすか
+//   log    1回ごとの記録（新しい順に最大 LOG_MAX 件）。あたらしいがっこうの「学びのダッシュボード」が読む
+
+/** 1回（ROUND_SIZE問）の記録 */
+export interface TsukkomiLogEntry {
+  unit: string;
+  mode: string;
+  /** 終えた時刻 (ms) */
+  at: number;
+  points: number;
+  /** 正解した問題数 / 問題数 */
+  correct: number;
+  n: number;
+}
 
 export interface TsukkomiSave {
   best: Record<string, number>;
   total: number;
   miss: Record<string, number>;
   voice: boolean;
+  log: TsukkomiLogEntry[];
 }
 
-const KEY = "aoharu:tsukkomi:v1";
-export const EMPTY_SAVE: TsukkomiSave = { best: {}, total: 0, miss: {}, voice: true };
+export const TSUKKOMI_SAVE_KEY = "aoharu:tsukkomi:v1";
+const KEY = TSUKKOMI_SAVE_KEY;
+export const LOG_MAX = 50;
+export const EMPTY_SAVE: TsukkomiSave = { best: {}, total: 0, miss: {}, voice: true, log: [] };
+
+function isLogEntry(v: unknown): v is TsukkomiLogEntry {
+  if (!v || typeof v !== "object") return false;
+  const r = v as Record<string, unknown>;
+  return typeof r.unit === "string" && typeof r.at === "number" && typeof r.correct === "number" && typeof r.n === "number";
+}
 
 export const bestKey = (unit: string, mode: string) => `${unit}:${mode}`;
 
@@ -36,6 +58,7 @@ export function parseSave(raw: string | null): TsukkomiSave {
       total: typeof v.total === "number" && v.total >= 0 ? v.total : 0,
       miss: v.miss && typeof v.miss === "object" ? v.miss : {},
       voice: v.voice !== false,
+      log: Array.isArray(v.log) ? v.log.filter(isLogEntry) : [],
     };
   } catch {
     return EMPTY_SAVE;

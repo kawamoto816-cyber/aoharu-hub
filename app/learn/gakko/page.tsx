@@ -79,10 +79,14 @@ export default function Gakko() {
               );
             })}
           </ul>
-          {[
-            { name: "学びのダッシュボード", desc: "出席簿・得意と苦手・次のおすすめ" },
-            { name: "時間割を自分で組む", desc: "教科・時間・順番を、自分で決める" },
-          ].map((r) => (
+          <Link href="/learn/gakko/dashboard" className={`flex items-center justify-between gap-3 rounded-[16px] border-[1.5px] border-[#15172B] bg-white p-3.5 text-[#15172B] no-underline ${link}`}>
+            <span className="min-w-0">
+              <b className="block text-[15px]">学びのダッシュボード</b>
+              <span className="text-[12px] text-[#5A5D73]">出席簿・得意と苦手・学びの報告書</span>
+            </span>
+            <Arrow />
+          </Link>
+          {[{ name: "時間割を自分で組む", desc: "教科・時間・順番を、自分で決める" }].map((r) => (
             <div key={r.name} className="flex items-center justify-between gap-3 rounded-[16px] border-[1.5px] border-dashed border-[#15172B] bg-white p-3.5">
               <span className="min-w-0">
                 <b className="block text-[15px]">{r.name}</b>

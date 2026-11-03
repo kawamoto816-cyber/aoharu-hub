@@ -42,6 +42,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${base}/guide`, lastModified: now, changeFrequency: "daily", priority: 0.8 },
     { url: `${base}/learn`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
     { url: `${base}/learn/gakko`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
+    { url: `${base}/learn/gakko/dashboard`, lastModified: now, changeFrequency: "monthly", priority: 0.6 },
     { url: `${base}/learn/shoronbun`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
     ...SHORONBUN.cards.map((c) => ({ url: `${base}/learn/shoronbun/${c.no}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
     { url: `${base}/learn/jibun`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
