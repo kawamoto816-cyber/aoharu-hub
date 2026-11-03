@@ -15,6 +15,44 @@ import { H_CIV_KOKYO_SENKYO_MOSHI } from "./data/h-civ-kokyo-senkyo";
 import { H_CIV_KOKYO_SHIJO_MOSHI } from "./data/h-civ-kokyo-shijo";
 import { H_CIV_KOKYO_SHISO_MOSHI } from "./data/h-civ-kokyo-shiso";
 import { H_CIV_KOKYO_TOSEI_MOSHI } from "./data/h-civ-kokyo-tosei";
+import { H_CIV_RINRI_BUKKYO_MOSHI } from "./data/h-civ-rinri-bukkyo";
+import { H_CIV_RINRI_CHINA_MOSHI } from "./data/h-civ-rinri-china";
+import { H_CIV_RINRI_CHRIST_MOSHI } from "./data/h-civ-rinri-christ";
+import { H_CIV_RINRI_GENDAI_MOSHI } from "./data/h-civ-rinri-gendai";
+import { H_CIV_RINRI_GREECE_MOSHI } from "./data/h-civ-rinri-greece";
+import { H_CIV_RINRI_ISLAM_MOSHI } from "./data/h-civ-rinri-islam";
+import { H_CIV_RINRI_JITSUZON_MOSHI } from "./data/h-civ-rinri-jitsuzon";
+import { H_CIV_RINRI_JOHO_MOSHI } from "./data/h-civ-rinri-joho";
+import { H_CIV_RINRI_KANKYO_MOSHI } from "./data/h-civ-rinri-kankyo";
+import { H_CIV_RINRI_KANT_MOSHI } from "./data/h-civ-rinri-kant";
+import { H_CIV_RINRI_KEIKEN_MOSHI } from "./data/h-civ-rinri-keiken";
+import { H_CIV_RINRI_KEIYAKU_MOSHI } from "./data/h-civ-rinri-keiyaku";
+import { H_CIV_RINRI_KINDAI_NIHON_MOSHI } from "./data/h-civ-rinri-kindai-nihon";
+import { H_CIV_RINRI_KORI_MOSHI } from "./data/h-civ-rinri-kori";
+import { H_CIV_RINRI_NIHON_MOSHI } from "./data/h-civ-rinri-nihon";
+import { H_CIV_RINRI_PRAGMA_MOSHI } from "./data/h-civ-rinri-pragma";
+import { H_CIV_RINRI_RENAISSANCE_MOSHI } from "./data/h-civ-rinri-renaissance";
+import { H_CIV_RINRI_SEIMEI_MOSHI } from "./data/h-civ-rinri-seimei";
+import { H_CIV_RINRI_SEINEN_MOSHI } from "./data/h-civ-rinri-seinen";
+import { H_CIV_SEIKEI_BOEKI_MOSHI } from "./data/h-civ-seikei-boeki";
+import { H_CIV_SEIKEI_CHIHO_MOSHI } from "./data/h-civ-seikei-chiho";
+import { H_CIV_SEIKEI_GENRI_MOSHI } from "./data/h-civ-seikei-genri";
+import { H_CIV_SEIKEI_HEIWA_MOSHI } from "./data/h-civ-seikei-heiwa";
+import { H_CIV_SEIKEI_JINKEN_MOSHI } from "./data/h-civ-seikei-jinken";
+import { H_CIV_SEIKEI_KENPO_MOSHI } from "./data/h-civ-seikei-kenpo";
+import { H_CIV_SEIKEI_KINYU_MOSHI } from "./data/h-civ-seikei-kinyu";
+import { H_CIV_SEIKEI_KOKKAI_MOSHI } from "./data/h-civ-seikei-kokkai";
+import { H_CIV_SEIKEI_KOKUREN_MOSHI } from "./data/h-civ-seikei-kokuren";
+import { H_CIV_SEIKEI_NIHON_MOSHI } from "./data/h-civ-seikei-nihon";
+import { H_CIV_SEIKEI_RODO_MOSHI } from "./data/h-civ-seikei-rodo";
+import { H_CIV_SEIKEI_SAIBAN_MOSHI } from "./data/h-civ-seikei-saiban";
+import { H_CIV_SEIKEI_SENKYO_MOSHI } from "./data/h-civ-seikei-senkyo";
+import { H_CIV_SEIKEI_SHAKAIHOSHO_MOSHI } from "./data/h-civ-seikei-shakaihosho";
+import { H_CIV_SEIKEI_SHIJO_MOSHI } from "./data/h-civ-seikei-shijo";
+import { H_CIV_SEIKEI_SHOTOKU_MOSHI } from "./data/h-civ-seikei-shotoku";
+import { H_CIV_SEIKEI_TAISEI_MOSHI } from "./data/h-civ-seikei-taisei";
+import { H_CIV_SEIKEI_TOGO_MOSHI } from "./data/h-civ-seikei-togo";
+import { H_CIV_SEIKEI_ZAISEI_MOSHI } from "./data/h-civ-seikei-zaisei";
 import { H_ENG_GRAM_BUNKEI_MOSHI } from "./data/h-eng-gram-bunkei";
 import { H_ENG_GRAM_BUNSHI_MOSHI } from "./data/h-eng-gram-bunshi";
 import { H_ENG_GRAM_BUNSHIKOBUN_MOSHI } from "./data/h-eng-gram-bunshikobun";
@@ -56,6 +94,44 @@ import { H_GEO_SOGO_MUSUBI_MOSHI } from "./data/h-geo-sogo-musubi";
 import { H_GEO_SOGO_SHIGEN_MOSHI } from "./data/h-geo-sogo-shigen";
 import { H_GEO_SOGO_SHUKYO_MOSHI } from "./data/h-geo-sogo-shukyo";
 import { H_GEO_SOGO_TOSHI_MOSHI } from "./data/h-geo-sogo-toshi";
+import { H_GEO_TANKYU_AMERICA_MOSHI } from "./data/h-geo-tankyu-america";
+import { H_GEO_TANKYU_CHIKEI_MOSHI } from "./data/h-geo-tankyu-chikei";
+import { H_GEO_TANKYU_EUROPE_MOSHI } from "./data/h-geo-tankyu-europe";
+import { H_GEO_TANKYU_HIGASHIASIA_MOSHI } from "./data/h-geo-tankyu-higashiasia";
+import { H_GEO_TANKYU_JINKO_MOSHI } from "./data/h-geo-tankyu-jinko";
+import { H_GEO_TANKYU_KIKO_MOSHI } from "./data/h-geo-tankyu-kiko";
+import { H_GEO_TANKYU_KOGYO_MOSHI } from "./data/h-geo-tankyu-kogyo";
+import { H_GEO_TANKYU_KOKKA_MOSHI } from "./data/h-geo-tankyu-kokka";
+import { H_GEO_TANKYU_KOTSU_MOSHI } from "./data/h-geo-tankyu-kotsu";
+import { H_GEO_TANKYU_MINAMIASIA_MOSHI } from "./data/h-geo-tankyu-minamiasia";
+import { H_GEO_TANKYU_MINZOKU_MOSHI } from "./data/h-geo-tankyu-minzoku";
+import { H_GEO_TANKYU_NIHON_MOSHI } from "./data/h-geo-tankyu-nihon";
+import { H_GEO_TANKYU_NISHIASIA_MOSHI } from "./data/h-geo-tankyu-nishiasia";
+import { H_GEO_TANKYU_NOGYO_MOSHI } from "./data/h-geo-tankyu-nogyo";
+import { H_GEO_TANKYU_OCEANIA_MOSHI } from "./data/h-geo-tankyu-oceania";
+import { H_GEO_TANKYU_RUSSIA_MOSHI } from "./data/h-geo-tankyu-russia";
+import { H_GEO_TANKYU_SHIGEN_MOSHI } from "./data/h-geo-tankyu-shigen";
+import { H_GEO_TANKYU_TOSHI_MOSHI } from "./data/h-geo-tankyu-toshi";
+import { H_HIST_JP_ASUKA_MOSHI } from "./data/h-hist-jp-asuka";
+import { H_HIST_JP_BAKUMATSU_MOSHI } from "./data/h-hist-jp-bakumatsu";
+import { H_HIST_JP_EDO_DOYO_MOSHI } from "./data/h-hist-jp-edo-doyo";
+import { H_HIST_JP_EDO_KEIZAI_MOSHI } from "./data/h-hist-jp-edo-keizai";
+import { H_HIST_JP_EDO_SEIRITSU_MOSHI } from "./data/h-hist-jp-edo-seiritsu";
+import { H_HIST_JP_GENDAI_MOSHI } from "./data/h-hist-jp-gendai";
+import { H_HIST_JP_GENSHI_MOSHI } from "./data/h-hist-jp-genshi";
+import { H_HIST_JP_HEIAN_MOSHI } from "./data/h-hist-jp-heian";
+import { H_HIST_JP_INSEI_MOSHI } from "./data/h-hist-jp-insei";
+import { H_HIST_JP_KAMAKURA_MOSHI } from "./data/h-hist-jp-kamakura";
+import { H_HIST_JP_KODO_MOSHI } from "./data/h-hist-jp-kodo";
+import { H_HIST_JP_KOFUN_MOSHI } from "./data/h-hist-jp-kofun";
+import { H_HIST_JP_MEIJI_MOSHI } from "./data/h-hist-jp-meiji";
+import { H_HIST_JP_MUROMACHI_MOSHI } from "./data/h-hist-jp-muromachi";
+import { H_HIST_JP_NARA_MOSHI } from "./data/h-hist-jp-nara";
+import { H_HIST_JP_NICHIRO_MOSHI } from "./data/h-hist-jp-nichiro";
+import { H_HIST_JP_SENRYO_MOSHI } from "./data/h-hist-jp-senryo";
+import { H_HIST_JP_SENSO_MOSHI } from "./data/h-hist-jp-senso";
+import { H_HIST_JP_SHOKUHO_MOSHI } from "./data/h-hist-jp-shokuho";
+import { H_HIST_JP_TAISHO_MOSHI } from "./data/h-hist-jp-taisho";
 import { H_HIST_SOGO_18C_MOSHI } from "./data/h-hist-sogo-18c";
 import { H_HIST_SOGO_DATSU_MOSHI } from "./data/h-hist-sogo-datsu";
 import { H_HIST_SOGO_GLOBAL_MOSHI } from "./data/h-hist-sogo-global";
@@ -496,6 +572,44 @@ export const UNIT_REGISTRY: Record<string, UnitMoshi> = {
   "h-civ-kokyo-shijo": H_CIV_KOKYO_SHIJO_MOSHI,
   "h-civ-kokyo-shiso": H_CIV_KOKYO_SHISO_MOSHI,
   "h-civ-kokyo-tosei": H_CIV_KOKYO_TOSEI_MOSHI,
+  "h-civ-rinri-bukkyo": H_CIV_RINRI_BUKKYO_MOSHI,
+  "h-civ-rinri-china": H_CIV_RINRI_CHINA_MOSHI,
+  "h-civ-rinri-christ": H_CIV_RINRI_CHRIST_MOSHI,
+  "h-civ-rinri-gendai": H_CIV_RINRI_GENDAI_MOSHI,
+  "h-civ-rinri-greece": H_CIV_RINRI_GREECE_MOSHI,
+  "h-civ-rinri-islam": H_CIV_RINRI_ISLAM_MOSHI,
+  "h-civ-rinri-jitsuzon": H_CIV_RINRI_JITSUZON_MOSHI,
+  "h-civ-rinri-joho": H_CIV_RINRI_JOHO_MOSHI,
+  "h-civ-rinri-kankyo": H_CIV_RINRI_KANKYO_MOSHI,
+  "h-civ-rinri-kant": H_CIV_RINRI_KANT_MOSHI,
+  "h-civ-rinri-keiken": H_CIV_RINRI_KEIKEN_MOSHI,
+  "h-civ-rinri-keiyaku": H_CIV_RINRI_KEIYAKU_MOSHI,
+  "h-civ-rinri-kindai-nihon": H_CIV_RINRI_KINDAI_NIHON_MOSHI,
+  "h-civ-rinri-kori": H_CIV_RINRI_KORI_MOSHI,
+  "h-civ-rinri-nihon": H_CIV_RINRI_NIHON_MOSHI,
+  "h-civ-rinri-pragma": H_CIV_RINRI_PRAGMA_MOSHI,
+  "h-civ-rinri-renaissance": H_CIV_RINRI_RENAISSANCE_MOSHI,
+  "h-civ-rinri-seimei": H_CIV_RINRI_SEIMEI_MOSHI,
+  "h-civ-rinri-seinen": H_CIV_RINRI_SEINEN_MOSHI,
+  "h-civ-seikei-boeki": H_CIV_SEIKEI_BOEKI_MOSHI,
+  "h-civ-seikei-chiho": H_CIV_SEIKEI_CHIHO_MOSHI,
+  "h-civ-seikei-genri": H_CIV_SEIKEI_GENRI_MOSHI,
+  "h-civ-seikei-heiwa": H_CIV_SEIKEI_HEIWA_MOSHI,
+  "h-civ-seikei-jinken": H_CIV_SEIKEI_JINKEN_MOSHI,
+  "h-civ-seikei-kenpo": H_CIV_SEIKEI_KENPO_MOSHI,
+  "h-civ-seikei-kinyu": H_CIV_SEIKEI_KINYU_MOSHI,
+  "h-civ-seikei-kokkai": H_CIV_SEIKEI_KOKKAI_MOSHI,
+  "h-civ-seikei-kokuren": H_CIV_SEIKEI_KOKUREN_MOSHI,
+  "h-civ-seikei-nihon": H_CIV_SEIKEI_NIHON_MOSHI,
+  "h-civ-seikei-rodo": H_CIV_SEIKEI_RODO_MOSHI,
+  "h-civ-seikei-saiban": H_CIV_SEIKEI_SAIBAN_MOSHI,
+  "h-civ-seikei-senkyo": H_CIV_SEIKEI_SENKYO_MOSHI,
+  "h-civ-seikei-shakaihosho": H_CIV_SEIKEI_SHAKAIHOSHO_MOSHI,
+  "h-civ-seikei-shijo": H_CIV_SEIKEI_SHIJO_MOSHI,
+  "h-civ-seikei-shotoku": H_CIV_SEIKEI_SHOTOKU_MOSHI,
+  "h-civ-seikei-taisei": H_CIV_SEIKEI_TAISEI_MOSHI,
+  "h-civ-seikei-togo": H_CIV_SEIKEI_TOGO_MOSHI,
+  "h-civ-seikei-zaisei": H_CIV_SEIKEI_ZAISEI_MOSHI,
   "h-eng-gram-bunkei": H_ENG_GRAM_BUNKEI_MOSHI,
   "h-eng-gram-bunshi": H_ENG_GRAM_BUNSHI_MOSHI,
   "h-eng-gram-bunshikobun": H_ENG_GRAM_BUNSHIKOBUN_MOSHI,
@@ -537,6 +651,44 @@ export const UNIT_REGISTRY: Record<string, UnitMoshi> = {
   "h-geo-sogo-shigen": H_GEO_SOGO_SHIGEN_MOSHI,
   "h-geo-sogo-shukyo": H_GEO_SOGO_SHUKYO_MOSHI,
   "h-geo-sogo-toshi": H_GEO_SOGO_TOSHI_MOSHI,
+  "h-geo-tankyu-america": H_GEO_TANKYU_AMERICA_MOSHI,
+  "h-geo-tankyu-chikei": H_GEO_TANKYU_CHIKEI_MOSHI,
+  "h-geo-tankyu-europe": H_GEO_TANKYU_EUROPE_MOSHI,
+  "h-geo-tankyu-higashiasia": H_GEO_TANKYU_HIGASHIASIA_MOSHI,
+  "h-geo-tankyu-jinko": H_GEO_TANKYU_JINKO_MOSHI,
+  "h-geo-tankyu-kiko": H_GEO_TANKYU_KIKO_MOSHI,
+  "h-geo-tankyu-kogyo": H_GEO_TANKYU_KOGYO_MOSHI,
+  "h-geo-tankyu-kokka": H_GEO_TANKYU_KOKKA_MOSHI,
+  "h-geo-tankyu-kotsu": H_GEO_TANKYU_KOTSU_MOSHI,
+  "h-geo-tankyu-minamiasia": H_GEO_TANKYU_MINAMIASIA_MOSHI,
+  "h-geo-tankyu-minzoku": H_GEO_TANKYU_MINZOKU_MOSHI,
+  "h-geo-tankyu-nihon": H_GEO_TANKYU_NIHON_MOSHI,
+  "h-geo-tankyu-nishiasia": H_GEO_TANKYU_NISHIASIA_MOSHI,
+  "h-geo-tankyu-nogyo": H_GEO_TANKYU_NOGYO_MOSHI,
+  "h-geo-tankyu-oceania": H_GEO_TANKYU_OCEANIA_MOSHI,
+  "h-geo-tankyu-russia": H_GEO_TANKYU_RUSSIA_MOSHI,
+  "h-geo-tankyu-shigen": H_GEO_TANKYU_SHIGEN_MOSHI,
+  "h-geo-tankyu-toshi": H_GEO_TANKYU_TOSHI_MOSHI,
+  "h-hist-jp-asuka": H_HIST_JP_ASUKA_MOSHI,
+  "h-hist-jp-bakumatsu": H_HIST_JP_BAKUMATSU_MOSHI,
+  "h-hist-jp-edo-doyo": H_HIST_JP_EDO_DOYO_MOSHI,
+  "h-hist-jp-edo-keizai": H_HIST_JP_EDO_KEIZAI_MOSHI,
+  "h-hist-jp-edo-seiritsu": H_HIST_JP_EDO_SEIRITSU_MOSHI,
+  "h-hist-jp-gendai": H_HIST_JP_GENDAI_MOSHI,
+  "h-hist-jp-genshi": H_HIST_JP_GENSHI_MOSHI,
+  "h-hist-jp-heian": H_HIST_JP_HEIAN_MOSHI,
+  "h-hist-jp-insei": H_HIST_JP_INSEI_MOSHI,
+  "h-hist-jp-kamakura": H_HIST_JP_KAMAKURA_MOSHI,
+  "h-hist-jp-kodo": H_HIST_JP_KODO_MOSHI,
+  "h-hist-jp-kofun": H_HIST_JP_KOFUN_MOSHI,
+  "h-hist-jp-meiji": H_HIST_JP_MEIJI_MOSHI,
+  "h-hist-jp-muromachi": H_HIST_JP_MUROMACHI_MOSHI,
+  "h-hist-jp-nara": H_HIST_JP_NARA_MOSHI,
+  "h-hist-jp-nichiro": H_HIST_JP_NICHIRO_MOSHI,
+  "h-hist-jp-senryo": H_HIST_JP_SENRYO_MOSHI,
+  "h-hist-jp-senso": H_HIST_JP_SENSO_MOSHI,
+  "h-hist-jp-shokuho": H_HIST_JP_SHOKUHO_MOSHI,
+  "h-hist-jp-taisho": H_HIST_JP_TAISHO_MOSHI,
   "h-hist-sogo-18c": H_HIST_SOGO_18C_MOSHI,
   "h-hist-sogo-datsu": H_HIST_SOGO_DATSU_MOSHI,
   "h-hist-sogo-global": H_HIST_SOGO_GLOBAL_MOSHI,
