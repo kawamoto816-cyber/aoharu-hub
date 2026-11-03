@@ -6,9 +6,12 @@ import Link from "next/link";
 import { LearnShell } from "@/components/learn/LearnShell";
 import { LEVELS, schoolCounts } from "@/lib/school";
 import type { SchoolUnit } from "@/lib/school/types";
+import { SchoolViews } from "@/components/learn/sphere/SchoolViews";
+import { unitMeta } from "@/lib/sphere/meta";
 
 // /learn/school: 学校の教科の地図。小・中・高の全単元を、教科書の単元の粒度で箱にして並べる。
 // 公開中の単元はリンク、ほかは点線の「準備中」。①覚える・②鍛えるのどちらが中心かを印で示す。
+// 上の「一覧｜スフィア盤」で、単元どうしのつながりを盤で見る表示 (?view=sphere&axis=a|b|c) に切りかえられる。
 
 const URL = "https://app.bluespring.co.jp/learn/school";
 const TITLE = "学校の教科の地図｜小学校・中学校・高校の全単元｜アオハルラーン｜アオハルOS";
@@ -67,76 +70,83 @@ export default function SchoolMap() {
       <p className="mb-0 mt-2 max-w-[720px] text-[15px] leading-relaxed text-[#3A3D55]">
         小学校・中学校・高校の単元を、教科書の単元ごとに並べました。{open < total ? "黄色の箱はいま学べる単元、点線の箱はこれから開く単元です。" : "箱を押すと、その単元を学べます。"}
       </p>
-      <p className="m-0 mt-3 flex flex-wrap items-center gap-3 text-[13px] font-bold">
-        <span>
-          公開中 {open} / 全 {total} 単元
-        </span>
-        <span className="inline-flex items-center gap-1">
-          <span className="rounded bg-[#FFE45C] px-1 text-[10px] font-black">①</span>覚える
-        </span>
-        <span className="inline-flex items-center gap-1">
-          <span className="rounded bg-[#1533B8] px-1 text-[10px] font-black text-white">②</span>鍛える
-        </span>
-      </p>
+      <SchoolViews
+        meta={unitMeta()}
+        list={
+          <>
+            <p className="m-0 mt-3 flex flex-wrap items-center gap-3 text-[13px] font-bold">
+              <span>
+                公開中 {open} / 全 {total} 単元
+              </span>
+              <span className="inline-flex items-center gap-1">
+                <span className="rounded bg-[#FFE45C] px-1 text-[10px] font-black">①</span>覚える
+              </span>
+              <span className="inline-flex items-center gap-1">
+                <span className="rounded bg-[#1533B8] px-1 text-[10px] font-black text-white">②</span>鍛える
+              </span>
+            </p>
 
-      <p className="m-0 mt-3">
-        <Link href="/learn/moshi" className="inline-flex min-h-[44px] items-center gap-2 rounded-[12px] border-[1.5px] border-[#15172B] bg-[#FFE45C] px-3 text-[14px] font-black text-[#15172B] no-underline shadow-[2px_2px_0_#15172B]">
-          定期テスト模試：テスト範囲を選んで本番形式で解く →
-        </Link>
-      </p>
+            <p className="m-0 mt-3">
+              <Link href="/learn/moshi" className="inline-flex min-h-[44px] items-center gap-2 rounded-[12px] border-[1.5px] border-[#15172B] bg-[#FFE45C] px-3 text-[14px] font-black text-[#15172B] no-underline shadow-[2px_2px_0_#15172B]">
+                定期テスト模試：テスト範囲を選んで本番形式で解く →
+              </Link>
+            </p>
 
-      <nav aria-label="教科ごとの入口" className="mt-4 flex flex-wrap items-center gap-2">
-        <span className="text-[13px] font-bold text-[#3A3D55]">教科ごとの入口：</span>
-        {KYOKA.map((k) => (
-          <Link key={k.key} href={`/learn/kyoka/${k.key}`} className="inline-flex min-h-[44px] items-center rounded-full border-[1.5px] border-[#15172B] bg-[#FFFBE6] px-3 text-[13px] font-black text-[#15172B] no-underline">
-            {k.name}
-          </Link>
-        ))}
-      </nav>
+            <nav aria-label="教科ごとの入口" className="mt-4 flex flex-wrap items-center gap-2">
+              <span className="text-[13px] font-bold text-[#3A3D55]">教科ごとの入口：</span>
+              {KYOKA.map((k) => (
+                <Link key={k.key} href={`/learn/kyoka/${k.key}`} className="inline-flex min-h-[44px] items-center rounded-full border-[1.5px] border-[#15172B] bg-[#FFFBE6] px-3 text-[13px] font-black text-[#15172B] no-underline">
+                  {k.name}
+                </Link>
+              ))}
+            </nav>
 
-      <nav aria-label="学校の段階" className="sticky top-0 z-10 -mx-4 mt-4 flex gap-2 border-b border-[#E4E2D8] bg-[#F7F6F1]/95 px-4 py-2 sm:-mx-6 sm:px-6">
-        {LEVELS.map((l) => (
-          <a key={l.key} href={`#${l.key}`} className="inline-flex min-h-[40px] items-center rounded-full border-[1.5px] border-[#15172B] bg-white px-4 text-[14px] font-black text-[#15172B] no-underline">
-            {l.name}
-          </a>
-        ))}
-      </nav>
-
-      {LEVELS.map((l) => (
-        <section key={l.key} id={l.key} aria-labelledby={`h-${l.key}`} className="mt-8 scroll-mt-16">
-          <h2 id={`h-${l.key}`} className="m-0 text-[24px] font-black">
-            {l.name}
-          </h2>
-          <ul className="m-0 mt-2 flex list-none flex-wrap gap-2 p-0">
-            {l.subjects.map((s) => (
-              <li key={s.key}>
-                <a href={`#${l.key}-${s.key}`} className="text-[13px] font-bold text-[#1533B8]">
-                  {s.name}
+            <nav aria-label="学校の段階" className="sticky top-0 z-10 -mx-4 mt-4 flex gap-2 border-b border-[#E4E2D8] bg-[#F7F6F1]/95 px-4 py-2 sm:-mx-6 sm:px-6">
+              {LEVELS.map((l) => (
+                <a key={l.key} href={`#${l.key}`} className="inline-flex min-h-[40px] items-center rounded-full border-[1.5px] border-[#15172B] bg-white px-4 text-[14px] font-black text-[#15172B] no-underline">
+                  {l.name}
                 </a>
-              </li>
-            ))}
-          </ul>
-          <div className="mt-4 flex flex-col gap-5">
-            {l.subjects.map((s) => (
-              <div key={s.key} id={`${l.key}-${s.key}`} className="scroll-mt-16 rounded-[18px] border-[1.5px] border-[#15172B] bg-white p-4 shadow-[4px_4px_0_#15172B] sm:p-5">
-                <h3 className="m-0 text-[19px] font-black">{s.name}</h3>
-                <div className="mt-3 flex flex-col gap-4">
-                  {s.groups.map((g) => (
-                    <div key={g.title} className="grid gap-2 sm:grid-cols-[120px_1fr]">
-                      <p className="m-0 pt-2 text-[13px] font-black text-[#3A3D55]">{g.title}</p>
-                      <div className="flex min-w-0 flex-wrap gap-1.5">
-                        {g.units.map((u) => (
-                          <Box key={u.id} u={u} />
+              ))}
+            </nav>
+
+            {LEVELS.map((l) => (
+              <section key={l.key} id={l.key} aria-labelledby={`h-${l.key}`} className="mt-8 scroll-mt-16">
+                <h2 id={`h-${l.key}`} className="m-0 text-[24px] font-black">
+                  {l.name}
+                </h2>
+                <ul className="m-0 mt-2 flex list-none flex-wrap gap-2 p-0">
+                  {l.subjects.map((s) => (
+                    <li key={s.key}>
+                      <a href={`#${l.key}-${s.key}`} className="text-[13px] font-bold text-[#1533B8]">
+                        {s.name}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+                <div className="mt-4 flex flex-col gap-5">
+                  {l.subjects.map((s) => (
+                    <div key={s.key} id={`${l.key}-${s.key}`} className="scroll-mt-16 rounded-[18px] border-[1.5px] border-[#15172B] bg-white p-4 shadow-[4px_4px_0_#15172B] sm:p-5">
+                      <h3 className="m-0 text-[19px] font-black">{s.name}</h3>
+                      <div className="mt-3 flex flex-col gap-4">
+                        {s.groups.map((g) => (
+                          <div key={g.title} className="grid gap-2 sm:grid-cols-[120px_1fr]">
+                            <p className="m-0 pt-2 text-[13px] font-black text-[#3A3D55]">{g.title}</p>
+                            <div className="flex min-w-0 flex-wrap gap-1.5">
+                              {g.units.map((u) => (
+                                <Box key={u.id} u={u} />
+                              ))}
+                            </div>
+                          </div>
                         ))}
                       </div>
                     </div>
                   ))}
                 </div>
-              </div>
+              </section>
             ))}
-          </div>
-        </section>
-      ))}
+          </>
+        }
+      />
     </LearnShell>
   );
 }
