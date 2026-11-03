@@ -14,6 +14,14 @@ export const DEN_MELANIE_PERKINS: Den = {
   sections: [
     {
       heading: "年表：卒業アルバムから、だれでも使えるデザインへ",
+      photos: [{
+          src: "/media/unizeb/den/melanie-perkins/winthrop-hall.webp",
+          width: 1200,
+          height: 675,
+          alt: "青空の下に建つ、時計塔のある石造りの大きな建物。",
+          caption: "パースの西オーストラリア大学にあるウィンスロップ・ホール（2020年撮影）。パーキンスがFusion Booksを始めたのは、この大学で学んでいたころです。",
+          credit: { author: "Calistemon", license: "CC BY-SA 4.0", licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0", source: "https://commons.wikimedia.org/wiki/File:Winthrop_Hall,_UWA,_September_2020_01.jpg" },
+        }],
       body: "メラニー・パーキンスは、オーストラリア・パースの{{西オーストラリア大学}}で学んでいた2007年（2008年とする資料もある）、クリフ・オブレヒトと{{Fusion Books}}を始めました。その後、キャメロン・アダムスを加えた3人でCanvaを立ち上げ、2013年に公開しました（2012年とする資料もある）。",
       reading: [
         "パーキンスは1987年にオーストラリアで生まれ、西部の都市パースにある西オーストラリア大学で学びました。在学中、ほかの学生にデザインソフトの使い方を教えていて、ソフトの操作を覚えるだけで多くの時間がかかることに気づいたといわれます。2007年、オブレヒトとともに、学校の卒業アルバムをネット上で作れる{{Fusion Books}}を始めました。",

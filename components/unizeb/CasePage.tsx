@@ -1,13 +1,15 @@
 import { LearnShell } from "@/components/learn/LearnShell";
 import { LectureFigure } from "@/components/lecture/Figure";
 import { Rich } from "@/components/lecture/Rich";
-import type { CaseStudy } from "@/lib/unizeb/types";
+import type { CaseStudy, Scene } from "@/lib/unizeb/types";
+import { UZ_SCENES } from "@/lib/unizeb/registry";
+import { SceneView } from "./Scene";
 import { Kicker, NextLinks, SkillLinks, Sources, UZ_HOME, uzCrumbs } from "./parts";
 
 // ケーススタディー（/learn/unizeb/case/<id>）：状況 → 問い → 選択肢3つ → 自分で決める → 実際（架空なら架空の結末） → 学び → 出典。
 // 選択肢を選んで「決めた」を押すまで、実際の判断はたたんでおく（考える前に答えを見せない）。
 
-function Block({ title, b, no }: { title: string; b: CaseStudy["situation"]; no: number }) {
+function Block({ title, b, no, scenes }: { title: string; b: CaseStudy["situation"]; no: number; scenes?: Scene[] }) {
   return (
     <>
       <p className="m-0 mt-2.5 rounded-[12px] border-l-4 border-[#FFE45C] bg-[#FFFBE6] px-3 py-2 text-[14px] font-bold leading-[1.75]" aria-label={title}>
@@ -16,6 +18,7 @@ function Block({ title, b, no }: { title: string; b: CaseStudy["situation"]; no:
       {b.reading?.map((p, k) => (
         <p key={k} className="m-0 mt-3 text-[15.5px] leading-[1.95] [text-indent:1em]"><Rich text={p} /></p>
       ))}
+      {scenes?.map((sc, k) => <SceneView key={k} sc={sc} no={k + 1} />)}
       {b.figure && <LectureFigure fig={b.figure} no={no} />}
     </>
   );
@@ -28,7 +31,7 @@ export function CasePage({ c }: { c: CaseStudy }) {
       <h1 className="m-0 mt-1 text-[25px] font-black leading-tight">{c.title}</h1>
       <section className="mt-6">
         <h2 className="m-0 text-[19px] font-black">1. 状況</h2>
-        <Block title="状況" b={c.situation} no={1} />
+        <Block title="状況" b={c.situation} no={1} scenes={UZ_SCENES[`case/${c.id}`]?.filter((x) => x.at === 0)} />
       </section>
       <section className="mt-9 rounded-[18px] border-[1.5px] border-[#15172B] bg-[#15172B] p-4 text-white shadow-[4px_4px_0_#B42318]">
         <h2 className="m-0 text-[12px] font-black tracking-[0.15em] text-[#FFE45C]">2. 問い　あなたならどうする？</h2>
@@ -56,7 +59,7 @@ export function CasePage({ c }: { c: CaseStudy }) {
           <span aria-hidden="true" className="group-open:rotate-180">▼</span>
         </summary>
         <div className="px-4 pb-4">
-          <Block title="結果" b={c.outcome} no={c.situation.figure ? 2 : 1} />
+          <Block title="結果" b={c.outcome} no={c.situation.figure ? 2 : 1} scenes={UZ_SCENES[`case/${c.id}`]?.filter((x) => x.at === 1)} />
         </div>
       </details>
       <SkillLinks title="5. 学び（スキルカードへ）" items={c.lessons} />

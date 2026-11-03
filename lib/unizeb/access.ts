@@ -20,7 +20,9 @@ const FREE_LV = 3;
 export const canReadLecture = (plan: UzPlan, lv: number) => lv <= FREE_LV || plan === "pro" || plan === "max";
 /** スキルカード（4段とAI採点）：Lv1〜3 はだれでも、Lv4 以降は Max */
 export const canUseCard = (plan: UzPlan, lv: number) => lv <= FREE_LV || plan === "max";
-export const canReadDen = (plan: UzPlan, id: string) => UZ_SAMPLE_DEN.includes(id) || plan === "pro" || plan === "max";
+/** 演習（実務のワークブック）：Lv1〜3 の演習と修了演習 I（lv 3）はだれでも（登録なしは端末の中だけに保存）、Lv4 以降と修了演習 II・III は Max。AI採点は演習1回の採点を1回と数える */
+export const canUseEnshu = (plan: UzPlan, lv: number) => lv <= FREE_LV || plan === "max";
+export const canReadDen =(plan: UzPlan, id: string) => UZ_SAMPLE_DEN.includes(id) || plan === "pro" || plan === "max";
 export const canReadCase = (plan: UzPlan, id: string) => UZ_SAMPLE_CASES.includes(id) || plan === "pro" || plan === "max";
 export const canReadShiryo = (plan: UzPlan, ch: number) => UZ_SAMPLE_SHIRYO.includes(ch) || plan === "pro" || plan === "max";
 /** ボードを保存できるか（登録なしは端末の中だけ） */

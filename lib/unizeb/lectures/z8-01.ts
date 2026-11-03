@@ -83,6 +83,14 @@ export const UZ_Z8_01: Lecture = {
     },
     {
       heading: "測り方を決める：何で・いつ数えるか",
+      photos: [{
+          src: "/media/unizeb/lec/z8-01/tally-counter.webp",
+          width: 1200,
+          height: 1169,
+          alt: "黒い手持ちの数取器。窓に0042の数字が見え、上に押すレバーがある。",
+          caption: "手で押して数える数取器（カウンター）。レバーを1回押すごとに数が1つ増えます。何で数えるかを決めておくと、毎回同じ方法で数えられます。",
+          credit: { author: "Storye book", license: "CC BY 3.0", licenseUrl: "https://creativecommons.org/licenses/by/3.0", source: "https://commons.wikimedia.org/wiki/File:Hand_tally_and_knitting_row_counter_007.jpg" },
+        }],
       body: "KPIごとに{{測り方}}、つまり何で数え、いつ数えるかを決めます。毎週同じ方法で数えると、目標との差がはっきりわかり、どの数が足りないかに早く気づけます。",
       reading: [
         "{{測り方}}とは、そのKPIを何の道具で、いつ数えるかの決まりです。工作教室のチームは、見込み客の数は問い合わせ用のフォームの件数を毎週日曜に数える、成約件数は申し込みフォームを毎週日曜に数える、告知を見た人はSNSの分析画面の数とチラシを配った枚数を毎週見る、と決めました。売上は月末に売上の記録を見て確かめます。",

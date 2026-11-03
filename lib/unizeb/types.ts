@@ -2,7 +2,7 @@
 // 図解レクチャーは lib/lecture/types.ts の Lecture をそのまま使う（unit は "unizeb-<カードid>"）。
 // 起業家列伝・ケース・資料集は、節を LectureSection で書き、図は lib/lecture の図の部品でそのまま描く。
 
-import type { LectureSection, Figure } from "@/lib/lecture/types";
+import type { LectureSection, Figure, ComicArt } from "@/lib/lecture/types";
 
 /** 出典（実在の人・会社・制度の事実はすべてここにたどれるようにする） */
 export interface Source {
@@ -93,4 +93,90 @@ export interface ShiryoItem {
   /** 18歳以上と未満で扱いが分かれる所 */
   ageSplit?: boolean;
   sources: Source[];
+}
+
+/** 場面イラストに足せる、起業の小道具（components/unizeb/Scene.tsx が描く） */
+export type UzProp =
+  | "stall" | "cashbox" | "laptop" | "phone" | "chartUp" | "chartDown" | "sticky" | "shop" | "boxes"
+  | "ledger" | "receipt" | "stopwatch" | "piggy" | "megaphone" | "calendar" | "crepe" | "coins" | "bag"
+  | "flyer" | "speech" | "clock" | "scale" | "folder" | "mail" | "bulbIdea" | "check" | "cross";
+
+/**
+ * 場面イラスト（オリジナル）。4コマと同じ絵の部品（ComicArt）に、起業の小道具（extras）を重ねて1枚の絵にする。
+ * ふきだしは使わない（文字は extras の text・labels に短く）。
+ */
+export interface Scene {
+  /** 何番目の節（0から）の本文のあとに置くか */
+  at: number;
+  /** 絵の説明（本文のどこと関係するか。1〜2文） */
+  caption: string;
+  /** 読み上げ用の絵の説明 */
+  alt: string;
+  art: ComicArt;
+  /** x 0〜340、y 0〜280、s は大きさ。text は札・画面・ふせんなどに書く短い字（8字まで） */
+  extras?: { kind: UzProp; x: number; y: number; s?: number; text?: string }[];
+  /** 絵の中の短い注記（12字まで） */
+  labels?: { x: number; y: number; text: string; tone?: "navy" | "red" | "blue" }[];
+}
+
+/** ページごとの場面イラスト（キーは "lec/z1-01"・"den/<id>"・"case/<id>"） */
+export type SceneBook = Record<string, Scene[]>;
+
+/**
+ * 演習（/learn/unizeb/enshu/<id>）：実務のワークブック。架空の事業の資料を読み、そのLvのスキルを組み合わせて課題に取り組む。
+ * 採点はカードと同じ（AIは観点ごとに0〜4、点と合否はアプリ・サーバーが計算）。合格した答案はスキルアセットとして残る。
+ * id：Lvごとの演習は "lv1"〜"lv15"、節目の修了演習は "shuryo-1"（Lv3）・"shuryo-2"（Lv9）・"shuryo-3"（Lv15）。
+ */
+export interface Enshu {
+  id: string;
+  kind: "unit" | "shuryo";
+  /** 対象の Lv（修了演習は節目の Lv） */
+  lv: number;
+  title: string;
+  /** はじめの説明（何の力を見るか、2〜3文） */
+  intro: string;
+  /** 目安の時間（例「40〜60分」）。18歳未満は22時までに終える案内を画面が足す */
+  time: string;
+  /** 合格点（カードと同じ基準。Lv1〜9は70） */
+  pass: number;
+  /** 架空の事業（会社・店・団体）。実在の名前は使わない */
+  company: { name: string; summary: string };
+  /** 資料（数字・お客さんの声・状況）。文の中の [[name]] は variants の値に置きかわる */
+  materials: EnshuMaterial[];
+  /** 数字を変えた版（再挑戦のとき別の版を出す）。3つ以上 */
+  variants: Record<string, number>[];
+  tasks: EnshuTask[];
+  /** 修了演習で合格したときに認定される位階（例「事業の種カード」） */
+  award?: string;
+}
+
+export interface EnshuMaterial {
+  title: string;
+  body?: string;
+  figure?: Figure;
+  /** 表（見出し＋行）。セルの [[name]] も置きかわる */
+  table?: { head: string[]; rows: string[][] };
+}
+
+export interface EnshuTask {
+  /** 課題の番号（"1"〜） */
+  no: string;
+  /** 主に使うスキル（カード id。1〜3枚） */
+  skills: string[];
+  /** 課題文（[[name]] 可） */
+  prompt: string;
+  /** 答え方："calc" 数を1つ（自動で採点）／"write" 文章（AI採点）／"choice" 選んで理由（AI採点） */
+  type: "calc" | "write" | "choice";
+  /** calc：正しい値の式（variants の名前と数字と + - * / ( ) だけ。例 "price * count - cost"）。単位 */
+  calc?: { expr: string; unit: string; tolerance?: number };
+  /** choice：選択肢 */
+  options?: string[];
+  /** 入力欄の説明（例「150〜250字」） */
+  hint?: string;
+  /** write・choice の観点（配点 w の合計は、全課題の calc の配点と合わせて100） */
+  crit: { t: string; w: number; g4: string; g2: string; minChars?: number }[];
+  /** 模範解答の例（採点のあとに見せる。答えの丸写しは足切り） */
+  model: string;
+  /** 読み直す所（レクチャーの節。例 "/learn/unizeb/lec/z6-01#lec-s2"） */
+  review?: string;
 }

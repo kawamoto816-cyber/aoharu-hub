@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { LearnShell } from "@/components/learn/LearnShell";
-import { UZ_CARDS, UZ_CASES, UZ_DEN, UZ_LECTURES, UZ_RANKS, UZ_SHIRYO, deptLabel, lectureUnit } from "@/lib/unizeb";
+import { UZ_CARDS, UZ_CASES, UZ_DEN, UZ_ENSHU, UZ_LECTURES, UZ_RANKS, UZ_SHIRYO, deptLabel, lectureUnit } from "@/lib/unizeb";
 import { Kicker } from "./parts";
 
 // /learn/unizeb の目次：起業の教科書（図解レクチャー120）・起業家列伝・ケーススタディー・資料集。
@@ -17,6 +17,17 @@ export function UzHome() {
       <p className="m-0 mt-3 text-[14.5px] leading-relaxed">
         120のスキルを、図解レクチャー（教科書）で学び、スキルカードで自分の事業に使います。起業家列伝・ケーススタディー・資料集で、本物の0→1にもふれます。
       </p>
+
+      <nav aria-label="あなたの記録" className="mt-5 grid grid-cols-2 gap-2.5">
+        <Link href="/learn/unizeb/board" className="flex min-h-[64px] flex-col justify-center rounded-[14px] border-[1.5px] border-[#15172B] bg-[#FFE45C] px-3.5 py-2 text-[#15172B] no-underline shadow-[3px_3px_0_#15172B]">
+          <span className="text-[15px] font-black">マイ事業ボード</span>
+          <span className="text-[11.5px] font-bold text-[#3A3D55]">スキルカードで事業を育てる</span>
+        </Link>
+        <Link href="/learn/unizeb/assets" className="flex min-h-[64px] flex-col justify-center rounded-[14px] border-[1.5px] border-[#15172B] bg-white px-3.5 py-2 text-[#15172B] no-underline shadow-[3px_3px_0_#15172B]">
+          <span className="text-[15px] font-black">スキルアセット</span>
+          <span className="text-[11.5px] font-bold text-[#3A3D55]">合格した答案の記録</span>
+        </Link>
+      </nav>
 
       <section id="lec" className="mt-8 scroll-mt-4">
         <h2 className="m-0 text-[20px] font-black">図解レクチャー（起業の教科書）</h2>
@@ -58,6 +69,22 @@ export function UzHome() {
             })}
           </div>
         ))}
+      </section>
+
+      <section id="enshu" className="mt-10 scroll-mt-4">
+        <h2 className="m-0 text-[20px] font-black">演習（実務のワークブック）</h2>
+        <p className="m-0 mt-1 text-[13.5px] text-[#3A3D55]">架空の事業の資料を読み、そのLvのスキルを組み合わせて課題に取り組む。合格した答案はスキルアセットとして残る。</p>
+        <ul className="m-0 mt-3 grid list-none gap-2.5 p-0">
+          {UZ_ENSHU.map((e) => (
+            <li key={e.id}>
+              <Link href={`/learn/unizeb/enshu/${e.id}`} className={`flex min-h-[52px] items-center gap-2 rounded-[14px] border-[1.5px] border-[#15172B] px-3.5 py-2 text-[#15172B] no-underline ${e.kind === "shuryo" ? "bg-[#15172B] text-white" : "bg-white"}`}>
+                <span className={`flex-none rounded px-1.5 py-0.5 text-[11px] font-black ${e.kind === "shuryo" ? "bg-[#FFE45C] text-[#15172B]" : "bg-[#1533B8] text-white"}`}>{e.kind === "shuryo" ? "修了演習" : `Lv${e.lv}`}</span>
+                <span className="flex-1 text-[14.5px] font-black">{e.title}</span>
+                <span className="text-[11px] font-bold opacity-70">{e.time}</span>
+              </Link>
+            </li>
+          ))}
+        </ul>
       </section>
 
       <section id="den" className="mt-10 scroll-mt-4">

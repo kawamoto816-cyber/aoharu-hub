@@ -1,5 +1,6 @@
 import { LearnShell } from "@/components/learn/LearnShell";
 import { Rich } from "@/components/lecture/Rich";
+import { UZ_SCENES } from "@/lib/unizeb/registry";
 import type { Den } from "@/lib/unizeb/types";
 import { Checks, Kicker, NextLinks, SectionView, SkillLinks, Sources, UZ_HOME, uzCrumbs } from "./parts";
 
@@ -23,7 +24,7 @@ export function DenPage({ d }: { d: Den }) {
         </ol>
       </section>
       {d.sections.map((s, i) => (
-        <SectionView key={s.heading} s={s} i={i} idp="den-s" fig={fig} last={i === d.sections.length - 1} />
+        <SectionView key={s.heading} s={s} i={i} idp="den-s" fig={fig} last={i === d.sections.length - 1} scenes={UZ_SCENES[`den/${d.id}`]} />
       ))}
       <SkillLinks title="使ったスキル（ユニゼブのカード）" items={d.skills} />
       <section aria-label="持ち帰れること" className="mt-10 rounded-[18px] border-[1.5px] border-[#15172B] bg-white p-4">

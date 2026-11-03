@@ -2,6 +2,7 @@ import Link from "next/link";
 import { LearnShell } from "@/components/learn/LearnShell";
 import type { Lecture } from "@/lib/lecture/types";
 import { Rich } from "@/components/lecture/Rich";
+import { UZ_SCENES } from "@/lib/unizeb/registry";
 import { LectureStoryView } from "@/components/lecture/Story";
 import { cardInfo, deptLabel } from "@/lib/unizeb";
 import { Checks, Kicker, NextLinks, SectionView, UZ_HOME, uzCrumbs } from "./parts";
@@ -61,6 +62,7 @@ export function UzLecturePage({ lec, id }: { lec: Lecture; id: string }) {
           idp="lec-s"
           fig={fig}
           last={i === lec.sections.length - 1}
+          scenes={UZ_SCENES[`lec/${id}`]}
           extra={
             s.reveal ? (
               <div className="mt-5 overflow-hidden rounded-[14px] border-[1.5px] border-[#15172B] bg-[#FFF1EE] shadow-[4px_4px_0_#15172B]">

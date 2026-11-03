@@ -154,6 +154,116 @@ for (const { file, v } of shiryo) {
   });
   walkText(file, v);
 }
+// 場面イラストと写真
+import { existsSync } from "node:fs";
+const PROPS = new Set(readFileSync(join(UZ, "types.ts"), "utf8").match(/export type UzProp =([^;]+);/)![1].match(/"(\w+)"/g)!.map((x) => x.slice(1, -1)));
+const COMIC_PROPS = new Set(readFileSync(join(ROOT, "lib", "lecture", "types.ts"), "utf8").match(/export type ComicProp =([^;]+);/)![1].match(/"(\w+)"/g)!.map((x) => x.slice(1, -1)));
+const pageSecs: Record<string, number> = {};
+lectures.forEach(({ v }) => (pageSecs[`lec/${v.unit.replace(/^unizeb-/, "")}`] = v.sections.length));
+den.forEach(({ v }) => (pageSecs[`den/${v.id}`] = v.sections.length));
+cases.forEach(({ v }) => (pageSecs[`case/${v.id}`] = 2));
+const scenes = await load("scenes");
+let nScene = 0;
+for (const { file, v } of scenes) {
+  const key = file.replace(/^scenes\//, "").replace(/\.ts$/, "").replace(/^(lec|den|case)-/, "$1/");
+  if (!(key in pageSecs)) E(file, `ページ ${key} がない`);
+  for (const sc of v) {
+    nScene++;
+    if (sc.at < 0 || sc.at >= (pageSecs[key] ?? 0)) E(file, `at ${sc.at} の節がない`);
+    if (!sc.caption || !sc.alt) E(file, "caption か alt がない");
+    sc.extras?.forEach((x: any) => { if (!PROPS.has(x.kind)) E(file, `小道具 ${x.kind} がない`); if (x.text && len(x.text) > 8) E(file, `小道具の字 8字こえ「${x.text}」`); });
+    sc.art.props?.forEach((x: any) => !COMIC_PROPS.has(x.kind) && E(file, `4コマの小道具 ${x.kind} がない`));
+    sc.labels?.forEach((l: any) => len(l.text) > 12 && E(file, `注記 12字こえ「${l.text}」`));
+    walkText(file, sc);
+  }
+}
+const photoCheck = (w: string, secs: any[]) => secs.forEach((s) => s.photos?.forEach((ph: any) => {
+  if (!existsSync(join(ROOT, "public", ph.src))) E(w, `写真のファイルがない ${ph.src}`);
+  if (!/^(Public domain|PD|CC0|CC BY( |-)?(SA )?\d|CC BY-SA \d)/i.test(ph.credit.license)) E(w, `使えないライセンス「${ph.credit.license}」`);
+  if (!/^https:\/\/commons\.wikimedia\.org\//.test(ph.credit.source)) E(w, `出典が Commons でない ${ph.credit.source}`);
+}));
+lectures.forEach(({ file, v }) => photoCheck(file, v.sections));
+den.forEach(({ file, v }) => photoCheck(file, v.sections));
+
+// 演習（実務のワークブック）：配点の合計100・calc の式がすべての版で計算できて割り切れる・[[name]] がすべての版にある・
+// skills がその Lv のカード・review のリンク先がある・資料の分量・使わない言い回し。
+const KIT = "../lib/unizeb/enshuKit.ts";
+const { evalExpr, varNames } = (await import(KIT)) as typeof import("../lib/unizeb/enshuKit");
+const enshu = await load("enshu");
+const cardLv = new Map([...cardIdx.matchAll(/"id":\s*"(z\d-\d\d)",\s*"lv":\s*(\d+)/g)].map((m) => [m[1], Number(m[2])]));
+const lecSecs = new Map(lectures.map(({ v }) => [v.unit.replace(/^unizeb-/, ""), v.sections.length]));
+for (const { file, v } of enshu) {
+  const w = file;
+  if (!file.endsWith(`${v.id}.ts`)) E(w, "ファイル名と id が合わない");
+  if (v.kind === "unit" && v.id !== `lv${v.lv}`) E(w, `id「${v.id}」と lv ${v.lv} が合わない`);
+  if (v.kind === "shuryo") {
+    const k = { "shuryo-1": 3, "shuryo-2": 9, "shuryo-3": 15 }[v.id as string];
+    if (k !== v.lv) E(w, `修了演習の lv が節目（3・9・15）と合わない`);
+    if (!v.award) E(w, "修了演習に award がない");
+  }
+  const pl = v.lv <= 9 ? 70 : v.lv === 11 ? 80 : 75;
+  if (v.pass !== pl) E(w, `合格点 ${v.pass}（passLine は ${pl}）`);
+  const [tMin, tMax] = v.kind === "shuryo" ? [5, 6] : [4, 6];
+  if (v.tasks.length < tMin || v.tasks.length > tMax) E(w, `課題が ${v.tasks.length} 問（${tMin}〜${tMax}）`);
+  const sum = v.tasks.reduce((a: number, t: any) => a + t.crit.reduce((b: number, c: any) => b + c.w, 0), 0);
+  if (sum !== 100) E(w, `配点の合計が ${sum}`);
+  if (v.variants.length < 3) E(w, `variants が ${v.variants.length}（3つ以上）`);
+  const keys0 = Object.keys(v.variants[0] ?? {}).sort().join(",");
+  v.variants.forEach((x: any, i: number) => Object.keys(x).sort().join(",") !== keys0 && E(w, `版${i + 1} の名前が版1とちがう`));
+  const used = varNames([v.title, v.intro, v.company, v.materials, v.tasks]);
+  for (const n of used) v.variants.forEach((x: any, i: number) => !(n in x) && E(w, `[[${n}]] が版${i + 1} にない`));
+  const nos = new Set<string>();
+  for (const t of v.tasks) {
+    const tw = `${w} 課題${t.no}`;
+    if (nos.has(t.no)) E(tw, "課題の番号が重なっている");
+    nos.add(t.no);
+    if (t.skills.length < 1 || t.skills.length > 3) E(tw, `skills が ${t.skills.length} 枚`);
+    for (const s of t.skills) {
+      if (!CARD_IDS.has(s)) E(tw, `スキル ${s} がない`);
+      const lv = cardLv.get(s);
+      if (v.kind === "unit" && lv !== v.lv) E(tw, `スキル ${s} は Lv${lv}（この演習は Lv${v.lv}）`);
+      if (v.kind === "shuryo" && (lv ?? 99) > v.lv) E(tw, `スキル ${s} は Lv${lv}（Lv${v.lv} までの修了演習）`);
+    }
+    if (!t.model) E(tw, "model がない");
+    if (t.type === "calc") {
+      if (!t.calc) { E(tw, "calc の式がない"); continue; }
+      if (t.crit.length !== 1) E(tw, "calc の観点は1つ");
+      v.variants.forEach((x: any, i: number) => {
+        try {
+          const r = evalExpr(t.calc.expr, x);
+          if (!Number.isFinite(r)) E(tw, `版${i + 1} で式の値が数でない`);
+          else if (!t.calc.tolerance && !Number.isInteger(r)) E(tw, `版${i + 1} で割り切れない（${r}）`);
+          else if (r <= 0) W(tw, `版${i + 1} の答えが ${r}`);
+          if (`ans${t.no}` in x && x[`ans${t.no}`] !== r) E(tw, `版${i + 1} の ans${t.no}（${x[`ans${t.no}`]}）と式の値（${r}）がちがう`);
+        } catch (e: any) {
+          E(tw, `版${i + 1}：${e.message}`);
+        }
+      });
+    } else {
+      if (t.type === "choice" && (!t.options || t.options.length < 2 || t.options.length > 5)) E(tw, "choice の選択肢は2〜5");
+      t.crit.forEach((c: any, i: number) => { if (!c.t || !c.g4 || !c.g2) E(tw, `観点${i + 1} に t・g4・g2 がない`); });
+    }
+    if (!t.review) W(tw, "review がない");
+    else {
+      const m = t.review.match(/^\/learn\/unizeb\/(lec|card)\/(z\d-\d\d)(?:#lec-s(\d+))?$/);
+      if (!m) E(tw, `review の形がちがう ${t.review}`);
+      else if (m[1] === "card" && !CARD_IDS.has(m[2])) E(tw, `review のリンク切れ ${t.review}`);
+      else if (m[1] === "lec" && !lecSecs.has(m[2])) E(tw, `review のレクチャーがない ${t.review}`);
+      else if (m[1] === "lec" && m[3] && Number(m[3]) > (lecSecs.get(m[2]) ?? 0)) E(tw, `review の節がない ${t.review}`);
+    }
+  }
+  let chars = 0;
+  for (const m of v.materials) {
+    const strs: string[] = [];
+    const pick = (o: unknown) => { if (typeof o === "string") strs.push(o); else if (Array.isArray(o)) o.forEach(pick); else if (o && typeof o === "object") Object.entries(o).forEach(([k, x]) => k !== "type" && k !== "kind" && k !== "tone" && k !== "dir" && pick(x)); };
+    pick(m);
+    chars += strs.reduce((a, x) => a + len(x), 0);
+    figure(`${w} ${m.title}`, m.figure);
+  }
+  if (chars < 1500 || chars > 3000) W(w, `資料の分量 ${chars} 字（見出し・表・図をふくむ。目安 1,500〜3,000）`);
+  walkText(w, v);
+}
+
 for (const { w, href } of hrefs) {
   const m = href.match(/^\/learn\/unizeb(?:\/(lec|den|case|card)\/([\w-]+)|\/shiryo(?:#(ch\d+))?)?$/);
   if (!m) { W(w, `よそへのリンク ${href}`); continue; }
@@ -164,7 +274,7 @@ for (const { w, href } of hrefs) {
   if (kind === "case" && !CASE_IDS.has(id)) E(w, `リンク切れ ${href}`);
   if (ch && !SHIRYO_CH.has(ch)) E(w, `リンク切れ ${href}`);
 }
-console.log(`レクチャー ${lectures.length}・列伝 ${den.length}・ケース ${cases.length}・資料集 ${shiryo.length}章`);
+console.log(`レクチャー ${lectures.length}・列伝 ${den.length}・ケース ${cases.length}・資料集 ${shiryo.length}章・場面イラスト ${nScene}・演習 ${enshu.length}`);
 warns.forEach((x) => console.log(x));
 errs.forEach((x) => console.log(x));
 console.log(errs.length ? `エラー ${errs.length}` : "エラーなし");

@@ -14,6 +14,14 @@ export const DEN_HIROOKA_ASAKO: Den = {
   sections: [
     {
       heading: "年表：両替商の家から、近代の金融へ",
+      photos: [{
+          src: "/media/unizeb/den/hirooka-asako/portrait-1919.webp",
+          width: 250,
+          height: 343,
+          alt: "和服姿の広岡浅子の晩年の肖像写真。白黒。",
+          caption: "広岡浅子の晩年の肖像（1919年の出版物に載った写真）。",
+          credit: { author: "撮影者不明", license: "Public domain", source: "https://commons.wikimedia.org/wiki/File:AsakoHirooka1919.tif" },
+        }],
       body: "浅子は京都の三井家に生まれ、17歳で大坂の豪商{{加島屋}}の広岡家に嫁ぎました。明治に入って家が傾くと経営に加わり、{{加島銀行}}（1888年）と{{大同生命}}（1902年）の創業に参画しました。",
       reading: [
         "加島屋《かじまや》は、江戸時代に大坂で米や両替をあつかって大きくなった商家です。鴻池屋と並ぶ大坂の有力な商家で、多くの藩にお金を貸す{{大名貸し}}も行っていました。浅子は1849年に京都の三井家に生まれ、17歳でこの家の広岡信五郎に嫁ぎます。夫の信五郎は、家の商売を番頭（使用人のかしら）にまかせていたとされます。",

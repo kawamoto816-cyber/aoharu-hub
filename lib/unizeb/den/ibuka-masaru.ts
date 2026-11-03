@@ -14,6 +14,14 @@ export const DEN_IBUKA_MASARU: Den = {
   sections: [
     {
       heading: "年表：デパートの一室から、世界のソニーへ",
+      photos: [{
+          src: "/media/unizeb/den/ibuka-masaru/portrait-1964.webp",
+          width: 471,
+          height: 360,
+          alt: "白衣を着て眼鏡をかけた井深大の肖像写真。白黒。",
+          caption: "井深大の肖像（雑誌『財界』1964年新年特大号に載った写真。胸から上を切り出したもの）。",
+          credit: { author: "財界研究社、撮影者不明", license: "Public domain", source: "https://commons.wikimedia.org/wiki/File:Ibuka_Masaru.jpg" },
+        }],
       body: "井深は早稲田大学で電気工学を学んだ技術者です。終戦後の1945年、東京・日本橋の白木屋の一室で{{東京通信研究所}}を始め、1946年に盛田昭夫らと{{東京通信工業}}を設立しました。この会社が1958年に{{ソニー}}と名前を改めます。",
       reading: [
         "井深大は1908年に生まれ、1933年に早稲田大学理工学部の電気工学科を卒業しました。学生のころから発明に取り組み、1940年には日本測定器という会社の設立に加わり、役員になっています。戦争が終わった1945年、井深は日本橋の白木屋（デパート）の一室で、仲間とともに東京通信研究所を始めました。",

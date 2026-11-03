@@ -2,7 +2,9 @@ import Link from "next/link";
 import type { LectureSection } from "@/lib/lecture/types";
 import type { Source, SkillLink } from "@/lib/unizeb/types";
 import { LectureFigure } from "@/components/lecture/Figure";
-import { LecturePhotoView } from "@/components/lecture/Photo";
+import { UzPhoto } from "./UzPhoto";
+import { SceneView } from "./Scene";
+import type { Scene } from "@/lib/unizeb/types";
 import { Rich } from "@/components/lecture/Rich";
 import { cardInfo } from "@/lib/unizeb";
 
@@ -23,7 +25,7 @@ export function Kicker({ children }: { children: React.ReactNode }) {
 }
 
 /** 節（見出し・要点・本文・図・写真・次へのひとこと）。fig は図の通し番号を数える入れ物 */
-export function SectionView({ s, i, idp, fig, last, extra }: { s: LectureSection; i: number; idp: string; fig: { n: number; p: number }; last: boolean; extra?: React.ReactNode }) {
+export function SectionView({ s, i, idp, fig, last, extra, scenes }: { s: LectureSection; i: number; idp: string; fig: { n: number; p: number; s?: number }; last: boolean; extra?: React.ReactNode; scenes?: Scene[] }) {
   return (
     <section id={`${idp}${i + 1}`} aria-labelledby={`${idp}${i + 1}-h`} className="mt-9 scroll-mt-4">
       <h2 id={`${idp}${i + 1}-h`} className="m-0 flex items-start gap-2.5 text-[19px] font-black leading-snug">
@@ -40,7 +42,8 @@ export function SectionView({ s, i, idp, fig, last, extra }: { s: LectureSection
           <Rich text={para} />
         </p>
       ))}
-      {s.photos?.map((ph) => <LecturePhotoView key={ph.src} ph={ph} no={++fig.p} />)}
+      {s.photos?.map((ph) => <UzPhoto key={ph.src} ph={ph} no={++fig.p} />)}
+      {scenes?.filter((sc) => sc.at === i).map((sc, k) => <SceneView key={k} sc={sc} no={(fig.s = (fig.s ?? 0) + 1)} />)}
       {s.figure && <LectureFigure fig={s.figure} no={++fig.n} />}
       {extra}
       {s.cliff && !last && (
