@@ -149,7 +149,7 @@ const POOL: QuestionB[] = [
         "国際連合の安全保障理事会に強い権限 ― 国際連盟が戦争を防げなかった反省",
         "GATTによる貿易の自由化 ― 国際連盟にアメリカが参加しなかった反省",
         "IMFによる通貨の安定 ― 東京裁判への批判の反省",
-        "常任理事国の拒否権 ― ブロック経済が対立を深めた反省",
+        "安全保障理事会の常任理事国 ― ブロック経済が対立を深めた反省",
       ],
       correct: 0,
       why: [
@@ -200,7 +200,7 @@ export const H_HIST_SOGO_SENGO_MOSHI: UnitMoshi = {
   subject: "soc",
   grade: "歴史総合",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "戦後の国際秩序と日本の占領",

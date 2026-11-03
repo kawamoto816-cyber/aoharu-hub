@@ -73,7 +73,7 @@ const POOL: QuestionB[] = [
     prompt: "次のうち、労働組合法が禁じる{{不当労働行為}}にあたるものはどれですか。",
     answer: {
       kind: "choice",
-      options: ["組合に入らないことを採用の条件にする", "団体交渉に応じて労働協約を結ぶ", "法定労働時間内で働かせる", "三六協定を結んで届け出る"],
+      options: ["組合に入らないことを採用の条件にする", "団体交渉に応じて労働協約を結ぶ", "法定労働時間内で働かせる", "労使で協定を結び、時間外労働の手続きをとる"],
       correct: 0,
       why: ["あたる。黄犬契約とよばれる。", "団体交渉に応じるのは不当労働行為ではない。正当な理由のない拒否が不当労働行為。", "あたらない。", "あたらない。"],
     },
@@ -170,6 +170,6 @@ export const H_CIV_SEIKEI_RODO_MOSHI: UnitMoshi = {
   subject: "soc",
   grade: "政治・経済",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [{ title: "労働問題", lead: "次の問いに答えなさい。", style: "mix", pick: 6, questions: POOL }],
 };

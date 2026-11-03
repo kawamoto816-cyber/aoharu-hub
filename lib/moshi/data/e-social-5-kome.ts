@@ -96,6 +96,6 @@ export const E_SOCIAL_5_KOME_MOSHI: UnitMoshi = {
   subject: "soc",
   grade: "小5",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [{ title: "米づくりのさかんな地域《ちいき》", lead: "次の問いに答えなさい。", style: "mix", pick: 6, questions: POOL }],
 };

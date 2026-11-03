@@ -230,7 +230,7 @@ export const J_SOC_CIV_CHIHO_MOSHI: UnitMoshi = {
   subject: "soc",
   grade: "公民的分野",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     { title: "地方自治のしくみ", lead: "次の問いに答えなさい。", style: "mix", pick: 5, questions: POOL },
     { title: "直接請求の署名数", lead: "次の問いに答えなさい。", style: "calc", questions: CALC },

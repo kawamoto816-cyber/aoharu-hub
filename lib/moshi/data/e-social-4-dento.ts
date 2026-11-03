@@ -38,7 +38,7 @@ const POOL: QuestionB[] = [
      ["文化財《ぶんかざい》", "古い建物や道具など。"],
      ["保存会《ほぞんかい》", "伝統《でんとう》を受けつぐために地域《ちいき》の人がつくる会。"]],
     "毎年決まった時期の行事＝年中行事", ["年中行事", "毎年決まった時期に行う行事を{{年中行事}}といいます。", 2]),
-  ch("tanabata", 1, K, "7月7日に、願いごとをする年中行事はどれですか。",
+  ch("tanabata", 1, K, "7月7日に、願いごとをする行事はどれですか。",
     [["七夕", "7月7日に願いごとをする。"],
      ["節分", "2月はじめに、わざわいを追いはらう。"],
      ["ひな祭り", "3月3日に、女の子の成長を願う。"]],
@@ -92,6 +92,6 @@ export const E_SOCIAL_4_DENTO_MOSHI: UnitMoshi = {
   subject: "soc",
   grade: "小4",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [{ title: "地域《ちいき》の伝統《でんとう》と文化", lead: "次の問いに答えなさい。", style: "mix", pick: 6, questions: POOL }],
 };

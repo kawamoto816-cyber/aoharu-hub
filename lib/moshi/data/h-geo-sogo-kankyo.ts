@@ -142,7 +142,7 @@ const POOL: QuestionB[] = [
   },
   {
     ...base("sabakuka-gen", 3, "思考・判断・表現"),
-    prompt: "サヘルで砂漠化が進んだ原因の説明として、最も適切なものはどれですか。",
+    prompt: "サヘルで植生が失われ、土地が荒れてきた原因の説明として、最も適切なものはどれですか。",
     answer: {
       kind: "choice",
       options: ["干ばつに加えて、人口の増加にともなう過放牧・過耕作・まきの採りすぎで植生の回復が追いつかなくなった", "雨が降らない自然現象だけが原因で、人間の活動とは関係がない", "工場から出る硫黄酸化物が雨にとけたことだけが原因である", "フロンによってオゾン層がこわれたことだけが原因である"],
@@ -166,6 +166,6 @@ export const H_GEO_SOGO_KANKYO_MOSHI: UnitMoshi = {
   subject: "soc",
   grade: "地理総合",
   minutes: 8,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [{ title: "地球環境問題", lead: "次の問いに答えなさい。", style: "mix", pick: 6, questions: POOL }],
 };

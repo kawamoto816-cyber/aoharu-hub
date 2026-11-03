@@ -107,7 +107,7 @@ const POOL: QuestionB[] = [
   // ---- 発展 ----
   {
     ...base("free-rider", 3, "思考・判断・表現"),
-    prompt: "温暖化で多くの国が困るのに、温室効果ガスの削減が進みにくい理由を、共有地の悲劇の考え方で説明したものとして最も適切なものはどれですか。",
+    prompt: "温暖化で多くの国が困るのに、温室効果ガスの削減が進みにくい理由を、ハーディンが示した、だれでも使える牧草地が使いつくされるたとえの考え方で説明したものとして最も適切なものはどれですか。",
     answer: {
       kind: "choice",
       options: [
@@ -178,6 +178,6 @@ export const H_CIV_KOKYO_JIZOKU_MOSHI: UnitMoshi = {
   subject: "soc",
   grade: "公共",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [{ title: "持続可能な社会づくり", lead: "次の問いに答えなさい。", style: "mix", pick: 6, questions: POOL }],
 };

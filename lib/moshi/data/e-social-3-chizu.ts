@@ -94,6 +94,6 @@ export const E_SOCIAL_3_CHIZU_MOSHI: UnitMoshi = {
   subject: "soc",
   grade: "小3",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [{ title: "地図の見方（方位《ほうい》・地図記号）", lead: "次の問いに答えなさい。", style: "mix", pick: 6, questions: POOL }],
 };

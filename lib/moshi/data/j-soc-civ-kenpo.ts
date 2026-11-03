@@ -178,7 +178,7 @@ export const J_SOC_CIV_KENPO_MOSHI: UnitMoshi = {
   subject: "soc",
   grade: "公民的分野",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "日本国憲法の基本原理",

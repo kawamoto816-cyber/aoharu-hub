@@ -33,7 +33,7 @@ const POOL: QuestionB[] = [
   },
   {
     ...base("watt", 1),
-    prompt: "蒸気機関を改良し、工場の機械を動かす動力として使えるようにしたイギリスの人物はだれですか。カタカナで答えなさい。",
+    prompt: "蒸気機関を改良し、工場の機械を動かす動力として使えるようにした人物はだれですか。カタカナで答えなさい。",
     answer: { kind: "term", accept: ["ワット"], near: [{ text: "ペリー", why: "ペリーは日本に来航したアメリカの使節です。" }] },
     point: "蒸気機関の改良＝ワット",
     steps: [{ title: "産業革命の動力", body: "{{ワット}} が改良した {{蒸気機関}} によって、水車にたよらずどこでも工場を動かせるようになり、のちに鉄道や蒸気船にも使われました。", back: [S2] }],
@@ -191,7 +191,7 @@ export const J_SOC_HIST_KAIKOKU_MOSHI: UnitMoshi = {
   subject: "soc",
   grade: "歴史的分野",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "欧米の近代化と開国",

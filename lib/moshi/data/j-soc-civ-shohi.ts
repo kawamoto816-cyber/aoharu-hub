@@ -72,7 +72,7 @@ const POOL: QuestionB[] = [
   },
   {
     ...base("hishohi", 2),
-    prompt: "家計の支出のうち、「非消費支出」にあたるものはどれですか。",
+    prompt: "家族や個人の支出のうち、「非消費支出」にあたるものはどれですか。",
     answer: {
       kind: "choice",
       options: ["所得税や社会保険料", "食料品を買う代金", "家賃", "スマートフォンの通信料"],
@@ -160,7 +160,7 @@ export const J_SOC_CIV_SHOHI_MOSHI: UnitMoshi = {
   subject: "soc",
   grade: "公民的分野",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "消費生活と経済",

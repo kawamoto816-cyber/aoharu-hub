@@ -132,7 +132,7 @@ const POOL: QuestionB[] = [
   },
   {
     ...base("bakufu-yowami", 3, "思考・判断・表現"),
-    prompt: "応仁の乱のあと、室町幕府の力が大きく弱まったのはなぜですか。幕府のしくみにふれた説明として、もっとも適切なものはどれですか。",
+    prompt: "1467年から11年続いた京都の戦乱のあと、室町幕府の力が大きく弱まったのはなぜですか。幕府のしくみにふれた説明として、もっとも適切なものはどれですか。",
     answer: {
       kind: "choice",
       options: ["幕府は守護大名の連合にささえられていたので、将軍が守護大名どうしの争いを止められなくなると、命令が地方に届かなくなったから", "元の大軍がふたたびせめてきて、幕府が負けたから", "将軍が全国の土地を直接治めていたが、農民がすべての土地をうばったから", "朝廷が幕府をたおし、天皇が自ら政治を行うようになったから"],
@@ -176,7 +176,7 @@ export const J_SOC_HIST_MUROMACHI_MOSHI: UnitMoshi = {
   subject: "soc",
   grade: "歴史的分野",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "室町時代",

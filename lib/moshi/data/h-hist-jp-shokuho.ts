@@ -41,7 +41,12 @@ const POOL: QuestionB[] = [
   {
     ...base("katanagari", 1),
     prompt: "1588年に豊臣秀吉が出し、百姓から刀や鉄砲などの武器を取り上げた法令は何ですか。",
-    answer: { kind: "term", accept: ["刀狩令", "刀狩"], script: "kanji", near: [{ text: "人掃令", why: "人掃令（1591年）は身分の移動を禁じた法令です。" }] },
+    answer: {
+      kind: "choice",
+      options: ["刀狩令", "人掃令", "楽市令", "バテレン追放令"],
+      correct: 0,
+      why: ["正しい。", "1591年、身分の移動を禁じた法令。", "城下町で商工業者の自由な営業を認めた政策（楽市・楽座）。", "1587年、宣教師の国外退去を命じた法令。"],
+    },
     point: "1588 刀狩令",
     steps: [{ title: "兵農分離へ", body: "{{刀狩令}}で武器を取り上げ、{{人掃令}}で身分の移動を禁じました。", back: [S4] }],
   },
@@ -175,7 +180,7 @@ export const H_HIST_JP_SHOKUHO_MOSHI: UnitMoshi = {
   subject: "soc",
   grade: "日本史探究",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     { title: "戦国時代と織豊政権", lead: "次の問いに答えなさい。", style: "mix", pick: 5, questions: POOL },
     {

@@ -126,7 +126,7 @@ const POOL: QuestionB[] = [
   // ---- 発展 ----
   {
     ...base("sa", 3, "思考・判断・表現"),
-    prompt: "645年に大化の改新が始まり、1868年に明治時代が始まりました。この2つのできごとの間は何年ですか。",
+    prompt: "645年に中大兄皇子らが蘇我氏をたおして改革を始め、1868年に明治時代が始まりました。この2つのできごとの間は何年ですか。",
     answer: { kind: "num", answerKind: "num", answer: ["1223"], unit: "年", calc: "1868-645" },
     point: "年の差＝新しい年−古い年",
     steps: [{ title: "西暦どうしで引く", body: "どちらも紀元後なので、そのまま引きます。1868−645＝{{1223}}年です。", back: [S1, S5] }],
@@ -169,7 +169,7 @@ export const J_SOC_HIST_TORAEKATA_MOSHI: UnitMoshi = {
   subject: "soc",
   grade: "歴史的分野",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "歴史のとらえ方",

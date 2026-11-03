@@ -175,7 +175,7 @@ export const J_SOC_HIST_SENGO_MOSHI: UnitMoshi = {
   subject: "soc",
   grade: "歴史的分野",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "戦後日本の発展と国際社会",

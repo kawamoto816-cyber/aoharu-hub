@@ -158,7 +158,7 @@ const POOL: QuestionB[] = [
   },
   {
     ...base("yakuwari", 3, "思考・判断・表現"),
-    prompt: "エリクソンが「役割実験」とよび、モラトリアムの大切なはたらきと考えたものとして、最も適切なものはどれですか。",
+    prompt: "エリクソンが「役割実験」とよび、青年期の猶予期間の大切なはたらきと考えたものとして、最も適切なものはどれですか。",
     answer: {
       kind: "choice",
       options: [
@@ -185,6 +185,6 @@ export const H_CIV_KOKYO_SEINEN_MOSHI: UnitMoshi = {
   subject: "soc",
   grade: "公共",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [{ title: "青年期と自己形成", lead: "次の問いに答えなさい。", style: "mix", pick: 6, questions: POOL }],
 };

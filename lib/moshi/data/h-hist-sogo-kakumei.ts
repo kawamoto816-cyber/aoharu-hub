@@ -194,7 +194,7 @@ export const H_HIST_SOGO_KAKUMEI_MOSHI: UnitMoshi = {
   subject: "soc",
   grade: "歴史総合",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "市民革命と国民国家",

@@ -122,7 +122,7 @@ const POOL: QuestionB[] = [
   },
   {
     ...base("sueki", 2),
-    prompt: "渡来人が日本列島に伝えたものとして、{{あてはまらない}}ものはどれですか。",
+    prompt: "朝鮮半島などから移り住んだ人々が日本列島に伝えたものとして、{{あてはまらない}}ものはどれですか。",
     answer: {
       kind: "choice",
       options: ["縄文土器をつくる技術", "かたい須恵器をつくる技術", "漢字や儒学", "機織りや金属加工の技術"],
@@ -166,7 +166,7 @@ const POOL: QuestionB[] = [
   },
   {
     ...base("kofun-hirogari", 3, "思考・判断・表現"),
-    prompt: "前方後円墳が近畿地方を中心に各地へ広がったことから考えられることとして、もっとも適切なものはどれですか。",
+    prompt: "円形と方形を組み合わせた形の古墳が近畿地方を中心に各地へ広がったことから考えられることとして、もっとも適切なものはどれですか。",
     answer: {
       kind: "choice",
       options: ["大和政権が、各地の豪族を従えて勢力を広げていった", "各地の人々が、縄文時代の暮らしにもどった", "中国の皇帝が、日本各地を直接治めていた", "古墳は、米をたくわえる倉庫として使われた"],
@@ -183,7 +183,7 @@ export const J_SOC_HIST_NIHON_NARITACHI_MOSHI: UnitMoshi = {
   subject: "soc",
   grade: "歴史的分野",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "日本列島の成り立ちと国の形成",

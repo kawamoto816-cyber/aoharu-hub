@@ -191,7 +191,7 @@ const POOL: QuestionB[] = [
       options: [
         "パスポートの交付や国政選挙の事務は、国が本来果たすべき仕事を法律で任せる法定受託事務にあたる",
         "パスポートの交付は、地方が自ら判断して行う自治事務にあたる",
-        "整理のあとも、首長が国の下部機関として仕事をする機関委任事務が中心になった",
+        "整理のあとも、首長が国の下部機関として国の仕事をするしくみが中心のまま残った",
         "国政選挙の事務は、国の役所が直接行うので地方は関わらない",
       ],
       correct: 0,
@@ -212,6 +212,6 @@ export const H_CIV_KOKYO_CHIHO_MOSHI: UnitMoshi = {
   subject: "soc",
   grade: "公共",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [{ title: "地方自治", lead: "次の問いに答えなさい。", style: "mix", pick: 6, questions: POOL }],
 };

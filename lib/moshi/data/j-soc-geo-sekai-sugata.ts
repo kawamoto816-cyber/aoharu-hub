@@ -235,7 +235,7 @@ export const J_SOC_GEO_SEKAI_SUGATA_MOSHI: UnitMoshi = {
   subject: "soc",
   grade: "地理的分野",
   minutes: 12,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "地球のすがたと世界の地域",

@@ -208,7 +208,7 @@ export const J_SOC_CIV_NAIKAKU_MOSHI: UnitMoshi = {
   subject: "soc",
   grade: "公民的分野",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     { title: "内閣のしくみと仕事", lead: "次の問いに答えなさい。", style: "mix", pick: 5, questions: POOL },
     { title: "国務大臣の過半数", lead: "次の問いに答えなさい。", style: "calc", questions: [CALC] },

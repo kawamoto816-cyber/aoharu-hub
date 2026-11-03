@@ -168,6 +168,6 @@ export const H_CIV_SEIKEI_KOKKAI_MOSHI: UnitMoshi = {
   subject: "soc",
   grade: "政治・経済",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [{ title: "国会と内閣", lead: "次の問いに答えなさい。", style: "mix", pick: 6, questions: POOL }],
 };

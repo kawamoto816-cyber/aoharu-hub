@@ -130,7 +130,7 @@ const POOL: QuestionB[] = [
   },
   {
     ...base("narabe", 3, "思考・判断・表現"),
-    prompt: "次のできごとを年代の古い順に並べたものとして正しいものはどれですか。\nア ポルトガル船の来航禁止　イ 参勤交代の制度化　ウ 一国一城令　エ オランダ商館を出島へ移す",
+    prompt: "次のできごとを年代の古い順に並べたものとして正しいものはどれですか。\nア ポルトガル船の来航禁止　イ 武家諸法度（寛永令）の発布　ウ 一国一城令　エ オランダ商館を出島へ移す",
     keepOrder: true,
     answer: {
       kind: "choice",
@@ -179,7 +179,7 @@ export const H_HIST_JP_EDO_SEIRITSU_MOSHI: UnitMoshi = {
   subject: "soc",
   grade: "日本史探究",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     { title: "江戸幕府の成立", lead: "次の問いに答えなさい。", style: "mix", pick: 5, questions: POOL },
     {

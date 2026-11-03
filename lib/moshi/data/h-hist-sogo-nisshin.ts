@@ -21,13 +21,18 @@ const POOL: QuestionB[] = [
   {
     ...base("shimonoseki", 1),
     prompt: "日清戦争の講和条約として1895年に結ばれた条約は何ですか。",
-    answer: { kind: "term", accept: ["下関条約"], script: "kanji", chars: 4, near: [{ text: "ポーツマス条約", why: "ポーツマス条約は日露戦争の講和条約（1905年）です。" }] },
+    answer: {
+      kind: "choice",
+      options: ["下関条約", "ポーツマス条約", "南京条約", "日朝修好条規"],
+      correct: 0,
+      why: ["正しい。", "日露戦争の講和条約（1905年）。", "アヘン戦争の講和条約（1842年）。", "1876年に日本が朝鮮と結んだ条約。"],
+    },
     point: "日清戦争→下関条約（1895）",
     steps: [{ title: "戦争と条約を組で", body: "日清戦争＝{{下関条約}}（1895年）、日露戦争＝ポーツマス条約（1905年）。", back: [S1] }],
   },
   {
     ...base("sangoku", 1),
-    prompt: "下関条約の直後、遼東半島を清に返すよう日本に求めた三国の組み合わせとして正しいものはどれですか。",
+    prompt: "日清戦争の講和条約が結ばれた直後、遼東半島を清に返すよう日本に求めた三国の組み合わせとして正しいものはどれですか。",
     answer: {
       kind: "choice",
       options: ["ロシア・フランス・ドイツ", "イギリス・フランス・ドイツ", "ロシア・イギリス・アメリカ", "アメリカ・フランス・イタリア"],
@@ -200,7 +205,7 @@ export const H_HIST_SOGO_NISSHIN_MOSHI: UnitMoshi = {
   subject: "soc",
   grade: "歴史総合",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "日清・日露戦争",

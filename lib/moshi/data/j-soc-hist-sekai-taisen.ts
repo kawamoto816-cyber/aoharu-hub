@@ -190,7 +190,7 @@ export const J_SOC_HIST_SEKAI_TAISEN_MOSHI: UnitMoshi = {
   subject: "soc",
   grade: "歴史的分野",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "世界恐慌と第二次世界大戦",

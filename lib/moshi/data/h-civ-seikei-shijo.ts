@@ -201,7 +201,7 @@ export const H_CIV_SEIKEI_SHIJO_MOSHI: UnitMoshi = {
   subject: "soc",
   grade: "政治・経済",
   minutes: 12,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "需要・供給の式を解く",

@@ -190,7 +190,7 @@ const SHIRYO: QuestionC = {
   answer: {
     kind: "choice",
     options: [
-      "取り引きの額が大きくなるほど銅銭は重くなり、運ぶのに人手がかかる。宋で取り引きがふえて銅銭だけでは足りなくなり、交子などの紙幣が使われたことと合う",
+      "取り引きの額が大きくなるほど銅銭は重くなり、運ぶのに人手がかかる。宋で取り引きがふえて銅銭だけでは足りなくなり、紙幣が使われるようになったことと合う",
       "取り引きの額が大きくなっても、銅銭の重さは変わらない",
       "銅銭のほうが紙幣より軽くて運びやすい",
       "宋では紙幣は使われず、銅銭だけが使われた",
@@ -210,7 +210,7 @@ export const H_HIST_W_SOUGEN_MOSHI: UnitMoshi = {
   subject: "soc",
   grade: "世界史探究",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     { title: "宋・元", lead: "次の問いに答えなさい。", style: "mix", pick: 5, questions: POOL },
     {

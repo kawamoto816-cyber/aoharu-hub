@@ -91,7 +91,7 @@ const POOL: QuestionB[] = [
   },
   {
     ...base("global-kadai", 2, "思考・判断・表現"),
-    prompt: "グローバル化の「課題」にあたるものはどれですか。",
+    prompt: "人・物・お金・情報が国境をこえて大量に行き来するようになったことの「課題」にあたるものはどれですか。",
     answer: {
       kind: "choice",
       options: ["外国の安い商品との競争で、国内の産業が打撃を受けることがある", "世界中の商品を、安く手に入れられるようになる", "外国の人々や文化とふれ合う機会がふえる", "外国の観光客がふえて、地域の店がにぎわう"],
@@ -143,7 +143,7 @@ const POOL: QuestionB[] = [
   },
   {
     ...base("tabunka", 3, "思考・判断・表現"),
-    prompt: "グローバル化が進む中で、大切になっている考え方として{{適切でない}}ものはどれですか。",
+    prompt: "世界の結びつきが強まる中で、大切になっている考え方として{{適切でない}}ものはどれですか。",
     answer: {
       kind: "choice",
       options: ["国内の産業を守るため、外国の人や商品とは関わらないようにする", "異なる文化をもつ人々が、たがいを尊重してともに暮らす", "地球規模の課題に、各国が協力して取り組む", "外国の言葉や習慣を学び、相手を理解しようとする"],
@@ -160,7 +160,7 @@ export const J_SOC_CIV_GENDAI_SHAKAI_MOSHI: UnitMoshi = {
   subject: "soc",
   grade: "公民的分野",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "現代社会の特色",

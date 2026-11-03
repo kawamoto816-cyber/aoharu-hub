@@ -166,7 +166,7 @@ const SHIRYO: QuestionC = {
   answer: {
     kind: "choice",
     options: [
-      "1880年から1910年にかけて、輸出にしめるコーヒーの割合が大きくなっており、特定の産物に依存するモノカルチャー経済の特徴と合う",
+      "1880年から1910年にかけて、輸出にしめるコーヒーの割合が大きくなっており、特定の産物に依存する植民地の経済の特徴と合う",
       "1910年には、輸出品の種類がふえて特定の産物への依存が弱まっている",
       "コーヒーの割合は1880年から1910年にかけて下がりつづけている",
       "資料から、Z地域が1910年に独立していたことがわかる",
@@ -191,7 +191,7 @@ export const H_HIST_SOGO_TEIKOKU_MOSHI: UnitMoshi = {
   subject: "soc",
   grade: "歴史総合",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "帝国主義と植民地",

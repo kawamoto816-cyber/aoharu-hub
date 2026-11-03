@@ -125,7 +125,7 @@ const POOL: QuestionB[] = [
   },
   {
     ...base("narabe", 3, "思考・判断・表現"),
-    prompt: "次のできごとを年代の古い順に並べたものとして正しいものはどれですか。\nア 倭の五王が南朝に使いを送る　イ 好太王碑に記された倭と高句麗の戦い　ウ 箸墓古墳など大きな前方後円墳が現れる",
+    prompt: "次のできごとを年代の古い順に並べたものとして正しいものはどれですか。\nア 倭王武らが南朝に使いを送る　イ 好太王碑に記された倭と高句麗の戦い　ウ 箸墓古墳など大きな前方後円墳が現れる",
     keepOrder: true,
     answer: {
       kind: "choice",
@@ -174,7 +174,7 @@ export const H_HIST_JP_KOFUN_MOSHI: UnitMoshi = {
   subject: "soc",
   grade: "日本史探究",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     { title: "古墳時代とヤマト政権", lead: "次の問いに答えなさい。", style: "mix", pick: 5, questions: POOL },
     {

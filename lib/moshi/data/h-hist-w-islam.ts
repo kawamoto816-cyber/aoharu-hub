@@ -190,7 +190,7 @@ export const H_HIST_W_ISLAM_MOSHI: UnitMoshi = {
   subject: "soc",
   grade: "世界史探究",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     { title: "イスラーム世界の形成", lead: "次の問いに答えなさい。", style: "mix", pick: 5, questions: POOL },
     {

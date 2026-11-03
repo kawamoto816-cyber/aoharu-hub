@@ -102,7 +102,7 @@ const POOL: QuestionB[] = [
   // ---- 発展 ----
   {
     ...base("hanseki", 3, "思考・判断・表現"),
-    prompt: "版籍奉還のあとに、さらに廃藩置県が必要になった理由として最も適切なものはどれですか。",
+    prompt: "版籍奉還（1869年）のあとに、さらに藩を廃止する改革が必要になった理由として最も適切なものはどれですか。",
     answer: {
       kind: "choice",
       options: ["版籍奉還のあとも旧大名が知藩事としてそのまま治めたため、実態があまり変わらなかったから", "版籍奉還で藩がすでになくなり、県を置く場所がなかったから", "版籍奉還で外国に土地を返したから", "版籍奉還で大名の数がふえたから"],
@@ -175,7 +175,7 @@ export const H_HIST_JP_MEIJI_MOSHI: UnitMoshi = {
   subject: "soc",
   grade: "日本史探究",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     { title: "明治維新と立憲国家", lead: "次の問いに答えなさい。", style: "mix", pick: 5, questions: POOL },
     {

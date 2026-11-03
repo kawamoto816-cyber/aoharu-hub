@@ -176,7 +176,7 @@ const SHIRYO: QuestionC = {
   answer: {
     kind: "choice",
     options: [
-      "農民は週の半分を領主の直営地で働き、自分の保有地の収穫の一部も領主に納めている。これは賦役と貢納にあたり、ほかの土地へ移ることも許されていない農奴のすがたと合う",
+      "農民は週の半分を領主の直営地で働き、自分の保有地の収穫の一部も領主に納めている。これは賦役と貢納にあたり、ほかの土地へ移ることも許されていない、荘園の農民のすがたと合う",
       "農民は1週間すべてを自分の保有地で働いている",
       "農民は領主に何も納めていない",
       "農民は自由にほかの荘園へ移り住むことができた",
@@ -196,7 +196,7 @@ export const H_HIST_W_CHUSEI_MOSHI: UnitMoshi = {
   subject: "soc",
   grade: "世界史探究",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     { title: "中世ヨーロッパ", lead: "次の問いに答えなさい。", style: "mix", pick: 5, questions: POOL },
     {

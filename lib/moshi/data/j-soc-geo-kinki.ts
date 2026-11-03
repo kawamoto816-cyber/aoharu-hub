@@ -90,7 +90,7 @@ const POOL: QuestionB[] = [
   },
   {
     ...base("chusho", 2),
-    prompt: "東大阪市や八尾市など、阪神工業地帯の内陸部の工場の特色として正しいものはどれですか。",
+    prompt: "東大阪市や八尾市など、大阪府の内陸部の工場の特色として正しいものはどれですか。",
     answer: {
       kind: "choice",
       options: ["従業員の少ない中小企業の工場が多く、ねじや金型などを高い技術でつくる", "埋め立て地に鉄鋼や石油化学の大工場が立ちならぶ", "豊富な地下水を使った製紙工場が集まる", "原料の木材を川で運び、林業と結びついた工場が多い"],
@@ -181,7 +181,7 @@ export const J_SOC_GEO_KINKI_MOSHI: UnitMoshi = {
   subject: "soc",
   grade: "地理的分野",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "近畿地方",

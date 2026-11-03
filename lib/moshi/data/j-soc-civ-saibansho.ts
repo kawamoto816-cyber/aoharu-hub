@@ -211,7 +211,7 @@ export const J_SOC_CIV_SAIBANSHO_MOSHI: UnitMoshi = {
   subject: "soc",
   grade: "公民的分野",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "裁判所と三権分立",

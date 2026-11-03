@@ -170,7 +170,7 @@ export const H_HIST_JP_MUROMACHI_MOSHI: UnitMoshi = {
   subject: "soc",
   grade: "日本史探究",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     { title: "室町時代", lead: "次の問いに答えなさい。", style: "mix", pick: 5, questions: POOL },
     {

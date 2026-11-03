@@ -92,6 +92,6 @@ export const E_SOCIAL_6_HEIAN_MOSHI: UnitMoshi = {
   subject: "soc",
   grade: "小6",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [{ title: "貴族のくらし（平安時代）", lead: "次の問いに答えなさい。", style: "mix", pick: 6, questions: POOL }],
 };

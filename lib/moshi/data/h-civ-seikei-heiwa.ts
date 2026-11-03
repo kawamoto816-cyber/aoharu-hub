@@ -108,7 +108,7 @@ const POOL: QuestionB[] = [
     prompt: "紛争などで住まいを追われ、国内で避難している人について、正しいものはどれですか。",
     answer: {
       kind: "choice",
-      options: ["国内避難民とよばれ、難民条約の難民ではないが、UNHCRが支援している", "難民条約の難民として、ノン・ルフールマン原則で保護される", "国際刑事裁判所が保護している", "どの国際機関も支援していない"],
+      options: ["国内避難民とよばれ、難民条約の難民ではないが、UNHCRが支援している", "難民条約の難民として保護される", "国際刑事裁判所が保護している", "どの国際機関も支援していない"],
       correct: 0,
       why: ["正しい。条約の難民は国外に逃れた人。", "国内避難民は条約の対象外。", "ICCは重大な罪を犯した個人を裁く裁判所。", "UNHCRが支援を広げている。"],
     },
@@ -151,6 +151,6 @@ export const H_CIV_SEIKEI_HEIWA_MOSHI: UnitMoshi = {
   subject: "soc",
   grade: "政治・経済",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [{ title: "平和と安全保障", lead: "次の問いに答えなさい。", style: "mix", pick: 6, questions: POOL }],
 };

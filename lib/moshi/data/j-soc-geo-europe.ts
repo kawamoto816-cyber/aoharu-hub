@@ -170,7 +170,7 @@ const POOL: QuestionB[] = [
   },
   {
     ...base("poland", 3, "思考・判断・表現"),
-    prompt: "ヨーロッパの言語と宗教には「東部はスラブ系言語で正教会が多い」などのおおまかな傾向があります。この傾向にあてはまらない例として、正しいものはどれですか。",
+    prompt: "ヨーロッパの言語と宗教には、地域ごとのおおまかな傾向があります（たとえば北西部はゲルマン系言語でプロテスタントが多い）。この傾向にあてはまらない例として、正しいものはどれですか。",
     answer: {
       kind: "choice",
       options: [
@@ -210,7 +210,7 @@ const POOL: QuestionB[] = [
   },
   {
     ...base("sanseiu", 3, "思考・判断・表現"),
-    prompt: "ライン川の汚れや酸性雨の対策を、ヨーロッパの国々が協力して進めてきたのはなぜですか。最も適切なものはどれですか。",
+    prompt: "川の汚れや酸性雨の対策を、ヨーロッパの国々が協力して進めてきたのはなぜですか。最も適切なものはどれですか。",
     answer: {
       kind: "choice",
       options: [
@@ -235,7 +235,7 @@ export const J_SOC_GEO_EUROPE_MOSHI: UnitMoshi = {
   subject: "soc",
   grade: "地理的分野",
   minutes: 12,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "ヨーロッパ州の自然・農業・文化とEU",

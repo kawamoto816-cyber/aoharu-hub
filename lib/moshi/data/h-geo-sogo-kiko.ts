@@ -234,7 +234,7 @@ export const H_GEO_SOGO_KIKO_MOSHI: UnitMoshi = {
   subject: "soc",
   grade: "地理総合",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "気温と気候区分",

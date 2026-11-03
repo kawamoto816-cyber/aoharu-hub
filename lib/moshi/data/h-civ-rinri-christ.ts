@@ -103,6 +103,6 @@ export const H_CIV_RINRI_CHRIST_MOSHI: UnitMoshi = {
   subject: "soc",
   grade: "倫理",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [{ title: "キリスト教", lead: "次の問いに答えなさい。", style: "mix", pick: 6, questions: POOL }],
 };

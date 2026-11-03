@@ -185,7 +185,7 @@ export const J_SOC_GEO_SEIKATSU_MOSHI: UnitMoshi = {
   subject: "soc",
   grade: "地理的分野",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "世界各地の人々の生活と環境",

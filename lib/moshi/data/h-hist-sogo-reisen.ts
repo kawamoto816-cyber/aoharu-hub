@@ -121,7 +121,7 @@ const POOL: QuestionB[] = [
   },
   {
     ...base("koowa-ron", 3, "思考・判断・表現"),
-    prompt: "サンフランシスコ平和条約をめぐる日本国内の議論について、レクチャーの内容に合う説明として最も適切なものはどれですか。",
+    prompt: "1951年に調印された講和条約をめぐる日本国内の議論について、レクチャーの内容に合う説明として最も適切なものはどれですか。",
     answer: {
       kind: "choice",
       options: [
@@ -194,7 +194,7 @@ export const H_HIST_SOGO_REISEN_MOSHI: UnitMoshi = {
   subject: "soc",
   grade: "歴史総合",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "冷戦",

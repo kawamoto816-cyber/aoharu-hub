@@ -170,6 +170,6 @@ export const H_GEO_SOGO_TOSHI_MOSHI: UnitMoshi = {
   subject: "soc",
   grade: "地理総合",
   minutes: 8,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [{ title: "居住・都市問題", lead: "次の問いに答えなさい。", style: "mix", pick: 6, questions: POOL }],
 };

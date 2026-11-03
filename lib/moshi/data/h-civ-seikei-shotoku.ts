@@ -123,7 +123,7 @@ const POOL: QuestionB[] = [
     prompt: "次のうち、GDPに{{ふくまれない}}ものはどれですか。",
     answer: {
       kind: "choice",
-      options: ["家族のための料理や洗濯などの家事労働", "外食の代金", "持ち家の帰属家賃", "不動産会社が受け取る仲介手数料"],
+      options: ["家族のための料理や洗濯などの家事労働", "外食の代金", "持ち家に住む人が自分に払っているとみなす家賃", "不動産会社が受け取る仲介手数料"],
       correct: 0,
       why: ["ふくまれない。代金のやりとりがなく価格がつかない。", "市場で取り引きされたサービスなのでふくまれる。", "帰属計算で例外的にふくめる。", "その年に提供された新しいサービスなのでふくまれる。"],
     },
@@ -213,7 +213,7 @@ export const H_CIV_SEIKEI_SHOTOKU_MOSHI: UnitMoshi = {
   subject: "soc",
   grade: "政治・経済",
   minutes: 13,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "GDP・国民所得・成長率を計算する",

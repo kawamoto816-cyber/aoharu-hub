@@ -27,7 +27,7 @@ const POOL: QuestionB[] = [
   },
   {
     ...base("haito", 1),
-    prompt: "株式会社が、得た利潤の一部を出資した人に分けて支払うお金を何といいますか。漢字2字で答えなさい。",
+    prompt: "株式会社が、得たもうけの一部を出資した人に分けて支払うお金を何といいますか。漢字2字で答えなさい。",
     answer: { kind: "term", accept: ["配当", "配当金"], script: "kanji", near: [{ text: "利子", why: "利子は、預金や貸したお金に対して受け取るお金。会社の利潤の分け前は「配当」。" }] },
     point: "利潤の分け前＝配当",
     steps: [{ title: "お金のめぐり", body: "株式を買って出資した人は、会社の利潤の一部を {{配当}} として受け取ります。", back: [S2] }],
@@ -156,7 +156,7 @@ export const J_SOC_CIV_KIGYO_MOSHI: UnitMoshi = {
   subject: "soc",
   grade: "公民的分野",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "生産と企業・労働",

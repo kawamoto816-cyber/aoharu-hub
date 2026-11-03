@@ -191,7 +191,7 @@ export const H_HIST_SOGO_TAISHU_MOSHI: UnitMoshi = {
   subject: "soc",
   grade: "歴史総合",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "大衆社会の形成",

@@ -187,7 +187,7 @@ export const J_SOC_HIST_EDO_SEIRITSU_MOSHI: UnitMoshi = {
   subject: "soc",
   grade: "歴史的分野",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     {
       title: "江戸幕府の成立",

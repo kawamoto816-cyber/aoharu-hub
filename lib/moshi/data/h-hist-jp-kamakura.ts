@@ -21,7 +21,12 @@ const POOL: QuestionB[] = [
   {
     ...base("goseibai", 1),
     prompt: "1232年、3代執権北条泰時が定めた武家の法は何ですか。",
-    answer: { kind: "term", accept: ["御成敗式目", "貞永式目"], script: "kanji", near: [{ text: "建武式目", why: "建武式目は1336年に足利尊氏が示した方針です。" }] },
+    answer: {
+      kind: "choice",
+      options: ["御成敗式目", "建武式目", "武家諸法度", "公事方御定書"],
+      correct: 0,
+      why: ["正しい。貞永式目ともいう。", "1336年に足利尊氏が示した方針。", "江戸幕府が大名を統制するために定めた法。", "江戸時代に8代将軍徳川吉宗のもとでまとめられた裁判の基準。"],
+    },
     point: "1232 御成敗式目（北条泰時）",
     steps: [{ title: "武家の法", body: "{{北条泰時}}が頼朝以来の先例と武士社会の{{道理}}をもとに定めました。", back: [S3] }],
   },
@@ -179,7 +184,7 @@ export const H_HIST_JP_KAMAKURA_MOSHI: UnitMoshi = {
   subject: "soc",
   grade: "日本史探究",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     { title: "鎌倉時代", lead: "次の問いに答えなさい。", style: "mix", pick: 5, questions: POOL },
     {

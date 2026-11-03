@@ -105,7 +105,7 @@ const POOL: QuestionB[] = [
     answer: {
       kind: "choice",
       options: [
-        "わいろが横行したと批判される一方、商業を重んじた現実的な政策として評価する見方もある",
+        "わいろが横行したと批判される一方、現実的な経済政策として評価する見方もある",
         "わいろの政治であったという見方だけが認められている",
         "三大改革の一つとして、倹約令と農村の立て直しを進めた",
         "天明の飢饉を完全に防いだことで高く評価されている",
@@ -179,7 +179,7 @@ export const H_HIST_JP_EDO_DOYO_MOSHI: UnitMoshi = {
   subject: "soc",
   grade: "日本史探究",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     { title: "幕藩体制の動揺", lead: "次の問いに答えなさい。", style: "mix", pick: 5, questions: POOL },
     {

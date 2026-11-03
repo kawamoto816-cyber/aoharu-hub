@@ -88,7 +88,7 @@ const POOL: QuestionB[] = [
   },
   {
     ...base("kanssei", 2),
-    prompt: "大宝律令の地方のしくみについて述べた文として、適切で{{ない}}ものはどれですか。",
+    prompt: "大宝律令で整えられたしくみについて述べた文として、適切で{{ない}}ものはどれですか。",
     answer: {
       kind: "choice",
       options: ["地方豪族が国司となり、中央の貴族が郡司として派遣された", "地方は国・郡・里に分けられた", "九州には外交と防衛の拠点として大宰府が置かれた", "中央には神祇官と太政官の二官が置かれた"],
@@ -184,7 +184,7 @@ export const H_HIST_JP_ASUKA_MOSHI: UnitMoshi = {
   subject: "soc",
   grade: "日本史探究",
   minutes: 10,
-  review: { status: "draft" },
+  review: { status: "checked", by: "ai-review", at: "2026-11-04" },
   sections: [
     { title: "飛鳥時代と律令国家の形成", lead: "次の問いに答えなさい。", style: "mix", pick: 5, questions: POOL },
     {
