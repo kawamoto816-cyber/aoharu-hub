@@ -91,15 +91,32 @@ import { J_SCI_3_SUIATSU } from "./data/j-sci-3-suiatsu";
 import { J_SCI_3_TAIYOKEI } from "./data/j-sci-3-taiyokei";
 import { J_SCI_3_TENTAI } from "./data/j-sci-3-tentai";
 import { J_SCI_3_UNDO } from "./data/j-sci-3-undo";
+import { J_SOC_CIV_CHIHO_MOSHI } from "./data/j-soc-civ-chiho";
 import { J_SOC_CIV_JINKEN_MOSHI } from "./data/j-soc-civ-jinken";
 import { J_SOC_CIV_KENPO_MOSHI } from "./data/j-soc-civ-kenpo";
+import { J_SOC_CIV_KINYU_MOSHI } from "./data/j-soc-civ-kinyu";
 import { J_SOC_CIV_KOKKAI_MOSHI } from "./data/j-soc-civ-kokkai";
 import { J_SOC_CIV_NAIKAKU_MOSHI } from "./data/j-soc-civ-naikaku";
+import { J_SOC_CIV_SAIBANSHO_MOSHI } from "./data/j-soc-civ-saibansho";
 import { J_SOC_CIV_SENKYO_MOSHI } from "./data/j-soc-civ-senkyo";
+import { J_SOC_CIV_SHAKAI_HOSHO_MOSHI } from "./data/j-soc-civ-shakai-hosho";
 import { J_SOC_CIV_SHIJO_MOSHI } from "./data/j-soc-civ-shijo";
 import { J_SOC_CIV_ZAISEI_MOSHI } from "./data/j-soc-civ-zaisei";
+import { J_SOC_GEO_AFRICA_MOSHI } from "./data/j-soc-geo-africa";
+import { J_SOC_GEO_ASIA_MOSHI } from "./data/j-soc-geo-asia";
+import { J_SOC_GEO_CHUBU_MOSHI } from "./data/j-soc-geo-chubu";
+import { J_SOC_GEO_CHUGOKU_SHIKOKU_MOSHI } from "./data/j-soc-geo-chugoku-shikoku";
+import { J_SOC_GEO_EUROPE_MOSHI } from "./data/j-soc-geo-europe";
+import { J_SOC_GEO_HOKKAIDO_MOSHI } from "./data/j-soc-geo-hokkaido";
+import { J_SOC_GEO_KANTO_MOSHI } from "./data/j-soc-geo-kanto";
+import { J_SOC_GEO_KINKI_MOSHI } from "./data/j-soc-geo-kinki";
+import { J_SOC_GEO_KYUSHU_MOSHI } from "./data/j-soc-geo-kyushu";
 import { J_SOC_GEO_NIHON_SUGATA_MOSHI } from "./data/j-soc-geo-nihon-sugata";
+import { J_SOC_GEO_NORTH_AMERICA_MOSHI } from "./data/j-soc-geo-north-america";
+import { J_SOC_GEO_OCEANIA_MOSHI } from "./data/j-soc-geo-oceania";
 import { J_SOC_GEO_SEKAI_SUGATA_MOSHI } from "./data/j-soc-geo-sekai-sugata";
+import { J_SOC_GEO_SOUTH_AMERICA_MOSHI } from "./data/j-soc-geo-south-america";
+import { J_SOC_GEO_TOHOKU_MOSHI } from "./data/j-soc-geo-tohoku";
 import { J_SOC_HIST_EDO_SEIRITSU_MOSHI } from "./data/j-soc-hist-edo-seiritsu";
 import { J_SOC_HIST_EDO_TENKAI_MOSHI } from "./data/j-soc-hist-edo-tenkai";
 import { J_SOC_HIST_HEIAN_MOSHI } from "./data/j-soc-hist-heian";
@@ -210,15 +227,32 @@ export const UNIT_REGISTRY: Record<string, UnitMoshi> = {
   "j-ja-1-bunpo-hinshi": J_JA_1_BUNPO_HINSHI_MOSHI,
   "j-ja-1-setsumei": J_JA_1_SETSUMEI_MOSHI,
   "j-ja-2-bunpo-yogen": J_JA_2_BUNPO_YOGEN_MOSHI,
+  "j-soc-civ-chiho": J_SOC_CIV_CHIHO_MOSHI,
   "j-soc-civ-jinken": J_SOC_CIV_JINKEN_MOSHI,
   "j-soc-civ-kenpo": J_SOC_CIV_KENPO_MOSHI,
+  "j-soc-civ-kinyu": J_SOC_CIV_KINYU_MOSHI,
   "j-soc-civ-kokkai": J_SOC_CIV_KOKKAI_MOSHI,
   "j-soc-civ-naikaku": J_SOC_CIV_NAIKAKU_MOSHI,
+  "j-soc-civ-saibansho": J_SOC_CIV_SAIBANSHO_MOSHI,
   "j-soc-civ-senkyo": J_SOC_CIV_SENKYO_MOSHI,
+  "j-soc-civ-shakai-hosho": J_SOC_CIV_SHAKAI_HOSHO_MOSHI,
   "j-soc-civ-shijo": J_SOC_CIV_SHIJO_MOSHI,
   "j-soc-civ-zaisei": J_SOC_CIV_ZAISEI_MOSHI,
+  "j-soc-geo-africa": J_SOC_GEO_AFRICA_MOSHI,
+  "j-soc-geo-asia": J_SOC_GEO_ASIA_MOSHI,
+  "j-soc-geo-chubu": J_SOC_GEO_CHUBU_MOSHI,
+  "j-soc-geo-chugoku-shikoku": J_SOC_GEO_CHUGOKU_SHIKOKU_MOSHI,
+  "j-soc-geo-europe": J_SOC_GEO_EUROPE_MOSHI,
+  "j-soc-geo-hokkaido": J_SOC_GEO_HOKKAIDO_MOSHI,
+  "j-soc-geo-kanto": J_SOC_GEO_KANTO_MOSHI,
+  "j-soc-geo-kinki": J_SOC_GEO_KINKI_MOSHI,
+  "j-soc-geo-kyushu": J_SOC_GEO_KYUSHU_MOSHI,
   "j-soc-geo-nihon-sugata": J_SOC_GEO_NIHON_SUGATA_MOSHI,
+  "j-soc-geo-north-america": J_SOC_GEO_NORTH_AMERICA_MOSHI,
+  "j-soc-geo-oceania": J_SOC_GEO_OCEANIA_MOSHI,
   "j-soc-geo-sekai-sugata": J_SOC_GEO_SEKAI_SUGATA_MOSHI,
+  "j-soc-geo-south-america": J_SOC_GEO_SOUTH_AMERICA_MOSHI,
+  "j-soc-geo-tohoku": J_SOC_GEO_TOHOKU_MOSHI,
   "j-soc-hist-edo-seiritsu": J_SOC_HIST_EDO_SEIRITSU_MOSHI,
   "j-soc-hist-edo-tenkai": J_SOC_HIST_EDO_TENKAI_MOSHI,
   "j-soc-hist-heian": J_SOC_HIST_HEIAN_MOSHI,
