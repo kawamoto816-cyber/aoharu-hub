@@ -254,6 +254,8 @@ export const APL_MENSETSU_04: Lecture = {
   next: [
     { label: "メンサツで、深掘りの質問に答える練習をする", href: "https://interview.bluespring.co.jp" },
     { label: "ジコアピで、経験を自己PRにまとめる", href: "https://jkap.bluespring.co.jp" },
+    { label: "前の単元：答え方の型（結論から話す）", href: "/learn/apply/lec/apl-mensetsu-03" },
+    { label: "次の単元：「なぜこの大学か」（3つのポリシー）", href: "/learn/apply/lec/apl-mensetsu-05" },
     { label: "面接のカードで、答え方の型をくり返す", href: "/learn/mensetsu" },
     { label: "図解の教科書の目次にもどる", href: "/learn/apply/lec" },
   ],

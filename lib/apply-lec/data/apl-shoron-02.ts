@@ -201,6 +201,8 @@ export const APL_SHORON_02: Lecture = {
   ],
   next: [
     { label: "書いた小論文をテンサクンで添削する（論拠の抜けをチェック）", href: "/tensaku?kind=shoronbun" },
+    { label: "前の単元：小論文とは何か", href: "/learn/apply/lec/apl-shoron-01" },
+    { label: "次の単元：構成の型（序論・本論・結論とピラミッド構造）", href: "/learn/apply/lec/apl-shoron-03" },
     { label: "小論文のカードで、論証の型をくり返す", href: "/learn/shoronbun" },
     { label: "図解の教科書の目次にもどる", href: "/learn/apply/lec" },
   ],

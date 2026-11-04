@@ -96,7 +96,7 @@ const PROPS = union("ComicProp");
 const BGS = new Set(LT.match(/bg\?: ([^;]+);/)![1].match(/"(\w+)"/g)!.map((x) => x.slice(1, -1)));
 
 // 次の教材のリンク先
-const APP_HOSTS = new Set(["interview.bluespring.co.jp", "reason.bluespring.co.jp", "jkap.bluespring.co.jp", "app.bluespring.co.jp"]);
+const APP_HOSTS = new Set(["interview.bluespring.co.jp", "reason.bluespring.co.jp", "jkap.bluespring.co.jp", "app.bluespring.co.jp", "color.bluespring.co.jp", "kotei.bluespring.co.jp"]);
 const TENSAKU_KINDS = new Set(readFileSync(join(ROOT, "app", "tensaku", "page.tsx"), "utf8").match(/function toKind[\s\S]*?\n\}/)![0].match(/"(\w+)"/g)!.map((x) => x.slice(1, -1)));
 function routeExists(path: string): boolean {
   // app/ の下を1段ずつたどる。動的なフォルダ（[id] など）も通す
