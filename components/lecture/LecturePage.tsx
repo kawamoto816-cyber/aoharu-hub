@@ -11,6 +11,7 @@ import { LectureStoryView } from "./Story";
 import { MissionCard, MissionComplete } from "./Mission";
 import { MoshiLink } from "@/components/moshi/MoshiLink";
 import { NazeSensei } from "@/components/naze/NazeSensei";
+import { KoeSetsumei } from "@/components/koe/KoeSetsumei";
 import { isLowUnit } from "@/lib/naze";
 import { BookNav } from "./BookNav";
 import { ReadMarker } from "./ReadMarker";
@@ -163,6 +164,7 @@ export function LecturePage({ lec }: { lec: Lecture }) {
       <BookNav unit={lec.unit} kids={kids} />
       <MoshiLink unit={lec.unit} className="mt-3" />
       <NazeSensei unit={lec.unit} low={isLowUnit(lec.unit)} className="mt-3" />
+      <KoeSetsumei unit={lec.unit} low={isLowUnit(lec.unit)} className="mt-3" />
 
       <section aria-labelledby="lec-next" className="mt-10 rounded-[18px] border-[1.5px] border-[#15172B] bg-[#15172B] p-4 text-white sm:p-5">
         <h2 id="lec-next" className="m-0 text-[15px] font-black text-[#FFE45C]">

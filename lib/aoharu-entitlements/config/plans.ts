@@ -45,6 +45,7 @@ export const APP_KEYS = {
   OSHIERU: "oshieru", // オシエル (AI生徒に教える。Pro 1日10回・Max 1日20回)
   NAZE: "naze", // なぜなぜ先生 (問い返しで考えさせるAI。登録なしから使える。回数の上限は lib/naze/limits.ts)
   TSUKKOMI: "tsukkomi", // ツッコミAI (ツッコミ学習法の書いた直しをAIが判定。登録なしから使える。回数の上限は lib/tsukkomi/ai/limits.ts)
+  KOE: "koe", // 声で説明 (ファインマン法。声で説明した要点をAIが判定。登録なしから使える。回数の上限は lib/koe/limits.ts)
 } as const;
 
 export type AppKey = (typeof APP_KEYS)[keyof typeof APP_KEYS];
@@ -56,8 +57,8 @@ export const ALL_APP_KEYS: AppKey[] = Object.values(APP_KEYS);
  * 'all' は ALL_APP_KEYS 全部(今後アプリが増えても自動的に含まれる)。
  */
 export const PLAN_APPS: Record<Plan, "all" | AppKey[]> = {
-  free: [APP_KEYS.NAZE, APP_KEYS.TSUKKOMI],
-  pro: [APP_KEYS.TENSAKUN, APP_KEYS.SHIBORIYU, APP_KEYS.MENSATSU, APP_KEYS.UNIZEB, APP_KEYS.OSHIERU, APP_KEYS.NAZE, APP_KEYS.TSUKKOMI],
+  free: [APP_KEYS.NAZE, APP_KEYS.TSUKKOMI, APP_KEYS.KOE],
+  pro: [APP_KEYS.TENSAKUN, APP_KEYS.SHIBORIYU, APP_KEYS.MENSATSU, APP_KEYS.UNIZEB, APP_KEYS.OSHIERU, APP_KEYS.NAZE, APP_KEYS.TSUKKOMI, APP_KEYS.KOE],
   max: "all",
 };
 
@@ -106,7 +107,7 @@ export function planFromPriceId(priceId: string): Plan | null {
 
 /**
  * 無料プランのユーザーに与える、アプリ1本あたりの月間利用回数枠。
- * (Freeプランの PLAN_APPS.free はなぜなぜ先生・ツッコミAIだけだが、これとは別に「お試し枠」として
+ * (Freeプランの PLAN_APPS.free はなぜなぜ先生・ツッコミAI・声で説明だけだが、これとは別に「お試し枠」として
  *  アプリを問わず毎月この回数までは生成系APIを呼べるようにする。
  *  枠を超えたら checkAppAccess() が reason: "quota_exceeded" を返す)
  * 環境変数 FREE_MONTHLY_QUOTA で上書き可能 (未設定なら既定値3)。

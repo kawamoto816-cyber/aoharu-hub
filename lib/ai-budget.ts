@@ -18,6 +18,9 @@ const PRICES: [prefix: string, input: number, output: number][] = [
   ["claude-haiku", 1, 5],
   ["claude-sonnet", 3, 15],
   ["claude-opus", 5, 25],
+  // Gemini（声で説明の KOE_PROVIDER=gemini）。概算の単価（入力・出力）。本番で使う前に料金表で直す
+  ["gemini-2.5-flash", 0.3, 2.5],
+  ["gemini", 0.3, 2.5],
 ];
 
 export interface AiUsage {
