@@ -84,7 +84,7 @@ const KORITSU: Record<string, DaimonSpec[]> = {
     sec("語順・文の組み立て", "次の語句を並べかえて、正しい英文にしなさい。", 16, [3, 5], STD, { units: E_BUNPO }, { kinds: ["order", "term"] }),
     sec("対話文・資料の読み取り", ASK, 20, [3, 6], STD, { units: [...E_DOKKAI, ...E_BUNPO] }, { prefer: "material" }),
     sec("長文読解", "次の英文を読んで、あとの問いに答えなさい。", 25, [4, 7], STD, { units: E_DOKKAI }, { prefer: "material" }),
-    sec("英作文", ASK, 15, [1, 3], STD, { units: E_SAKUBUN }),
+    sec("英作文", ASK, 15, [1, 3], STD, { units: E_SAKUBUN }, { kinds: ["written"] }),
   ],
   kokugo: [
     sec("漢字・語句", ASK, 20, [6, 10], BASIC, { units: J_KANJI }, { prefer: "single" }),

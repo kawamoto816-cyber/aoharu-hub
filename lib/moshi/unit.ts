@@ -14,6 +14,8 @@ export const unitMoshiHref = (unit: string, seed?: number) => `${MOSHI_HOME}/${e
 /** 書き下ろしの単元模試 (UnitMoshi) がある単元 */
 export const UNIT_MOSHI_IDS = Object.keys(UNIT_REGISTRY);
 export const getUnitMoshi = (unit: string): UnitMoshi | undefined => UNIT_REGISTRY[unit];
+/** 単元模試の1回分に出す節 (入試モード用の節 examOnly は除く。目録 questionCatalog には全部入る) */
+export const unitRoundSections = (m: UnitMoshi): MoshiSection[] => m.sections.filter((s) => !s.examOnly);
 
 // ---- 大問 → 節 (アダプタ) ----
 
@@ -201,7 +203,7 @@ export function buildUnitRound(unit: string, seed: number): Round | null {
       grade: m.grade,
       units: [unit],
       minutes: m.minutes,
-      sections: m.sections,
+      sections: unitRoundSections(m),
     },
     seed,
   );

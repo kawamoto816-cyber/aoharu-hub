@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { daimonOfUnit, moshiHref, moshiUnitInfo } from "@/lib/moshi";
-import { getUnitMoshi, unitMoshiHref } from "@/lib/moshi/unit";
+import { getUnitMoshi, unitMoshiHref, unitRoundSections } from "@/lib/moshi/unit";
 
 // 単元ページ (図解レクチャー・ドリル) に置く模試への導線。
 //   単元模試 (lib/moshi/data/<単元id>.ts の UnitMoshi) があれば「この単元の模試にチャレンジ」→ /learn/moshi/<単元id>
@@ -15,8 +15,9 @@ export function MoshiLink({ unit, className = "" }: { unit: string; className?: 
   const kids = moshiUnitInfo(unit)?.kids ?? false;
   const um = getUnitMoshi(unit);
   if (um) {
-    const n = um.sections.reduce((a, s) => a + (s.pick ?? s.questions.length), 0);
-    const varies = um.sections.some((s) => s.questions.some((q) => q.type !== "C"));
+    const secs = unitRoundSections(um);
+    const n = secs.reduce((a, s) => a + (s.pick ?? s.questions.length), 0);
+    const varies = secs.some((s) => s.questions.some((q) => q.type !== "C"));
     return (
       <Link href={unitMoshiHref(unit)} className={`${box} ${className}`}>
         <span>

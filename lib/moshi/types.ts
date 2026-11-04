@@ -252,6 +252,8 @@ export interface MoshiSection {
   pick?: number;
   questions: Question[];
   style?: Daimon["style"];
+  /** 入試モード・共通テストモード・テスト放題 (lib/exam) だけで使う節。単元模試の1回分 (buildUnitRound) には出さない (単元模試を 1回6問・100点のままにする) */
+  examOnly?: boolean;
 }
 
 /** 1単元の模試 (lib/moshi/data/<単元id>.ts に1つ) */

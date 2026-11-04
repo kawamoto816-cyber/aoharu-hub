@@ -3,7 +3,7 @@
 // 大問2 (B プール4問→2問)「英文を書く・並べかえ」基本15・標準17
 // 大問3 (C 固定)「意見文を書く」発展18 (自己採点)
 // 1回 6問・満点100。A (生成) は使っていないので検算式はなし。英文の答えは acc() で表記ゆれ (’・カンマ・?) を受ける。
-import type { QuestionB, UnitMoshi } from "../types";
+import type { QuestionB, QuestionC, UnitMoshi } from "../types";
 
 const U = "j-en-3-eisakubun";
 const L = (n: number, label: string) => ({ label, href: `/learn/lecture/${U}#lec-s${n}` });
@@ -147,6 +147,117 @@ const WRITE: QuestionB[] = [
   },
 ];
 
+// ---- 入試モード用の条件英作文 (examOnly: 単元模試の1回分には出さない。公立入試型の「英作文」で使う) ----
+// 4題とも 20〜35語・自己採点 (模範解答と採点観点)。場面・条件・英文はすべてこのために書いたオリジナル。
+const JOKEN_LEAD = "（. や , は語数に数えません。英文は2文以上で書きなさい）";
+const JOKEN: QuestionC[] = [
+  {
+    id: "joken-season",
+    type: "C",
+    difficulty: 2,
+    points: 12,
+    seconds: 300,
+    skill: "思考・判断・表現",
+    prompt: `来年日本に来る留学生のサムから、次のメッセージが届きました。\n"Which season is the best to visit Japan?"\nあなたがすすめる季節を1つ挙げ、その理由を2つ書いて、20語以上35語以内の英語で返事を書きなさい。${JOKEN_LEAD}`,
+    answer: {
+      kind: "written",
+      limit: { min: 20, max: 35, unit: "語" },
+      model: "I think autumn is the best season. First, it is not too hot, so you can walk around easily. Second, you can see beautiful red and yellow leaves in many places.",
+      alsoModels: ["I recommend spring. First, you can see cherry blossoms everywhere. Second, the weather is warm and comfortable, so it is a good season to visit many places in Japan."],
+      rubric: [
+        { label: "すすめる季節を1つ、はっきり書いている", points: 3, keywords: ["spring", "summer", "autumn", "fall", "winter"] },
+        { label: "理由を2つ書いている（First, Second / also など）", points: 4, keywords: ["First", "Second", "also"] },
+        { label: "20語以上35語以内で、相手への返事として内容が通っている", points: 2 },
+        { label: "主語と動詞・時制・複数形などの文法にまちがいがない", points: 3 },
+      ],
+    },
+    point: "季節→理由1→理由2。知っている語で書く",
+    steps: [
+      { title: "立場を先に", body: "最初に {{I think 〜 is the best season.}} と答えを書きます。", back: [S1] },
+      { title: "理由を2つ", body: "{{First, 〜. Second, 〜.}} で理由を2つ。気候・見られるもの・行事などから書きやすいものを選びます。", back: [S1, S2] },
+      { title: "語数と文法を見直す", body: "語数を数え、{{3人称単数の s}}・複数形・時制を確かめます。", back: [S4] },
+    ],
+  },
+  {
+    id: "joken-learn",
+    type: "C",
+    difficulty: 2,
+    points: 12,
+    seconds: 300,
+    skill: "思考・判断・表現",
+    prompt: `ALT のブラウン先生が、次のように言いました。\n"I want to learn something new while I am in Japan. What should I try?"\n先生にすすめたいことを1つ挙げ、それをすすめる理由と、どこで（どのように）できるかを書いて、20語以上35語以内の英語で答えなさい。${JOKEN_LEAD}`,
+    answer: {
+      kind: "written",
+      limit: { min: 20, max: 35, unit: "語" },
+      model: "You should try Japanese cooking. It is fun to make food that you can eat with your friends. There is a cooking class at the community center, so you can join it.",
+      alsoModels: ["I think you should try calligraphy. You can learn how to write beautiful kanji with a brush. Our school has a calligraphy club, so you can practice with us after school."],
+      rubric: [
+        { label: "すすめることを1つ、はっきり書いている（You should try 〜 など）", points: 3, keywords: ["should", "try", "recommend"] },
+        { label: "すすめる理由を書いている", points: 3, keywords: ["because", "fun", "It is"] },
+        { label: "どこで・どのようにできるかを書いている", points: 3, keywords: ["at", "in", "club", "class"] },
+        { label: "20語以上35語以内で、文法（主語と動詞・時制・語順）にまちがいがない", points: 3 },
+      ],
+    },
+    point: "すすめる→理由→場所や方法、の3つを入れる",
+    steps: [
+      { title: "条件を数える", body: "書くことは {{すすめること・理由・場所や方法}} の3つ。1文ずつ書くと条件をもらしにくくなります。", back: [S1] },
+      { title: "やさしい英語に", body: "「公民館」は {{community center}}、思いつかなければ in our town のように、知っている語に言いかえます。", back: [S2] },
+    ],
+  },
+  {
+    id: "joken-memory",
+    type: "C",
+    difficulty: 3,
+    points: 12,
+    seconds: 300,
+    skill: "思考・判断・表現",
+    prompt: `卒業前に、後輩へのメッセージを英語で書くことになりました。\n中学校生活でいちばんの思い出を1つ挙げ、その理由と、後輩へのアドバイスを1つ書いて、20語以上35語以内の英語で書きなさい。${JOKEN_LEAD}`,
+    answer: {
+      kind: "written",
+      limit: { min: 20, max: 35, unit: "語" },
+      model: "My best memory is the chorus contest. Our class practiced every morning and sang very well together. My advice is to work hard with your friends, and you will make great memories.",
+      alsoModels: ["My best memory is our school trip to Kyoto. I enjoyed visiting old temples with my friends. My advice is to talk to many people, because new friends will make your school life more fun."],
+      rubric: [
+        { label: "いちばんの思い出を1つ、はっきり書いている", points: 3, keywords: ["memory", "best"] },
+        { label: "思い出に選んだ理由（何をしたか・どう感じたか）を書いている", points: 3, keywords: ["because", "enjoyed", "practiced"] },
+        { label: "後輩へのアドバイスを1つ書いている", points: 3, keywords: ["advice", "should", "Please", "try"] },
+        { label: "20語以上35語以内で、過去のことは過去形にするなど文法にまちがいがない", points: 3 },
+      ],
+    },
+    point: "思い出は過去形、アドバイスは現在形・命令文",
+    steps: [
+      { title: "時制を使い分ける", body: "思い出の中身は {{過去形}}（practiced・enjoyed）、アドバイスは {{命令文}} や {{You should 〜}} で書きます。", back: [S3, S4] },
+      { title: "3つの条件", body: "思い出・理由・アドバイスの3つがそろっているか、最後に確かめます。", back: [S1, S4] },
+    ],
+  },
+  {
+    id: "joken-volunteer",
+    type: "C",
+    difficulty: 3,
+    points: 12,
+    seconds: 300,
+    skill: "思考・判断・表現",
+    prompt: `英語の授業で、「クラスで取り組みたいボランティア活動」を提案することになりました。\n取り組みたい活動を1つ挙げ、それによってだれが・どのように助かるかを書いて、20語以上35語以内の英語で提案しなさい。${JOKEN_LEAD}`,
+    answer: {
+      kind: "written",
+      limit: { min: 20, max: 35, unit: "語" },
+      model: "I want our class to clean the park near our school. Many children and old people use the park every day, so they can enjoy it more if it is clean.",
+      alsoModels: ["Let's read picture books to small children at the library. Their parents can rest for a while, and the children can enjoy many stories. We can also practice speaking clearly."],
+      rubric: [
+        { label: "取り組みたい活動を1つ、はっきり書いている（I want our class to 〜 / Let's 〜 など）", points: 3, keywords: ["want", "Let's", "should"] },
+        { label: "だれが助かるかを書いている", points: 3, keywords: ["people", "children", "they"] },
+        { label: "どのように助かるか（よくなること）を書いている", points: 3, keywords: ["so", "can", "if"] },
+        { label: "20語以上35語以内で、文法（主語と動詞・語順・want 人 to 〜 など）にまちがいがない", points: 3 },
+      ],
+    },
+    point: "活動→助かる人→どうよくなるか",
+    steps: [
+      { title: "提案の形", body: "{{I want our class to 〜.}} や {{Let's 〜.}} で提案を書きます。", back: [S3] },
+      { title: "効果を具体的に", body: "{{so}} や {{if}} を使って「だれが」「どうよくなるか」をつなぐと、理由のある提案になります。", back: [S1, S3] },
+    ],
+  },
+];
+
 export const J_EN_3_EISAKUBUN_MOSHI: UnitMoshi = {
   unit: U,
   subject: "eng",
@@ -189,6 +300,14 @@ export const J_EN_3_EISAKUBUN_MOSHI: UnitMoshi = {
           ],
         },
       ],
+    },
+    {
+      id: `${U}/n1`,
+      title: "条件英作文",
+      lead: "次の問いに、英語で答えなさい。",
+      style: "writing",
+      examOnly: true,
+      questions: JOKEN,
     },
   ],
 };
