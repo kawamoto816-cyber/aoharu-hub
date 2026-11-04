@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { LearnShell } from "@/components/learn/LearnShell";
-import { UZ_CARDS, UZ_CASES, UZ_DEN, UZ_ENSHU, UZ_LECTURES, UZ_RANKS, UZ_SHIRYO, deptLabel, lectureUnit } from "@/lib/unizeb";
+import { UZ_CARDS, UZ_CASES, UZ_DEN, UZ_ENSHU, UZ_EP, UZ_LECTURES, UZ_RANKS, UZ_SHIRYO, deptLabel, lectureUnit } from "@/lib/unizeb";
 import { Kicker } from "./parts";
 
-// /learn/unizeb の目次：起業の教科書（図解レクチャー120）・起業家列伝・ケーススタディー・資料集。
+// /learn/unizeb の目次：起業の教科書（図解レクチャー120）・起業家列伝・ゼロイチ・エピソード・ケーススタディー・資料集。
 // スキルカード本体（マイ事業ボード）はフェーズ2で、この上に入る。
 
 export function UzHome() {
@@ -97,6 +97,21 @@ export function UzHome() {
                 <span className="text-[11.5px] font-bold text-[#5A5D73]">{d.era}・{d.country}・{d.field}</span>
                 <span className="block text-[16px] font-black">{d.name}</span>
                 <span className="mt-0.5 block text-[13px] leading-snug text-[#3A3D55]">{d.company}</span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section id="ep" className="mt-10 scroll-mt-4">
+        <h2 className="m-0 text-[20px] font-black">ゼロイチ・エピソード</h2>
+        <p className="m-0 mt-1 text-[13.5px] text-[#3A3D55]">実在の会社が0→1で迫られた決断の場面を1つずつ。あなたならどうするかを決めてから、実際の決断とその後を読む。事実はすべて出典つき。</p>
+        <ul className="m-0 mt-3 grid list-none gap-2.5 p-0">
+          {UZ_EP.map((e) => (
+            <li key={e.id}>
+              <Link href={`/learn/unizeb/ep/${e.id}`} className="block rounded-[14px] border-[1.5px] border-[#15172B] bg-white p-3.5 text-[#15172B] no-underline shadow-[3px_3px_0_#15172B]">
+                <span className="text-[11.5px] font-bold text-[#5A5D73]">No.{e.no}・{e.year}・{e.company}</span>
+                <span className="block text-[16px] font-black">{e.title}</span>
               </Link>
             </li>
           ))}

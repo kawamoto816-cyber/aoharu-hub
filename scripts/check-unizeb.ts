@@ -1,5 +1,5 @@
 // ゼロワンOSユース版のデータを機械で確かめる。使い方：node scripts/check-unizeb.ts
-// 型・分量・図の字数（label 12・sub 14・compare のセル 20）・リンク切れ・使わない言い回し・出典の有無。
+// 型・分量・図の字数（label 12・sub 14・compare のセル 20）・リンク切れ・使わない言い回し・出典の有無（ゼロイチ・エピソードもふくむ）。
 // データのファイルは型だけを import しているので、Node 22 でそのまま読み込める。
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
@@ -145,6 +145,64 @@ for (const { file, v } of cases) {
   figure(file + " 結果", v.outcome.figure);
   walkText(file, v);
 }
+// ゼロイチ・エピソード：ファイル名と id・no の重なり・場面の段落（2段落、120〜260字）・図・選択肢（2〜3、label 15字）・
+// スキル（2〜3枚、カードがある）・考える問い（1〜2）・出典（1つ以上、URL と確かめた日、Wikipedia だけにしない）・
+// 直接引用のおそれ（長い「」）・最新の数字のおそれ（「現在」「時価総額」など）。
+const eps = await load("ep");
+const EP_IDS = new Set(eps.map((e) => e.v.id));
+const epNos = new Map<number, string>();
+for (const { file, v } of eps) {
+  if (!file.endsWith(`${v.id}.ts`)) E(file, "ファイル名と id が合わない");
+  if (!Number.isInteger(v.no) || v.no < 1) E(file, `no が正しくない（${v.no}）`);
+  else if (epNos.has(v.no)) E(file, `no ${v.no} が ${epNos.get(v.no)} と重なっている`);
+  else epNos.set(v.no, file);
+  if (CASE_IDS.has(v.id) || DEN_IDS.has(v.id)) W(file, `id「${v.id}」が列伝・ケースと同じ（ページは別だが紛らわしい）`);
+  if (!v.title || len(v.title) > 24) W(file, `title が ${len(v.title)} 字（目安 12〜20）`);
+  if (!v.company || !v.year) E(file, "company か year がない");
+  const sit = v.situation ?? {};
+  if (!sit.body) E(file, "situation.body がない");
+  if (!Array.isArray(sit.reading) || sit.reading.length !== 2) E(file, `situation.reading が ${sit.reading?.length ?? 0} 段落（2段落）`);
+  (sit.reading ?? []).forEach((p: string, k: number) => {
+    const n = len(p);
+    if (n < 100 || n > 300) E(file, `場面の段落${k + 1} が ${n} 字（120〜260）`);
+    else if (n < 120 || n > 260) W(file, `場面の段落${k + 1} が ${n} 字（目安 120〜260）`);
+  });
+  if (!sit.figure) E(file, "場面の図がない");
+  figure(file + " 場面", sit.figure);
+  if (!v.question) E(file, "question がない");
+  if (v.options.length < 2 || v.options.length > 3) E(file, `選択肢が ${v.options.length}（2〜3）`);
+  v.options.forEach((o: any, i: number) => {
+    if (!o.label || !o.plus || !o.minus) E(file, `選択肢${i + 1} に label・plus・minus がない`);
+    if (len(o.label) > 15) W(file, `選択肢${i + 1} の label 15字こえ「${o.label}」`);
+  });
+  if (!v.decision?.body) E(file, "decision.body がない");
+  if (!v.after?.body) E(file, "after.body がない");
+  [...(v.decision?.reading ?? []), ...(v.after?.reading ?? [])].forEach((p: string) => {
+    const n = len(p);
+    if (n < 80 || n > 300) W(file, `決断・その後の段落が ${n} 字（目安 120〜260）`);
+  });
+  figure(file + " その後", v.after?.figure);
+  if (v.skills.length < 2 || v.skills.length > 3) E(file, `skills が ${v.skills.length}（2〜3）`);
+  v.skills.forEach((s: any) => { if (!CARD_IDS.has(s.card)) E(file, `スキル ${s.card} がない`); if (!s.how) E(file, `スキル ${s.card} に how がない`); });
+  if (!v.think?.length || v.think.length > 2) E(file, `think が ${v.think?.length ?? 0}（1〜2）`);
+  if (!v.note) E(file, "note がない");
+  if (!v.sources?.length) E(file, "出典がない");
+  v.sources?.forEach((s: any) => {
+    if (!/^https:\/\//.test(s.url ?? "")) E(file, `出典の URL が https でない「${s.title}」`);
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(s.checked ?? "")) E(file, `出典の確かめた日の形がちがう「${s.title}」`);
+  });
+  const wiki = (v.sources ?? []).filter((s: any) => /wikipedia\.org/.test(s.url));
+  if (wiki.length && wiki.length === v.sources.length) E(file, "出典が Wikipedia だけ");
+  else if (wiki.length) W(file, "出典に Wikipedia がある（Wikipedia だけが根拠の事実は書かない）");
+  const body: string[] = [];
+  const pick = (o: unknown) => { if (typeof o === "string") body.push(o); else if (Array.isArray(o)) o.forEach(pick); else if (o && typeof o === "object") Object.values(o).forEach(pick); };
+  pick([v.situation, v.question, v.decision, v.after]);
+  for (const t of body) {
+    for (const m of t.matchAll(/「([^」]*)」/g)) if (len(m[1]) > 20) W(file, `長い「」（直接引用のおそれ）「${m[1].slice(0, 20)}…」`);
+    for (const w of ["現在", "いまでは", "今では", "時価総額", "最新の"]) if (t.includes(w)) W(file, `「${w}」（最新の数字のおそれ。書くなら◯年時点と出典）`);
+  }
+  walkText(file, v);
+}
 const shiryo = await load("shiryo");
 const SHIRYO_CH = new Set(shiryo.map((s) => `ch${s.v.ch}`));
 for (const { file, v } of shiryo) {
@@ -162,10 +220,11 @@ const pageSecs: Record<string, number> = {};
 lectures.forEach(({ v }) => (pageSecs[`lec/${v.unit.replace(/^unizeb-/, "")}`] = v.sections.length));
 den.forEach(({ v }) => (pageSecs[`den/${v.id}`] = v.sections.length));
 cases.forEach(({ v }) => (pageSecs[`case/${v.id}`] = 2));
+eps.forEach(({ v }) => (pageSecs[`ep/${v.id}`] = 2));
 const scenes = await load("scenes");
 let nScene = 0;
 for (const { file, v } of scenes) {
-  const key = file.replace(/^scenes\//, "").replace(/\.ts$/, "").replace(/^(lec|den|case)-/, "$1/");
+  const key = file.replace(/^scenes\//, "").replace(/\.ts$/, "").replace(/^(lec|den|case|ep)-/, "$1/");
   if (!(key in pageSecs)) E(file, `ページ ${key} がない`);
   for (const sc of v) {
     nScene++;
@@ -243,13 +302,13 @@ for (const { file, v } of enshu) {
       if (t.type === "choice" && (!t.options || t.options.length < 2 || t.options.length > 5)) E(tw, "choice の選択肢は2〜5");
       t.crit.forEach((c: any, i: number) => { if (!c.t || !c.g4 || !c.g2) E(tw, `観点${i + 1} に t・g4・g2 がない`); });
     }
-    if (!t.review) W(tw, "review がない");
-    else {
-      const m = t.review.match(/^\/learn\/unizeb\/(lec|card)\/(z\d-\d\d)(?:#lec-s(\d+))?$/);
-      if (!m) E(tw, `review の形がちがう ${t.review}`);
-      else if (m[1] === "card" && !CARD_IDS.has(m[2])) E(tw, `review のリンク切れ ${t.review}`);
-      else if (m[1] === "lec" && !lecSecs.has(m[2])) E(tw, `review のレクチャーがない ${t.review}`);
-      else if (m[1] === "lec" && m[3] && Number(m[3]) > (lecSecs.get(m[2]) ?? 0)) E(tw, `review の節がない ${t.review}`);
+    if (!t.review || (Array.isArray(t.review) && !t.review.length)) W(tw, "review がない");
+    else for (const rv of [t.review].flat() as string[]) {
+      const m = rv.match(/^\/learn\/unizeb\/(lec|card)\/(z\d-\d\d)(?:#lec-s(\d+))?$/);
+      if (!m) E(tw, `review の形がちがう ${rv}`);
+      else if (m[1] === "card" && !CARD_IDS.has(m[2])) E(tw, `review のリンク切れ ${rv}`);
+      else if (m[1] === "lec" && !lecSecs.has(m[2])) E(tw, `review のレクチャーがない ${rv}`);
+      else if (m[1] === "lec" && m[3] && Number(m[3]) > (lecSecs.get(m[2]) ?? 0)) E(tw, `review の節がない ${rv}`);
     }
   }
   let chars = 0;
@@ -265,16 +324,17 @@ for (const { file, v } of enshu) {
 }
 
 for (const { w, href } of hrefs) {
-  const m = href.match(/^\/learn\/unizeb(?:\/(lec|den|case|card)\/([\w-]+)|\/shiryo(?:#(ch\d+))?)?$/);
+  const m = href.match(/^\/learn\/unizeb(?:\/(lec|den|case|card|ep)\/([\w-]+)|\/shiryo(?:#(ch\d+))?)?$/);
   if (!m) { W(w, `よそへのリンク ${href}`); continue; }
   const [, kind, id, ch] = m;
   if (kind === "lec" && !LEC_IDS.has(id)) W(w, `まだないレクチャー ${href}`);
   if (kind === "card" && !CARD_IDS.has(id)) E(w, `リンク切れ ${href}`);
   if (kind === "den" && !DEN_IDS.has(id)) E(w, `リンク切れ ${href}`);
   if (kind === "case" && !CASE_IDS.has(id)) E(w, `リンク切れ ${href}`);
+  if (kind === "ep" && !EP_IDS.has(id)) E(w, `リンク切れ ${href}`);
   if (ch && !SHIRYO_CH.has(ch)) E(w, `リンク切れ ${href}`);
 }
-console.log(`レクチャー ${lectures.length}・列伝 ${den.length}・ケース ${cases.length}・資料集 ${shiryo.length}章・場面イラスト ${nScene}・演習 ${enshu.length}`);
+console.log(`レクチャー ${lectures.length}・列伝 ${den.length}・ケース ${cases.length}・エピソード ${eps.length}・資料集 ${shiryo.length}章・場面イラスト ${nScene}・演習 ${enshu.length}`);
 warns.forEach((x) => console.log(x));
 errs.forEach((x) => console.log(x));
 console.log(errs.length ? `エラー ${errs.length}` : "エラーなし");

@@ -401,11 +401,11 @@ export function EnshuPage({ e, skillNames }: { e: Enshu; skillNames: SkillName }
                           課題{x.t.no}：{fill(x.c.t, vars)}（{x.s?.score ?? 0}/4）
                         </p>
                         <p className="m-0 mt-1">満点の姿：{fill(x.c.g4, vars)}</p>
-                        {x.t.review && (
-                          <Link href={x.t.review} className="mt-1.5 inline-flex min-h-[40px] items-center font-black text-[#1533B8]">
-                            読み直す：{readLabel(x.t.review, skillNames)} →
+                        {[x.t.review ?? []].flat().map((href) => (
+                          <Link key={href} href={href} className="mt-1.5 mr-3 inline-flex min-h-[40px] items-center font-black text-[#1533B8]">
+                            読み直す：{readLabel(href, skillNames)} →
                           </Link>
-                        )}
+                        ))}
                       </li>
                     ))}
                   </ul>

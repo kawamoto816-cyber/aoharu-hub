@@ -73,6 +73,42 @@ export interface CaseStudy {
   sources: Source[];
 }
 
+/**
+ * ゼロイチ・エピソード（/learn/unizeb/ep/<id>）：実在の会社の、創業期（0→1）の決断の場面を1つだけ短く描く教材。
+ * ページの順：場面 → 問い → 選ぶ前に考える（options）→ 実際の決断 → その後 → スキル → 考える問い → 出典。
+ * 決断とその後は、選択肢を読んで自分で決めるまでたたんでおく。
+ * 事実（年・数字・出来事）は、sources を実際に開いて確かめたものだけ。Wikipedia だけが根拠の事実は書かない。
+ * 直接引用・評価の断定・存命の人の私生活・最新の数字は書かない（過去の数字は「◯年時点」と年を添える）。
+ */
+export interface Episode {
+  id: string;
+  /** 設計表（design/den.json の episodes）の no。目次の並び順 */
+  no: number;
+  /** 場面がひと目で分かる題（12〜20字） */
+  title: string;
+  /** 会社（当時の名前を括弧で。例「ヤマト運輸（当時は大和運輸）」） */
+  company: string;
+  /** 決断の年（例「1976年」「1994〜1995年」） */
+  year: string;
+  /** 決断の前の場面。body は2〜3文の要点、reading は2段落（1段落120〜260字）、figure は1つ（cause・compare・flow など） */
+  situation: { body: string; reading: string[]; figure: Figure };
+  /** 問い（あなたならどうする？ 1〜2文） */
+  question: string;
+  /** 選ぶ前に考える案（2〜3）。label は15字まで、plus・minus は各1〜2文。考えるための教材として作ったもの */
+  options: { label: string; plus: string; minus: string }[];
+  /** 実際に選んだこと（出典にある事実だけ）。body 2〜3文、reading 0〜1段落 */
+  decision: { body: string; reading?: string[] };
+  /** その後（出典にある事実だけ。最新の数字は書かない）。body 2〜3文、reading 0〜1段落、figure は任意（timeline など） */
+  after: { body: string; reading?: string[]; figure?: Figure };
+  /** この場面で使われたスキル（2〜3枚。id は小文字） */
+  skills: SkillLink[];
+  /** 考える問い（1〜2個。正解が1つに決まらなくてよい） */
+  think: string[];
+  /** 書き方の注（何が出典で確かめた事実で、何を書かなかったか） */
+  note: string;
+  sources: Source[];
+}
+
 /** 資料集の1章（/learn/unizeb/shiryo#ch<n>） */
 export interface ShiryoChapter {
   ch: number;
@@ -119,7 +155,7 @@ export interface Scene {
   labels?: { x: number; y: number; text: string; tone?: "navy" | "red" | "blue" }[];
 }
 
-/** ページごとの場面イラスト（キーは "lec/z1-01"・"den/<id>"・"case/<id>"） */
+/** ページごとの場面イラスト（キーは "lec/z1-01"・"den/<id>"・"case/<id>"・"ep/<id>"。エピソードは at 0＝場面、1＝決断とその後） */
 export type SceneBook = Record<string, Scene[]>;
 
 /**
@@ -177,6 +213,6 @@ export interface EnshuTask {
   crit: { t: string; w: number; g4: string; g2: string; minChars?: number }[];
   /** 模範解答の例（採点のあとに見せる。答えの丸写しは足切り） */
   model: string;
-  /** 読み直す所（レクチャーの節。例 "/learn/unizeb/lec/z6-01#lec-s2"） */
-  review?: string;
+  /** 読み直す所（レクチャーの節。例 "/learn/unizeb/lec/z6-01#lec-s2"。2つ以上なら配列） */
+  review?: string | string[];
 }
