@@ -22,6 +22,7 @@ import { KYOKA } from "@/lib/learn/kyoka";
 import { LECTURES } from "@/lib/lecture";
 import { UNIT_MOSHI_IDS } from "@/lib/moshi/unit";
 import { UZ_CASES, UZ_DEN, UZ_LECTURES } from "@/lib/unizeb";
+import { APL_LECTURES } from "@/lib/apply-lec";
 import { TSUKKOMI_HOME, TSUKKOMI_UNITS, tsukkomiHref } from "@/lib/tsukkomi";
 
 // 検索エンジン向けサイトマップ。入口ページを追加したらここに足す。
@@ -75,6 +76,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...TSUKKOMI_UNITS.map((u) => ({ url: `${base}${tsukkomiHref(u)}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
     ...["", "/koritsu", "/kyotsu", "/shiritsu", "/teiki"].map((m) => ({ url: `${base}/learn/exam${m}`, lastModified: now, changeFrequency: "weekly" as const, priority: 0.7 })),
     ...UNIT_MOSHI_IDS.map((u) => ({ url: `${base}/learn/moshi/${u}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
+    // 選ばれる力の図解の教科書（小論文・面接・総合型選抜）。書いた単元だけ
+    { url: `${base}/learn/apply/lec`, lastModified: now, changeFrequency: "weekly" as const, priority: 0.7 },
+    ...APL_LECTURES.map((l) => ({ url: `${base}/learn/apply/lec/${l.unit}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
     // ゼロワンOSユース版（起業の棚）。カード・ボード・アセット・演習は個人の画面なので入れない
     { url: `${base}/learn/unizeb`, lastModified: now, changeFrequency: "weekly" as const, priority: 0.7 },
     { url: `${base}/learn/unizeb/shiryo`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 },
