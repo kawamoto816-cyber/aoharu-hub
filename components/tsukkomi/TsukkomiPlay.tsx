@@ -5,12 +5,15 @@ import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "reac
 import type { BokeWithAudio, TsukkomiKind, TsukkomiMode } from "@/lib/tsukkomi/types";
 import { type Answer, type Scored, TIME_LIMIT, TITLES, accuracy, isRightChoice, isWrongToken, pickRound, roundTotal, scoreAnswer, shuffle, titleOf } from "@/lib/tsukkomi/score";
 import { LOG_MAX, bestKey, parseSave, readRaw, subscribeSave, updateSave, type TsukkomiSave } from "@/lib/tsukkomi/storage";
+import { Sentence } from "./Sentence";
 import { Stage, StageBubble } from "./Stage";
+import { TsukkomiWrite } from "./TsukkomiWrite";
 import { pickKakegoe } from "@/lib/tsukkomi/kakegoe";
 
 // ツッコミ学習法の1回分（10問）。はじめ（遊び方とモード）→ プレイ → 結果。
 // 1問の流れ：ボケ役がボケの文を言う → ①どこ？（語句をタップ／正しい文なら「スルー」）→ ②正しくは？（4択）→ ③なんでやねん（上級だけ・3択）
-// → ツッコミ役が正しく言い直す。採点は lib/tsukkomi/score.ts、記録は lib/tsukkomi/storage.ts（この端末の localStorage）。
+// → ツッコミ役が正しく言い直す。
+// はじめの画面の「書いてツッコむ」は、自分の言葉で書いた直しをAIが判定するモード（TsukkomiWrite・点数と記録には入れない）。採点は lib/tsukkomi/score.ts、記録は lib/tsukkomi/storage.ts（この端末の localStorage）。
 
 type Step = "where" | "what" | "why" | "done";
 type Result = Scored & { id: string; tapped: number | null };
@@ -45,7 +48,7 @@ export function TsukkomiPlay(p: TsukkomiPlayProps) {
   const byId = useMemo(() => new Map(p.items.map((b) => [b.id, b])), [p.items]);
   const review = p.items.filter((b) => save.miss[b.id]).length;
 
-  const [phase, setPhase] = useState<"intro" | "play" | "result">("intro");
+  const [phase, setPhase] = useState<"intro" | "play" | "result" | "write">("intro");
   const [mode, setMode] = useState<TsukkomiMode>("normal");
   const [order, setOrder] = useState<string[]>([]);
   const [perm, setPerm] = useState<Record<string, { opt: number[]; rsn: number[] }>>({});
@@ -194,6 +197,19 @@ export function TsukkomiPlay(p: TsukkomiPlayProps) {
     window.scrollTo({ top: 0 });
   }
 
+  // ── 書いてツッコむ（AIが判定）。点数・記録には入れない ──
+  if (phase === "write")
+    return (
+      <TsukkomiWrite
+        items={p.items}
+        missed={new Set(Object.keys(save.miss))}
+        onExit={() => {
+          setPhase("intro");
+          window.scrollTo({ top: 0 });
+        }}
+      />
+    );
+
   // ── はじめ ──
   if (phase === "intro") {
     const t = titleOf(save.total);
@@ -236,6 +252,20 @@ export function TsukkomiPlay(p: TsukkomiPlayProps) {
             <span className="text-[12px] font-bold text-[#C9CEF2]">1問20秒・①②③</span>
           </button>
         </div>
+        <button
+          type="button"
+          onClick={() => {
+            audio.current?.pause();
+            setPhase("write");
+            window.scrollTo({ top: 0 });
+          }}
+          className={`${btn} min-h-[64px] flex-col gap-0.5 bg-[#E6EAFB] text-[#15172B] shadow-[3px_3px_0_#15172B]`}
+        >
+          <span className="text-[16px]">
+            書いてツッコむ <span className="ml-1 rounded-full bg-[#15172B] px-2 py-0.5 align-[2px] text-[11px] text-[#FFE45C]">AIが判定</span>
+          </span>
+          <span className="text-[12px] font-bold text-[#3A3D55]">どこがまちがいか・どう直すかを自分の言葉で書く（時間制限なし）</span>
+        </button>
 
         <dl className="m-0 grid grid-cols-3 gap-2 text-center">
           {[
@@ -505,28 +535,6 @@ export function TsukkomiPlay(p: TsukkomiPlayProps) {
         </>
       )}
     </div>
-  );
-}
-
-/** ボケの文を、まちがい（mark=wrong）か正解（mark=right）の語句に印をつけて表示する */
-function Sentence({ b, mark }: { b: BokeWithAudio; mark: "wrong" | "right" }) {
-  return (
-    <>
-      {b.tokens.map((t, i) => {
-        if (i !== b.wrongIndex) return <span key={i}>{t}</span>;
-        if (mark === "wrong")
-          return (
-            <span key={i} className="rounded-[4px] bg-[#FDE2DF] px-[1px] text-[#B42318] line-through">
-              {t}
-            </span>
-          );
-        return (
-          <span key={i} className="rounded-[4px] bg-[#FFE45C] px-[1px]">
-            {b.options!.choices[b.options!.answer]}
-          </span>
-        );
-      })}
-    </>
   );
 }
 
