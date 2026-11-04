@@ -40,8 +40,9 @@ const parseJ = (s: string | undefined, d: unknown) => {
   }
 };
 
-async function ask(v: UzViewer, prompt: string, action: string): Promise<string> {
-  return callClaude({ model: GRADE_MODEL(), prompt, maxTokens: 2000, action, viewer: v });
+// 演習の返事は長い（最大で約1,450字）ので 3000、カードは 2000
+async function ask(v: UzViewer, prompt: string, action: string, maxTokens = 2000): Promise<string> {
+  return callClaude({ model: GRADE_MODEL(), prompt, maxTokens, action, viewer: v });
 }
 
 export async function POST(req: Request) {
@@ -101,10 +102,10 @@ export async function POST(req: Request) {
       const skillName = (sid: string) => cardInfo(sid)?.name ?? sid;
       let ai: GradeResult;
       try {
-        ai = parseGrade(await ask(v, buildEnshuPrompt(e, vi, answers, { skillName }), "grade"), e);
+        ai = parseGrade(await ask(v, buildEnshuPrompt(e, vi, answers, { skillName }), "grade", 3000), e);
       } catch (err) {
         if (err instanceof UzError) throw err;
-        ai = parseGrade(await ask(v, buildEnshuPrompt(e, vi, answers, { short: true, skillName }) + JSON_RETRY_SUFFIX, "grade_retry"), e);
+        ai = parseGrade(await ask(v, buildEnshuPrompt(e, vi, answers, { short: true, skillName }) + JSON_RETRY_SUFFIX, "grade_retry", 3000), e);
       }
       const r = finishGrade(e, vi, answers, ai);
       await logUse(v.userId, "grade", { kind: "enshu", id, total: r.total, passed: r.passed });

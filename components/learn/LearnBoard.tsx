@@ -94,7 +94,7 @@ export function LearnBoard({ ids }: { ids: BoardIds }) {
             href="/learn/unizeb#den"
             className="inline-flex min-h-[48px] items-center rounded-[14px] border-[1.5px] border-[#15172B] bg-white px-6 text-sm font-black text-[#15172B] no-underline shadow-[0_3px_0_#15172B]"
           >
-            起業家列伝・ケース・資料集へ
+            起業家列伝・ケース・エピソード・資料集へ
           </Link>
         )}
       </div>

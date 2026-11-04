@@ -24,6 +24,8 @@ export const canUseCard = (plan: UzPlan, lv: number) => lv <= FREE_LV || plan ==
 export const canUseEnshu = (plan: UzPlan, lv: number) => lv <= FREE_LV || plan === "max";
 export const canReadDen =(plan: UzPlan, id: string) => UZ_SAMPLE_DEN.includes(id) || plan === "pro" || plan === "max";
 export const canReadCase = (plan: UzPlan, id: string) => UZ_SAMPLE_CASES.includes(id) || plan === "pro" || plan === "max";
+/** ゼロイチ・エピソード：見本なし、Pro・Max（2026-11-04 承認の料金） */
+export const canReadEpisode = (plan: UzPlan) => plan === "pro" || plan === "max";
 export const canReadShiryo = (plan: UzPlan, ch: number) => UZ_SAMPLE_SHIRYO.includes(ch) || plan === "pro" || plan === "max";
 /** ボードを保存できるか（登録なしは端末の中だけ） */
 export const canSaveBoard = (plan: UzPlan) => plan !== "guest";
