@@ -1,30 +1,21 @@
 import type { Lecture } from "@/lib/lecture/types";
-import { E_MATH_1_KURIAGARI } from "@/lib/lecture/data/e-math-1-kuriagari";
-import { J_MATH_1_SEIFU } from "@/lib/lecture/data/j-math-1-seifu";
-import { J_MATH_1_HOTEISHIKI } from "@/lib/lecture/data/j-math-1-hoteishiki";
-import { J_SCI_1_KAZAN } from "@/lib/lecture/data/j-sci-1-kazan";
-import { J_SOC_HIST_KAMAKURA } from "@/lib/lecture/data/j-soc-hist-kamakura";
+import { getLecture } from "@/lib/lecture";
 import { OSHIERU_SETS } from "./data";
 import type { OshieruSet } from "./types";
 
-// オシエル（AIの生徒ハルに教える）。/learn/oshieru/<単元id>。まだ公開していない（noindex・ほかのページからリンクしない）。
-// サーバー（API）からも読むので、lib/lecture の索引（全単元）は読みこまない。
-// 誤解セット (data/) と、正しさのものさしにする図解レクチャー (lib/lecture/data/) を単元ごとに組にする。
+// オシエル（AIの生徒ハルに教える）。/learn/oshieru/<単元id>。図解レクチャーのページの「ハルに教える」から入る。
+// 一覧 /learn/oshieru は noindex・サイトマップに入れない（代表の公開OKが出るまで）。
+// 誤解セット (data/。手書き hand.ts ＋ 機械で作った gen.ts) と、正しさのものさしにする図解レクチャー (lib/lecture/data/) を単元ごとに組にする。
 
 export const OSHIERU_HOME = "/learn/oshieru";
 export const oshieruHref = (unit: string) => `${OSHIERU_HOME}/${unit}`;
 
-const LECTURE_OF: Record<string, Lecture> = {
-  "e-math-1-kuriagari": E_MATH_1_KURIAGARI,
-  "j-math-1-seifu": J_MATH_1_SEIFU,
-  "j-math-1-hoteishiki": J_MATH_1_HOTEISHIKI,
-  "j-sci-1-kazan": J_SCI_1_KAZAN,
-  "j-soc-hist-kamakura": J_SOC_HIST_KAMAKURA,
-};
-
 const BY_UNIT = new Map(OSHIERU_SETS.map((s) => [s.unit, s]));
 
 export const OSHIERU_UNITS = OSHIERU_SETS.map((s) => s.unit);
+
+/** この単元でオシエルが使えるか（点検を通った誤解セットとレクチャーがある） */
+export const hasOshieru = (unit: string) => BY_UNIT.has(unit) && !!getLecture(unit);
 
 export interface OshieruUnit {
   set: OshieruSet;
@@ -33,7 +24,7 @@ export interface OshieruUnit {
 
 export function getOshieru(unit: string): OshieruUnit | undefined {
   const set = BY_UNIT.get(unit);
-  const lecture = LECTURE_OF[unit];
+  const lecture = getLecture(unit);
   if (!set || !lecture) return undefined;
   return { set, lecture };
 }

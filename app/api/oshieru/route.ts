@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { checkAiBudget } from "@/lib/ai-budget";
 import { getOshieru } from "@/lib/oshieru";
 import { runScore, runTurn } from "@/lib/oshieru/ai";
-import { MAX_HARU_TURNS, checkOshieruLimit, getViewer } from "@/lib/oshieru/limits";
+import { MAX_HARU_TURNS, checkOshieruLimit, getViewer, takeScoreCall } from "@/lib/oshieru/limits";
 import { endLine, isAbusive, needsSos, redirectLine, sosLine } from "@/lib/oshieru/safety";
 import { AXES } from "@/lib/oshieru/score";
 import type { Grade, Turn, Verdict } from "@/lib/oshieru/types";
@@ -38,7 +38,7 @@ const fail = (error: string, status: number) => NextResponse.json({ error }, { s
 
 export async function GET(req: Request) {
   const viewer = await getViewer(req);
-  const d = checkOshieruLimit(viewer, "peek");
+  const d = await checkOshieruLimit(viewer, "peek");
   return NextResponse.json({ configured: !!process.env.ANTHROPIC_API_KEY, tier: d.tier, remaining: d.remaining, limit: d.limit, per: d.per }, { headers: NO_STORE });
 }
 
@@ -68,7 +68,7 @@ export async function POST(req: Request) {
 
     if (!process.env.ANTHROPIC_API_KEY) return fail("not_configured", 503);
     const viewer = await getViewer(req);
-    const d = checkOshieruLimit(viewer, "turn");
+    const d = await checkOshieruLimit(viewer, "turn", u.set.unit);
     if (!d.allowed) return NextResponse.json({ error: d.reason, remaining: d.remaining, limit: d.limit, per: d.per }, { status: 429, headers: NO_STORE });
     // 運営の月のAI予算をこえたら、登録なし・無料の分から止める
     if (!(await checkAiBudget(d.tier)).allowed) return NextResponse.json({ error: "limit_budget", remaining: 0, limit: d.limit, per: d.per }, { status: 429, headers: NO_STORE });
@@ -95,15 +95,17 @@ export async function POST(req: Request) {
     if (!process.env.ANTHROPIC_API_KEY) return fail("not_configured", 503);
     const high = action === "rejudge";
     const viewer = await getViewer(req);
-    const pre = checkOshieruLimit(viewer, high ? "rejudge" : "peek");
+    const pre = await checkOshieruLimit(viewer, high ? "rejudge" : "peek", u.set.unit);
     if (!pre.allowed) return NextResponse.json({ error: pre.reason ?? "limit_sessions", remaining: pre.remaining, limit: pre.limit, per: pre.per }, { status: 429, headers: NO_STORE });
+    // 全体の上限（採点しなおしは rejudge の判断の中でとっている）
+    if (!high && !takeScoreCall()) return NextResponse.json({ error: "limit_daily", remaining: pre.remaining, limit: pre.limit, per: pre.per }, { status: 429, headers: NO_STORE });
     const verdict: Verdict | undefined = body.verdict === "pass" || body.verdict === "close" ? body.verdict : undefined;
     const hintsUsed = Math.max(0, Math.min(20, Number(body.hintsUsed ?? 0) || 0));
     try {
       const result = await runScore(u, { turns, restatementId: typeof body.restatementId === "string" ? body.restatementId : undefined, verdict, hintsUsed }, high);
       if (!high) {
         // マスター判定まで完走した回として数える（失敗した回は数えない）
-        const d = checkOshieruLimit(viewer, "complete");
+        const d = await checkOshieruLimit(viewer, "complete", u.set.unit);
         if (!d.allowed) return NextResponse.json({ error: d.reason, remaining: d.remaining, limit: d.limit, per: d.per }, { status: 429, headers: NO_STORE });
         return NextResponse.json({ ...result, remaining: d.remaining }, { headers: NO_STORE });
       }

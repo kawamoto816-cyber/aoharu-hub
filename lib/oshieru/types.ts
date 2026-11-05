@@ -52,6 +52,8 @@ export interface OshieruSet {
   hints: { tatoeru: string; zu: string; rei: string };
   /** ことばカード（小学校低学年向け。本文から作った短い言葉） */
   wordCards?: string[];
+  /** レクチャーのデータから機械的に作ったもの（lib/oshieru/auto.ts・data/gen.ts）。点検がきびしくなる */
+  auto?: boolean;
 }
 
 /** 会話の1発言（クライアントとサーバーでやりとりする形。サーバーには保存しない） */

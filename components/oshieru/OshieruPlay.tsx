@@ -241,7 +241,7 @@ export function OshieruPlay({ unit, mock, mockScript }: { unit: OshieruPublic; m
   if (phase === "limit")
     return (
       <Panel tone="white">
-        <p className="m-0 text-[15px] font-black">きょうの回数をつかいきりました</p>
+        <p className="m-0 text-[15px] font-black">{status?.per === "month" ? "今月" : "きょう"}の回数をつかいきりました</p>
         <p className="m-0 mt-1.5 text-[13.5px] leading-relaxed text-[#3A3D55]">
           オシエルは、マスター判定まで進んだ回を数えています。登録なしは1日1回、無料登録は月10回、Proは1日10回、Maxは1日20回までです。
         </p>
@@ -301,7 +301,7 @@ export function OshieruPlay({ unit, mock, mockScript }: { unit: OshieruPublic; m
             {TIER_LABEL[status.tier] ?? ""}：{status.per === "day" ? "きょう" : "今月"}あと {status.remaining} 回（マスター判定まで進んだ回を数えます）
           </p>
         )}
-        {noneLeft && <p className="m-0 text-center text-[13px] font-bold text-[#B42318]">きょうの回数をつかいきりました。</p>}
+        {noneLeft && <p className="m-0 text-center text-[13px] font-bold text-[#B42318]">{status?.per === "month" ? "今月" : "きょう"}の回数をつかいきりました。</p>}
         {hydrated && masteredAt && (
           <p className="m-0 flex items-center justify-center gap-2 text-[13px] font-bold">
             <GoldBadge small /> この単元は {new Date(masteredAt).toLocaleDateString("ja-JP")} にマスターしました
