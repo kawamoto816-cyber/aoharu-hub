@@ -6,6 +6,8 @@ import { LearnMoreMap } from "@/components/learn/LearnMoreMap";
 import { UnitPicker, type PickerEntry } from "@/components/learn/UnitPicker";
 import { LEVELS } from "@/lib/school";
 import { NoteLink } from "@/components/drill/NoteLink";
+import { ZukanLink } from "@/components/zukan/Zukan";
+import { ZUKAN_HREF } from "@/lib/zukan/words";
 import { LECTURES, getLecture, lectureHref, lectureUnitInfo } from "@/lib/lecture";
 import { TSUKKOMI_HOME } from "@/lib/tsukkomi";
 import type { Lecture, Recitation } from "@/lib/lecture/types";
@@ -400,6 +402,7 @@ export default function LearnHub() {
         <div className="mt-8 flex flex-wrap items-center gap-2">
           <NoteLink />
           <span className="text-[12.5px] text-[#3A3D55]">ドリルでまちがえた問題が自動でたまります</span>
+          <ZukanLink href={ZUKAN_HREF} />
         </div>
       </div>
 

@@ -5,6 +5,8 @@
 import { buildUnitRound, UNIT_MOSHI_IDS } from "../lib/moshi/unit";
 import { cardId, dayNo, dueCards, INTERVALS, recallByInterval, review, reviewSeed, stumble, type NewMistake, type ReviewLog, type ZukanCard } from "../lib/zukan/schedule";
 import { zukanItem } from "../lib/zukan/server";
+import { buildExamRound } from "../lib/exam/build";
+import { fixedChoices } from "../lib/exam/modes";
 
 let fail = 0;
 const eq = (name: string, got: unknown, want: unknown) => {
@@ -94,6 +96,31 @@ for (const u of UNIT_MOSHI_IDS) {
     }
 }
 console.log(`小問 ${items} 問を作りなおせた (別シードで問題文が変わる ${varied} 問・答えの形が変わる ${aCount} 問)`);
+// 試験モードの小問 (id は「出題元の節の id~小問の id」) も作りなおせるか (MoshiPlay の finish と同じ分け方)
+let exItems = 0;
+for (const { mode, choice } of fixedChoices())
+  for (const seed of [11, 4242]) {
+    const b = buildExamRound(mode, choice, seed);
+    if (!b?.ok) continue;
+    for (const d of b.round.daimon)
+      for (const it of d.items) {
+        if (it.dependsOn) continue;
+        const ex = it.id.lastIndexOf("~");
+        if (ex < 0) {
+          fail++;
+          console.log(`✕ 試験の小問の id に ~ がない: ${it.id}`);
+          continue;
+        }
+        exItems++;
+        const z = zukanItem(it.unit ?? d.units[0], it.id.slice(0, ex), it.id.slice(ex + 1), 99);
+        if (!z) {
+          fail++;
+          console.log(`✕ 試験の小問を作りなおせない: ${mode} ${it.unit ?? d.units[0]} ${it.id}`);
+        }
+      }
+  }
+console.log(`試験モードの小問 ${exItems} 問を作りなおせた`);
+eq("試験モードの小問がある", exItems > 0, true);
 eq("存在しない小問は null", zukanItem("no-such-unit", "x", "y", 1), null);
 
 if (fail) {

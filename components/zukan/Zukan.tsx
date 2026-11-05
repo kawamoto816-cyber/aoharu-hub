@@ -358,3 +358,22 @@ export function ZukanEntry({ href }: { href: string }) {
     </Link>
   );
 }
+
+/** /learn トップの小さな入口 (まちがいノートの横)。カードがなければ出さない */
+export function ZukanLink({ href }: { href: string }) {
+  const z = useZukan();
+  const today = useToday();
+  const cards = Object.values(z.cards);
+  if (!cards.some((c) => !c.grad)) return null;
+  const n = dueCards(cards, today).length;
+  return (
+    <Link
+      href={href}
+      className="inline-flex min-h-[44px] items-center gap-2 rounded-[12px] border-[1.5px] border-[#15172B] bg-white px-3 text-[14px] font-black text-[#15172B] no-underline shadow-[2px_2px_0_#15172B] hover:bg-[#FFFBE6]"
+    >
+      <span>つまずき図鑑</span>
+      <span className={`rounded-full px-2 py-0.5 text-[12px] font-black ${n ? "bg-[#FFE45C]" : "bg-[#E3E8FF] text-[#1533B8]"}`}>今日の復習 {n}枚</span>
+      <span aria-hidden="true">→</span>
+    </Link>
+  );
+}

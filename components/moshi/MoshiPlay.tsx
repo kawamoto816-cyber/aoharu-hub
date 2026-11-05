@@ -631,8 +631,13 @@ export function MoshiPlay({
         continue;
       }
       n++;
-      // つまずき図鑑へ (試験モード・前の小問の答えを使う小問は入れない)。本文は入れず、作りなおす id とシードだけ
-      if (!examMode && !it.dependsOn) stumbles.push({ u: d.units[0], d: d.id, q: it.id, seed: unitPage?.seed ?? 0, name: u?.name ?? unitId, subj: u?.subject ?? "", head: plain(it.point).slice(0, 40), kids: u?.kids || undefined });
+      // つまずき図鑑へ (前の小問の答えを使う小問は入れない)。本文は入れず、作りなおす id とシードだけ。
+      //   試験モードの小問の id は「出題元の節の id~小問の id」(lib/exam/build.ts)。出題元の節と小問を指す
+      if (!it.dependsOn) {
+        const ex = examMode ? it.id.lastIndexOf("~") : -1;
+        const ref = ex >= 0 ? { u: unitId, d: it.id.slice(0, ex), q: it.id.slice(ex + 1), seed: examMode!.seed } : { u: d.units[0], d: d.id, q: it.id, seed: unitPage?.seed ?? 0 };
+        stumbles.push({ ...ref, name: u?.name ?? unitId, subj: u?.subject ?? "", head: plain(it.point).slice(0, 40), kids: u?.kids || undefined });
+      }
       const a = it.answer;
       if (a.kind === "choice" && !Array.isArray(a.correct) && r.kind === "choice") {
         recordMistake(meta, { q, choices: a.options.map(noteText), answer: a.correct, ex: `${noteText(a.why[a.correct])}\n${ex}`, source: "moshi" }, r.picked[0] ?? -1);
@@ -641,7 +646,9 @@ export function MoshiPlay({
     setSaved(n);
     if (stumbles.length) {
       const put = recordStumbles(stumbles);
-      setRx({ heads: put.slice(0, 3).map((x) => x.card.head), n: put.length, again: put.filter((x) => x.again).length, due: put[0]?.card.due ?? dayNo(Date.now()) + 1 });
+      // 「あした」の3問: つまずきの多い順 → まちがえた順 (sort は同じ値なら元の順のまま)
+      const top3 = [...put].sort((a, b) => b.card.lapses - a.card.lapses).slice(0, 3);
+      setRx({ heads: top3.map((x) => x.card.head), n: put.length, again: put.filter((x) => x.again).length, due: put[0]?.card.due ?? dayNo(Date.now()) + 1 });
     }
     const total = Object.values(results).reduce((s, x) => s + x.score, 0);
     const sum = summarize(all.map(({ d, it, key }) => ({ key, points: it.points, unit: it.unit ?? d.units[0], skill: it.skill, difficulty: it.level })), results);
