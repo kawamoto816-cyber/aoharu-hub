@@ -5,9 +5,12 @@ import { GakkoToday } from "@/components/learn/gakko/GakkoToday";
 import { gakkoData } from "@/lib/gakko";
 import { LECTURES } from "@/lib/lecture";
 import { TSUKKOMI_HOME } from "@/lib/tsukkomi";
+import { ZukanEntry } from "@/components/zukan/Zukan";
+import { ZUKAN_HREF } from "@/lib/zukan/words";
 
 // /learn/gakko: あたらしいがっこう (第1段階)。アオハルラーンが入口、ここは「通う」層。
 //   1. 校門 (コピー・まなぶ)  2. 学年  3. きょうの時間割 (自動4コマ／自分で組む1〜6コマ)・きょうの出席・時間割を自分で組む (#kumu)  ← components/learn/gakko/GakkoToday・GakkoPlanner
+//   3.5 つまずき図鑑の入口 (今日の復習 n 枚。components/zukan/Zukan の ZukanEntry)
 //   4. 教室マップ (教室・ツッコミ道場・自習室・未来の職員室・学びのダッシュボード・時間割を自分で組む)
 // 記録は登録なしで、この端末の localStorage だけに置く。
 
@@ -48,6 +51,11 @@ export default function Gakko() {
     <LearnShell crumbs={[{ href: "/learn", label: "まなぶ" }, { label: "あたらしいがっこう" }]}>
       <div className="mx-auto max-w-[720px] overflow-x-clip">
         <GakkoToday data={data} />
+
+        {/* つまずき図鑑の入口 (今日の復習の枚数は端末の記録から) */}
+        <div className="mt-6">
+          <ZukanEntry href={ZUKAN_HREF} />
+        </div>
 
         {/* 教室マップ */}
         <section aria-labelledby="map-heading" className="mt-10 flex flex-col gap-2.5">

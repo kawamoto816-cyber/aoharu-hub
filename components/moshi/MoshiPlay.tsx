@@ -24,6 +24,9 @@ import { summarize } from "@/lib/moshi/summary";
 import { recordMoshiResult, type MoshiUnitRecord } from "@/lib/moshi/results";
 import { freshSeed } from "@/lib/moshi/rng";
 import { recordExamResult, type ExamAttempt } from "@/lib/exam/results";
+import { recordStumbles } from "@/lib/zukan/store";
+import { dayNo, mdLabel, type NewMistake } from "@/lib/zukan/schedule";
+import { ZUKAN_HREF } from "@/lib/zukan/words";
 import { ExamResultPanel, type ExamResultData } from "@/components/exam/ExamResult";
 
 // 定期テスト模試の本体: 表紙 → 試験 (解説なし・残り時間の目安・答えはページ内 state) → 採点 (自動＋記述の自己採点) → 結果 → 解き方 → まちがいノート。
@@ -56,7 +59,7 @@ type Phase = "cover" | "exam" | "self" | "result";
 const keyOf = (d: Daimon, it: Item) => `${d.id}#${it.id}`;
 const fieldCount = (q: NumQ) => (q.answerKind === "pair" || q.answerKind === "roots" ? 2 : 1);
 
-function emptyResponse(it: Item): Response {
+export function emptyResponse(it: Item): Response {
   const a = it.answer;
   switch (a.kind) {
     case "choice":
@@ -72,7 +75,7 @@ function emptyResponse(it: Item): Response {
   }
 }
 
-function isBlank(r: Response): boolean {
+export function isBlank(r: Response): boolean {
   switch (r.kind) {
     case "choice":
       return r.picked.length === 0;
@@ -144,7 +147,7 @@ function materialAsText(ms: Material[] | undefined): string {
 
 // ---------------- 部品 ----------------
 
-function MaterialView({ m, figNo }: { m: Material; figNo: number }) {
+export function MaterialView({ m, figNo }: { m: Material; figNo: number }) {
   switch (m.kind) {
     case "text":
       return <p className="m-0 mt-3 whitespace-pre-line text-[15px] leading-relaxed"><Rich text={m.body} /></p>;
@@ -222,7 +225,7 @@ function NumFields({ q, values, onChange, label, disabled }: { q: NumQ; values: 
   );
 }
 
-function ItemInput({ it, r, onChange, pool, w, label }: { it: Item; r: Response; onChange: (r: Response) => void; pool: number[]; w: MoshiWords; label: string }) {
+export function ItemInput({ it, r, onChange, pool, w, label }: { it: Item; r: Response; onChange: (r: Response) => void; pool: number[]; w: MoshiWords; label: string }) {
   const a = it.answer;
   if (a.kind === "choice" && r.kind === "choice") {
     const multi = Array.isArray(a.correct);
@@ -347,7 +350,7 @@ const VERDICT_CLS: Record<ItemResult["verdict"], string> = {
 };
 const VERDICT_MARK: Record<ItemResult["verdict"], string> = { ok: "○", part: "△", near: "△", wrong: "✕", blank: "✕" };
 
-function Solution({ it, r, res, w, figBase }: { it: Item; r: Response; res: ItemResult; w: MoshiWords; figBase: number }) {
+export function Solution({ it, r, res, w, figBase }: { it: Item; r: Response; res: ItemResult; w: MoshiWords; figBase: number }) {
   const a = it.answer;
   const mine = mineText(it, r);
   let c = figBase;
@@ -515,6 +518,8 @@ export function MoshiPlay({
   const [confirm, setConfirm] = useState(false);
   const [saved, setSaved] = useState<number | null>(null);
   const [examRes, setExamRes] = useState<ExamResultData | null>(null);
+  /** 弱点の処方箋 (図鑑に入れたカード。次の復習日はみな同じ「あした」) */
+  const [rx, setRx] = useState<{ heads: string[]; n: number; again: number; due: number } | null>(null);
   const top = useRef<HTMLDivElement>(null);
   /** 大問ごとに画面に出していた秒数 (試験中、画面のまんなかにある大問に1秒ずつ足す) */
   const secTime = useRef<number[]>([]);
@@ -586,6 +591,7 @@ export function MoshiPlay({
     setSaved(null);
     setRecord(null);
     setExamRes(null);
+    setRx(null);
     setConfirm(false);
     secTime.current = daimon.map(() => 0);
     timedOut.current = false;
@@ -610,6 +616,7 @@ export function MoshiPlay({
   const finish = () => {
     // まちがいノートへ: 満点でない小問を入れる。満点の小問は、ノートにあれば1つ進める
     let n = 0;
+    const stumbles: NewMistake[] = [];
     for (const { d, it, key } of all) {
       const res = results[key];
       const r = resp[key];
@@ -624,12 +631,18 @@ export function MoshiPlay({
         continue;
       }
       n++;
+      // つまずき図鑑へ (試験モード・前の小問の答えを使う小問は入れない)。本文は入れず、作りなおす id とシードだけ
+      if (!examMode && !it.dependsOn) stumbles.push({ u: d.units[0], d: d.id, q: it.id, seed: unitPage?.seed ?? 0, name: u?.name ?? unitId, subj: u?.subject ?? "", head: plain(it.point).slice(0, 40), kids: u?.kids || undefined });
       const a = it.answer;
       if (a.kind === "choice" && !Array.isArray(a.correct) && r.kind === "choice") {
         recordMistake(meta, { q, choices: a.options.map(noteText), answer: a.correct, ex: `${noteText(a.why[a.correct])}\n${ex}`, source: "moshi" }, r.picked[0] ?? -1);
       } else recordMistakeText(meta, { q, model: noteText(modelText(it)), ex, source: "moshi" }, noteText(mineText(it, r)));
     }
     setSaved(n);
+    if (stumbles.length) {
+      const put = recordStumbles(stumbles);
+      setRx({ heads: put.slice(0, 3).map((x) => x.card.head), n: put.length, again: put.filter((x) => x.again).length, due: put[0]?.card.due ?? dayNo(Date.now()) + 1 });
+    }
     const total = Object.values(results).reduce((s, x) => s + x.score, 0);
     const sum = summarize(all.map(({ d, it, key }) => ({ key, points: it.points, unit: it.unit ?? d.units[0], skill: it.skill, difficulty: it.level })), results);
     const unitToSave = unitPage?.unit ?? saveUnit;
@@ -876,6 +889,35 @@ export function MoshiPlay({
       </section>
 
       {examRes && <ExamResultPanel data={examRes} />}
+
+      {rx && (
+        <section aria-labelledby="mo-rx" className="mt-4 rounded-[14px] border-[1.5px] border-[#15172B] bg-[#E3E8FF] px-4 py-3 shadow-[3px_3px_0_#15172B]">
+          <h3 id="mo-rx" className="m-0 text-[13px] font-black text-[#1533B8]">
+            {kids ? "よわてんの しょほうせん" : "弱点の処方箋"}
+          </h3>
+          <p className="m-0 mt-1 text-[15px] font-black leading-snug">
+            {kids
+              ? `あした（${mdLabel(rx.due)}）に、この ${Math.min(3, rx.n)}もんを もう いちど`
+              : `あした（${mdLabel(rx.due)}）に、この${Math.min(3, rx.n)}問をもう一度`}
+            {rx.n > 3 && <span className="text-[13px] font-bold text-[#3A3D55]">{kids ? `（ほかに ${rx.n - 3}もん）` : `（ほかに${rx.n - 3}問）`}</span>}
+          </p>
+          <ul className="m-0 mt-1.5 grid list-none gap-1 p-0">
+            {rx.heads.map((h, i) => (
+              <li key={i} className="rounded-[10px] bg-white px-3 py-1.5 text-[13px] font-bold leading-snug [overflow-wrap:anywhere]">
+                {h}
+              </li>
+            ))}
+          </ul>
+          <p className="m-0 mt-1.5 text-[12px] font-bold leading-relaxed text-[#3A3D55]">
+            {kids
+              ? `つまずき＝のびしろ。そのあと 3にちご・7にちご・14にちごと、あいだを あけて ふくしゅう するよ。${rx.again ? `（${rx.again}もんは まえにも つまずいた もんだい）` : ""}`
+              : `つまずき＝伸びしろ。その後は3日後・7日後・14日後と、間をあけて復習します。${rx.again ? `（${rx.again}問は前にもつまずいた問題）` : ""}`}
+          </p>
+          <Link href={ZUKAN_HREF} className="mt-2 inline-flex min-h-[44px] items-center text-[14px] font-black text-[#1533B8]">
+            {kids ? "つまずき ずかんを みる →" : "つまずき図鑑を見る →"}
+          </Link>
+        </section>
+      )}
 
       {saved !== null && saved > 0 && (
         <Link
