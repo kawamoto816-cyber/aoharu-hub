@@ -285,6 +285,11 @@ export function KoeSetsumei({ unit, low, className = "" }: { unit: string; low: 
           {low ? "とじる" : "閉じる"}
         </button>
       </div>
+      <p className="m-0 mt-2 text-[11.5px] leading-relaxed text-[#3A3D55]">
+        {low
+          ? "こえを もじに するのは、ブラウザの きのうです（Chrome では こえが Google に おくられて もじに なります）。アオハルの サーバーには もじだけが おくられ、こえは のこりません。"
+          : "声を文字にするのはブラウザの機能です（Chrome では音声が Google に送られて文字になります）。アオハルのサーバーには文字だけが送られ、声も文字も保存しません。"}
+      </p>
       {mock && <p className="m-0 mt-2 rounded-[10px] border-[1.5px] border-dashed border-[#15172B] bg-[#FFFBE6] px-2.5 py-1.5 text-[12px] font-bold">ためしモード：AIは使っていません。文字の一致だけで判定します（画面のためし用）。</p>}
 
       {phase === "limit" ? (
