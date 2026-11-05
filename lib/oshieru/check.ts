@@ -1,5 +1,5 @@
 import type { Lecture } from "@/lib/lecture/types";
-import { buildOshieruSet, clean } from "./auto";
+import { buildOshieruSet, clean, wrongCore } from "./auto";
 import { isAbusive, needsSos } from "./safety";
 import type { OshieruSet } from "./types";
 
@@ -7,8 +7,11 @@ import type { OshieruSet } from "./types";
 //   すべてのセット：誤解がレクチャーの mistakes / sections に対応しているか、正しさのものさし（right・why・本文・check）が空でないか、
 //                   言い直しに正しいもの・まちがいを残したものがそろっているか、強調の印やルビが残っていないか。
 //   機械で作ったセット（auto）：いまのレクチャーから作り直したものと同じか（レクチャーが変わったら作り直す）、
-//                   わかった条件が right・why そのものか、まちがいの文がレクチャーのどこかで「正しい」とされていないか、
-//                   ハルの文が相談窓口・乱暴な言葉の判定にかからないか。
+//                   わかった条件が right・why そのものか、ハルの文（最初の一言・聞き返し）に wrong の語句（wrongCore）がそのまま残っているか、
+//                   納得の一言に right がそのまま入っているか、言い直しが教えた誤解についてのものか（正しいもの＝教えた right があり wrong がない／
+//                   まちがいを残したもの＝教えた誤解の wrong と right の組み合わせで、fix がその wrong の right）、
+//                   まちがいの文がレクチャーのどこかで「正しい」とされていないか、ハルの文が相談窓口・乱暴な言葉の判定にかからないか。
+//   すべてのセット：かぎかっこが二重（「「・」」）になっていないか。
 
 const MAX_OPENER = 200;
 const MAX_RESTATE = 240;
@@ -35,7 +38,11 @@ export function checkOshieruSet(set: OshieruSet, lec: Lecture | undefined, topic
       else if (!clean(x.right) || !clean(x.why)) bad.push(`${tag}: mistakes[${m.mistake}] の right・why が空`);
       else if (set.auto) {
         const w = clean(x.wrong);
-        if (!m.opener.includes(w) || !m.belief.includes(w)) bad.push(`${tag}: opener・belief が mistakes[${m.mistake}].wrong とちがう`);
+        const core = wrongCore(x.wrong);
+        if (core.replace(/\s+/g, "").length < 2) bad.push(`${tag}: wrong の語句が短すぎる`);
+        if (!m.belief.includes(w)) bad.push(`${tag}: belief に mistakes[${m.mistake}].wrong がない`);
+        if (!m.opener.includes(core) || !m.probe.includes(core)) bad.push(`${tag}: opener・probe に mistakes[${m.mistake}].wrong の語句がそのまま残っていない`);
+        if (!m.ack.includes(clean(x.right))) bad.push(`${tag}: ack に mistakes[${m.mistake}].right がない`);
         const ok = new Set([clean(x.right), clean(x.why)]);
         if (m.understoodWhen.some((u) => !ok.has(u))) bad.push(`${tag}: わかった条件が mistakes[${m.mistake}] の right・why でない`);
       }
@@ -70,21 +77,33 @@ export function checkOshieruSet(set: OshieruSet, lec: Lecture | undefined, topic
     ...(set.wordCards ?? []),
   ];
   if (texts.some((t) => /\{\{|\}\}|《|》/.test(t))) bad.push("強調の印・ルビが残っている");
+  if (texts.some((t) => /「「|」」/.test(t))) bad.push("かぎかっこが二重になっている");
 
   if (set.auto) {
     // 作り直したものと同じか（レクチャーが変わったのに data/gen.ts が古いまま、を見つける）
     const again = topic !== undefined ? buildOshieruSet(lec, topic) : null;
     if (topic !== undefined && JSON.stringify(again) !== JSON.stringify(set)) bad.push("いまのレクチャーから作り直したものとちがう（npx tsx scripts/gen-oshieru.ts）");
-    // まちがいを残した言い直しは、使わなかった mistakes の wrong をまぜたもの。fix はその right
-    for (const r of flawed) {
-      const src = lec.mistakes.findIndex((x, i) => !usedIdx.includes(i) && r.text.includes(clean(x.wrong)) && r.fix?.startsWith(clean(x.right)));
-      if (src < 0) bad.push(`${r.id}: まちがいの文が、使っていない mistakes の wrong・right に対応しない`);
+    // 言い直しは教えた誤解（usedIdx）についてだけ：教えていない mistakes の wrong をまぜない
+    const core = (i: number) => wrongCore(lec.mistakes[i].wrong);
+    const right = (i: number) => clean(lec.mistakes[i].right);
+    const unused = lec.mistakes.map((_, i) => i).filter((i) => !usedIdx.includes(i));
+    for (const r of set.restatements) {
+      if (unused.some((i) => core(i).length >= 2 && r.text.includes(core(i)))) bad.push(`${r.id}: 教えていない mistakes の wrong がまざっている`);
+      const hasRight = usedIdx.filter((i) => r.text.includes(right(i)));
+      const hasWrong = usedIdx.filter((i) => r.text.includes(core(i)));
+      if (!hasRight.length) bad.push(`${r.id}: 教えた誤解の right が入っていない`);
+      if (!r.flawed) {
+        if (hasWrong.length) bad.push(`${r.id}: 正しい言い直しに、教えた誤解の wrong が入っている`);
+      } else if (hasWrong.length !== 1) bad.push(`${r.id}: まちがいを残した言い直しに、教えた誤解の wrong がちょうど1つ入っていない`);
+      else {
+        const j = hasWrong[0];
+        if (!r.fix?.startsWith(right(j)) || !r.fix.includes(clean(lec.mistakes[j].why))) bad.push(`${r.id}: fix が残した wrong（mistakes[${j}]）の right・why でない`);
+        if (!r.flaw?.includes(core(j))) bad.push(`${r.id}: flaw に残した wrong の語句がない`);
+      }
     }
     // 「まちがい」として使う文が、レクチャーのどこかで正しい側に書かれていないか（あいまいな単元は外す）
     const rightSide = [...lec.mistakes.map((x) => clean(x.right)), ...lec.check.map((c) => clean(c.a))].map((s) => s.replace(/\s+/g, ""));
-    const wrongs = [...usedIdx, ...lec.mistakes.map((_, i) => i).filter((i) => flawed.some((r) => r.text.includes(clean(lec.mistakes[i].wrong))))].map((i) =>
-      clean(lec.mistakes[i].wrong).replace(/\s+/g, ""),
-    );
+    const wrongs = usedIdx.map((i) => core(i).replace(/\s+/g, ""));
     for (const w of wrongs) if (rightSide.some((s) => s.includes(w))) bad.push(`まちがいの文「${w}」が right・答えの中にある`);
     // 正しい言い直しの right が、どこかの wrong と同じでないか
     const wrongAll = lec.mistakes.map((x) => clean(x.wrong));

@@ -3,7 +3,7 @@
 // （データを2重に持たないため。2MBの表にすると dev のコンパイルがメモリ不足で落ちる）。
 // レクチャーが変わって作り直したセットが指紋とずれたら、scripts/check-oshieru.ts が知らせ、画面とAPIもその単元を使わない。
 //   npx tsx scripts/gen-oshieru.ts      （レクチャーを足した・直したら実行し、そのあと scripts/check-oshieru.ts）
-// 作り方は lib/oshieru/auto.ts（決まった型にレクチャーの mistakes・check をそのまま入れる。AIは使わない）、点検は lib/oshieru/check.ts。
+// 作り方は lib/oshieru/auto.ts（数種類の決まった型にレクチャーの mistakes の wrong・right・why をそのまま入れる。AIは使わない）、点検は lib/oshieru/check.ts。
 // 手で書いたセット（lib/oshieru/data/<単元id>.ts）がある単元は、手で書いたほうを使うので作らない。
 import { writeFileSync } from "node:fs";
 import { LECTURES, lectureUnitInfo } from "@/lib/lecture";

@@ -1,5 +1,6 @@
 // オシエルの誤解セットの点検（全単元）。npx tsx scripts/check-oshieru.ts
 //   - 誤解がレクチャーの mistakes / sections に対応しているか、正しさのものさし（right・why・本文・check）が空でないか（lib/oshieru/check.ts）
+//   - 機械で作ったセットは、ハルの文に wrong の語句がそのまま残っているか、言い直しが教えた誤解についてのものか、かぎかっこが二重でないか
 //   - 機械で作ったセットは、gen.ts の指紋と同じか（ずれていたら scripts/gen-oshieru.ts）
 //   - 単元が重なっていないか、手書きの単元が gen.ts にまざっていないか
 // 1つでも問題があれば終了コード 1。
