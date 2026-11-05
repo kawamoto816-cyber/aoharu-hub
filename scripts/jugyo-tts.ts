@@ -1,6 +1,6 @@
 // 止まる授業（lib/jugyo）の先生と生徒の声を、1せりふずつ mp3 にする。手元のパソコンで動かす（scripts/manzai-tts.ts と同じ作り）。
 // 声は VOICEVOX（アプリを起動しておく。http://localhost:50021 で待ち受ける）。mp3 への変換は ffmpeg（なければ npm install で入る ffmpeg-static）。
-// 先生＝青山龍星・生徒＝四国めたん（lib/jugyo/audio.ts）。画面には「VOICEVOX:青山龍星・四国めたん」と出す。
+// せりふ（talk）と「ここで問題」の読み上げ（pause の問いと選択肢・答えとわけ）。先生＝青山龍星・生徒＝四国めたん（lib/jugyo/audio.ts）。画面には「VOICEVOX:青山龍星・四国めたん」と出す。
 //
 //   数をたしかめる:  npx tsx scripts/jugyo-tts.ts --count
 //   全部作る:        npx tsx scripts/jugyo-tts.ts
@@ -15,7 +15,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { createRequire } from "node:module";
 import { LESSONS } from "../lib/jugyo";
-import { jugyoAudio } from "../lib/jugyo/audio";
+import { jugyoAudio, jugyoPauseAudio } from "../lib/jugyo/audio";
 
 type Job = { key: string; text: string; voice: string; rate: number; unit: string };
 
@@ -25,6 +25,12 @@ function collect(): Job[] {
   const jobs = new Map<string, Job>();
   for (const l of LESSONS)
     for (const sc of l.scenes) {
+      if (sc.kind === "pause") {
+        // 「ここで問題」の読み上げ（問いと選択肢・答えとわけ。先生の声）
+        const q = jugyoPauseAudio(sc);
+        for (const a of [q.ask, q.reply]) if (a) jobs.set(a.key, { key: a.key, text: a.text, voice: a.voice, rate: a.rate, unit: l.unitId });
+        continue;
+      }
       if (sc.kind !== "talk") continue;
       const a = jugyoAudio(sc);
       jobs.set(a.key, { key: a.key, text: a.text, voice: a.voice, rate: a.rate, unit: l.unitId });

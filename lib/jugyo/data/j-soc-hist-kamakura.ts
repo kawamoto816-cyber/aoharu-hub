@@ -154,6 +154,7 @@ export const JUGYO_J_SOC_HIST_KAMAKURA: Lesson = {
       answer: "元軍は退けたが、恩賞の土地を十分に与えられなかった",
       why: "勝ったのに新しい領地が手に入らなかったことが、御恩と奉公の関係をゆるがせました。",
       source: "mistake:1",
+      say: { choices: ["元寇で幕府は負けたのでおとろえた", "げん軍は退けたが、恩賞の土地を十分に与えられなかった"], answer: "げん軍は退けたが、恩賞の土地を十分に与えられなかった" },
     },
     {
       kind: "talk",

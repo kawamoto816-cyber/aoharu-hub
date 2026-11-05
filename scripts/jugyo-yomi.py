@@ -10,9 +10,10 @@
 # - VOICEVOX エンジンは文字→読みに OpenJTALK を使う。同じ辞書の pyopenjtalk（pip install pyopenjtalk）で
 #   「VOICEVOX がどう読むか」を手元で予測する。
 # - 音声にする文は lib/jugyo/audio.ts の jugyoAudio（say があれば say、無ければ text からルビ・{{ }} を外し、
-#   lib/tts/yomi.gen.ts の補正を当てたもの）。npx tsx で台本から取り出す。
+#   lib/tts/yomi.gen.ts の補正を当てたもの）と、jugyoPauseAudio（「ここで問題」の問いと選択肢・答えとわけ。
+#   pause の say で記号・数式の読みを書く）。npx tsx で台本から取り出す。
 # - 正しい読みは scripts/jugyo-yomi.json に持つ：{ 単元id: [ { "text": 字幕（ルビは親字・{{ }} を外す）, "yomi": カタカナ } ] }。
-#   字幕で引くので、say を直しても登録はそのまま使える。読みは文脈で確定したもの（音読み・訓読み・熟字訓・数字・助数詞）。
+#   字幕で引くので、say を直しても登録はそのまま使える（問題の読み上げは、字幕バーに出す「問題。〈問い〉 1、〈選択肢〉。…」で引く）。読みは文脈で確定したもの（音読み・訓読み・熟字訓・数字・助数詞）。
 #   書き方は pyopenjtalk と同じ「発音どおり」：助詞の「は」→ワ、「へ」→エ、「を」→ヲ。句読点・記号はあってもなくてもよい。
 # - 読みがちがう語だけを say でひらがな（外来語はカタカナ）に開く。文全体を開くとアクセントが崩れるので開かない。
 #
@@ -35,12 +36,18 @@ YOMI_JSON = ROOT / "scripts" / "jugyo-yomi.json"
 
 DUMP = r"""
 import { LESSONS } from "./lib/jugyo";
-import { jugyoAudio } from "./lib/jugyo/audio";
+import { jugyoAudio, jugyoPauseAudio } from "./lib/jugyo/audio";
 const RUBY = /｜([^｜《》\n]+?)《([^《》\n]+?)》|([㐀-鿿々〆ヶ]+)《([^《》\n]+?)》/g;
 const plain = (s: string) => s.replace(RUBY, (_a, b1, _r1, b2) => b1 ?? b2).replace(/\{\{|\}\}/g, "").replace(/\s+/g, " ").trim();
 const out: unknown[] = [];
 for (const l of LESSONS)
   l.scenes.forEach((sc, i) => {
+    if (sc.kind === "pause") {
+      const q = jugyoPauseAudio(sc);
+      for (const [part, a] of [["問題", q.ask], ["答え", q.reply]] as const)
+        if (a) out.push({ unit: l.unitId, scene: i, who: `sensei ${part}`, text: plain(a.display), speech: a.text, key: a.key, hasSay: sc.say !== undefined });
+      return;
+    }
     if (sc.kind !== "talk") return;
     const a = jugyoAudio(sc);
     out.push({ unit: l.unitId, scene: i, who: sc.who, text: plain(sc.text), speech: a.text, key: a.key, hasSay: sc.say !== undefined });

@@ -12,9 +12,14 @@ import { Avatar } from "./Avatar";
 // つかみ（依頼と謎）→ 節ごとに先生と生徒が話し、黒板に図解 → pause で本当に止まり、答えてから進む → 謎の答え合わせ → 先生役へ。
 // 声：public/audio/jugyo/<キー>.mp3 があればそれ（ページが、ある分だけ src を渡す）。無ければブラウザの speechSynthesis（ja-JP）の
 // 「仮の声」。それも使えなければ字幕だけで自動送り。
+// 「ここで問題」では先生の声で問いと選択肢を読み（読み上げ中でも答えられる。答えたら止める）、答えたあとは「答えとわけ」を読む。
 
 export type PlayerTalk = TalkScene & { speech: string; src: string | null };
-export type PlayerScene = PlayerTalk | PauseScene | ChapterScene;
+/** 読み上げ1つ。text = 字幕バーに出す文（ルビつき）、speech = 読む文 */
+export type PlayerClip = { text: string; speech: string; src: string | null };
+/** 問題。choices は画面の並び（読み上げの番号の順）にしてある。reply は答えとわけの読み上げ（長ければ null） */
+export type PlayerPause = Omit<PauseScene, "say"> & { ask: PlayerClip; reply: PlayerClip | null };
+export type PlayerScene = PlayerTalk | PlayerPause | ChapterScene;
 
 export interface PlayerProps {
   unit: string;
@@ -52,13 +57,6 @@ function textNoRt(el: Element): string {
 }
 const squash = (s: string) => s.replace(/\s+/g, "");
 
-/** 選択肢の並びを、問いの文から決まる順に入れかえる（いつも同じ位置に正解が来ないように） */
-function order(choices: string[], seed: string): string[] {
-  let h = 0;
-  for (const c of seed) h = (h * 31 + c.charCodeAt(0)) >>> 0;
-  return h % 2 ? [...choices].reverse() : choices;
-}
-
 /** 音声ファイルを鳴らす（終わったら onEnd、鳴らせなければ onFail） */
 function playFile(a: HTMLAudioElement, src: string, rate: number, onEnd: () => void, onFail: () => void) {
   let failed = false;
@@ -78,6 +76,60 @@ function setRate(a: HTMLAudioElement | null, rate: number) {
   if (a) a.playbackRate = rate;
 }
 
+interface VoiceEnv {
+  audio: () => HTMLAudioElement;
+  rate: () => number;
+  tts: boolean;
+  voice: SpeechSynthesisVoice | null;
+  setMode: (m: VoiceMode) => void;
+}
+
+/** 1つの文を mp3 → 仮の声 → 字幕だけ の順で読む。読み終わったら onEnd（字幕だけのときは字数から見積もった時間のあと）。戻り値を呼ぶと止める */
+function speakLine(line: { speech: string; src: string | null; who: Who }, env: VoiceEnv, onEnd: () => void): () => void {
+  let cancelled = false;
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const done = () => !cancelled && onEnd();
+  const byText = () => {
+    env.setMode("text");
+    timer = setTimeout(done, ((line.speech.length / CPS) * 1000 + 300) / env.rate());
+  };
+  const byTts = () => {
+    if (cancelled) return;
+    if (!env.tts) return byText();
+    env.setMode("tts");
+    // 長い文は途中で切れるブラウザがあるので、文ごとに分けて順に読む
+    const parts = line.speech.match(/[^。！？!?]+[。！？!?」』）]*/g) ?? [line.speech];
+    let n = 0;
+    const say = () => {
+      if (cancelled) return;
+      const u = new SpeechSynthesisUtterance(parts[n]);
+      u.lang = "ja-JP";
+      if (env.voice) u.voice = env.voice;
+      u.rate = Math.min(2, env.rate() * 1.08);
+      u.pitch = line.who === "seito" ? 1.3 : 0.85;
+      u.onend = () => {
+        if (cancelled) return;
+        if (++n < parts.length) say();
+        else done();
+      };
+      u.onerror = () => !cancelled && byText();
+      window.speechSynthesis.speak(u);
+    };
+    window.speechSynthesis.cancel();
+    say();
+  };
+  if (line.src) {
+    env.setMode("file");
+    playFile(env.audio(), line.src, env.rate(), done, byTts);
+  } else byTts();
+  return () => {
+    cancelled = true;
+    if (timer) clearTimeout(timer);
+    env.audio().pause();
+    if (typeof window !== "undefined" && "speechSynthesis" in window) window.speechSynthesis.cancel();
+  };
+}
+
 function pickJaVoice(): SpeechSynthesisVoice | null {
   if (typeof window === "undefined" || !("speechSynthesis" in window)) return null;
   const vs = window.speechSynthesis.getVoices().filter((v) => v.lang.replace("_", "-").toLowerCase().startsWith("ja"));
@@ -95,6 +147,8 @@ export function JugyoPlayer(p: PlayerProps) {
   const [mode, setMode] = useState<VoiceMode>("text");
   const [picked, setPicked] = useState<string | null>(null);
   const [ttsOk, setTtsOk] = useState<boolean | null>(null);
+  // 問題の読み上げを読み終えたもの（場面の番号:ask/reply）。読み上げ中は先生の口が動く
+  const [readDone, setReadDone] = useState<string | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const boardRef = useRef<HTMLDivElement>(null);
   const jaVoice = useRef<SpeechSynthesisVoice | null>(null);
@@ -126,6 +180,16 @@ export function JugyoPlayer(p: PlayerProps) {
   }, [scenes]);
 
   const scene = scenes[i];
+  const voiceEnv = useCallback(
+    (): VoiceEnv => ({
+      audio: () => (audioRef.current ??= new Audio()),
+      rate: () => speedRef.current,
+      tts: !!ttsOk,
+      voice: jaVoice.current,
+      setMode,
+    }),
+    [ttsOk],
+  );
   const chapterNow = [...chapters].reverse().find((c) => c.index <= i);
 
   // いまの黒板（さかのぼって最後に指定された図・カード）
@@ -150,6 +214,7 @@ export function JugyoPlayer(p: PlayerProps) {
 
   const next = useCallback(() => {
     setPicked(null);
+    setReadDone(null);
     if (iRef.current + 1 >= scenes.length) {
       setPlaying(false);
       setEnded(true);
@@ -161,6 +226,7 @@ export function JugyoPlayer(p: PlayerProps) {
 
   const go = useCallback((k: number) => {
     setPicked(null);
+    setReadDone(null);
     setEnded(false);
     iRef.current = Math.max(0, Math.min(scenes.length - 1, k));
     setI(iRef.current);
@@ -172,6 +238,7 @@ export function JugyoPlayer(p: PlayerProps) {
     const s = scenes[i];
     let cancelled = false;
     let timer: ReturnType<typeof setTimeout> | undefined;
+    let stop: (() => void) | undefined;
     const after = (ms: number) => {
       timer = setTimeout(() => !cancelled && next(), ms / speedRef.current);
     };
@@ -183,50 +250,24 @@ export function JugyoPlayer(p: PlayerProps) {
 
     if (s.kind === "chapter") after(CHAPTER_MS);
     else if (s.kind === "pause") {
-      // 本当に止まる：答えてから「続きを再生」
+      // 本当に止まる：答えてから「続きを再生」（問題の読み上げは下の effect）
       timer = setTimeout(() => !cancelled && setPlaying(false), 0);
-    } else {
-      const byText = () => {
-        setMode("text");
-        after((s.speech.length / CPS) * 1000 + 300);
-      };
-      const byTts = () => {
-        if (!ttsOk) return byText();
-        setMode("tts");
-        // 長い文は途中で切れるブラウザがあるので、文ごとに分けて順に読む
-        const parts = s.speech.match(/[^。！？!?]+[。！？!?」』）]*/g) ?? [s.speech];
-        let n = 0;
-        const say = () => {
-          if (cancelled) return;
-          const u = new SpeechSynthesisUtterance(parts[n]);
-          u.lang = "ja-JP";
-          if (jaVoice.current) u.voice = jaVoice.current;
-          u.rate = Math.min(2, speedRef.current * 1.08);
-          u.pitch = s.who === "seito" ? 1.3 : 0.85;
-          u.onend = () => {
-            if (cancelled) return;
-            if (++n < parts.length) say();
-            else after(gap);
-          };
-          u.onerror = () => !cancelled && byText();
-          window.speechSynthesis.speak(u);
-        };
-        window.speechSynthesis.cancel();
-        say();
-      };
-      if (s.src) {
-        setMode("file");
-        audioRef.current ??= new Audio();
-        playFile(audioRef.current, s.src, speedRef.current, () => !cancelled && after(gap), () => !cancelled && byTts());
-      } else byTts();
-    }
+    } else stop = speakLine(s, voiceEnv(), () => after(gap));
     return () => {
       cancelled = true;
       if (timer) clearTimeout(timer);
-      audioRef.current?.pause();
-      if (typeof window !== "undefined" && "speechSynthesis" in window) window.speechSynthesis.cancel();
+      stop?.();
     };
-  }, [i, playing, started, ended, scenes, next, ttsOk]);
+  }, [i, playing, started, ended, scenes, next, voiceEnv]);
+
+  // 問題の読み上げ：止まったら問いと選択肢を、答えたら答えとわけを（読み上げ中に答えたら、問いの読み上げは止める）
+  const pauseClip = started && !ended && scene.kind === "pause" ? (picked === null ? scene.ask : scene.reply) : null;
+  const pauseTag = `${i}:${picked === null ? "ask" : "reply"}`;
+  useEffect(() => {
+    if (!pauseClip) return;
+    return speakLine({ ...pauseClip, who: "sensei" }, voiceEnv(), () => setReadDone(pauseTag));
+  }, [pauseClip, pauseTag, voiceEnv]);
+  const reading = !!pauseClip && readDone !== pauseTag;
 
   // 図の中の強調（focus の字をふくむいちばん内側の箱に枠をつける）
   useEffect(() => {
@@ -406,12 +447,12 @@ export function JugyoPlayer(p: PlayerProps) {
 
         {/* 字幕と話し手 */}
         <div className="absolute inset-x-0 bottom-0 z-10 flex items-end gap-2.5 bg-[#15172B]/92 px-3 py-2.5 sm:px-4">
-          <Avatar who={speaker} talking={playing && !!talk} size={44} />
+          <Avatar who={pauseClip ? "sensei" : speaker} talking={(playing && !!talk) || reading} size={44} />
           <div className="min-w-0 flex-1">
-            <p className="m-0 text-[11px] font-black text-[#FFE45C]">{p.cast[speaker].name}</p>
+            <p className="m-0 text-[11px] font-black text-[#FFE45C]">{p.cast[pauseClip ? "sensei" : speaker].name}</p>
             {subs && (
               <p aria-live="polite" className="jugyo-sub m-0 mt-0.5 line-clamp-4 text-[14.5px] font-bold leading-[1.6] text-white sm:text-[16px]">
-                {lastTalk ? <Rich text={lastTalk.text} /> : ""}
+                {pauseClip ? <Rich text={pauseClip.text} /> : lastTalk ? <Rich text={lastTalk.text} /> : ""}
               </p>
             )}
           </div>
@@ -557,8 +598,8 @@ export function JugyoPlayer(p: PlayerProps) {
   );
 }
 
-function PauseCard({ q, picked, setPicked, onNext, sensei }: { q: PauseScene; picked: string | null; setPicked: (v: string) => void; onNext: () => void; sensei: string }) {
-  const choices = q.choices ? order(q.choices, q.question) : null;
+function PauseCard({ q, picked, setPicked, onNext, sensei }: { q: PlayerPause; picked: string | null; setPicked: (v: string) => void; onNext: () => void; sensei: string }) {
+  const choices = q.choices ?? null;
   const done = picked !== null;
   const right = picked === q.answer;
   return (
@@ -573,12 +614,15 @@ function PauseCard({ q, picked, setPicked, onNext, sensei }: { q: PauseScene; pi
         </p>
         {choices ? (
           <div className="mt-3 grid gap-2">
-            {choices.map((c) => {
+            {choices.map((c, n) => {
               const isAns = c === q.answer;
               const cls = !done ? "bg-white hover:bg-[#FFFBE6]" : isAns ? "bg-[#1533B8] text-white" : c === picked ? "bg-[#F7F6F1] text-[#B42318] line-through" : "bg-white opacity-60";
               return (
-                <button key={c} type="button" disabled={done} onClick={() => setPicked(c)} className={`min-h-[48px] rounded-[12px] border-[1.5px] border-[#15172B] px-3 py-2 text-left text-[15px] font-bold leading-snug ${cls}`}>
-                  <Rich text={c} />
+                <button key={c} type="button" disabled={done} onClick={() => setPicked(c)} className={`flex min-h-[48px] items-start gap-2 rounded-[12px] border-[1.5px] border-[#15172B] px-3 py-2 text-left text-[15px] font-bold leading-snug ${cls}`}>
+                  <span aria-hidden="true" className="flex-none font-black tabular-nums">{n + 1}.</span>
+                  <span>
+                    <Rich text={c} />
+                  </span>
                 </button>
               );
             })}

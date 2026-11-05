@@ -8,7 +8,7 @@ import { JugyoPlayer, type PlayerScene } from "@/components/jugyo/JugyoPlayer";
 import { KoeSetsumei } from "@/components/koe/KoeSetsumei";
 import { plain } from "@/components/lecture/Rich";
 import { LESSONS, JUGYO_HOME, getLesson } from "@/lib/jugyo";
-import { JUGYO_CREDIT, jugyoAudio } from "@/lib/jugyo/audio";
+import { JUGYO_CREDIT, jugyoAudio, jugyoPauseAudio } from "@/lib/jugyo/audio";
 import { getLecture, lectureHref, lectureUnitInfo } from "@/lib/lecture";
 import { getUnitMoshi, unitMoshiHref } from "@/lib/moshi/unit";
 import { getOshieru, oshieruHref } from "@/lib/oshieru";
@@ -33,11 +33,17 @@ export default async function Page({ params }: { params: Promise<{ unit: string 
   const lec = getLecture(unit);
   if (!lesson || !lec) notFound();
   const info = lectureUnitInfo(unit);
-  // 音声ファイルがあるせりふだけ src を渡す（無ければプレイヤーが仮の声で読む）
+  // 音声ファイルがあるせりふ・問題の読み上げだけ src を渡す（無ければプレイヤーが仮の声で読む）
+  const have = (src: string) => (existsSync(join(process.cwd(), "public", src)) ? src : null);
   const scenes: PlayerScene[] = lesson.scenes.map((s) => {
-    if (s.kind !== "talk") return s;
+    if (s.kind === "chapter") return s;
+    if (s.kind === "pause") {
+      const a = jugyoPauseAudio(s);
+      const clip = (c: NonNullable<typeof a.reply>) => ({ text: c.display, speech: c.text, src: have(c.src) });
+      return { kind: "pause", question: s.question, choices: a.shown, answer: s.answer, why: s.why, source: s.source, ask: clip(a.ask), reply: a.reply ? clip(a.reply) : null };
+    }
     const a = jugyoAudio(s);
-    return { ...s, speech: a.text, src: existsSync(join(process.cwd(), "public", a.src)) ? a.src : null };
+    return { ...s, speech: a.text, src: have(a.src) };
   });
   const reveal = lec.sections.find((s) => s.reveal)?.reveal;
   return (

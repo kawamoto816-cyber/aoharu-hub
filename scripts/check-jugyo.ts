@@ -3,7 +3,7 @@
 // 1. pause の answer / why が lecture の check・mistakes とそのまま一致するか（mistake は answer = right）。選択肢に答えがあるか
 // 2. board の section / figure が lecture にあるか。focus がその図の字の中にあるか（ルビ・{{ }} を外して）
 // 3. 台本の数字（半角・全角の数字の並び）が lecture の本文（hook・mystery・mission・body・reading・figure・reveal・cliff・mistakes・check）のどこかにあるか
-// 4. 話す字数と目安の分数（1分＝300字）、pause の数（3〜4）
+// 4. 話す字数と目安の分数（1分＝300字）、pause の数（3〜4）。pause の say.choices の数が choices と同じか（say の数字も 3 と同じく点検）
 // エラーがあれば終了コード 1。
 
 import { getLecture } from "../lib/lecture";
@@ -87,7 +87,9 @@ for (const lesson of LESSONS) {
         }
       }
       if (sc.choices && !sc.choices.includes(sc.answer)) err(u, `${at} 選択肢に答えがない`);
-      for (const src of [sc.question, ...(sc.choices ?? [])])
+      if (sc.say?.choices && sc.say.choices.length !== (sc.choices?.length ?? 0)) err(u, `${at} say.choices の数が choices と違う`);
+      const sayParts = sc.say ? [sc.say.question ?? "", ...(sc.say.choices ?? []), sc.say.answer ?? "", sc.say.why ?? ""] : [];
+      for (const src of [sc.question, ...(sc.choices ?? []), ...sayParts])
         for (const m of half(plain(src)).match(NUM) ?? []) if (!hasNum(m)) err(u, `${at} 数字「${m}」が lecture の本文にない：${plain(src).slice(0, 40)}…`);
     }
   });

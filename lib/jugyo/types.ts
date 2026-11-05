@@ -40,6 +40,12 @@ export interface PauseScene {
   why: string;
   /** 出どころ：check:i = lecture.check[i]、mistake:i = lecture.mistakes[i]（answer は right） */
   source: `check:${number}` | `mistake:${number}`;
+  /**
+   * 読み（先生の声で読み上げる文）。省いたところは画面の文からルビ・{{ }} を外して読む。
+   * 記号・数式（＝ ÷ × など）や読みまちがう語があるときに書く。choices は choices と同じ順・同じ数。
+   * 読み上げは lib/jugyo/audio.ts の jugyoPauseAudio（「問題。〈問い〉 1、〈選択肢〉。…」と、答えたあとの「答えは、〈答え〉。〈わけ〉」）
+   */
+  say?: { question?: string; choices?: string[]; answer?: string; why?: string };
 }
 
 /** 節の区切り（シークバーのチャプター） */
