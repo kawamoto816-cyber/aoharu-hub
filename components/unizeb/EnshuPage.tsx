@@ -4,19 +4,23 @@
 // 資料 → 課題（1問ずつ／全部）→ 途中の答えは自動で保存（saveState の enshuDraft）→ 採点（calc はその場で、ほかは grade()）
 // → 結果（課題ごと・観点ごとの点、足りない観点、読み直す節、模範解答）→ 合格ならスキルアセットへ、不合格なら数字を変えた版でもう一度。
 // API がないあいだは見本の採点（sampleGrade）で動き、そのことを必ず画面に出す。
+// AI昇進試験（kind "shoshin"）：ミッションごとに データパック → 出題 → Unicorn と Zebra の言い分（左右、スマホでは上下）→ 第3の答え。
+// 結果に Feedback_U・Feedback_Z・Next_Action（AIメンターの次の一歩）と軸ごとの点を出し、合格なら昇進の記録としてスキルアセットへ。
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import type { Enshu, EnshuTask } from "@/lib/unizeb/types";
+import type { Enshu, EnshuMaterial, EnshuTask } from "@/lib/unizeb/types";
 import { LectureFigure } from "@/components/lecture/Figure";
 import { Rich } from "@/components/lecture/Rich";
-import { addAsset, grade, loadState, saveState, type GradeResult, type UzState } from "@/lib/unizeb/client";
+import { addAsset, grade, loadState, saveState, type UzState } from "@/lib/unizeb/client";
 import { canUseEnshu, currentPlan, type UzPlan } from "@/lib/unizeb/access";
-import { aiCritKeys, calcAnswer, enshuSkills, fill, fillDeep, finishGrade, fmt, parseNum, taskPoints, variantOf } from "@/lib/unizeb/enshuKit";
+import { AXIS_LABEL, aiCritKeys, axisPoints, calcAnswer, enshuSkills, fill, fillDeep, finishGrade, fmt, parseNum, shoshinRoman, taskPoints, variantOf, type ShoshinGrade } from "@/lib/unizeb/enshuKit";
 
 const HOME = "/learn/unizeb";
 const MODE_KEY = "uz_enshu_mode";
 const TYPE_LABEL: Record<EnshuTask["type"], string> = { calc: "計算", choice: "選んで理由", write: "作成" };
+const AXIS_SHORT = { U: "Unicorn", Z: "Zebra", X: "統合" } as const;
+const AXIS_COLOR = { U: "bg-[#1533B8] text-white", Z: "bg-[#15172B] text-white", X: "bg-[#FFE45C] text-[#15172B]" } as const;
 const ABC = "ABCDE";
 
 type SkillName = Record<string, { name: string; lv: number }>;
@@ -55,6 +59,43 @@ function SkillChips({ ids, names }: { ids: string[]; names: SkillName }) {
   );
 }
 
+/** 資料1つ（表・本文・図）。演習の資料と、昇進試験のデータパックで同じ形に描く */
+function MaterialBlock({ m, vars, no, small = false }: { m: EnshuMaterial; vars: Record<string, number>; no: number; small?: boolean }) {
+  return (
+    <div className={small ? "mt-4" : "mt-5"}>
+      {small ? <h4 className="m-0 text-[14.5px] font-black leading-snug">{fill(m.title, vars)}</h4> : <h3 className="m-0 text-[15.5px] font-black leading-snug">{fill(m.title, vars)}</h3>}
+      {m.table && (
+        <div className="mt-2 overflow-x-auto rounded-[10px] border-[1.5px] border-[#15172B] bg-white">
+          <table className="w-full border-collapse text-left text-[13px] leading-snug">
+            <thead>
+              <tr>
+                {m.table.head.map((h, k) => (
+                  <th key={k} scope="col" className="border-b-[1.5px] border-[#15172B] bg-[#FFFBE6] px-2 py-1.5 font-black">
+                    {fill(h, vars)}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {m.table.rows.map((r, k) => (
+                <tr key={k} className="border-t border-[#E4E2D8] align-top">
+                  {r.map((c, j) => (j === 0 ? <th key={j} scope="row" className={`px-2 py-1.5 font-bold ${[...fill(c, vars)].length <= 4 ? "whitespace-nowrap" : ""}`}>{fill(c, vars)}</th> : <td key={j} className={`px-2 py-1.5 ${[...fill(c, vars)].length <= 6 ? "whitespace-nowrap" : ""}`}>{fill(c, vars)}</td>))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+      {m.body && (
+        <div className={`mt-2 ${small ? "text-[14px]" : "text-[14.5px]"} leading-[1.85]`}>
+          <Lines text={fill(m.body, vars)} />
+        </div>
+      )}
+      {m.figure && <LectureFigure fig={fillDeep(m.figure, vars)} no={no} />}
+    </div>
+  );
+}
+
 export function EnshuPage({ e, skillNames }: { e: Enshu; skillNames: SkillName }) {
   const [plan, setPlan] = useState<UzPlan | null>(null);
   const [ready, setReady] = useState(false);
@@ -64,7 +105,7 @@ export function EnshuPage({ e, skillNames }: { e: Enshu; skillNames: SkillName }
   const [cur, setCur] = useState(0);
   const [busy, setBusy] = useState(false);
   const [sec, setSec] = useState(0);
-  const [result, setResult] = useState<GradeResult | null>(null);
+  const [result, setResult] = useState<ShoshinGrade | null>(null);
   const [savedAt, setSavedAt] = useState<string | null>(null);
   const [assetSaved, setAssetSaved] = useState(false);
   const [notice, setNotice] = useState("");
@@ -77,7 +118,9 @@ export function EnshuPage({ e, skillNames }: { e: Enshu; skillNames: SkillName }
   const vars = useMemo(() => variantOf(e, vi), [e, vi]);
   const skills = useMemo(() => enshuSkills(e), [e]);
   const allowed = plan === null || canUseEnshu(plan, e.lv);
-  const roman = ({ "shuryo-1": "I", "shuryo-2": "II", "shuryo-3": "III" } as Record<string, string>)[e.id] ?? "";
+  const sho = e.kind === "shoshin";
+  const roman = sho ? shoshinRoman(e.id) : (({ "shuryo-1": "I", "shuryo-2": "II", "shuryo-3": "III" } as Record<string, string>)[e.id] ?? "");
+  const unit = sho ? "ミッション" : "課題";
 
   useEffect(() => {
     const h = new Date().getHours();
@@ -144,7 +187,7 @@ export function EnshuPage({ e, skillNames }: { e: Enshu; skillNames: SkillName }
     const iv = setInterval(() => setSec(Math.round((Date.now() - t0) / 1000)), 1000);
     try {
       const keys = aiCritKeys(e);
-      const ai: GradeResult = keys.length ? await grade({ kind: "enshu", id: e.id, answers, variant: vi }, keys) : { crit: [] };
+      const ai: ShoshinGrade = keys.length ? await grade({ kind: "enshu", id: e.id, answers, variant: vi }, keys) : { crit: [] };
       if (ai.error) {
         setResult(ai);
         return;
@@ -155,8 +198,8 @@ export function EnshuPage({ e, skillNames }: { e: Enshu; skillNames: SkillName }
       if (r.passed) {
         const next = await addAsset({
           key: `enshu:${e.id}`,
-          kind: e.kind === "shuryo" ? "shuryo" : "enshu",
-          title: e.title,
+          kind: e.kind === "unit" ? "enshu" : "shuryo",
+          title: sho ? `AI昇進試験 ${roman} 合格（${e.award ?? ""}）` : e.title,
           lv: e.lv,
           skills,
           score: r.total ?? 0,
@@ -200,15 +243,22 @@ export function EnshuPage({ e, skillNames }: { e: Enshu; skillNames: SkillName }
   return (
     <>
       <p className="m-0 text-xs font-black tracking-wider text-[#1533B8]">
-        {e.kind === "shuryo" ? `修了演習 ${roman}　Lv1〜${e.lv} の総まとめ` : `演習　Lv${e.lv}・実務のワークブック`}
+        {sho ? `AI昇進試験 ${roman}　Lv1〜${e.lv} の${skills.length}スキル` : e.kind === "shuryo" ? `修了演習 ${roman}　Lv1〜${e.lv} の総まとめ` : `演習　Lv${e.lv}・実務のワークブック`}
       </p>
+      {sho && (
+        <p className="m-0 mt-2 inline-flex flex-wrap items-center gap-1.5 rounded-[12px] border-[1.5px] border-[#15172B] bg-[#FFE45C] px-3 py-1.5 text-[14px] font-black">
+          <span>AI昇進試験 {roman}</span>
+          <span aria-hidden="true">→</span>
+          <span>{e.award}</span>
+        </p>
+      )}
       <h1 className="m-0 mt-1 text-[25px] font-black leading-tight">{e.title}</h1>
       <p className="m-0 mt-3 text-[15px] leading-[1.85]">{e.intro}</p>
       <ul className="m-0 mt-3 flex list-none flex-wrap gap-1.5 p-0 text-[12.5px] font-bold">
         <li className="rounded-full bg-[#15172B] px-2.5 py-1 text-white">目安 {e.time}</li>
-        <li className="rounded-full bg-[#15172B] px-2.5 py-1 text-white">課題 {e.tasks.length}問</li>
+        <li className="rounded-full bg-[#15172B] px-2.5 py-1 text-white">{sho ? `ミッション ${e.tasks.length}つ` : `課題 ${e.tasks.length}問`}</li>
         <li className="rounded-full bg-[#15172B] px-2.5 py-1 text-white">合格 {e.pass}点 / 100点</li>
-        {e.award && <li className="rounded-full bg-[#FFE45C] px-2.5 py-1 text-[#15172B]">合格で「{e.award}」</li>}
+        {e.award && !sho && <li className="rounded-full bg-[#FFE45C] px-2.5 py-1 text-[#15172B]">合格で「{e.award}」</li>}
       </ul>
       <div className="mt-3">
         <p className="m-0 mb-1.5 text-[12px] font-black text-[#3A3D55]">使うスキル（{skills.length}）</p>
@@ -221,7 +271,14 @@ export function EnshuPage({ e, skillNames }: { e: Enshu; skillNames: SkillName }
           <li>資料の会社・人・数字は、すべて架空です。お金は大人が預かる設定です。</li>
           <li>答えには、実在の人の名前・学校名・連絡先を書かないでください（「70代の女性」のように書けば十分です）。</li>
           <li>18歳未満の人は、22時以降は作業しないでください。途中の答えは自動で保存されるので、続きは明日できます。</li>
-          <li>カードは「自分の事業で1スキルずつ」。演習は「初めて見る状況で、スキルを組み合わせて使えるか」を見ます。</li>
+          {sho ? (
+            <>
+              <li>各ミッションには、Unicorn（実行力・経済性：早く・たくさん・お金が回る）と Zebra（倫理・包摂性：取り残される人・安全・公正）の言い分があります。どちらかを選ぶのではなく、両方に同時に応える「第3の答え」を、手順と数字と確かめ方つきで書きます。</li>
+              <li>採点は、ミッションごとに Unicorn・Zebra・統合の3つの観点（各0〜4）。合計{e.pass}点以上で合格です。法律に反する案・危険な案、18歳未満の人がお金を預かる案や22時以降に作業する案、実名や連絡先を書いた答えは、足切り（不合格）になります。</li>
+            </>
+          ) : (
+            <li>カードは「自分の事業で1スキルずつ」。演習は「初めて見る状況で、スキルを組み合わせて使えるか」を見ます。</li>
+          )}
         </ul>
       </section>
       {late && (
@@ -232,7 +289,7 @@ export function EnshuPage({ e, skillNames }: { e: Enshu; skillNames: SkillName }
 
       {/* 資料 */}
       <section id="enshu-shiryo" aria-labelledby="enshu-shiryo-h" className="mt-8 scroll-mt-4">
-        <h2 id="enshu-shiryo-h" className="m-0 text-[19px] font-black">資料</h2>
+        <h2 id="enshu-shiryo-h" className="m-0 text-[19px] font-black">{sho ? "事業のあらまし" : "資料"}</h2>
         {e.variants.length > 1 && <p className="m-0 mt-1 text-[12px] font-bold text-[#5A5D73]">数字の版：{vi + 1}つ目（全{e.variants.length}版）</p>}
         {notice && (
           <p role="status" className="m-0 mt-2 rounded-[12px] bg-[#FFE45C] px-3 py-2 text-[13.5px] font-bold">
@@ -240,50 +297,20 @@ export function EnshuPage({ e, skillNames }: { e: Enshu; skillNames: SkillName }
           </p>
         )}
         <div className="mt-3 rounded-[14px] border-[1.5px] border-[#15172B] bg-[#15172B] p-3.5 text-white">
-          <p className="m-0 text-[12px] font-black text-[#FFE45C]">この演習の事業（架空）</p>
+          <p className="m-0 text-[12px] font-black text-[#FFE45C]">{sho ? "この試験の事業（架空）" : "この演習の事業（架空）"}</p>
           <p className="m-0 mt-1 text-[16px] font-black">{e.company.name}</p>
           <p className="m-0 mt-1 text-[13.5px] leading-relaxed">{fill(e.company.summary, vars)}</p>
         </div>
         {e.materials.map((m, i) => (
-          <div key={i} className="mt-5">
-            <h3 className="m-0 text-[15.5px] font-black leading-snug">{fill(m.title, vars)}</h3>
-            {m.table && (
-              <div className="mt-2 overflow-x-auto rounded-[10px] border-[1.5px] border-[#15172B] bg-white">
-                <table className="w-full border-collapse text-left text-[13px] leading-snug">
-                  <thead>
-                    <tr>
-                      {m.table.head.map((h, k) => (
-                        <th key={k} scope="col" className="border-b-[1.5px] border-[#15172B] bg-[#FFFBE6] px-2 py-1.5 font-black">
-                          {fill(h, vars)}
-                        </th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {m.table.rows.map((r, k) => (
-                      <tr key={k} className="border-t border-[#E4E2D8] align-top">
-                        {r.map((c, j) => (j === 0 ? <th key={j} scope="row" className="px-2 py-1.5 font-bold">{fill(c, vars)}</th> : <td key={j} className="px-2 py-1.5">{fill(c, vars)}</td>))}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-            {m.body && (
-              <div className="mt-2 text-[14.5px] leading-[1.85]">
-                <Lines text={fill(m.body, vars)} />
-              </div>
-            )}
-            {m.figure && <LectureFigure fig={fillDeep(m.figure, vars)} no={i + 1} />}
-          </div>
+          <MaterialBlock key={i} m={m} vars={vars} no={i + 1} />
         ))}
       </section>
 
       {/* 課題 */}
       <section ref={tasksRef} id="enshu-kadai" aria-labelledby="enshu-kadai-h" className="mt-10 scroll-mt-4">
         <div className="flex flex-wrap items-end justify-between gap-2">
-          <h2 id="enshu-kadai-h" className="m-0 text-[19px] font-black">課題</h2>
-          <div role="group" aria-label="課題の見せ方" className="flex rounded-full border-[1.5px] border-[#15172B] bg-white p-0.5 text-[12.5px] font-black">
+          <h2 id="enshu-kadai-h" className="m-0 text-[19px] font-black">{sho ? "ミッション" : "課題"}</h2>
+          <div role="group" aria-label={`${unit}の見せ方`} className="flex rounded-full border-[1.5px] border-[#15172B] bg-white p-0.5 text-[12.5px] font-black">
             {(["one", "all"] as const).map((m) => (
               <button key={m} type="button" aria-pressed={mode === m} onClick={() => switchMode(m)} className={`min-h-[36px] rounded-full px-3 ${mode === m ? "bg-[#15172B] text-white" : "text-[#15172B]"}`}>
                 {m === "one" ? "1問ずつ" : "全部"}
@@ -292,17 +319,17 @@ export function EnshuPage({ e, skillNames }: { e: Enshu; skillNames: SkillName }
           </div>
         </div>
         <p className="m-0 mt-1.5 text-[12.5px] font-bold text-[#5A5D73]" aria-live="polite">
-          答えた課題 {nDone} / {e.tasks.length}　{savedAt ? `・自動で保存しました（${savedAt}）` : "・答えは自動で保存されます"}
+          答えた{unit} {nDone} / {e.tasks.length}　{savedAt ? `・自動で保存しました（${savedAt}）` : "・答えは自動で保存されます"}
         </p>
         {!allowed ? (
           <div className="mt-4 rounded-[14px] border-[1.5px] border-dashed border-[#15172B] bg-white p-4 text-[14px] leading-relaxed">
-            <p className="m-0 font-black">この演習は Max プランで取り組めます。</p>
+            <p className="m-0 font-black">{sho ? "この昇進試験" : "この演習"}は Max プランで取り組めます。</p>
             <p className="m-0 mt-1">Lv1〜3 の演習と修了演習 I は、登録しなくても取り組めます。</p>
           </div>
         ) : (
           <>
             {mode === "one" && (
-              <ol aria-label="課題の一覧" className="m-0 mt-3 flex list-none flex-wrap gap-1.5 p-0">
+              <ol aria-label={`${unit}の一覧`} className="m-0 mt-3 flex list-none flex-wrap gap-1.5 p-0">
                 {e.tasks.map((t, i) => (
                   <li key={t.no}>
                     <button
@@ -319,25 +346,29 @@ export function EnshuPage({ e, skillNames }: { e: Enshu; skillNames: SkillName }
               </ol>
             )}
             {shown.map((t) => (
-              <TaskCard key={`${t.no}-${vi}`} t={t} vars={vars} answers={answers} setAns={setAns} names={skillNames} disabled={!ready || busy} />
+              <TaskCard key={`${t.no}-${vi}`} t={t} vars={vars} answers={answers} setAns={setAns} names={skillNames} disabled={!ready || busy} unit={unit} />
             ))}
             {mode === "one" && (
               <div className="mt-3 flex gap-2">
                 <button type="button" disabled={cur === 0} onClick={() => { setCur(cur - 1); tasksRef.current?.scrollIntoView({ block: "start" }); }} className="min-h-[48px] flex-1 rounded-[12px] border-[1.5px] border-[#15172B] bg-white text-[14px] font-black disabled:opacity-40">
-                  ← 前の課題
+                  ← 前の{unit}
                 </button>
                 <button type="button" disabled={cur === e.tasks.length - 1} onClick={() => { setCur(cur + 1); tasksRef.current?.scrollIntoView({ block: "start" }); }} className="min-h-[48px] flex-1 rounded-[12px] border-[1.5px] border-[#15172B] bg-white text-[14px] font-black disabled:opacity-40">
-                  次の課題 →
+                  次の{unit} →
                 </button>
               </div>
             )}
 
             <div className="mt-6 rounded-[16px] border-[1.5px] border-[#15172B] bg-[#FFFBE6] p-4">
-              {nDone < e.tasks.length && <p className="m-0 mb-2 text-[13px] font-bold text-[#B42318]">まだ答えていない課題があります（答えのない課題は0点になります）。</p>}
+              {nDone < e.tasks.length && <p className="m-0 mb-2 text-[13px] font-bold text-[#B42318]">まだ答えていない{unit}があります（答えのない{unit}は0点になります）。</p>}
               <button type="button" onClick={onGrade} disabled={busy || !ready} className="min-h-[52px] w-full rounded-[14px] bg-[#1533B8] text-[16px] font-black text-white shadow-[3px_3px_0_#15172B] disabled:opacity-60">
                 {busy ? "採点しています…" : "採点する"}
               </button>
-              <p className="m-0 mt-2 text-[12px] leading-relaxed text-[#3A3D55]">計算の課題はその場で、ほかの課題はAIが観点ごとに0〜4で採点します。AI採点は、この演習1回の採点で1回と数えます。</p>
+              <p className="m-0 mt-2 text-[12px] leading-relaxed text-[#3A3D55]">
+                {sho
+                  ? "AIが、ミッションごとに Unicorn・Zebra・統合の観点を0〜4で採点し、講評と次の一歩を返します。AI採点は、この試験1回の採点で1回と数えます。"
+                  : "計算の課題はその場で、ほかの課題はAIが観点ごとに0〜4で採点します。AI採点は、この演習1回の採点で1回と数えます。"}
+              </p>
               {busy && (
                 <p role="status" aria-live="polite" className="m-0 mt-2 text-[14px] font-black">
                   採点しています（ふつう20〜60秒）… <span className="tabular-nums">{sec}</span>秒
@@ -360,7 +391,9 @@ export function EnshuPage({ e, skillNames }: { e: Enshu; skillNames: SkillName }
             <>
               {result.sample && (
                 <p className="m-0 mt-3 rounded-[12px] border-[1.5px] border-dashed border-[#B42318] bg-white p-3 text-[13px] font-bold leading-relaxed text-[#B42318]">
-                  見本の採点：AI採点の準備ができるまでは、答えの長さと、空でないかだけで付けた目安の点です（計算の課題は本番と同じ採点）。本番のAI採点とは別物です。
+                  {sho
+                    ? "見本の採点：AI採点の準備ができるまでは、答えの長さと、空でないかだけで付けた目安の点です。Unicorn・Zebra の講評とAIメンターの次の一歩は、本番のAI採点で出ます。本番のAI採点とは別物です。"
+                    : "見本の採点：AI採点の準備ができるまでは、答えの長さと、空でないかだけで付けた目安の点です（計算の課題は本番と同じ採点）。本番のAI採点とは別物です。"}
                 </p>
               )}
               <div className={`mt-3 rounded-[18px] border-[1.5px] border-[#15172B] p-4 ${result.passed ? "bg-[#FFE45C]" : "bg-white"}`}>
@@ -372,11 +405,13 @@ export function EnshuPage({ e, skillNames }: { e: Enshu; skillNames: SkillName }
                 {result.ko && <p className="m-0 mt-2 text-[13.5px] font-bold text-[#B42318]">足切り：{result.ko}</p>}
                 {result.praise && <p className="m-0 mt-2 text-[13.5px] leading-relaxed">いちばん良かったところ：{result.praise}</p>}
               </div>
+              {sho && <ShoshinFeedback e={e} result={result} names={skillNames} />}
 
               {result.passed ? (
                 <div className="mt-3 rounded-[14px] border-[1.5px] border-[#15172B] bg-[#15172B] p-4 text-white">
-                  {e.award && <p className="m-0 text-[17px] font-black text-[#FFE45C]">位階 {roman}「{e.award}」を認定しました{result.sample ? "（見本の採点）" : ""}</p>}
-                  <p className="m-0 mt-1 text-[15px] font-black">{assetSaved ? "スキルアセットに入れました" : "スキルアセットに入れています…"}</p>
+                  {e.award && sho && <p className="m-0 text-[17px] font-black text-[#FFE45C]">AI昇進試験 {roman} に合格。{e.award}しました{result.sample ? "（見本の採点）" : ""}</p>}
+                  {e.award && !sho && <p className="m-0 text-[17px] font-black text-[#FFE45C]">位階 {roman}「{e.award}」を認定しました{result.sample ? "（見本の採点）" : ""}</p>}
+                  <p className="m-0 mt-1 text-[15px] font-black">{assetSaved ? (sho ? "昇進の記録として、スキルアセットに入れました" : "スキルアセットに入れました") : "スキルアセットに入れています…"}</p>
                   <p className="m-0 mt-1 text-[13px] leading-relaxed text-white/85">合格した答案は、日付・Lv・使ったスキル・点数つきで残ります。志望理由書・ガクチカ・ESに使える実績の記録です。</p>
                   <Link href={`${HOME}/assets`} className="mt-3 inline-flex min-h-[44px] items-center rounded-full bg-white px-4 text-[14px] font-black text-[#15172B] no-underline">
                     スキルアセットを見る →
@@ -384,7 +419,7 @@ export function EnshuPage({ e, skillNames }: { e: Enshu; skillNames: SkillName }
                 </div>
               ) : (
                 <div className="mt-3 rounded-[14px] border-[1.5px] border-[#15172B] bg-white p-4">
-                  <p className="m-0 text-[14px] font-black">足りない観点を読み直して、数字を変えた版でもう一度取り組もう。</p>
+                  <p className="m-0 text-[14px] font-black">{sho ? `足りない観点を読み直して、数字を変えた版でもう一度挑戦しよう（合格は${e.pass}点から）。` : "足りない観点を読み直して、数字を変えた版でもう一度取り組もう。"}</p>
                   <button type="button" onClick={retry} className="mt-3 min-h-[48px] w-full rounded-[12px] bg-[#15172B] text-[15px] font-black text-white">
                     数字を変えてもう一度
                   </button>
@@ -398,7 +433,7 @@ export function EnshuPage({ e, skillNames }: { e: Enshu; skillNames: SkillName }
                     {weak.map((x) => (
                       <li key={x.key} className="rounded-[12px] border-[1.5px] border-[#B42318]/50 bg-[#FFF1EE] p-3 text-[13.5px] leading-relaxed">
                         <p className="m-0 font-black">
-                          課題{x.t.no}：{fill(x.c.t, vars)}（{x.s?.score ?? 0}/4）
+                          {unit}{x.t.no}：{x.c.axis ? `［${AXIS_SHORT[x.c.axis]}］` : ""}{fill(x.c.t, vars)}（{x.s?.score ?? 0}/4）
                         </p>
                         <p className="m-0 mt-1">満点の姿：{fill(x.c.g4, vars)}</p>
                         {[x.t.review ?? []].flat().map((href) => (
@@ -414,19 +449,19 @@ export function EnshuPage({ e, skillNames }: { e: Enshu; skillNames: SkillName }
 
               {result.rewrite && (
                 <div className="mt-5 rounded-[14px] border-[1.5px] border-[#15172B] bg-white p-3.5 text-[13.5px] leading-relaxed">
-                  <p className="m-0 font-black">直し方の例（課題{result.rewrite.key.split("-")[0]}）</p>
+                  <p className="m-0 font-black">直し方の例（{unit}{result.rewrite.key.split("-")[0]}）</p>
                   <p className="m-0 mt-1.5 text-[#5A5D73]">前：{result.rewrite.before}</p>
                   <p className="m-0 mt-1 font-bold">後：{result.rewrite.after}</p>
                 </div>
               )}
 
-              <h3 className="m-0 mt-6 text-[16px] font-black">課題ごとの点と模範解答</h3>
+              <h3 className="m-0 mt-6 text-[16px] font-black">{unit}ごとの点と模範解答</h3>
               <ol className="m-0 mt-2 grid list-none gap-3 p-0">
                 {pts.map(({ t, cs, pt, max }) => (
                   <li key={t.no} className="rounded-[14px] border-[1.5px] border-[#15172B] bg-white p-3.5">
                     <p className="m-0 flex items-baseline justify-between gap-2 text-[15px] font-black">
-                      <span>課題{t.no}　{TYPE_LABEL[t.type]}</span>
-                      <span className="tabular-nums">
+                      <span>{sho ? `ミッション${t.no}　${t.title ? fill(t.title, vars) : "第3の答え"}` : `課題${t.no}　${TYPE_LABEL[t.type]}`}</span>
+                      <span className="flex-none whitespace-nowrap tabular-nums">
                         {pt} / {max}点
                       </span>
                     </p>
@@ -440,7 +475,10 @@ export function EnshuPage({ e, skillNames }: { e: Enshu; skillNames: SkillName }
                         {cs.map((x) => (
                           <li key={x.key} className="rounded-[10px] bg-[#F7F6F1] p-2.5 text-[13px] leading-relaxed">
                             <p className="m-0 flex justify-between gap-2 font-black">
-                              <span>{fill(x.c.t, vars)}</span>
+                              <span>
+                                {x.c.axis && <span className={`mr-1.5 rounded px-1.5 py-0.5 align-[1px] text-[10.5px] ${AXIS_COLOR[x.c.axis]}`}>{AXIS_SHORT[x.c.axis]}</span>}
+                                {fill(x.c.t, vars)}
+                              </span>
                               <span className="flex-none tabular-nums">
                                 {x.s?.score ?? 0}/4 → {x.pt}/{x.c.w}点
                               </span>
@@ -482,6 +520,56 @@ export function EnshuPage({ e, skillNames }: { e: Enshu; skillNames: SkillName }
   );
 }
 
+/** 昇進試験の講評：軸ごとの点、Feedback_U・Feedback_Z・Next_Action。見本の採点（講評なし）でも崩れないよう、ないときは案内と読み直す所を出す */
+function ShoshinFeedback({ e, result, names }: { e: Enshu; result: ShoshinGrade; names: SkillName }) {
+  const ax = axisPoints(e, result.crit);
+  const reviews = [...new Set(e.tasks.flatMap((t) => [t.review ?? []].flat()))];
+  // 見本の採点などで nextAction がないとき：いちばん点の低い観点のミッションの、最初の読み直す所
+  const weakest = taskPoints(e, result.crit)
+    .flatMap((p) => p.cs.map((x) => ({ t: p.t, r: x.c.w ? x.pt / x.c.w : 0 })))
+    .sort((a, b) => a.r - b.r)[0];
+  const fallback = weakest ? [weakest.t.review ?? []].flat()[0] : reviews[0];
+  const rows: { k: "U" | "Z"; label: string; text?: string }[] = [
+    { k: "U", label: "Feedback_U", text: result.feedbackU },
+    { k: "Z", label: "Feedback_Z", text: result.feedbackZ },
+  ];
+  return (
+    <section aria-label="AIの講評" className="mt-3 rounded-[16px] border-[1.5px] border-[#15172B] bg-white p-3.5">
+      <ul className="m-0 grid list-none grid-cols-3 gap-1.5 p-0 text-center">
+        {(["U", "Z", "X"] as const).map((k) => (
+          <li key={k} className={`rounded-[10px] px-1 py-2 ${AXIS_COLOR[k]}`}>
+            <p className="m-0 text-[11px] font-black leading-tight">{AXIS_SHORT[k]}</p>
+            <p className="m-0 mt-0.5 text-[18px] font-black tabular-nums leading-none">
+              {ax[k].pt}
+              <span className="text-[11px]"> / {ax[k].max}</span>
+            </p>
+          </li>
+        ))}
+      </ul>
+      <div className="mt-3 grid gap-2 sm:grid-cols-2">
+        {rows.map((r) => (
+          <div key={r.k} className="rounded-[12px] border-[1.5px] border-[#15172B]/40 bg-[#F7F6F1] p-3 text-[13.5px] leading-relaxed">
+            <p className="m-0 text-[12px] font-black">
+              <span className={`mr-1.5 rounded px-1.5 py-0.5 text-[10.5px] ${AXIS_COLOR[r.k]}`}>{r.label}</span>
+              {AXIS_LABEL[r.k]}
+            </p>
+            <p className="m-0 mt-1.5">{r.text ?? (result.sample ? "見本の採点では講評は出ません。本番のAI採点で、この観点の講評が出ます。" : "講評はありません。")}</p>
+          </div>
+        ))}
+      </div>
+      <div className="mt-2 rounded-[12px] bg-[#15172B] p-3 text-[13.5px] leading-relaxed text-white">
+        <p className="m-0 text-[12px] font-black text-[#FFE45C]">Next_Action　AIメンターからの次の一歩</p>
+        <p className="m-0 mt-1.5">{result.nextAction ?? (fallback ? "いちばん点が低い観点に効く所から、読み直そう。" : "足りない観点を読み直そう。")}</p>
+        {fallback && (
+          <Link href={fallback} className="mt-1.5 inline-flex min-h-[40px] items-center font-black text-[#FFE45C]">
+            読む：{readLabel(fallback, names)} →
+          </Link>
+        )}
+      </div>
+    </section>
+  );
+}
+
 function readLabel(href: string, names: SkillName) {
   const m = href.match(/\/(lec|card)\/(z\d-\d\d)(?:#lec-s(\d+))?/);
   if (!m) return href;
@@ -496,6 +584,7 @@ function TaskCard({
   setAns,
   names,
   disabled,
+  unit = "課題",
 }: {
   t: EnshuTask;
   vars: Record<string, number>;
@@ -503,6 +592,7 @@ function TaskCard({
   setAns: (k: string, v: string) => void;
   names: SkillName;
   disabled: boolean;
+  unit?: string;
 }) {
   const max = t.crit.reduce((a, c) => a + c.w, 0);
   const id = `enshu-t${t.no}`;
@@ -511,15 +601,37 @@ function TaskCard({
     <article aria-labelledby={`${id}-h`} className="mt-4 rounded-[16px] border-[1.5px] border-[#15172B] bg-white p-3.5 shadow-[3px_3px_0_#15172B]">
       <h3 id={`${id}-h`} className="m-0 flex items-baseline justify-between gap-2 text-[16px] font-black">
         <span>
-          課題{t.no}
-          <span className="ml-2 rounded bg-[#1533B8] px-1.5 py-0.5 align-[2px] text-[11px] text-white">{TYPE_LABEL[t.type]}</span>
+          {unit}
+          {t.no}
+          {t.title ? <span className="ml-1.5">「{fill(t.title, vars)}」</span> : <span className="ml-2 rounded bg-[#1533B8] px-1.5 py-0.5 align-[2px] text-[11px] text-white">{TYPE_LABEL[t.type]}</span>}
         </span>
-        <span className="text-[13px] tabular-nums">{max}点</span>
+        <span className="flex-none text-[13px] tabular-nums">{max}点</span>
       </h3>
       <div className="mt-2">
         <SkillChips ids={t.skills} names={names} />
       </div>
+      {t.data && t.data.length > 0 && (
+        <section aria-label={`${unit}${t.no}のデータパック`} className="mt-3 rounded-[12px] bg-[#F7F6F1] p-3">
+          <p className="m-0 text-[12.5px] font-black text-[#1533B8]">データパック</p>
+          {t.data.map((m, i) => (
+            <MaterialBlock key={i} m={m} vars={vars} no={i + 1} small />
+          ))}
+        </section>
+      )}
+      {t.dilemma && (
+        <div className="mt-3 grid gap-2 sm:grid-cols-2" role="group" aria-label="Unicorn と Zebra の言い分">
+          <div className="rounded-[12px] border-[1.5px] border-[#1533B8] bg-[#EEF1FF] p-3">
+            <p className="m-0 text-[12px] font-black text-[#1533B8]">Unicorn の言い分（実行力・経済性）</p>
+            <p className="m-0 mt-1 text-[14px] leading-[1.75]">{fill(t.dilemma.unicorn, vars)}</p>
+          </div>
+          <div className="rounded-[12px] border-[1.5px] border-[#15172B] bg-white p-3 [background-image:repeating-linear-gradient(135deg,transparent_0_10px,rgba(21,23,43,0.04)_10px_20px)]">
+            <p className="m-0 text-[12px] font-black text-[#15172B]">Zebra の言い分（倫理・包摂性）</p>
+            <p className="m-0 mt-1 text-[14px] leading-[1.75]">{fill(t.dilemma.zebra, vars)}</p>
+          </div>
+        </div>
+      )}
       <div className="mt-2.5 text-[15px] font-bold leading-[1.8]">
+        {t.dilemma && <p className="m-0 mb-1 text-[12.5px] font-black text-[#3A3D55]">出題</p>}
         <Lines text={fill(t.prompt, vars)} />
       </div>
       {t.type === "calc" && (
@@ -563,7 +675,7 @@ function TaskCard({
       {t.type !== "calc" && (
         <div className="mt-3">
           <label htmlFor={`${id}-a`} className="text-[12.5px] font-black text-[#3A3D55]">
-            {t.type === "choice" ? "理由と、課題が求めること" : "答え"}
+            {t.type === "choice" ? "理由と、課題が求めること" : t.dilemma ? "第3の答え" : "答え"}
           </label>
           {t.hint && <p className="m-0 mt-0.5 text-[12px] text-[#5A5D73]">{t.hint}</p>}
           <textarea

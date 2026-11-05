@@ -18,9 +18,11 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const e = getEnshu((await params).id);
   if (!e) return {};
   const url = `${SITE}/learn/unizeb/enshu/${e.id}`;
-  const label = e.kind === "shuryo" ? "修了演習" : `Lv${e.lv}の演習`;
+  const label = e.kind === "shoshin" ? "AI昇進試験" : e.kind === "shuryo" ? "修了演習" : `Lv${e.lv}の演習`;
   const title = `${e.title}｜${label}｜ゼロワンOSユース版｜アオハルOS`;
-  const description = `架空の事業の資料を読み、${e.kind === "shuryo" ? `Lv1〜${e.lv}` : `Lv${e.lv}`}のスキルを組み合わせて課題に取り組む実務のワークブック。課題${e.tasks.length}問・合格${e.pass}点。合格した答案はスキルアセットとして残る。`;
+  const description = e.kind === "shoshin"
+    ? `架空の事業のデータパックを読み、Unicorn（実行力・経済性）と Zebra（倫理・包摂性）のジレンマを統合した「第3の答え」を書くAI昇進試験。Lv1〜${e.lv}のスキル、ミッション${e.tasks.length}つ・合格${e.pass}点。合格すると位階の昇進の記録が残る。`
+    : `架空の事業の資料を読み、${e.kind === "shuryo" ? `Lv1〜${e.lv}` : `Lv${e.lv}`}のスキルを組み合わせて課題に取り組む実務のワークブック。課題${e.tasks.length}問・合格${e.pass}点。合格した答案はスキルアセットとして残る。`;
   return { title, description, alternates: { canonical: url }, openGraph: { title, description, url } };
 }
 
@@ -34,7 +36,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
     }),
   );
   return (
-    <LearnShell narrow crumbs={uzCrumbs(e.kind === "shuryo" ? "修了演習" : `Lv${e.lv}の演習`, { href: `${UZ_HOME}#enshu`, label: "演習" })}>
+    <LearnShell narrow crumbs={uzCrumbs(e.kind === "shoshin" ? `AI昇進試験 ${["I", "II", "III"][Number(e.id.split("-")[1]) - 1] ?? ""}`.trim() : e.kind === "shuryo" ? "修了演習" : `Lv${e.lv}の演習`, e.kind === "shoshin" ? { href: `${UZ_HOME}#shoshin`, label: "AI昇進試験" } : { href: `${UZ_HOME}#enshu`, label: "演習" })}>
       <EnshuPage e={e} skillNames={names} />
     </LearnShell>
   );

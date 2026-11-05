@@ -251,6 +251,39 @@ const { evalExpr, varNames } = (await import(KIT)) as typeof import("../lib/uniz
 const enshu = await load("enshu");
 const cardLv = new Map([...cardIdx.matchAll(/"id":\s*"(z\d-\d\d)",\s*"lv":\s*(\d+)/g)].map((m) => [m[1], Number(m[2])]));
 const lecSecs = new Map(lectures.map(({ v }) => [v.unit.replace(/^unizeb-/, ""), v.sections.length]));
+// AI昇進試験（kind "shoshin"）：ミッション3つ・各ミッションに データパック（1,500〜2,500字）・dilemma（Unicorn と Zebra）・観点 U・Z・X が1つずつ、
+// 1ミッション33〜34点・合計100（合計は下の共通の確かめ）、答えは write、そのLvまでのスキルを全部使う、使わない言い回し（人を下に見る言葉）。
+const SHOSHIN_BANNED = ["老人", "弱者", "情弱", "勝ち組", "負け組", "年寄りでも"];
+const pickStr = (o: unknown, out: string[] = []) => { if (typeof o === "string") out.push(o); else if (Array.isArray(o)) o.forEach((x) => pickStr(x, out)); else if (o && typeof o === "object") Object.entries(o).forEach(([k, x]) => k !== "type" && k !== "kind" && k !== "tone" && k !== "dir" && pickStr(x, out)); return out; };
+function shoshinCheck(w: string, v: any) {
+  const used = new Set<string>();
+  for (const t of v.tasks) {
+    const tw = `${w} ミッション${t.no}`;
+    t.skills.forEach((s: string) => used.add(s));
+    if (t.type !== "write") E(tw, `ミッションの答えは write（${t.type}）`);
+    if (!t.title) E(tw, "ミッションの title がない");
+    if (!t.dilemma?.unicorn?.trim() || !t.dilemma?.zebra?.trim()) E(tw, "dilemma（Unicorn と Zebra の言い分）がない");
+    if (!t.data?.length) E(tw, "データパック（data）がない");
+    else {
+      const n = t.data.reduce((a: number, m: any) => a + pickStr(m).reduce((b, x) => b + len(x), 0), 0);
+      if (n < 1500 || n > 2500) E(tw, `データパックの分量 ${n} 字（1,500〜2,500）`);
+      if (!t.data.some((m: any) => m.table || m.figure)) E(tw, "データパックに表も図もない");
+      t.data.forEach((m: any) => figure(`${tw} ${m.title}`, m.figure));
+    }
+    const axes = t.crit.map((c: any) => c.axis).sort().join("");
+    if (axes !== "UXZ") E(tw, `観点の軸が U・Z・X の1つずつでない（${t.crit.map((c: any) => c.axis ?? "なし").join("・")}）`);
+    const tsum = t.crit.reduce((a: number, c: any) => a + c.w, 0);
+    if (tsum < 33 || tsum > 34) E(tw, `ミッションの配点 ${tsum}（33〜34）`);
+    const mlen = len(t.model);
+    if (mlen > 450) W(tw, `模範解答 ${mlen} 字（答えは150〜400字）`);
+  }
+  const all = [...cardLv].filter(([, lv]) => lv <= v.lv).map(([id]) => id);
+  const miss = all.filter((id) => !used.has(id));
+  // 昇進試験は1ミッション10枚までなので、全スキルは入らない。24枚以上（Lv1〜3 の試験は24枚すべて）を使っていればよい
+  const usedN = all.length - miss.length;
+  if (usedN < Math.min(24, all.length)) W(w, `使っているスキルが ${usedN} 枚（24枚以上に）。未使用：${miss.join("・")}`);
+  for (const s of pickStr([v.title, v.intro, v.company, v.materials, v.tasks])) for (const b of SHOSHIN_BANNED) if (s.includes(b)) E(w, `使わない言い回し「${b}」`);
+}
 for (const { file, v } of enshu) {
   const w = file;
   if (!file.endsWith(`${v.id}.ts`)) E(w, "ファイル名と id が合わない");
@@ -260,9 +293,30 @@ for (const { file, v } of enshu) {
     if (k !== v.lv) E(w, `修了演習の lv が節目（3・9・15）と合わない`);
     if (!v.award) E(w, "修了演習に award がない");
   }
-  const pl = v.lv <= 9 ? 70 : v.lv === 11 ? 80 : 75;
-  if (v.pass !== pl) E(w, `合格点 ${v.pass}（passLine は ${pl}）`);
-  const [tMin, tMax] = v.kind === "shuryo" ? [5, 6] : [4, 6];
+  const sho = v.kind === "shoshin";
+  if (sho) {
+    const k = { "shoshin-1": 3, "shoshin-2": 9, "shoshin-3": 15 }[v.id as string];
+    if (k !== v.lv) E(w, `昇進試験の id と lv が節目（3・9・15）と合わない`);
+    if (!v.award) E(w, "昇進試験に award（昇進先）がない");
+    if (v.pass !== 80) E(w, `昇進試験の合格点 ${v.pass}（80）`);
+    shoshinCheck(w, v);
+  } else {
+    const pl = v.lv <= 9 ? 70 : v.lv === 11 ? 80 : 75;
+    if (v.pass !== pl) E(w, `合格点 ${v.pass}（passLine は ${pl}）`);
+  }
+  if (v.formulas) for (const [name, ex] of Object.entries(v.formulas as Record<string, string>)) {
+    v.variants.forEach((x: any, i: number) => {
+      try {
+        const r = evalExpr(ex, x);
+        if (!Number.isInteger(r)) E(w, `版${i + 1} の ${name}（${ex}）が割り切れない（${r}）`);
+        if (!(name in x)) E(w, `版${i + 1} に ${name} がない（formulas）`);
+        else if (x[name] !== r) E(w, `版${i + 1} の ${name}（${x[name]}）と式 ${ex} の値（${r}）がちがう`);
+      } catch (e: any) {
+        E(w, `版${i + 1} の ${name}：${e.message}`);
+      }
+    });
+  }
+  const [tMin, tMax] = sho ? [3, 3] : v.kind === "shuryo" ? [5, 6] : [4, 6];
   if (v.tasks.length < tMin || v.tasks.length > tMax) E(w, `課題が ${v.tasks.length} 問（${tMin}〜${tMax}）`);
   const sum = v.tasks.reduce((a: number, t: any) => a + t.crit.reduce((b: number, c: any) => b + c.w, 0), 0);
   if (sum !== 100) E(w, `配点の合計が ${sum}`);
@@ -276,12 +330,13 @@ for (const { file, v } of enshu) {
     const tw = `${w} 課題${t.no}`;
     if (nos.has(t.no)) E(tw, "課題の番号が重なっている");
     nos.add(t.no);
-    if (t.skills.length < 1 || t.skills.length > 3) E(tw, `skills が ${t.skills.length} 枚`);
+    const [sMin, sMax] = sho ? [3, 10] : [1, 3];
+    if (t.skills.length < sMin || t.skills.length > sMax) E(tw, `skills が ${t.skills.length} 枚`);
     for (const s of t.skills) {
       if (!CARD_IDS.has(s)) E(tw, `スキル ${s} がない`);
       const lv = cardLv.get(s);
       if (v.kind === "unit" && lv !== v.lv) E(tw, `スキル ${s} は Lv${lv}（この演習は Lv${v.lv}）`);
-      if (v.kind === "shuryo" && (lv ?? 99) > v.lv) E(tw, `スキル ${s} は Lv${lv}（Lv${v.lv} までの修了演習）`);
+      if ((v.kind === "shuryo" || sho) && (lv ?? 99) > v.lv) E(tw, `スキル ${s} は Lv${lv}（Lv${v.lv} までの${sho ? "昇進試験" : "修了演習"}）`);
     }
     if (!t.model) E(tw, "model がない");
     if (t.type === "calc") {
@@ -319,7 +374,7 @@ for (const { file, v } of enshu) {
     chars += strs.reduce((a, x) => a + len(x), 0);
     figure(`${w} ${m.title}`, m.figure);
   }
-  if (chars < 1500 || chars > 3000) W(w, `資料の分量 ${chars} 字（見出し・表・図をふくむ。目安 1,500〜3,000）`);
+  if (!sho && (chars < 1500 || chars > 3000)) W(w, `資料の分量 ${chars} 字（見出し・表・図をふくむ。目安 1,500〜3,000）`);
   walkText(w, v);
 }
 

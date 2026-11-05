@@ -2,6 +2,7 @@
 
 // スキルアセット（/learn/unizeb/assets）：合格した演習・カードの答案の一覧。日付・Lv・使ったスキル・点数つき。
 // ランキングや人との比べは出さない。見本の採点で合格したものは、本番の記録と分けて見せる。
+// 修了演習と AI昇進試験（key "enshu:shoshin-<n>"、kind "shuryo"）は「昇進の記録」として上にまとめる。
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -16,6 +17,8 @@ export interface EnshuMeta {
 
 const HOME = "/learn/unizeb";
 const KIND: Record<SkillAsset["kind"], string> = { card: "スキルカード", enshu: "演習", shuryo: "修了演習" };
+const isShoshin = (a: SkillAsset) => a.key.startsWith("enshu:shoshin-");
+const kindLabel = (a: SkillAsset) => (isShoshin(a) ? "AI昇進試験" : KIND[a.kind]);
 
 function answerLines(a: SkillAsset, meta: EnshuMeta | undefined) {
   if (!meta) return Object.entries(a.answers).filter(([k]) => !k.startsWith("_") && !k.includes("#")).map(([k, v]) => ({ head: k, body: v }));
@@ -23,7 +26,7 @@ function answerLines(a: SkillAsset, meta: EnshuMeta | undefined) {
   return meta.tasks.map((t) => {
     const p = a.answers[`${t.no}#pick`];
     const pick = t.type === "choice" && p !== undefined && t.options?.[Number(p)] ? `選んだ案：${"ABCDE"[Number(p)]}「${fill(t.options[Number(p)], vars)}」\n` : "";
-    return { head: `課題${t.no}　${fill(t.prompt, vars)}`, body: pick + (a.answers[t.no] ?? "") + (t.type === "calc" && t.unit ? t.unit : "") };
+    return { head: `${isShoshin(a) ? "ミッション" : "課題"}${t.no}　${fill(t.prompt, vars)}`, body: pick + (a.answers[t.no] ?? "") + (t.type === "calc" && t.unit ? t.unit : "") };
   });
 }
 
@@ -36,7 +39,7 @@ export function AssetsPage({ enshu, cards }: { enshu: EnshuMeta[]; cards: Record
 
   const copy = async (a: SkillAsset) => {
     const meta = a.kind === "card" ? undefined : enshu.find((m) => `enshu:${m.id}` === a.key);
-    const text = [`${KIND[a.kind]}「${a.title}」 Lv${a.lv}　${a.date}　${a.score}点（合格点${a.pass}）`, `使ったスキル：${a.skills.map((s) => cards[s] ?? s).join("・")}`, ...answerLines(a, meta).map((l) => `■${l.head}\n${l.body}`)].join("\n\n");
+    const text = [`${kindLabel(a)}「${a.title}」 Lv${a.lv}　${a.date}　${a.score}点（合格点${a.pass}）`, `使ったスキル：${a.skills.map((s) => cards[s] ?? s).join("・")}`, ...answerLines(a, meta).map((l) => `■${l.head}\n${l.body}`)].join("\n\n");
     try {
       await navigator.clipboard.writeText(text);
       setCopied(a.key);
@@ -47,7 +50,8 @@ export function AssetsPage({ enshu, cards }: { enshu: EnshuMeta[]; cards: Record
 
   const groups: { title: string; list: SkillAsset[] }[] = assets
     ? [
-        { title: "演習・修了演習", list: assets.filter((a) => a.kind !== "card" && !a.sample) },
+        { title: "昇進の記録（修了演習・AI昇進試験）", list: assets.filter((a) => a.kind === "shuryo" && !a.sample) },
+        { title: "演習", list: assets.filter((a) => a.kind === "enshu" && !a.sample) },
         { title: "スキルカード", list: assets.filter((a) => a.kind === "card" && !a.sample) },
         { title: "見本の採点で合格したもの（本番の記録とは別）", list: assets.filter((a) => a.sample) },
       ]
@@ -75,7 +79,27 @@ export function AssetsPage({ enshu, cards }: { enshu: EnshuMeta[]; cards: Record
           </Link>
         </div>
       ) : (
-        groups
+        <>
+        {(() => {
+          const promo = assets.filter((a) => isShoshin(a)).sort((x, y) => x.key.localeCompare(y.key));
+          if (!promo.length) return null;
+          return (
+            <section aria-label="昇進のあゆみ" className="mt-6 rounded-[14px] border-[1.5px] border-[#15172B] bg-[#15172B] p-3.5 text-white">
+              <p className="m-0 text-[12px] font-black text-[#FFE45C]">昇進のあゆみ（AI昇進試験）</p>
+              <ol className="m-0 mt-2 grid list-none gap-1.5 p-0 text-[13.5px] leading-snug">
+                {promo.map((a) => (
+                  <li key={a.key} className="flex flex-wrap items-baseline gap-x-2">
+                    <span className="font-black">{a.title}</span>
+                    <span className="text-[12px] text-white/80 tabular-nums">
+                      {a.date}・{a.score}点{a.sample ? "・見本の採点" : ""}
+                    </span>
+                  </li>
+                ))}
+              </ol>
+            </section>
+          );
+        })()}
+        {groups
           .filter((g) => g.list.length)
           .map((g) => (
             <section key={g.title} aria-label={g.title} className="mt-8">
@@ -86,7 +110,7 @@ export function AssetsPage({ enshu, cards }: { enshu: EnshuMeta[]; cards: Record
                   return (
                     <li key={a.key} className="rounded-[14px] border-[1.5px] border-[#15172B] bg-white p-3.5 shadow-[3px_3px_0_#15172B]">
                       <p className="m-0 flex flex-wrap items-center gap-1.5 text-[11.5px] font-black">
-                        <span className="rounded bg-[#1533B8] px-1.5 py-0.5 text-white">{KIND[a.kind]}</span>
+                        <span className={`rounded px-1.5 py-0.5 ${isShoshin(a) ? "bg-[#FFE45C] text-[#15172B]" : "bg-[#1533B8] text-white"}`}>{kindLabel(a)}</span>
                         <span className="rounded bg-[#15172B] px-1.5 py-0.5 text-white">Lv{a.lv}</span>
                         <span className="text-[#5A5D73]">{a.date}</span>
                         {a.sample && <span className="rounded border border-[#B42318] px-1.5 py-0.5 text-[#B42318]">見本の採点</span>}
@@ -115,7 +139,7 @@ export function AssetsPage({ enshu, cards }: { enshu: EnshuMeta[]; cards: Record
                       </details>
                       {meta && (
                         <Link href={`${HOME}/enshu/${meta.id}`} className="mt-1 inline-flex min-h-[40px] items-center text-[13px] font-black text-[#1533B8]">
-                          この演習をもう一度ひらく →
+                          {isShoshin(a) ? "この試験をもう一度ひらく →" : "この演習をもう一度ひらく →"}
                         </Link>
                       )}
                     </li>
@@ -123,7 +147,8 @@ export function AssetsPage({ enshu, cards }: { enshu: EnshuMeta[]; cards: Record
                 })}
               </ul>
             </section>
-          ))
+          ))}
+        </>
       )}
     </>
   );

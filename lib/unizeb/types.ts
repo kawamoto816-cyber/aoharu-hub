@@ -162,10 +162,13 @@ export type SceneBook = Record<string, Scene[]>;
  * 演習（/learn/unizeb/enshu/<id>）：実務のワークブック。架空の事業の資料を読み、そのLvのスキルを組み合わせて課題に取り組む。
  * 採点はカードと同じ（AIは観点ごとに0〜4、点と合否はアプリ・サーバーが計算）。合格した答案はスキルアセットとして残る。
  * id：Lvごとの演習は "lv1"〜"lv15"、節目の修了演習は "shuryo-1"（Lv3）・"shuryo-2"（Lv9）・"shuryo-3"（Lv15）。
+ * AI昇進試験は kind "shoshin"、id "shoshin-1"（Lv1〜3）・"shoshin-2"（Lv1〜9）・"shoshin-3"（Lv1〜15）。
+ *   1本＝ミッション3つ（tasks。type は "write"）。ミッションごとに データパック（data）・出題（prompt）・Unicorn と Zebra の言い分（dilemma）を持ち、
+ *   答えは両方を満たす「第3の答え」。観点はミッションごとに3つ（axis "U"・"Z"・"X"）、合計100、合格点80。合格で award の位階へ昇進。
  */
 export interface Enshu {
   id: string;
-  kind: "unit" | "shuryo";
+  kind: "unit" | "shuryo" | "shoshin";
   /** 対象の Lv（修了演習は節目の Lv） */
   lv: number;
   title: string;
@@ -182,8 +185,18 @@ export interface Enshu {
   /** 数字を変えた版（再挑戦のとき別の版を出す）。3つ以上 */
   variants: Record<string, number>[];
   tasks: EnshuTask[];
-  /** 修了演習で合格したときに認定される位階（例「事業の種カード」） */
+  /** 修了演習で合格したときに認定される位階（例「事業の種カード」）。昇進試験は昇進先（例「位階II 事業計画書 v1 へ昇進」） */
   award?: string;
+  /** 版の中で、ほかの値から計算で決まる値（名前 → 式。式は calc と同じ書き方）。check がすべての版で式と値が合うかを確かめる */
+  formulas?: Record<string, string>;
+}
+
+/** Unicorn と Zebra の言い分（昇進試験のミッション）。どちらももっともな2つの立場 */
+export interface Dilemma {
+  /** Unicorn（実行力・経済性：早く・安く・たくさん・続けられる）の言い分 */
+  unicorn: string;
+  /** Zebra（倫理・包摂性：取り残される人・安全・公正・法の決まり）の言い分 */
+  zebra: string;
 }
 
 export interface EnshuMaterial {
@@ -197,7 +210,13 @@ export interface EnshuMaterial {
 export interface EnshuTask {
   /** 課題の番号（"1"〜） */
   no: string;
-  /** 主に使うスキル（カード id。1〜3枚） */
+  /** 昇進試験：ミッションの題（短く） */
+  title?: string;
+  /** 昇進試験：ミッションごとのデータパック（数字・お客さんの声・現場の制約）。[[name]] 可 */
+  data?: EnshuMaterial[];
+  /** 昇進試験：Unicorn と Zebra の言い分 */
+  dilemma?: Dilemma;
+  /** 主に使うスキル（カード id。1〜3枚。昇進試験のミッションは3〜10枚） */
   skills: string[];
   /** 課題文（[[name]] 可） */
   prompt: string;
@@ -210,7 +229,7 @@ export interface EnshuTask {
   /** 入力欄の説明（例「150〜250字」） */
   hint?: string;
   /** write・choice の観点（配点 w の合計は、全課題の calc の配点と合わせて100） */
-  crit: { t: string; w: number; g4: string; g2: string; minChars?: number }[];
+  crit: { t: string; w: number; g4: string; g2: string; minChars?: number; axis?: "U" | "Z" | "X" }[];
   /** 模範解答の例（採点のあとに見せる。答えの丸写しは足切り） */
   model: string;
   /** 読み直す所（レクチャーの節。例 "/learn/unizeb/lec/z6-01#lec-s2"。2つ以上なら配列） */

@@ -6,6 +6,13 @@ import { Kicker } from "./parts";
 // /learn/unizeb の目次：起業の教科書（図解レクチャー120）・起業家列伝・ゼロイチ・エピソード・ケーススタディー・資料集。
 // スキルカード本体（マイ事業ボード）はフェーズ2で、この上に入る。
 
+// AI昇進試験（kind "shoshin"）の3本。まだない本は「準備中」として出す（リンクなし）
+const SHOSHIN = [
+  { id: "shoshin-1", no: "I", lv: 3, from: "位階I 事業の種", to: "位階II へ" },
+  { id: "shoshin-2", no: "II", lv: 9, from: "位階II", to: "位階III へ" },
+  { id: "shoshin-3", no: "III", lv: 15, from: "位階III", to: "ユース版 修了" },
+];
+
 export function UzHome() {
   const ready = new Set(UZ_LECTURES.map((l) => l.unit));
   const lvs = Array.from(new Set(UZ_CARDS.map((c) => c.lv))).sort((a, b) => a - b);
@@ -75,7 +82,7 @@ export function UzHome() {
         <h2 className="m-0 text-[20px] font-black">演習（実務のワークブック）</h2>
         <p className="m-0 mt-1 text-[13.5px] text-[#3A3D55]">架空の事業の資料を読み、そのLvのスキルを組み合わせて課題に取り組む。合格した答案はスキルアセットとして残る。</p>
         <ul className="m-0 mt-3 grid list-none gap-2.5 p-0">
-          {UZ_ENSHU.map((e) => (
+          {UZ_ENSHU.filter((e) => e.kind !== "shoshin").map((e) => (
             <li key={e.id}>
               <Link href={`/learn/unizeb/enshu/${e.id}`} className={`flex min-h-[52px] items-center gap-2 rounded-[14px] border-[1.5px] border-[#15172B] px-3.5 py-2 text-[#15172B] no-underline ${e.kind === "shuryo" ? "bg-[#15172B] text-white" : "bg-white"}`}>
                 <span className={`flex-none rounded px-1.5 py-0.5 text-[11px] font-black ${e.kind === "shuryo" ? "bg-[#FFE45C] text-[#15172B]" : "bg-[#1533B8] text-white"}`}>{e.kind === "shuryo" ? "修了演習" : `Lv${e.lv}`}</span>
@@ -85,6 +92,42 @@ export function UzHome() {
             </li>
           ))}
         </ul>
+      </section>
+
+      <section id="shoshin" className="mt-10 scroll-mt-4">
+        <h2 className="m-0 text-[20px] font-black">AI昇進試験</h2>
+        <p className="m-0 mt-1 text-[13.5px] leading-relaxed text-[#3A3D55]">
+          位階の節目の試験。架空の事業の分かれ道で、Unicorn（実行力・経済性）と Zebra（倫理・包摂性）の言い分を両方満たす「第3の答え」を書き、AIが採点する。80点以上で昇進。修了演習のあとに受ける。
+        </p>
+        <ol className="m-0 mt-3 grid list-none gap-2.5 p-0">
+          {SHOSHIN.map((x) => {
+            const e = UZ_ENSHU.find((y) => y.id === x.id);
+            const head = (
+              <>
+                <span className="flex-none rounded bg-[#FFE45C] px-1.5 py-0.5 text-[11px] font-black text-[#15172B]">昇進試験 {x.no}</span>
+                <span className="flex-1">
+                  <span className="block text-[14.5px] font-black">{e ? e.title : x.to}</span>
+                  <span className="block text-[11.5px] font-bold opacity-75">Lv1〜{x.lv}　{x.from} → {x.to}</span>
+                </span>
+              </>
+            );
+            return (
+              <li key={x.id}>
+                {e ? (
+                  <Link href={`/learn/unizeb/enshu/${e.id}`} className="flex min-h-[56px] items-center gap-2 rounded-[14px] border-[1.5px] border-[#15172B] bg-white px-3.5 py-2 text-[#15172B] no-underline shadow-[3px_3px_0_#15172B]">
+                    {head}
+                    <span aria-hidden="true">→</span>
+                  </Link>
+                ) : (
+                  <span className="flex min-h-[56px] items-center gap-2 rounded-[14px] border-[1.5px] border-dashed border-[#15172B]/50 bg-white/60 px-3.5 py-2 text-[#5A5D73]">
+                    {head}
+                    <span className="flex-none text-[11px] font-black">準備中</span>
+                  </span>
+                )}
+              </li>
+            );
+          })}
+        </ol>
       </section>
 
       <section id="den" className="mt-10 scroll-mt-4">
