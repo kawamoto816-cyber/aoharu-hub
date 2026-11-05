@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Figure } from "@/lib/lecture/types";
 import type { CastMember, ChapterScene, PauseScene, TalkScene, Who } from "@/lib/jugyo/types";
+import { SFX_LEAD_MS, playCorrect, playWrong, unlockSfx } from "@/lib/jugyo/sfx";
 import { LectureFigure } from "@/components/lecture/Figure";
 import { Rich } from "@/components/lecture/Rich";
 import { Avatar } from "./Avatar";
@@ -263,10 +264,19 @@ export function JugyoPlayer(p: PlayerProps) {
   // 問題の読み上げ：止まったら問いと選択肢を、答えたら答えとわけを（読み上げ中に答えたら、問いの読み上げは止める）
   const pauseClip = started && !ended && scene.kind === "pause" ? (picked === null ? scene.ask : scene.reply) : null;
   const pauseTag = `${i}:${picked === null ? "ask" : "reply"}`;
+  // 選択肢の問題に答えたときは、効果音（ピンポーン／ブー）が鳴り終わるのを少し待ってから答えを読む
+  const sfxLead = scene.kind === "pause" && scene.choices && picked ? (picked === scene.answer ? SFX_LEAD_MS.correct : SFX_LEAD_MS.wrong) : 0;
   useEffect(() => {
     if (!pauseClip) return;
-    return speakLine({ ...pauseClip, who: "sensei" }, voiceEnv(), () => setReadDone(pauseTag));
-  }, [pauseClip, pauseTag, voiceEnv]);
+    let stop: (() => void) | undefined;
+    const t = setTimeout(() => {
+      stop = speakLine({ ...pauseClip, who: "sensei" }, voiceEnv(), () => setReadDone(pauseTag));
+    }, sfxLead);
+    return () => {
+      clearTimeout(t);
+      stop?.();
+    };
+  }, [pauseClip, pauseTag, voiceEnv, sfxLead]);
   const reading = !!pauseClip && readDone !== pauseTag;
 
   // 図の中の強調（focus の字をふくむいちばん内側の箱に枠をつける）
@@ -302,6 +312,7 @@ export function JugyoPlayer(p: PlayerProps) {
   }, [boardKey]);
 
   async function start() {
+    unlockSfx();
     let ok = false;
     if (typeof window !== "undefined" && "speechSynthesis" in window) {
       // iPhone などは、ボタンを押したその場で一度 speak しないと、あとで声が出ない
@@ -467,7 +478,10 @@ export function JugyoPlayer(p: PlayerProps) {
 
         {/* 止まる：問題カード */}
         {started && scene.kind === "pause" && !ended && (
-          <PauseCard key={i} q={scene} picked={picked} setPicked={setPicked} onNext={() => { next(); setPlaying(true); }} sensei={p.cast.sensei.name} />
+          <PauseCard key={i} q={scene} picked={picked} setPicked={(v) => {
+            if (scene.choices && v) (v === scene.answer ? playCorrect : playWrong)();
+            setPicked(v);
+          }} onNext={() => { next(); setPlaying(true); }} sensei={p.cast.sensei.name} />
         )}
 
         {/* はじめの画面 */}
