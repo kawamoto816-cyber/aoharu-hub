@@ -5,6 +5,7 @@
 #   python3 scripts/jugyo-yomi.py --all      全せりふの「音声にする文 → pyopenjtalk の読み」を出す
 #   python3 scripts/jugyo-yomi.py --draft    正しい読みが未登録の行を、scripts/jugyo-yomi.json に貼る形で出す
 #                                            （中身は pyopenjtalk の読みそのまま。1語ずつ文脈で読みを確かめ、直してから貼る）
+#   python3 scripts/jugyo-yomi.py --dict     VOICEVOX と同じユーザー辞書（scripts/voicevox-dict.json）を当てて読む（ほかと組み合わせられる）
 #
 # しくみ
 # - VOICEVOX エンジンは文字→読みに OpenJTALK を使う。同じ辞書の pyopenjtalk（pip install pyopenjtalk）で
@@ -83,6 +84,12 @@ def main():
     except ImportError:
         sys.exit("pyopenjtalk が入っていません：pip install pyopenjtalk")
     args = sys.argv[1:]
+    if "--dict" in args:
+        sys.dont_write_bytecode = True  # scripts/__pycache__ を作らない
+        sys.path.insert(0, str(ROOT / "scripts"))
+        from voicevox_dict import apply_user_dict
+
+        print(f"ユーザー辞書（scripts/voicevox-dict.json）{apply_user_dict(pyopenjtalk)} 語を当てて読みます")
     data = json.loads(YOMI_JSON.read_text(encoding="utf-8")) if YOMI_JSON.exists() else {}
     table = {(u, e["text"]): e["yomi"] for u, es in data.items() for e in es}
     used = set()

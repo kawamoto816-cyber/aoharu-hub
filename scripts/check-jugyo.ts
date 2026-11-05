@@ -4,12 +4,18 @@
 // 2. board の section / figure が lecture にあるか。focus がその図の字の中にあるか（ルビ・{{ }} を外して）
 // 3. 台本の数字（半角・全角の数字の並び）が lecture の本文（hook・mystery・mission・body・reading・figure・reveal・cliff・mistakes・check）のどこかにあるか
 // 4. 話す字数と目安の分数（1分＝300字）、pause の数（3〜4）。pause の say.choices の数が choices と同じか（say の数字も 3 と同じく点検）
-// エラーがあれば終了コード 1。
+// 5.（警告）要注意語（lib/tts/yomi-watch.ts：方・人・日・今日など文脈で読みが割れる語）が、音声にする文に漢字のまま残り、
+//    scripts/jugyo-yomi.json にも正しい読みが無い行。say でその語をひらがなに開くか、jugyo-yomi.json に登録する。
+//    （登録がある行で say で開いていない要注意語の数も出す：読みは jugyo-yomi.py と VOICEVOX 本体の点検で確かめる）
+// エラーがあれば終了コード 1。警告では止めない。
 
 import { getLecture } from "../lib/lecture";
 import type { Lecture } from "../lib/lecture/types";
 import { CHARS_PER_MIN, LESSONS } from "../lib/jugyo";
 import { manzaiSay } from "../lib/tts/manzai";
+import { existsSync, readFileSync } from "node:fs";
+import { jugyoAudio, jugyoPauseAudio } from "../lib/jugyo/audio";
+import { watchWordsIn } from "../lib/tts/yomi-watch";
 
 const RUBY = /｜([^｜《》\n]+?)《([^《》\n]+?)》|([㐀-鿿々〆ヶ]+)《([^《》\n]+?)》/g;
 const plain = (s: string) => s.replace(RUBY, (_a, b1, _r1, b2) => b1 ?? b2).replace(/\{\{|\}\}/g, "");
@@ -28,6 +34,32 @@ let errors = 0;
 const err = (u: string, msg: string) => {
   errors++;
   console.log(`  ✕ ${u}: ${msg}`);
+};
+let warnings = 0;
+let watchedOk = 0;
+const warn = (u: string, msg: string) => {
+  warnings++;
+  console.log(`  △ ${u}: ${msg}`);
+};
+
+// 確定した正しい読み（単元 → 字幕の集まり）。字幕はルビを親字にし {{ }} を外したもの（scripts/jugyo-yomi.py と同じ）
+const YOMI_JSON = "scripts/jugyo-yomi.json";
+const registered = new Map<string, Set<string>>(
+  Object.entries(existsSync(YOMI_JSON) ? (JSON.parse(readFileSync(YOMI_JSON, "utf8")) as Record<string, { text: string }[]>) : {}).map(([u, es]) => [
+    u,
+    new Set(es.map((e) => e.text)),
+  ]),
+);
+const label = (s: string) => plain(s).replace(/\s+/g, " ").trim();
+/** 要注意語の点検：speech（音声にする文）に要注意語が漢字のまま残り、字幕 caption の正しい読みが未登録なら警告 */
+const watch = (u: string, at: string, caption: string, speech: string) => {
+  const ws = watchWordsIn(speech);
+  if (!ws.length) return;
+  if (registered.get(u)?.has(label(caption))) {
+    watchedOk += ws.length;
+    return;
+  }
+  warn(u, `${at} 要注意語 ${ws.map((w) => `「${w.word}」(${w.yomi.join("/")})`).join("・")} の読みが決まっていない（say で開くか、jugyo-yomi.json に登録）：${label(caption).slice(0, 30)}…`);
 };
 
 for (const lesson of LESSONS) {
@@ -49,6 +81,7 @@ for (const lesson of LESSONS) {
     const at = `#${i}`;
     if (sc.kind === "talk") {
       talks++;
+      watch(u, at, sc.text, jugyoAudio(sc).text);
       chars += manzaiSay(sc).length;
       for (const src of [sc.text, sc.say ?? ""])
         for (const m of half(plain(src)).match(NUM) ?? []) if (!hasNum(m)) err(u, `${at} 数字「${m}」が lecture の本文にない：${plain(src).slice(0, 40)}…`);
@@ -67,6 +100,8 @@ for (const lesson of LESSONS) {
       }
     } else if (sc.kind === "pause") {
       pauses++;
+      const qa = jugyoPauseAudio(sc);
+      for (const a of [qa.ask, qa.reply]) if (a) watch(u, `${at}（問題の読み上げ）`, a.display, a.text);
       minutesAt.push((chars / CHARS_PER_MIN).toFixed(1));
       const [kind, n] = sc.source.split(":");
       const i2 = Number(n);
@@ -99,5 +134,6 @@ for (const lesson of LESSONS) {
   console.log(`  せりふ ${talks}・話す字数 ${chars.toLocaleString()} 字・目安 ${min.toFixed(1)} 分・止まる ${pauses} 回（${minutesAt.map((m) => `${m}分`).join("・")}ごろ）`);
 }
 
-console.log(errors ? `\nエラー ${errors} 件` : "\nエラー 0 件");
+console.log(`\n要注意語の警告 ${warnings} 件（読みが登録ずみの行の要注意語 ${watchedOk} 語は jugyo-yomi.py・VOICEVOX 本体の点検で確かめる）`);
+console.log(errors ? `エラー ${errors} 件` : "エラー 0 件");
 if (errors) process.exit(1);

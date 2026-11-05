@@ -8,6 +8,7 @@
 #   python3 scripts/yomi-check.py --all        点検ずみ（OK・yomi-check-ok.json）で消した候補も出す
 #   python3 scripts/yomi-check.py --accept     いま出ている 1a の候補を「点検ずみ」として scripts/yomi-check-ok.json に書く
 #                                              （1a は補正前とのくらべなので、正しく直した行も出る。目で確かめてから使う）
+#   python3 scripts/yomi-check.py --dict       VOICEVOX と同じユーザー辞書（scripts/voicevox-dict.json）を当てて読む（ほかと組み合わせられる）
 #
 # しくみ
 # - 読み上げ文は lib/tts/yomi.ts の manzaiSpeech / novelSpeech（yomi.gen.ts の補正を当てた文）。npx tsx で台本から取り出す。
@@ -207,6 +208,12 @@ def main():
     except ImportError:
         sys.exit("pyopenjtalk が入っていません：pip install pyopenjtalk")
     args = sys.argv[1:]
+    if "--dict" in args:
+        sys.dont_write_bytecode = True  # scripts/__pycache__ を作らない
+        sys.path.insert(0, str(ROOT / "scripts"))
+        from voicevox_dict import apply_user_dict
+
+        print(f"ユーザー辞書（scripts/voicevox-dict.json）{apply_user_dict(pj)} 語を当てて読みます")
     xs = lines()
     if "--kanji" in args:
         i = args.index("--kanji")

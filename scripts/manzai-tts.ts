@@ -8,6 +8,13 @@
 //     もう使われなくなった古い音声ファイルは消す（声を変えたときの前の声など）。
 //
 // API キーは .env.local の GOOGLE_TTS_API_KEY（英語の音声と同じ）。キーは画面に出さない。
+//
+//   読みの最終点検（scripts/vv-yomi.ts）：VOICEVOX で作る前に、scripts/voicevox-dict.json を VOICEVOX のユーザー辞書に登録し、
+//     作る行を VOICEVOX 本体に読ませて、期待する読み（scripts/yomi-expect.json。Claude の環境で python3 scripts/yomi-expect.py が
+//     pyopenjtalk から作る）とくらべる。食いちがい・期待する読みが無い行があれば一覧を出して止まる。まちがいでなければ  --force  をつけて続ける。
+//     掛け声（アクセントつきカナで読みを決めているもの）と英語（Google）は点検しない。
+//   読みだけ点検する（VOICEVOX の全行・音声は作らない）:  npx tsx scripts/manzai-tts.ts --check
+//   （scripts/yomi-expect.py が使う）VOICEVOX の行の キー・文 を JSON で出す:  npx tsx scripts/manzai-tts.ts --dump-jobs
 
 import { existsSync, mkdirSync, readFileSync, readdirSync, unlinkSync, writeFileSync } from "node:fs";
 import { execFileSync } from "node:child_process";
@@ -19,6 +26,7 @@ import { manzaiAudio, novelAudio } from "../lib/tts/yomi";
 import { reciteAudio } from "../lib/tts/recite";
 import { tsukkomiJobs } from "../lib/tsukkomi/audio";
 import { KAKEGOE, kakegoeKey } from "../lib/tsukkomi/kakegoe";
+import { VV, checkYomi, registerUserDict, type AudioQuery } from "./vv-yomi";
 
 type Job = { dir: string; key: string; text: string; voice: string; rate: number; unit: string; lang?: string; name?: string; kana?: string; intonation?: number };
 
@@ -63,8 +71,7 @@ function apiKey(): string {
   process.exit(1);
 }
 
-// ── VOICEVOX（日本語）。アプリを起動しておくと http://localhost:50021 で待ち受ける ──
-const VV = process.env.VOICEVOX_URL ?? "http://localhost:50021";
+// ── VOICEVOX（日本語）。アプリを起動しておくと http://localhost:50021 で待ち受ける（VOICEVOX_URL で変えられる） ──
 let vvIds: Map<string, number> | null = null;
 
 async function vvSpeakers(): Promise<Map<string, number>> {
@@ -104,13 +111,49 @@ function checkFfmpeg() {
   process.exit(1);
 }
 
-async function synthVoicevox(j: Job): Promise<Buffer> {
+async function speakerId(j: Job): Promise<number> {
   const name = j.voice.slice(3);
   const id = (await vvSpeakers()).get(name);
   if (id === undefined) throw new Error(`VOICEVOX に「${name}」の声が入っていません（アプリの「キャラクター」から追加してください）`);
-  const q = await fetch(`${VV}/audio_query?speaker=${id}&text=${encodeURIComponent(j.text)}`, { method: "POST" });
-  if (!q.ok) throw new Error(`audio_query ${q.status}`);
-  const query = (await q.json()) as Record<string, unknown>;
+  return id;
+}
+
+/** 読みを点検する行：VOICEVOX の行のうち、アクセントつきカナで読みを決めていないもの */
+const yomiTarget = (j: Job) => j.voice.startsWith("vv:") && !j.kana;
+const EXPECT_JSON = "scripts/yomi-expect.json";
+
+/** VOICEVOX 本体の読みでの最終点検（止まるときはここで終わる）。キー → audio_query */
+async function finalCheck(list: Job[]): Promise<Map<string, AudioQuery>> {
+  await registerUserDict();
+  const want = existsSync(EXPECT_JSON) ? (JSON.parse(readFileSync(EXPECT_JSON, "utf8")) as Record<string, string>) : {};
+  const jobs = [];
+  const ids = new Map<string, number>();
+  for (const j of new Set(list.filter(yomiTarget).map((j) => j.voice)))
+    try {
+      ids.set(j, await speakerId({ voice: j } as Job));
+    } catch (e) {
+      console.error((e as Error).message);
+      process.exit(1);
+    }
+  for (const j of list.filter(yomiTarget))
+    jobs.push({ key: j.key, text: j.text, speaker: ids.get(j.voice)!, label: `${j.unit} ${j.dir.split("/").pop()}/${j.key}`, want: want[j.key] });
+  return checkYomi(jobs, {
+    expectFile: EXPECT_JSON,
+    howToFix: "無い行は、Claude の環境で python3 scripts/yomi-expect.py を動かして作り直す",
+    force: process.argv.includes("--force"),
+  });
+}
+
+let QUERIES = new Map<string, AudioQuery>();
+
+async function synthVoicevox(j: Job): Promise<Buffer> {
+  const id = await speakerId(j);
+  let query = (j.kana ? undefined : QUERIES.get(j.key)) as Record<string, unknown> | undefined;
+  if (!query) {
+    const q = await fetch(`${VV}/audio_query?speaker=${id}&text=${encodeURIComponent(j.text)}`, { method: "POST" });
+    if (!q.ok) throw new Error(`audio_query ${q.status}`);
+    query = (await q.json()) as Record<string, unknown>;
+  }
   const manzai = j.dir.endsWith("manzai") || j.dir.endsWith("tsukkomi");
   if (j.kana) {
     // アクセントつきカナで抑揚を決める（掛け声の「なんでやねん」など）
@@ -158,6 +201,10 @@ async function synth(key: string, j: Job): Promise<Buffer> {
 
 async function main() {
   const jobs = collect();
+  if (process.argv.includes("--dump-jobs")) {
+    console.log(JSON.stringify(jobs.filter(yomiTarget).map((j) => ({ key: j.key, text: j.text, unit: j.unit }))));
+    return;
+  }
   const todo = jobs.filter((j) => !existsSync(`${j.dir}/${j.key}.mp3`));
   const count = (dir: string) => jobs.filter((j) => j.dir === dir);
   const chars = todo.reduce((n, j) => n + j.text.length, 0);
@@ -170,12 +217,18 @@ async function main() {
     const used = new Set(count(dir).map((j) => `${j.key}.mp3`));
     if (existsSync(dir)) for (const f of readdirSync(dir)) if (f.endsWith(".mp3") && !used.has(f)) stale.push(`${dir}/${f}`);
   }
-  if (stale.length) console.log(`使われなくなった古い音声 ${stale.length} 個${process.argv.includes("--count") ? "（消すのは本番の実行時）" : "を消します"}`);
+  if (stale.length) console.log(`使われなくなった古い音声 ${stale.length} 個${process.argv.includes("--count") || process.argv.includes("--check") ? "（消すのは本番の実行時）" : "を消します"}`);
   if (process.argv.includes("--count")) return;
-  // 先に ffmpeg と VOICEVOX がそろっているかを確かめてから、古い音声を消す
+  if (process.argv.includes("--check")) {
+    await vvSpeakers();
+    await finalCheck(jobs);
+    return;
+  }
+  // 先に ffmpeg と VOICEVOX がそろっているか、VOICEVOX 本体の読みが合っているかを確かめてから、古い音声を消す
   if (todo.some((j) => j.voice.startsWith("vv:"))) {
     checkFfmpeg();
     await vvSpeakers();
+    QUERIES = await finalCheck(todo);
   }
   for (const f of stale) unlinkSync(f);
   const key = todo.some((j) => !j.voice.startsWith("vv:")) ? apiKey() : "";

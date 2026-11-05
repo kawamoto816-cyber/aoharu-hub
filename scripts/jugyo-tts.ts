@@ -8,6 +8,11 @@
 //     すでにあるファイルは作り直さない。台本を直したら、同じコマンドで足りない分だけ作る。
 //     もう使われなくなった古い音声ファイルは消す（台本を直す前の文など）。
 //   作ったら git に入れて公開する。ファイルがあるせりふはその声で、無いせりふはブラウザの「仮の声」で再生される。
+//
+//   読みの最終点検（scripts/vv-yomi.ts）：作る前に、scripts/voicevox-dict.json を VOICEVOX のユーザー辞書に登録し、
+//     作るせりふを VOICEVOX 本体に読ませて、確定した正しい読み（scripts/jugyo-yomi.json）とくらべる。
+//     食いちがい・正しい読みが未登録の行があれば一覧を出して止まる。まちがいでなければ  --force  をつけて続ける。
+//   読みだけ点検する（全せりふ・音声は作らない）:  npx tsx scripts/jugyo-tts.ts --check
 
 import { existsSync, mkdirSync, readFileSync, readdirSync, unlinkSync, writeFileSync } from "node:fs";
 import { execFileSync } from "node:child_process";
@@ -16,30 +21,36 @@ import { join } from "node:path";
 import { createRequire } from "node:module";
 import { LESSONS } from "../lib/jugyo";
 import { jugyoAudio, jugyoPauseAudio } from "../lib/jugyo/audio";
+import { VV, checkYomi, registerUserDict, type AudioQuery } from "./vv-yomi";
 
-type Job = { key: string; text: string; voice: string; rate: number; unit: string };
+/** label = 字幕（ルビは親字・{{ }} を外す）。scripts/jugyo-yomi.json の "text" と同じ形 */
+type Job = { key: string; text: string; voice: string; rate: number; unit: string; label: string; scene: number };
+
+const RUBY = /｜([^｜《》\n]+?)《([^《》\n]+?)》|([㐀-鿿々〆ヶ]+)《([^《》\n]+?)》/g;
+const plain = (s: string) => s.replace(RUBY, (_a, b1, _r1, b2) => b1 ?? b2).replace(/\{\{|\}\}/g, "").replace(/\s+/g, " ").trim();
+const YOMI_JSON = "scripts/jugyo-yomi.json";
 
 const DIR = "public/audio/jugyo";
 
 function collect(): Job[] {
   const jobs = new Map<string, Job>();
   for (const l of LESSONS)
-    for (const sc of l.scenes) {
+    l.scenes.forEach((sc, i) => {
       if (sc.kind === "pause") {
         // 「ここで問題」の読み上げ（問いと選択肢・答えとわけ。先生の声）
         const q = jugyoPauseAudio(sc);
-        for (const a of [q.ask, q.reply]) if (a) jobs.set(a.key, { key: a.key, text: a.text, voice: a.voice, rate: a.rate, unit: l.unitId });
-        continue;
+        for (const a of [q.ask, q.reply])
+          if (a) jobs.set(a.key, { key: a.key, text: a.text, voice: a.voice, rate: a.rate, unit: l.unitId, label: plain(a.display), scene: i });
+        return;
       }
-      if (sc.kind !== "talk") continue;
+      if (sc.kind !== "talk") return;
       const a = jugyoAudio(sc);
-      jobs.set(a.key, { key: a.key, text: a.text, voice: a.voice, rate: a.rate, unit: l.unitId });
-    }
+      jobs.set(a.key, { key: a.key, text: a.text, voice: a.voice, rate: a.rate, unit: l.unitId, label: plain(sc.text), scene: i });
+    });
   return [...jobs.values()];
 }
 
 // ── VOICEVOX ──
-const VV = process.env.VOICEVOX_URL ?? "http://localhost:50021";
 let vvIds: Map<string, number> | null = null;
 
 async function vvSpeakers(): Promise<Map<string, number>> {
@@ -78,13 +89,52 @@ function checkFfmpeg() {
   process.exit(1);
 }
 
-async function synth(j: Job): Promise<Buffer> {
+async function speakerId(j: Job): Promise<number> {
   const name = j.voice.slice(3);
   const id = (await vvSpeakers()).get(name);
   if (id === undefined) throw new Error(`VOICEVOX に「${name}」の声が入っていません（アプリの「キャラクター」から追加してください）`);
-  const q = await fetch(`${VV}/audio_query?speaker=${id}&text=${encodeURIComponent(j.text)}`, { method: "POST" });
-  if (!q.ok) throw new Error(`audio_query ${q.status}`);
-  const query = (await q.json()) as Record<string, unknown>;
+  return id;
+}
+
+/** 確定した正しい読み（scripts/jugyo-yomi.json：単元 → [{ text: 字幕, yomi }]） */
+function wantYomi(): (j: Job) => string | undefined {
+  const data = existsSync(YOMI_JSON) ? (JSON.parse(readFileSync(YOMI_JSON, "utf8")) as Record<string, { text: string; yomi: string }[]>) : {};
+  const table = new Map(Object.entries(data).flatMap(([u, es]) => es.map((e) => [`${u}\n${e.text}`, e.yomi] as const)));
+  return (j) => table.get(`${j.unit}\n${j.label}`);
+}
+
+/** VOICEVOX 本体の読みでの最終点検（止まるときはここで終わる）。キー → audio_query */
+async function finalCheck(list: Job[]): Promise<Map<string, AudioQuery>> {
+  await registerUserDict();
+  const want = wantYomi();
+  const jobs = [];
+  const ids = new Map<string, number>();
+  for (const j of new Set(list.map((j) => j.voice)))
+    try {
+      ids.set(j, await speakerId({ voice: j } as Job));
+    } catch (e) {
+      console.error((e as Error).message);
+      process.exit(1);
+    }
+  for (const j of list)
+    jobs.push({ key: j.key, text: j.text, speaker: ids.get(j.voice)!, label: `${j.unit} #${j.scene}「${j.label.slice(0, 30)}」`, want: want(j) });
+  return checkYomi(jobs, {
+    expectFile: YOMI_JSON,
+    howToFix: "未登録の行は、Claude の環境で python3 scripts/jugyo-yomi.py --draft から読みを確かめて登録する",
+    force: process.argv.includes("--force"),
+  });
+}
+
+let QUERIES = new Map<string, AudioQuery>();
+
+async function synth(j: Job): Promise<Buffer> {
+  const id = await speakerId(j);
+  let query = QUERIES.get(j.key) as Record<string, unknown> | undefined;
+  if (!query) {
+    const q = await fetch(`${VV}/audio_query?speaker=${id}&text=${encodeURIComponent(j.text)}`, { method: "POST" });
+    if (!q.ok) throw new Error(`audio_query ${q.status}`);
+    query = (await q.json()) as Record<string, unknown>;
+  }
   // 授業の声：漫才より抑揚をおさえ、文の前後に少し間をとる
   query.speedScale = j.rate;
   query.intonationScale = 1.12;
@@ -111,11 +161,18 @@ async function main() {
   console.log(`作るのは ${todo.length} 個（約 ${chars.toLocaleString()} 字）`);
   const used = new Set(jobs.map((j) => `${j.key}.mp3`));
   const stale = existsSync(DIR) ? readdirSync(DIR).filter((f) => f.endsWith(".mp3") && !used.has(f)) : [];
-  if (stale.length) console.log(`使われなくなった古い音声 ${stale.length} 個${process.argv.includes("--count") ? "（消すのは本番の実行時）" : "を消します"}`);
+  if (stale.length) console.log(`使われなくなった古い音声 ${stale.length} 個${process.argv.includes("--count") || process.argv.includes("--check") ? "（消すのは本番の実行時）" : "を消します"}`);
   if (process.argv.includes("--count")) return;
+  if (process.argv.includes("--check")) {
+    await vvSpeakers();
+    await finalCheck(jobs);
+    return;
+  }
   if (todo.length) {
     checkFfmpeg();
     await vvSpeakers();
+    // 古い音声を消す前・作る前に、VOICEVOX 本体の読みで点検する
+    QUERIES = await finalCheck(todo);
   }
   for (const f of stale) unlinkSync(`${DIR}/${f}`);
   mkdirSync(DIR, { recursive: true });
