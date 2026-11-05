@@ -54,5 +54,7 @@
  {"surface": "松前", "yomi": "マツマエ", "accent": 2, "pos": "固有名詞", "priority": 7, "lines": 2},
  {"surface": "未然形", "yomi": "ミゼンケイ", "accent": 2, "pos": "普通名詞", "priority": 7, "lines": 2},
  {"surface": "夜ごと", "yomi": "ヨルゴト", "accent": 0, "pos": "普通名詞", "priority": 7, "lines": 2},
- {"surface": "遼東半島", "yomi": "リョートーハントー", "accent": 6, "pos": "固有名詞", "priority": 7, "lines": 2}
+ {"surface": "遼東半島", "yomi": "リョートーハントー", "accent": 6, "pos": "固有名詞", "priority": 7, "lines": 2},
+ {"surface": "投票所", "yomi": "トウヒョウジョ", "accent": 5, "pos": "普通名詞", "priority": 8, "lines": 1},
+ {"surface": "期日前", "yomi": "キジツゼン", "accent": 3, "pos": "普通名詞", "priority": 8, "lines": 1}
 ]
