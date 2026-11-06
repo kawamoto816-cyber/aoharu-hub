@@ -86,5 +86,11 @@
  {"surface": "過不足", "yomi": "カブソク", "accent": 2, "pos": "普通名詞", "priority": 7, "lines": 0},
  {"surface": "整流子", "yomi": "セーリューシ", "accent": 3, "pos": "普通名詞", "priority": 7, "lines": 0},
  {"surface": "定期市", "yomi": "テーキイチ", "accent": 3, "pos": "普通名詞", "priority": 7, "lines": 0},
- {"surface": "期日前投票", "yomi": "キジツマエトーヒョー", "accent": 5, "pos": "普通名詞", "priority": 7, "lines": 0}
+ {"surface": "期日前投票", "yomi": "キジツマエトーヒョー", "accent": 5, "pos": "普通名詞", "priority": 7, "lines": 0},
+ {"surface": "禁中並公家諸法度", "yomi": "キンチューナラビニクゲショハット", "accent": 0, "pos": "普通名詞", "priority": 7, "lines": 0},
+ {"surface": "幕領", "yomi": "バクリョー", "accent": 0, "pos": "普通名詞", "priority": 7, "lines": 0},
+ {"surface": "田畑永代売買", "yomi": "デンパタエータイバイバイ", "accent": 0, "pos": "普通名詞", "priority": 7, "lines": 0},
+ {"surface": "品不足", "yomi": "シナブソク", "accent": 3, "pos": "普通名詞", "priority": 7, "lines": 0},
+ {"surface": "城跡", "yomi": "シロアト", "accent": 0, "pos": "普通名詞", "priority": 7, "lines": 0},
+ {"surface": "大名家", "yomi": "ダイミョーケ", "accent": 0, "pos": "普通名詞", "priority": 7, "lines": 0}
 ]
