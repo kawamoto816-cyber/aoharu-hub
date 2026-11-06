@@ -118,7 +118,7 @@ export const UKEMI_J_DARK: CastScript = {
       kind: "talk",
       who: "seito",
       text: "その夜、宣言は大きな1枚の紙に刷られた。Copies were printed that night.。こちらは主語が複数だから were ね。",
-      say: "その夜、宣言は、大きな1まいの紙に刷られた。コピーズ ワー プリンテッド ザット ナイト。こちらは、主語が複数だから、ワーね。",
+      say: "その夜、宣言は、大きな1まいの紙にすられた。コピーズ ワー プリンテッド ザット ナイト。こちらは、主語が複数だから、ワーね。",
     },
     {
       kind: "talk",

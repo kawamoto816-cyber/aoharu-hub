@@ -114,7 +114,7 @@ export const UKEMI_J_KISAKU: CastScript = {
       kind: "talk",
       who: "seito",
       text: "その夜には大きな1枚の紙に刷られたんだよね。Copies were printed that night.。こっちは主語が複数だから were か。",
-      say: "その夜には、大きな1まいの紙に刷られたんだよね。コピーズ ワー プリンテッド ザット ナイト。こっちは、主語が複数だから、ワーか。",
+      say: "その夜には、大きな1まいの紙にすられたんだよね。コピーズ ワー プリンテッド ザット ナイト。こっちは、主語が複数だから、ワーか。",
     },
     {
       kind: "talk",
