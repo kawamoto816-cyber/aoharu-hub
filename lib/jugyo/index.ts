@@ -28,6 +28,18 @@ import { TAISHA_BASE } from "./data/h-sci-biob-taisha";
 import { TAISHA_H_CHARISMA } from "./data/h-sci-biob-taisha.h-charisma";
 import { TAISHA_H_KYOJU } from "./data/h-sci-biob-taisha.h-kyoju";
 import { TAISHA_H_NEKKETSU } from "./data/h-sci-biob-taisha.h-nekketsu";
+import { BIBUN_BASE } from "./data/h-math-2-bibun";
+import { BIBUN_H_CHARISMA } from "./data/h-math-2-bibun.h-charisma";
+import { BIBUN_H_KYOJU } from "./data/h-math-2-bibun.h-kyoju";
+import { BIBUN_H_NEKKETSU } from "./data/h-math-2-bibun.h-nekketsu";
+import { MOL_BASE } from "./data/h-sci-chemb-mol";
+import { MOL_H_CHARISMA } from "./data/h-sci-chemb-mol.h-charisma";
+import { MOL_H_KYOJU } from "./data/h-sci-chemb-mol.h-kyoju";
+import { MOL_H_NEKKETSU } from "./data/h-sci-chemb-mol.h-nekketsu";
+import { DOPPLER_BASE } from "./data/h-sci-phy-doppler";
+import { DOPPLER_H_CHARISMA } from "./data/h-sci-phy-doppler.h-charisma";
+import { DOPPLER_H_KYOJU } from "./data/h-sci-phy-doppler.h-kyoju";
+import { DOPPLER_H_NEKKETSU } from "./data/h-sci-phy-doppler.h-nekketsu";
 
 // 止まる授業（動画型・試作）。/learn/jugyo と /learn/jugyo/<単元id>（?cast=<キャストid> で確認用に指定）。試作なので noindex・sitemap に入れない。
 // 台本を足すとき：単元の骨組み data/<単元id>.ts（問題）と、キャストごとのせりふ data/<単元id>.<キャストid>.ts を書いて
@@ -35,11 +47,12 @@ import { TAISHA_H_NEKKETSU } from "./data/h-sci-biob-taisha.h-nekketsu";
 
 export const JUGYO_HOME = "/learn/jugyo";
 
-const BASES: UnitBase[] = [WARIAI_BASE, HAYASA_BASE, BUNSU_WARI_BASE, FURIKO_BASE, KAMAKURA_BASE, SEIFU_BASE, DENRYU_BASE, FUTEISHI_BASE, TAISHA_BASE];
+const BASES: UnitBase[] = [WARIAI_BASE, HAYASA_BASE, BUNSU_WARI_BASE, FURIKO_BASE, KAMAKURA_BASE, SEIFU_BASE, DENRYU_BASE, FUTEISHI_BASE, TAISHA_BASE, BIBUN_BASE, MOL_BASE, DOPPLER_BASE];
 const SCRIPTS: CastScript[] = [
   WARIAI_E_POP, WARIAI_E_YASASHI, HAYASA_E_POP, HAYASA_E_YASASHI, BUNSU_WARI_E_POP, BUNSU_WARI_E_YASASHI, FURIKO_E_POP, FURIKO_E_YASASHI,
   KAMAKURA_J_DARK, KAMAKURA_J_KISAKU, SEIFU_J_DARK, SEIFU_J_KISAKU, DENRYU_J_DARK, DENRYU_J_KISAKU, FUTEISHI_J_DARK, FUTEISHI_J_KISAKU,
-  TAISHA_H_CHARISMA, TAISHA_H_KYOJU, TAISHA_H_NEKKETSU,
+  TAISHA_H_CHARISMA, TAISHA_H_KYOJU, TAISHA_H_NEKKETSU, BIBUN_H_CHARISMA, BIBUN_H_KYOJU, BIBUN_H_NEKKETSU,
+  MOL_H_CHARISMA, MOL_H_KYOJU, MOL_H_NEKKETSU, DOPPLER_H_CHARISMA, DOPPLER_H_KYOJU, DOPPLER_H_NEKKETSU,
 ];
 
 /** 骨組みとキャストのせりふを合わせて1本の授業にする（問題の {seito} は相方の名前に） */
