@@ -5,6 +5,8 @@ import { Rich } from "@/components/lecture/Rich";
 import { UZ_SCENES } from "@/lib/unizeb/registry";
 import { LectureStoryView } from "@/components/lecture/Story";
 import { cardInfo, deptLabel } from "@/lib/unizeb";
+import { uzJugyoHref } from "@/lib/jugyo/uz";
+import { uzJugyoSpan } from "@/lib/jugyo/uz/lessons";
 import { Checks, figBases, Kicker, NextLinks, SectionView, UZ_HOME, uzCrumbs } from "./parts";
 
 // ゼロワンOSユース版の図解レクチャー（/learn/unizeb/lec/<カードid>）。
@@ -15,6 +17,7 @@ export function UzLecturePage({ lec, id }: { lec: Lecture; id: string }) {
   const name = lec.nameRuby ?? c?.name ?? id;
   const bases = figBases(lec.sections, UZ_SCENES[`lec/${id}`]);
   const m = lec.mission;
+  const jugyo = uzJugyoSpan(id);
   return (
     <LearnShell narrow crumbs={uzCrumbs(c?.name ?? id, { href: `${UZ_HOME}#lec`, label: "教科書" })} homeHref="/learn">
       <Kicker>
@@ -53,6 +56,19 @@ export function UzLecturePage({ lec, id }: { lec: Lecture; id: string }) {
           ))}
         </ol>
       </section>
+
+      {jugyo && (
+        <Link href={uzJugyoHref(id)} className="mt-3 flex min-h-[52px] items-center gap-3 rounded-[14px] border-[1.5px] border-[#15172B] bg-[#15172B] px-3.5 py-2.5 text-white no-underline shadow-[3px_3px_0_#1533B8] transition-transform hover:-translate-y-0.5 focus-visible:-translate-y-0.5">
+          <span aria-hidden="true" className="flex h-8 w-8 flex-none items-center justify-center rounded-full bg-[#FFE45C] text-[13px] text-[#15172B]">
+            ▶
+          </span>
+          <span className="min-w-0">
+            <span className="block text-[14.5px] font-black leading-snug">このレクチャーを授業で見る</span>
+            <span className="block text-[12px] font-bold text-[#C9CEF2]">約{jugyo.minutes}分・{jugyo.stops}回止まる　止まる授業</span>
+          </span>
+          <span aria-hidden="true" className="ml-auto flex-none text-[16px] font-black">→</span>
+        </Link>
+      )}
 
       {lec.sections.map((s, i) => (
         <SectionView

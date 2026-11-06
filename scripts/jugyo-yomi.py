@@ -25,6 +25,9 @@
 #    （ゴ／ゴー のような「ー」の有る無しは別の読みとして扱う）
 # 3. 促音の「ッ」と「ツ」は別。助詞の読みは上のとおり発音どおりに書く（は/ワ・へ/エ を同じとはみなさない）
 #
+# ゼロワンOSユース版（lib/jugyo/uz の UZ_LESSONS）もいっしょに点検する。読みは scripts/jugyo-yomi.uz.json、
+# ユーザー辞書は scripts/voicevox-dict.uz.json（本体の .json と合わせて当てる）。--draft の下書きは、単元 id が unizeb- のものを .uz.json に貼る。
+#
 # 注意：pyopenjtalk と VOICEVOX（エンジンの版・ユーザー辞書）の読みが食いちがうことはありうる。音声を作ったら耳でも確かめる。
 
 import json
@@ -35,9 +38,12 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 YOMI_JSON = ROOT / "scripts" / "jugyo-yomi.json"
+YOMI_JSON_UZ = ROOT / "scripts" / "jugyo-yomi.uz.json"
+DICT_JSON_UZ = ROOT / "scripts" / "voicevox-dict.uz.json"
 
 DUMP = r"""
-import { LESSONS } from "./lib/jugyo";
+import { LESSONS as MAIN, UZ_LESSONS } from "./lib/jugyo";
+const LESSONS = [...MAIN, ...UZ_LESSONS];
 import { jugyoAudio, jugyoPauseAudio } from "./lib/jugyo/audio";
 const RUBY = /｜([^｜《》\n]+?)《([^《》\n]+?)》|([㐀-鿿々〆ヶ]+)《([^《》\n]+?)》/g;
 const plain = (s: string) => s.replace(RUBY, (_a, b1, _r1, b2) => b1 ?? b2).replace(/\{\{|\}\}/g, "").replace(/\s+/g, " ").trim();
@@ -88,10 +94,14 @@ def main():
     if "--dict" in args:
         sys.dont_write_bytecode = True  # scripts/__pycache__ を作らない
         sys.path.insert(0, str(ROOT / "scripts"))
-        from voicevox_dict import apply_user_dict
+        from voicevox_dict import apply_user_dict, load
 
-        print(f"ユーザー辞書（scripts/voicevox-dict.json）{apply_user_dict(pyopenjtalk)} 語を当てて読みます")
-    data = json.loads(YOMI_JSON.read_text(encoding="utf-8")) if YOMI_JSON.exists() else {}
+        uz = json.loads(DICT_JSON_UZ.read_text(encoding="utf-8")) if DICT_JSON_UZ.exists() else []
+        print(f"ユーザー辞書（scripts/voicevox-dict.json・.uz.json）{apply_user_dict(pyopenjtalk, load() + uz)} 語を当てて読みます")
+    data = {}
+    for f in (YOMI_JSON, YOMI_JSON_UZ):
+        if f.exists():
+            data.update(json.loads(f.read_text(encoding="utf-8")))
     table = {(u, e["text"]): e["yomi"] for u, es in data.items() for e in es}
     used = set()
     bad, missing, draft = [], [], {}

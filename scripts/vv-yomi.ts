@@ -15,6 +15,8 @@ import { readFileSync, existsSync } from "node:fs";
 export const VV = process.env.VOICEVOX_URL ?? "http://localhost:50021";
 
 const DICT = "scripts/voicevox-dict.json";
+/** ゼロワンOSユース版の授業の辞書（本体の辞書といっしょに登録する） */
+const DICT_UZ = "scripts/voicevox-dict.uz.json";
 
 type DictWord = { surface: string; yomi: string; accent: number; pos?: "普通名詞" | "固有名詞"; priority?: number };
 type EngineWord = { surface: string; pronunciation: string; accent_type: number; priority: number; part_of_speech_detail_1: string };
@@ -37,8 +39,7 @@ const zenkaku = (s: string) => s.normalize("NFKC").replace(/[!-~]/g, (c) => Stri
 
 /** voicevox-dict.json の語をエンジンのユーザー辞書に登録する（新しい語は足し、読み・アクセント・品詞・優先度がちがう語は直す） */
 export async function registerUserDict(): Promise<void> {
-  if (!existsSync(DICT)) return;
-  const words = JSON.parse(readFileSync(DICT, "utf8")) as DictWord[];
+  const words = [DICT, DICT_UZ].flatMap((f) => (existsSync(f) ? (JSON.parse(readFileSync(f, "utf8")) as DictWord[]) : []));
   if (!words.length) return;
   const r = await vvFetch("/user_dict");
   if (!r.ok) {

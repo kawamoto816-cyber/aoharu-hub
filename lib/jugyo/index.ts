@@ -311,6 +311,7 @@ import { ASSYUKU_BASE } from "./data/h-info-1-assyuku";
 import { ASSYUKU_H_CHARISMA } from "./data/h-info-1-assyuku.h-charisma";
 import { ASSYUKU_H_KYOJU } from "./data/h-info-1-assyuku.h-kyoju";
 import { ASSYUKU_H_NEKKETSU } from "./data/h-info-1-assyuku.h-nekketsu";
+import { UZ_BASES, UZ_SCRIPTS } from "./uz";
 
 // 止まる授業（動画型・試作）。/learn/jugyo と /learn/jugyo/<単元id>（?cast=<キャストid> で確認用に指定。canonical は cast なし）。
 // 検索に載せ、sitemap にも入れる（2026-11-06 代表の決定）。入口は教科の地図の単元の箱・単元の教科書のページ・まなぶのトップ。
@@ -379,6 +380,9 @@ export function buildLesson(base: UnitBase, script: CastScript): Lesson {
   });
   return { unitId: script.unitId, stage: stageOf(script.unitId), title: script.title, cast, scenes };
 }
+
+/** ゼロワンOSユース版（lib/unizeb）の授業。lib/jugyo/uz が持つ。一覧・sitemap には入れず、/learn/unizeb/jugyo/<カードid> で見せる */
+export const UZ_LESSONS: Lesson[] = UZ_SCRIPTS.map((s) => buildLesson(UZ_BASES.find((b) => b.unitId === s.unitId) ?? { unitId: s.unitId, pauses: {} }, s));
 
 const BASE_OF = new Map(BASES.map((b) => [b.unitId, b]));
 /** すべての授業（単元 × キャスト） */

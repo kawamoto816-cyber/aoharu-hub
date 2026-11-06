@@ -9,16 +9,24 @@
 // 5.（警告）要注意語（lib/tts/yomi-watch.ts：方・人・日・今日など文脈で読みが割れる語）が、音声にする文に漢字のまま残り、
 //    scripts/jugyo-yomi.json にも正しい読みが無い行。say でその語をひらがなに開くか、jugyo-yomi.json に登録する。
 //    （登録がある行で say で開いていない要注意語の数も出す：読みは jugyo-yomi.py と VOICEVOX 本体の点検で確かめる）
+// ゼロワンOSユース版（lib/jugyo/uz・UZ_LESSONS）も点検する：事実の照合先は lib/unizeb の図解レクチャー（UZ_LECTURES）、
+//    読みは scripts/jugyo-yomi.uz.json。長さは 1,800〜2,400字（6〜8分）・3〜4回止まり、最初に止まるまで2分（600字）以内。
 // エラーがあれば終了コード 1。警告では止めない。
 
 import { getLecture } from "../lib/lecture";
 import type { Lecture } from "../lib/lecture/types";
-import { CHARS_PER_MIN, LESSONS, UNITS } from "../lib/jugyo";
+import { CHARS_PER_MIN, LESSONS as MAIN_LESSONS, UNITS as MAIN_UNITS, UZ_LESSONS } from "../lib/jugyo";
+import { UZ_LECTURES } from "../lib/unizeb";
 import { CASTS, castsOfStage, stageOf } from "../lib/jugyo/cast";
 import { manzaiSay } from "../lib/tts/manzai";
 import { existsSync, readFileSync } from "node:fs";
 import { jugyoAudio, jugyoPauseAudio } from "../lib/jugyo/audio";
 import { watchWordsIn } from "../lib/tts/yomi-watch";
+
+const LESSONS = [...MAIN_LESSONS, ...UZ_LESSONS];
+const UNITS = [...MAIN_UNITS, ...new Set(UZ_LESSONS.map((l) => l.unitId))];
+const isUz = (unit: string) => unit.startsWith("unizeb-");
+const lectureOf = (unit: string): Lecture | undefined => (isUz(unit) ? UZ_LECTURES.find((l) => l.unit === unit) : getLecture(unit));
 
 const RUBY = /｜([^｜《》\n]+?)《([^《》\n]+?)》|([㐀-鿿々〆ヶ]+)《([^《》\n]+?)》/g;
 const plain = (s: string) => s.replace(RUBY, (_a, b1, _r1, b2) => b1 ?? b2).replace(/\{\{|\}\}/g, "");
@@ -46,9 +54,9 @@ const warn = (u: string, msg: string) => {
 };
 
 // 確定した正しい読み（単元 → 字幕の集まり）。字幕はルビを親字にし {{ }} を外したもの（scripts/jugyo-yomi.py と同じ）
-const YOMI_JSON = "scripts/jugyo-yomi.json";
+const YOMI_JSONS = ["scripts/jugyo-yomi.json", "scripts/jugyo-yomi.uz.json"];
 const registered = new Map<string, Set<string>>(
-  Object.entries(existsSync(YOMI_JSON) ? (JSON.parse(readFileSync(YOMI_JSON, "utf8")) as Record<string, { text: string }[]>) : {}).map(([u, es]) => [
+  YOMI_JSONS.flatMap((f) => Object.entries(existsSync(f) ? (JSON.parse(readFileSync(f, "utf8")) as Record<string, { text: string }[]>) : {})).map(([u, es]) => [
     u,
     new Set(es.map((e) => e.text)),
   ]),
@@ -71,6 +79,8 @@ const RULE = {
   j: { chars: [1500, 2400], pauses: [3, 4], gap: Infinity, tail: Infinity },
   h: { chars: [1500, 2400], pauses: [3, 4], gap: Infinity, tail: Infinity },
 } as const;
+const UZ_RULE = { chars: [1800, 2400], pauses: [3, 4], gap: Infinity, tail: Infinity } as const;
+const UZ_FIRST = 2 * CHARS_PER_MIN;
 
 for (const c of CASTS)
   for (const w of ["sensei", "seito"] as const)
@@ -83,8 +93,8 @@ const summary: string[] = [];
 for (const lesson of LESSONS) {
   const unit = lesson.unitId;
   const u = `${unit} × ${lesson.cast.id}`;
-  const lec = getLecture(unit);
-  const rule = RULE[lesson.stage];
+  const lec = lectureOf(unit);
+  const rule = isUz(unit) ? UZ_RULE : RULE[lesson.stage];
   console.log(`■ ${u}（${lesson.cast.label} ${lesson.cast.name}）「${plain(lesson.title)}」`);
   if (!lec) {
     err(u, "lecture がない");
@@ -125,6 +135,7 @@ for (const lesson of LESSONS) {
       for (const a of [qa.ask, qa.reply]) if (a) watch(unit, `${lesson.cast.id} ${at}（問題の読み上げ）`, a.display, a.text);
       if (sc.question.includes("{seito}") || sc.say?.question?.includes("{seito}")) err(u, `${at} 問いに {seito} が残っている`);
       minutesAt.push((chars / CHARS_PER_MIN).toFixed(1));
+      if (isUz(unit) && pauses === 1 && chars > UZ_FIRST) err(u, `${at} 最初に止まるまで ${(chars / CHARS_PER_MIN).toFixed(1)} 分（2分までに）`);
       if (chars - lastPauseAt > rule.gap) err(u, `${at} 前に止まってから ${((chars - lastPauseAt) / CHARS_PER_MIN).toFixed(1)} 分（${rule.gap / CHARS_PER_MIN}分までに1回止まる）`);
       lastPauseAt = chars;
       const [kind, n] = sc.source.split(":");

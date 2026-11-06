@@ -15,39 +15,48 @@
 //     作るせりふを VOICEVOX 本体に読ませて、確定した正しい読み（scripts/jugyo-yomi.json）とくらべる。
 //     食いちがい・正しい読みが未登録の行があれば一覧を出して止まる。まちがいでなければ  --force  をつけて続ける。
 //   読みだけ点検する（全せりふ・音声は作らない）:  npx tsx scripts/jugyo-tts.ts --check
+//
+//   ゼロワンOSユース版（lib/jugyo/uz の UZ_LESSONS）もいっしょに作る。置き場所は public/audio/jugyo/uz/、
+//   読みは scripts/jugyo-yomi.uz.json、辞書は scripts/voicevox-dict.uz.json（vv-yomi.ts が本体の辞書と合わせて登録する）。
 
 import { existsSync, mkdirSync, readFileSync, readdirSync, unlinkSync, writeFileSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { createRequire } from "node:module";
-import { LESSONS } from "../lib/jugyo";
+import { LESSONS as MAIN, UZ_LESSONS } from "../lib/jugyo";
+import { UZ_AUDIO_DIR } from "../lib/jugyo/uz";
 import { jugyoAudio, jugyoPauseAudio } from "../lib/jugyo/audio";
 import { VV, checkYomi, registerUserDict, type AudioQuery } from "./vv-yomi";
 
 /** label = 字幕（ルビは親字・{{ }} を外す）。scripts/jugyo-yomi.json の "text" と同じ形 */
-type Job = { key: string; text: string; voice: string; rate: number; unit: string; cast: string; label: string; scene: number };
+type Job = { dir: string; key: string; text: string; voice: string; rate: number; unit: string; cast: string; label: string; scene: number };
 
 const RUBY = /｜([^｜《》\n]+?)《([^《》\n]+?)》|([㐀-鿿々〆ヶ]+)《([^《》\n]+?)》/g;
 const plain = (s: string) => s.replace(RUBY, (_a, b1, _r1, b2) => b1 ?? b2).replace(/\{\{|\}\}/g, "").replace(/\s+/g, " ").trim();
 const YOMI_JSON = "scripts/jugyo-yomi.json";
+const YOMI_JSONS = [YOMI_JSON, "scripts/jugyo-yomi.uz.json"];
 
 const DIR = "public/audio/jugyo";
+const LESSONS = [...MAIN, ...UZ_LESSONS];
+const dirOf = (unit: string) => (unit.startsWith("unizeb-") ? UZ_AUDIO_DIR : DIR);
 
 function collect(): Job[] {
   const jobs = new Map<string, Job>();
+  const id = (j: Job) => `${j.dir}/${j.key}`;
   for (const l of LESSONS)
     l.scenes.forEach((sc, i) => {
-      const base = { unit: l.unitId, cast: l.cast.id, scene: i };
+      const base = { dir: dirOf(l.unitId), unit: l.unitId, cast: l.cast.id, scene: i };
       if (sc.kind === "pause") {
         // 「ここで問題」の読み上げ（問いと選択肢・答えとわけ。説明役の声）
         const q = jugyoPauseAudio(sc, l.cast);
-        for (const a of [q.ask, q.reply]) if (a) jobs.set(a.key, { ...base, key: a.key, text: a.text, voice: a.voice, rate: a.rate, label: plain(a.display) });
+        for (const a of [q.ask, q.reply]) if (a) { const j = { ...base, key: a.key, text: a.text, voice: a.voice, rate: a.rate, label: plain(a.display) }; jobs.set(id(j), j); }
         return;
       }
       if (sc.kind !== "talk") return;
       const a = jugyoAudio(sc, l.cast);
-      jobs.set(a.key, { ...base, key: a.key, text: a.text, voice: a.voice, rate: a.rate, label: plain(sc.text) });
+      const j = { ...base, key: a.key, text: a.text, voice: a.voice, rate: a.rate, label: plain(sc.text) };
+      jobs.set(id(j), j);
     });
   return [...jobs.values()];
 }
@@ -100,7 +109,7 @@ async function speakerId(j: Job): Promise<number> {
 
 /** 確定した正しい読み（scripts/jugyo-yomi.json：単元 → [{ text: 字幕, yomi }]） */
 function wantYomi(): (j: Job) => string | undefined {
-  const data = existsSync(YOMI_JSON) ? (JSON.parse(readFileSync(YOMI_JSON, "utf8")) as Record<string, { text: string; yomi: string }[]>) : {};
+  const data = Object.assign({}, ...YOMI_JSONS.map((f) => (existsSync(f) ? (JSON.parse(readFileSync(f, "utf8")) as Record<string, { text: string; yomi: string }[]>) : {}))) as Record<string, { text: string; yomi: string }[]>;
   const table = new Map(Object.entries(data).flatMap(([u, es]) => es.map((e) => [`${u}\n${e.text}`, e.yomi] as const)));
   return (j) => table.get(`${j.unit}\n${j.label}`);
 }
@@ -157,7 +166,7 @@ async function synth(j: Job): Promise<Buffer> {
 
 async function main() {
   const jobs = collect();
-  const todo = jobs.filter((j) => !existsSync(`${DIR}/${j.key}.mp3`));
+  const todo = jobs.filter((j) => !existsSync(`${j.dir}/${j.key}.mp3`));
   const chars = todo.reduce((n, j) => n + j.text.length, 0);
   console.log(`授業 ${LESSONS.length} 本（単元 × キャスト）・${jobs.length} せりふ`);
   for (const l of LESSONS) {
@@ -165,8 +174,8 @@ async function main() {
     console.log(`  ${l.unitId} × ${l.cast.id}（${l.cast.members.sensei.voice.slice(3)}・${l.cast.members.seito.voice.slice(3)}）${n} 個`);
   }
   console.log(`作るのは ${todo.length} 個（約 ${chars.toLocaleString()} 字）`);
-  const used = new Set(jobs.map((j) => `${j.key}.mp3`));
-  const stale = existsSync(DIR) ? readdirSync(DIR).filter((f) => f.endsWith(".mp3") && !used.has(f)) : [];
+  const used = new Set(jobs.map((j) => `${j.dir}/${j.key}.mp3`));
+  const stale = [DIR, UZ_AUDIO_DIR].flatMap((d) => (existsSync(d) ? readdirSync(d).filter((f) => f.endsWith(".mp3")).map((f) => `${d}/${f}`) : [])).filter((f) => !used.has(f));
   if (stale.length) console.log(`使われなくなった古い音声 ${stale.length} 個${process.argv.includes("--count") || process.argv.includes("--check") ? "（消すのは本番の実行時）" : "を消します"}`);
   if (process.argv.includes("--count")) return;
   if (process.argv.includes("--check")) {
@@ -180,8 +189,8 @@ async function main() {
     // 古い音声を消す前・作る前に、VOICEVOX 本体の読みで点検する
     QUERIES = await finalCheck(todo);
   }
-  for (const f of stale) unlinkSync(`${DIR}/${f}`);
-  mkdirSync(DIR, { recursive: true });
+  for (const f of stale) unlinkSync(f);
+  for (const d of [DIR, UZ_AUDIO_DIR]) mkdirSync(d, { recursive: true });
   let next = 0;
   let done = 0;
   const failed: string[] = [];
@@ -189,7 +198,7 @@ async function main() {
     while (next < todo.length) {
       const j = todo[next++];
       try {
-        writeFileSync(`${DIR}/${j.key}.mp3`, await synth(j));
+        writeFileSync(`${j.dir}/${j.key}.mp3`, await synth(j));
       } catch (e) {
         failed.push(`${j.unit} × ${j.cast}: ${j.text.slice(0, 20)}… ${(e as Error).message}`);
       }
