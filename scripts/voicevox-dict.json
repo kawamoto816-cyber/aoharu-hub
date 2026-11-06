@@ -76,5 +76,12 @@
  {"surface": "筋組織", "yomi": "キンソシキ", "accent": 3, "pos": "普通名詞", "priority": 7, "lines": 0},
  {"surface": "小部屋", "yomi": "コベヤ", "accent": 0, "pos": "普通名詞", "priority": 7, "lines": 0},
  {"surface": "右下がり", "yomi": "ミギサガリ", "accent": 0, "pos": "普通名詞", "priority": 7, "lines": 0},
- {"surface": "地の文", "yomi": "ジノブン", "accent": 1, "pos": "普通名詞", "priority": 7, "lines": 0}
+ {"surface": "地の文", "yomi": "ジノブン", "accent": 1, "pos": "普通名詞", "priority": 7, "lines": 0},
+ {"surface": "管理人", "yomi": "カンリニン", "accent": 0, "pos": "普通名詞", "priority": 7, "lines": 0},
+ {"surface": "小作人", "yomi": "コサクニン", "accent": 3, "pos": "普通名詞", "priority": 7, "lines": 0},
+ {"surface": "梅雨前線", "yomi": "バイウゼンセン", "accent": 4, "pos": "普通名詞", "priority": 7, "lines": 0},
+ {"surface": "飽和水蒸気量", "yomi": "ホーワスイジョーキリョー", "accent": 6, "pos": "普通名詞", "priority": 7, "lines": 0},
+ {"surface": "複数形", "yomi": "フクスーケー", "accent": 0, "pos": "普通名詞", "priority": 7, "lines": 0},
+ {"surface": "電子対", "yomi": "デンシツイ", "accent": 3, "pos": "普通名詞", "priority": 7, "lines": 0},
+ {"surface": "過不足", "yomi": "カブソク", "accent": 2, "pos": "普通名詞", "priority": 7, "lines": 0}
 ]
