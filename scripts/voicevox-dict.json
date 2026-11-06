@@ -92,5 +92,19 @@
  {"surface": "田畑永代売買", "yomi": "デンパタエータイバイバイ", "accent": 0, "pos": "普通名詞", "priority": 7, "lines": 0},
  {"surface": "品不足", "yomi": "シナブソク", "accent": 3, "pos": "普通名詞", "priority": 7, "lines": 0},
  {"surface": "城跡", "yomi": "シロアト", "accent": 0, "pos": "普通名詞", "priority": 7, "lines": 0},
- {"surface": "大名家", "yomi": "ダイミョーケ", "accent": 0, "pos": "普通名詞", "priority": 7, "lines": 0}
+ {"surface": "大名家", "yomi": "ダイミョーケ", "accent": 0, "pos": "普通名詞", "priority": 7, "lines": 0},
+ {"surface": "価電子", "yomi": "カデンシ", "accent": 2, "pos": "普通名詞", "priority": 7, "lines": 0},
+ {"surface": "電子殻", "yomi": "デンシカク", "accent": 3, "pos": "普通名詞", "priority": 7, "lines": 0},
+ {"surface": "最外殻電子", "yomi": "サイガイカクデンシ", "accent": 5, "pos": "普通名詞", "priority": 7, "lines": 0},
+ {"surface": "陰イオン", "yomi": "インイオン", "accent": 3, "pos": "普通名詞", "priority": 7, "lines": 0},
+ {"surface": "陽イオン", "yomi": "ヨーイオン", "accent": 3, "pos": "普通名詞", "priority": 7, "lines": 0},
+ {"surface": "同位体", "yomi": "ドーイタイ", "accent": 0, "pos": "普通名詞", "priority": 7, "lines": 0},
+ {"surface": "柱体", "yomi": "チュータイ", "accent": 0, "pos": "普通名詞", "priority": 7, "lines": 0},
+ {"surface": "底面積", "yomi": "テーメンセキ", "accent": 3, "pos": "普通名詞", "priority": 7, "lines": 0},
+ {"surface": "四角錐", "yomi": "シカクスイ", "accent": 3, "pos": "普通名詞", "priority": 7, "lines": 0},
+ {"surface": "三角錐", "yomi": "サンカクスイ", "accent": 3, "pos": "普通名詞", "priority": 7, "lines": 0},
+ {"surface": "静脈血", "yomi": "ジョーミャクケツ", "accent": 4, "pos": "普通名詞", "priority": 7, "lines": 0},
+ {"surface": "動脈血", "yomi": "ドーミャクケツ", "accent": 4, "pos": "普通名詞", "priority": 7, "lines": 0},
+ {"surface": "不要物", "yomi": "フヨーブツ", "accent": 2, "pos": "普通名詞", "priority": 7, "lines": 0},
+ {"surface": "空所", "yomi": "クーショ", "accent": 0, "pos": "普通名詞", "priority": 7, "lines": 0}
 ]
