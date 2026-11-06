@@ -15,6 +15,15 @@ import { FURIKO_E_YASASHI } from "./data/e-science-5-furiko.e-yasashi";
 import { KAMAKURA_BASE } from "./data/j-soc-hist-kamakura";
 import { KAMAKURA_J_DARK } from "./data/j-soc-hist-kamakura.j-dark";
 import { KAMAKURA_J_KISAKU } from "./data/j-soc-hist-kamakura.j-kisaku";
+import { SEIFU_BASE } from "./data/j-math-1-seifu";
+import { SEIFU_J_DARK } from "./data/j-math-1-seifu.j-dark";
+import { SEIFU_J_KISAKU } from "./data/j-math-1-seifu.j-kisaku";
+import { DENRYU_BASE } from "./data/j-sci-2-denryu";
+import { DENRYU_J_DARK } from "./data/j-sci-2-denryu.j-dark";
+import { DENRYU_J_KISAKU } from "./data/j-sci-2-denryu.j-kisaku";
+import { FUTEISHI_BASE } from "./data/j-en-2-futeishi";
+import { FUTEISHI_J_DARK } from "./data/j-en-2-futeishi.j-dark";
+import { FUTEISHI_J_KISAKU } from "./data/j-en-2-futeishi.j-kisaku";
 import { TAISHA_BASE } from "./data/h-sci-biob-taisha";
 import { TAISHA_H_CHARISMA } from "./data/h-sci-biob-taisha.h-charisma";
 import { TAISHA_H_KYOJU } from "./data/h-sci-biob-taisha.h-kyoju";
@@ -26,8 +35,12 @@ import { TAISHA_H_NEKKETSU } from "./data/h-sci-biob-taisha.h-nekketsu";
 
 export const JUGYO_HOME = "/learn/jugyo";
 
-const BASES: UnitBase[] = [WARIAI_BASE, HAYASA_BASE, BUNSU_WARI_BASE, FURIKO_BASE, KAMAKURA_BASE, TAISHA_BASE];
-const SCRIPTS: CastScript[] = [WARIAI_E_POP, WARIAI_E_YASASHI, HAYASA_E_POP, HAYASA_E_YASASHI, BUNSU_WARI_E_POP, BUNSU_WARI_E_YASASHI, FURIKO_E_POP, FURIKO_E_YASASHI, KAMAKURA_J_DARK, KAMAKURA_J_KISAKU, TAISHA_H_CHARISMA, TAISHA_H_KYOJU, TAISHA_H_NEKKETSU];
+const BASES: UnitBase[] = [WARIAI_BASE, HAYASA_BASE, BUNSU_WARI_BASE, FURIKO_BASE, KAMAKURA_BASE, SEIFU_BASE, DENRYU_BASE, FUTEISHI_BASE, TAISHA_BASE];
+const SCRIPTS: CastScript[] = [
+  WARIAI_E_POP, WARIAI_E_YASASHI, HAYASA_E_POP, HAYASA_E_YASASHI, BUNSU_WARI_E_POP, BUNSU_WARI_E_YASASHI, FURIKO_E_POP, FURIKO_E_YASASHI,
+  KAMAKURA_J_DARK, KAMAKURA_J_KISAKU, SEIFU_J_DARK, SEIFU_J_KISAKU, DENRYU_J_DARK, DENRYU_J_KISAKU, FUTEISHI_J_DARK, FUTEISHI_J_KISAKU,
+  TAISHA_H_CHARISMA, TAISHA_H_KYOJU, TAISHA_H_NEKKETSU,
+];
 
 /** 骨組みとキャストのせりふを合わせて1本の授業にする（問題の {seito} は相方の名前に） */
 export function buildLesson(base: UnitBase, script: CastScript): Lesson {
