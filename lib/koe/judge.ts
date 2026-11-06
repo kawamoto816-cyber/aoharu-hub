@@ -7,9 +7,8 @@ import type { KoeJudge, KoePoint } from "./index";
 import { RETRY, koeSystem, koeUser, parseKoe } from "./prompt";
 
 // 声で説明の判定の呼び出し（サーバーだけ）。プロバイダを差しかえられるようにする。
-//   KOE_PROVIDER = "claude"（既定。KOE_MODEL 既定 claude-haiku-4-5・ANTHROPIC_API_KEY）
-//                | "gemini"（GEMINI_API_KEY・KOE_GEMINI_MODEL 既定 gemini-2.5-flash。Generative Language API の generateContent）
-//   gemini を選んでも GEMINI_API_KEY がなければ claude にもどす（ログに1回だけ警告）。
+//   既定は gemini（GEMINI_API_KEY か GOOGLE_PLACES_API_KEY・KOE_GEMINI_MODEL 既定 gemini-2.5-flash。Generative Language API の generateContent）。
+//   KOE_PROVIDER=claude で Claude（KOE_MODEL 既定 claude-haiku-4-5）に固定。gemini が失敗した回は Claude で判定する。
 //   - max_tokens 400・依頼文（system）は claude ではキャッシュする（gemini は暗黙のキャッシュにまかせる）。
 //   - 運営の月のAI予算に記録する（app "koe"。本文は残さない）。予算の確認 checkAiBudget はルートで呼ぶ。
 //   - JSONが崩れたら1回だけ頼み直す。だめなら bad_output。
@@ -23,22 +22,18 @@ const MAX_TOKENS = 400;
 const CLAUDE_MODEL = () => process.env.KOE_MODEL ?? "claude-haiku-4-5";
 const GEMINI_MODEL = () => process.env.KOE_GEMINI_MODEL ?? "gemini-2.5-flash";
 
-let warned = false;
-/** env から使うプロバイダを決める（gemini の鍵がなければ claude） */
+/** Gemini の鍵（GEMINI_API_KEY が無ければ、Generative Language API を有効にした Google の鍵 GOOGLE_PLACES_API_KEY を使う。代表確認 2026-11-06） */
+const geminiKey = () => process.env.GEMINI_API_KEY || process.env.GOOGLE_PLACES_API_KEY || "";
+
+/** env から使うプロバイダを決める。既定は gemini（鍵があれば）。KOE_PROVIDER=claude で Claude に固定できる */
 export function koeProvider(): KoeProvider {
-  if (process.env.KOE_PROVIDER === "gemini") {
-    if (process.env.GEMINI_API_KEY) return "gemini";
-    if (!warned) {
-      warned = true;
-      console.warn("[koe] KOE_PROVIDER=gemini but GEMINI_API_KEY is not set; using claude");
-    }
-  }
-  return "claude";
+  if (process.env.KOE_PROVIDER === "claude") return "claude";
+  return geminiKey() ? "gemini" : "claude";
 }
 
 /** 判定できる状態か（使うプロバイダの鍵があるか） */
 export function koeConfigured(provider: KoeProvider = koeProvider()): boolean {
-  return provider === "gemini" ? !!process.env.GEMINI_API_KEY : !!process.env.ANTHROPIC_API_KEY;
+  return provider === "gemini" ? !!geminiKey() || !!process.env.ANTHROPIC_API_KEY : !!process.env.ANTHROPIC_API_KEY;
 }
 
 type CallOpts = { system: string; user: string; userId: string | null; action: string };
@@ -67,7 +62,7 @@ const callClaude: Call = async (opts) => {
 };
 
 const callGemini: Call = async (opts) => {
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = geminiKey();
   if (!apiKey) throw new Error("not_configured");
   const model = GEMINI_MODEL();
   const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`, {
@@ -117,7 +112,19 @@ export interface JudgeInput {
  * まちがいの引用が説明にないときは捨て、教科書の言葉はレクチャーのデータから出す。一言の点検（guardNext）はルートで通す。
  */
 export function judge(provider: KoeProvider = koeProvider()): (input: JudgeInput) => Promise<KoeJudge> {
-  const call = provider === "gemini" ? callGemini : callClaude;
+  // Gemini が失敗したとき（鍵の制限・混雑など）は、その回だけ Claude で判定する（Claude の鍵があれば）
+  const call: Call =
+    provider === "gemini"
+      ? async (o) => {
+          try {
+            return await callGemini(o);
+          } catch (e) {
+            if (!process.env.ANTHROPIC_API_KEY) throw e;
+            console.warn("[koe] gemini failed, using claude:", e instanceof Error ? e.message : e);
+            return callClaude(o);
+          }
+        }
+      : callClaude;
   return async ({ lec, points, text, low, userId, beforeCall }) => {
     const system = koeSystem(lec, points, low);
     const user = koeUser(text);
