@@ -3,24 +3,27 @@ import Link from "next/link";
 import { LearnShell } from "@/components/learn/LearnShell";
 import { Avatar } from "@/components/jugyo/Avatar";
 import { Rich, plain } from "@/components/lecture/Rich";
-import { CHARS_PER_MIN, UNITS, getLessons, jugyoHref } from "@/lib/jugyo";
+import { JUGYO_HOME, UNITS, getLessons, jugyoHref, jugyoSpan } from "@/lib/jugyo";
 import { castCredit } from "@/lib/jugyo/audio";
 import { STAGE_NAME, castsOfStage, stageOf } from "@/lib/jugyo/cast";
-import type { Lesson, Stage } from "@/lib/jugyo/types";
+import type { Stage } from "@/lib/jugyo/types";
 import { getLecture, lectureUnitInfo } from "@/lib/lecture";
-import { manzaiSay } from "@/lib/tts/manzai";
 
-// /learn/jugyo：止まる授業（動画型・試作）の一覧。試作なので noindex・sitemap に入れない。
+// /learn/jugyo：止まる授業（動画型・試作）の一覧。検索に載せ、sitemap にも入れる。
 // 段階ごとのキャスト（キャラの組み合わせ）を紹介する。どのキャストで見るかは、単元のページでふり分ける（ABテスト）。
 
+const URL = `https://app.bluespring.co.jp${JUGYO_HOME}`;
+const TITLE = "止まる授業｜AI時代のあたらしい授業｜アオハルラーン｜アオハルOS";
+const DESC = "2人のキャラが図を見ながら話す授業。とちゅうで本当に止まって「ここで問題」。答えてから続きへ。最後は、あなたが先生役。小学校・中学校・高校の単元を、1本10分以内で。登録なし・無料。";
+
 export const metadata: Metadata = {
-  title: "止まる授業（試作）｜アオハルラーン",
-  robots: { index: false, follow: false },
+  title: TITLE,
+  description: DESC,
+  alternates: { canonical: URL },
+  openGraph: { title: TITLE, description: DESC, url: URL },
 };
 
 const STAGES: Stage[] = ["e", "j", "h"];
-const minutes = (l: Lesson) => Math.round(l.scenes.reduce((n, s) => n + (s.kind === "talk" ? manzaiSay(s).length : 0), 0) / CHARS_PER_MIN);
-const stops = (l: Lesson) => l.scenes.filter((s) => s.kind === "pause").length;
 
 export default function Page() {
   return (
@@ -66,9 +69,7 @@ export default function Page() {
               {units.map((unit) => {
                 const info = lectureUnitInfo(unit);
                 const ls = getLessons(unit);
-                const mins = ls.map(minutes);
-                const ps = ls.map(stops);
-                const range = (a: number[]) => (Math.min(...a) === Math.max(...a) ? `${a[0]}` : `${Math.min(...a)}〜${Math.max(...a)}`);
+                const span = jugyoSpan(unit);
                 return (
                   <li key={unit}>
                     <Link href={jugyoHref(unit)} className="block rounded-[16px] border-[1.5px] border-[#15172B] bg-white p-4 text-[#15172B] no-underline shadow-[3px_3px_0_#15172B]">
@@ -77,7 +78,7 @@ export default function Page() {
                         <Rich text={getLecture(unit)?.title ?? ls[0].title} />
                       </span>
                       <span className="mt-1.5 block text-[12.5px] font-bold text-[#3A3D55]">
-                        約{range(mins)}分・{range(ps)}回止まる　▶ 見る
+                        約{span?.minutes}分・{span?.stops}回止まる　▶ 見る
                       </span>
                     </Link>
                   </li>

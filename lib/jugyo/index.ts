@@ -1,5 +1,6 @@
 import type { CastScript, Lesson, Scene, UnitBase } from "./types";
 import { getCast, stageOf } from "./cast";
+import { manzaiSay } from "@/lib/tts/manzai";
 import { WARIAI_BASE } from "./data/e-math-5-wariai";
 import { WARIAI_E_POP } from "./data/e-math-5-wariai.e-pop";
 import { WARIAI_E_YASASHI } from "./data/e-math-5-wariai.e-yasashi";
@@ -41,7 +42,8 @@ import { DOPPLER_H_CHARISMA } from "./data/h-sci-phy-doppler.h-charisma";
 import { DOPPLER_H_KYOJU } from "./data/h-sci-phy-doppler.h-kyoju";
 import { DOPPLER_H_NEKKETSU } from "./data/h-sci-phy-doppler.h-nekketsu";
 
-// 止まる授業（動画型・試作）。/learn/jugyo と /learn/jugyo/<単元id>（?cast=<キャストid> で確認用に指定）。試作なので noindex・sitemap に入れない。
+// 止まる授業（動画型・試作）。/learn/jugyo と /learn/jugyo/<単元id>（?cast=<キャストid> で確認用に指定。canonical は cast なし）。
+// 検索に載せ、sitemap にも入れる（2026-11-06 代表の決定）。入口は教科の地図の単元の箱・単元の教科書のページ・まなぶのトップ。
 // 台本を足すとき：単元の骨組み data/<単元id>.ts（問題）と、キャストごとのせりふ data/<単元id>.<キャストid>.ts を書いて
 // ここに並べ、`npx tsx scripts/check-jugyo.ts` で点検する。
 
@@ -86,3 +88,19 @@ export const jugyoHref = (unit: string) => `${JUGYO_HOME}/${unit}`;
 
 /** 1分に話す字数の目安 */
 export const CHARS_PER_MIN = 300;
+
+/** その単元に止まる授業があるか */
+const UNIT_SET = new Set(UNITS);
+export const hasJugyo = (unit: string) => UNIT_SET.has(unit);
+
+/** 1本の授業の長さ（分。話す字数から）と止まる回数 */
+export const lessonMinutes = (l: Lesson) => Math.round(l.scenes.reduce((n, s) => n + (s.kind === "talk" ? manzaiSay(s).length : 0), 0) / CHARS_PER_MIN);
+export const lessonStops = (l: Lesson) => l.scenes.filter((s) => s.kind === "pause").length;
+
+/** 単元の授業の「約N分・M回止まる」の N・M（キャストで違えば「8〜9」のように幅で） */
+export function jugyoSpan(unit: string): { minutes: string; stops: string } | null {
+  const ls = getLessons(unit);
+  if (!ls.length) return null;
+  const range = (a: number[]) => (Math.min(...a) === Math.max(...a) ? `${a[0]}` : `${Math.min(...a)}〜${Math.max(...a)}`);
+  return { minutes: range(ls.map(lessonMinutes)), stops: range(ls.map(lessonStops)) };
+}

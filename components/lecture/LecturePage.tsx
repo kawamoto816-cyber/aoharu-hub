@@ -19,8 +19,9 @@ import { ReadMarker } from "./ReadMarker";
 import { ReciteCard } from "./Recite";
 import { reciteAudio } from "@/lib/tts/recite";
 import { voiceCredit } from "@/lib/tts/manzai";
+import { jugyoHref, jugyoSpan } from "@/lib/jugyo";
 
-// 図解レクチャーの1単元のページ本体：導入 → 図解つきの節 → よくあるまちがい → 確認 → 次にやる教材。
+// 図解レクチャーの1単元のページ本体：導入 →（止まる授業があれば、その入口）→ 図解つきの節 → よくあるまちがい → 確認 → 次にやる教材。
 
 export function LecturePage({ lec }: { lec: Lecture }) {
   const info = lectureUnitInfo(lec.unit);
@@ -31,6 +32,7 @@ export function LecturePage({ lec }: { lec: Lecture }) {
     ? { hook: "導入《どうにゅう》　なぜ学《まな》ぶの？", check: "確認《かくにん》しよう", next: "次《つぎ》にやる教材《きょうざい》", open: "答《こた》えを見《み》る", close: "答《こた》えをとじる", back: "学校《がっこう》の教科《きょうか》の地図《ちず》にもどる", answer: "答《こた》え：" }
     : { hook: "導入　なぜ学ぶの？", check: "確認しよう", next: "次にやる教材", open: "答えを見る", close: "答えをとじる", back: "学校の教科の地図にもどる", answer: "答え：" };
   const place = bookPlace(lec.unit);
+  const jugyo = jugyoSpan(lec.unit);
   const kyoka = place ? findKyoka(place.kyoka) : undefined;
   let figNo = 0;
   let photoNo = 0;
@@ -60,6 +62,23 @@ export function LecturePage({ lec }: { lec: Lecture }) {
           ))}
         </ol>
       </section>
+
+      {jugyo && (
+        <Link href={jugyoHref(lec.unit)} className="mt-3 flex min-h-[52px] items-center gap-3 rounded-[14px] border-[1.5px] border-[#15172B] bg-[#15172B] px-3.5 py-2.5 text-white no-underline shadow-[3px_3px_0_#1533B8] transition-transform hover:-translate-y-0.5 focus-visible:-translate-y-0.5">
+          <span aria-hidden="true" className="flex h-8 w-8 flex-none items-center justify-center rounded-full bg-[#FFE45C] text-[13px] text-[#15172B]">
+            ▶
+          </span>
+          <span className="min-w-0">
+            <span className="block text-[14.5px] font-black leading-snug">
+              <Rich text={kids ? "この単元《たんげん》を授業《じゅぎょう》で見《み》る" : "この単元を授業で見る"} />
+            </span>
+            <span className="block text-[12px] font-bold text-[#C9CEF2]">
+              <Rich text={kids ? `約《やく》${jugyo.minutes}分《ふん》・${jugyo.stops}回《かい》止《と》まる　止《と》まる授業《じゅぎょう》` : `約${jugyo.minutes}分・${jugyo.stops}回止まる　止まる授業`} />
+            </span>
+          </span>
+          <span aria-hidden="true" className="ml-auto flex-none text-[16px] font-black">→</span>
+        </Link>
+      )}
 
       {lec.sections.map((s, i) => (
         <section key={s.heading} id={`lec-s${i + 1}`} aria-labelledby={`lec-s${i + 1}-h`} className="mt-9 scroll-mt-4">

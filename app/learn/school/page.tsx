@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { KYOKA } from "@/lib/learn/kyoka";
 import { hasLecture, lectureHref } from "@/lib/lecture";
 import { hasMoshi, moshiHref } from "@/lib/moshi";
+import { JUGYO_HOME, hasJugyo, jugyoHref } from "@/lib/jugyo";
 import Link from "next/link";
 import { LearnShell } from "@/components/learn/LearnShell";
 import { LEVELS, schoolCounts } from "@/lib/school";
@@ -11,6 +12,7 @@ import { unitMeta } from "@/lib/sphere/meta";
 
 // /learn/school: 学校の教科の地図。小・中・高の全単元を、教科書の単元の粒度で箱にして並べる。
 // 公開中の単元はリンク、ほかは点線の「準備中」。①覚える・②鍛えるのどちらが中心かを印で示す。
+// 箱の横に、図解レクチャー・模試・止まる授業（▶ 授業）があればその入口を並べる。
 // 上の「一覧｜スフィア盤」で、単元どうしのつながりを盤で見る表示 (?view=sphere&axis=a|b|c) に切りかえられる。
 
 const URL = "https://app.bluespring.co.jp/learn/school";
@@ -51,6 +53,11 @@ function Box({ u }: { u: SchoolUnit }) {
             模試
           </Link>
         )}
+        {hasJugyo(u.id) && (
+          <Link href={jugyoHref(u.id)} aria-label={`${u.name}の止まる授業`} className="inline-flex min-h-[38px] items-center whitespace-nowrap rounded-[10px] border-[1.5px] border-[#15172B] bg-white px-2 text-[11.5px] font-black text-[#1533B8] no-underline">
+            ▶ 授業
+          </Link>
+        )}
       </span>
     );
   return (
@@ -87,6 +94,13 @@ export default function SchoolMap() {
             </p>
 
             <p className="m-0 mt-3">
+              <Link href={JUGYO_HOME} className="inline-flex min-h-[44px] items-center gap-2 rounded-[12px] border-[1.5px] border-[#15172B] bg-white px-3 py-1.5 text-[14px] font-black text-[#15172B] no-underline shadow-[2px_2px_0_#15172B]">
+                <span>
+                  止まる授業<span className="text-[#1533B8]">（AI時代のあたらしい授業）</span>：とちゅうで止まって問題、答えて続きへ →
+                </span>
+              </Link>
+            </p>
+            <p className="m-0 mt-2">
               <Link href="/learn/moshi" className="inline-flex min-h-[44px] items-center gap-2 rounded-[12px] border-[1.5px] border-[#15172B] bg-[#FFE45C] px-3 text-[14px] font-black text-[#15172B] no-underline shadow-[2px_2px_0_#15172B]">
                 定期テスト模試：テスト範囲を選んで本番形式で解く →
               </Link>

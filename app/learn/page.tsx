@@ -10,6 +10,7 @@ import { ZukanLink } from "@/components/zukan/Zukan";
 import { ZUKAN_HREF } from "@/lib/zukan/words";
 import { LECTURES, getLecture, lectureHref, lectureUnitInfo } from "@/lib/lecture";
 import { TSUKKOMI_HOME } from "@/lib/tsukkomi";
+import { JUGYO_HOME } from "@/lib/jugyo";
 import type { Lecture, Recitation } from "@/lib/lecture/types";
 
 // /learn: アオハルラーンの入口（A案）。「勉強は、こんなに面白かった。」を表紙に、上から
@@ -232,6 +233,22 @@ export default function LearnHub() {
               );
             })}
           </ol>
+        </section>
+
+        {/* 3.5 止まる授業（AI時代のあたらしい授業） */}
+        <section aria-labelledby="jugyo-heading" className="mt-6">
+          <Link href={JUGYO_HOME} className={`${card} bg-[#E6EAFB]`}>
+            <span className="text-[11px] font-black tracking-[0.1em] text-[#1533B8]">AI時代のあたらしい授業</span>
+            <span id="jugyo-heading" className="flex items-center gap-2 text-[18px] font-black leading-[1.4]">
+              <span aria-hidden="true" className="flex h-7 w-7 flex-none items-center justify-center rounded-full bg-[#15172B] text-[11px] text-[#FFE45C]">▶</span>
+              止まる授業
+            </span>
+            <span className="text-[13px] leading-[1.7] text-[#3A3D55]">2人のキャラの授業が、とちゅうで本当に止まって「ここで問題」。答えてから続きへ。</span>
+            <span className="flex items-center gap-1 text-[11px] font-bold text-[#1533B8]">
+              授業を見る
+              <Arrow className="shrink-0" />
+            </span>
+          </Link>
         </section>
 
         {/* 4. いつもの教科書とのちがい＋1単元の冒険 */}

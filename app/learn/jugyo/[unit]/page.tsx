@@ -8,7 +8,7 @@ import type { PlayerScene } from "@/components/jugyo/JugyoPlayer";
 import { JugyoCastPicker, type CastVariant } from "@/components/jugyo/JugyoCastPicker";
 import { KoeSetsumei } from "@/components/koe/KoeSetsumei";
 import { plain } from "@/components/lecture/Rich";
-import { JUGYO_HOME, UNITS, getLessons } from "@/lib/jugyo";
+import { JUGYO_HOME, UNITS, getLessons, jugyoHref, jugyoSpan } from "@/lib/jugyo";
 import { castCredit, jugyoAudio, jugyoPauseAudio } from "@/lib/jugyo/audio";
 import { stageOf } from "@/lib/jugyo/cast";
 import type { Lesson } from "@/lib/jugyo/types";
@@ -17,8 +17,11 @@ import { getUnitMoshi, unitMoshiHref } from "@/lib/moshi/unit";
 import { getOshieru, oshieruHref } from "@/lib/oshieru";
 import { isLowUnit } from "@/lib/naze";
 
-// /learn/jugyo/<単元id>：止まる授業（動画型・試作）。試作なので noindex・sitemap に入れない。LecturePage にはまだ入口を置かない。
+// /learn/jugyo/<単元id>：止まる授業（動画型・試作）。検索に載せ、sitemap にも入れる。?cast= のURLも canonical は cast なし。
+// 入口：教科の地図の単元の箱（▶ 授業）・単元の教科書のページ（LecturePage）・一覧 /learn/jugyo。
 // その段階のキャスト全部の台本を渡し、ブラウザでふり分ける（components/jugyo/JugyoCastPicker。?cast=<id> で指定）。
+
+const SITE = "https://app.bluespring.co.jp";
 
 export function generateStaticParams() {
   return UNITS.map((unit) => ({ unit }));
@@ -28,8 +31,14 @@ export const dynamicParams = false;
 export async function generateMetadata({ params }: { params: Promise<{ unit: string }> }): Promise<Metadata> {
   const unit = (await params).unit;
   if (!getLessons(unit).length) return {};
-  const name = lectureUnitInfo(unit)?.name ?? unit;
-  return { title: `${plain(name)}｜止まる授業（試作）｜アオハルラーン`, robots: { index: false, follow: false } };
+  const info = lectureUnitInfo(unit);
+  const name = plain(info?.name ?? unit);
+  const span = jugyoSpan(unit);
+  const url = `${SITE}${jugyoHref(unit)}`;
+  const where = info ? `（${info.level}${info.subject}・${info.group}）` : "";
+  const title = `${name}の授業${where}｜止まる授業｜アオハルラーン｜アオハルOS`;
+  const description = `${info ? `${info.level}${info.subject}「${name}」` : name}を、2人のキャラが図を見ながら話す授業で。${span ? `約${span.minutes}分・とちゅうで${span.stops}回止まって問題。` : ""}答えてから続きへ、最後はあなたが先生役。登録なし・無料。`;
+  return { title, description, alternates: { canonical: url }, openGraph: { title, description, url } };
 }
 
 export default async function Page({ params }: { params: Promise<{ unit: string }> }) {

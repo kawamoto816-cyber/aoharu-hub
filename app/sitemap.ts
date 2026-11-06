@@ -24,6 +24,7 @@ import { UNIT_MOSHI_IDS } from "@/lib/moshi/unit";
 import { UZ_CASES, UZ_DEN, UZ_ENSHU, UZ_EP, UZ_LECTURES } from "@/lib/unizeb";
 import { APL_LECTURES } from "@/lib/apply-lec";
 import { TSUKKOMI_HOME, TSUKKOMI_UNITS, tsukkomiHref } from "@/lib/tsukkomi";
+import { JUGYO_HOME, UNITS as JUGYO_UNITS, jugyoHref } from "@/lib/jugyo";
 
 // 検索エンジン向けサイトマップ。入口ページを追加したらここに足す。
 // /guide の記事は静的記事とDBの記事の両方を載せる (取り込んだ記事が当日中に見つかるように)。
@@ -74,6 +75,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...LECTURES.map((l) => ({ url: `${base}/learn/lecture/${l.unit}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.7 })),
     { url: `${base}${TSUKKOMI_HOME}`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
     ...TSUKKOMI_UNITS.map((u) => ({ url: `${base}${tsukkomiHref(u)}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
+    // 止まる授業（?cast= は入れない。canonical は cast なし）
+    { url: `${base}${JUGYO_HOME}`, lastModified: now, changeFrequency: "weekly" as const, priority: 0.7 },
+    ...JUGYO_UNITS.map((u) => ({ url: `${base}${jugyoHref(u)}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
     ...["", "/koritsu", "/kyotsu", "/shiritsu", "/teiki"].map((m) => ({ url: `${base}/learn/exam${m}`, lastModified: now, changeFrequency: "weekly" as const, priority: 0.7 })),
     ...UNIT_MOSHI_IDS.map((u) => ({ url: `${base}/learn/moshi/${u}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
     // 選ばれる力の図解の教科書（小論文・面接・総合型選抜）。書いた単元だけ
