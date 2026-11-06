@@ -36,7 +36,7 @@ export const SANKAKUHI_BASE: UnitBase = {
       answer: "1/2",
       why: "sin150°＝sin(180°−30°)＝sin30°＝1/2。",
       say: {
-        question: "サインひゃくごじゅうどの値は？",
+        question: "サインひゃくごじゅうどのあたいは？",
         answer: "にぶんのいち",
         why: "サインひゃくごじゅうどは、サイン、ひゃくはちじゅうど ひく さんじゅうど、で、サインさんじゅうど。にぶんのいち。",
       },
