@@ -59,6 +59,18 @@ import { DOPPLER_BASE } from "./data/h-sci-phy-doppler";
 import { DOPPLER_H_CHARISMA } from "./data/h-sci-phy-doppler.h-charisma";
 import { DOPPLER_H_KYOJU } from "./data/h-sci-phy-doppler.h-kyoju";
 import { DOPPLER_H_NEKKETSU } from "./data/h-sci-phy-doppler.h-nekketsu";
+import { NIJIKANSU_BASE } from "./data/h-math-1-nijikansu";
+import { NIJIKANSU_H_CHARISMA } from "./data/h-math-1-nijikansu.h-charisma";
+import { NIJIKANSU_H_KYOJU } from "./data/h-math-1-nijikansu.h-kyoju";
+import { NIJIKANSU_H_NEKKETSU } from "./data/h-math-1-nijikansu.h-nekketsu";
+import { MEIJI_BASE } from "./data/h-hist-jp-meiji";
+import { MEIJI_H_CHARISMA } from "./data/h-hist-jp-meiji.h-charisma";
+import { MEIJI_H_KYOJU } from "./data/h-hist-jp-meiji.h-kyoju";
+import { MEIJI_H_NEKKETSU } from "./data/h-hist-jp-meiji.h-nekketsu";
+import { KANDAI_BASE } from "./data/h-eng-gram-kandai";
+import { KANDAI_H_CHARISMA } from "./data/h-eng-gram-kandai.h-charisma";
+import { KANDAI_H_KYOJU } from "./data/h-eng-gram-kandai.h-kyoju";
+import { KANDAI_H_NEKKETSU } from "./data/h-eng-gram-kandai.h-nekketsu";
 
 // 止まる授業（動画型・試作）。/learn/jugyo と /learn/jugyo/<単元id>（?cast=<キャストid> で確認用に指定。canonical は cast なし）。
 // 検索に載せ、sitemap にも入れる（2026-11-06 代表の決定）。入口は教科の地図の単元の箱・単元の教科書のページ・まなぶのトップ。
@@ -67,7 +79,7 @@ import { DOPPLER_H_NEKKETSU } from "./data/h-sci-phy-doppler.h-nekketsu";
 
 export const JUGYO_HOME = "/learn/jugyo";
 
-const BASES: UnitBase[] = [WARIAI_BASE, HAYASA_BASE, BUNSU_WARI_BASE, FURIKO_BASE, TAISEKI_BASE, MENSEKI_BASE, HATSUGA_BASE, KAMAKURA_BASE, SEIFU_BASE, DENRYU_BASE, FUTEISHI_BASE, HOTEISHIKI_BASE, KAGAKU_HENKA_BASE, EDO_SEIRITSU_BASE, TAISHA_BASE, BIBUN_BASE, MOL_BASE, DOPPLER_BASE];
+const BASES: UnitBase[] = [WARIAI_BASE, HAYASA_BASE, BUNSU_WARI_BASE, FURIKO_BASE, TAISEKI_BASE, MENSEKI_BASE, HATSUGA_BASE, KAMAKURA_BASE, SEIFU_BASE, DENRYU_BASE, FUTEISHI_BASE, HOTEISHIKI_BASE, KAGAKU_HENKA_BASE, EDO_SEIRITSU_BASE, TAISHA_BASE, BIBUN_BASE, MOL_BASE, DOPPLER_BASE, NIJIKANSU_BASE, MEIJI_BASE, KANDAI_BASE];
 const SCRIPTS: CastScript[] = [
   WARIAI_E_POP, WARIAI_E_YASASHI, HAYASA_E_POP, HAYASA_E_YASASHI, BUNSU_WARI_E_POP, BUNSU_WARI_E_YASASHI, FURIKO_E_POP, FURIKO_E_YASASHI,
   TAISEKI_E_POP, TAISEKI_E_YASASHI, MENSEKI_E_POP, MENSEKI_E_YASASHI, HATSUGA_E_POP, HATSUGA_E_YASASHI,
@@ -75,6 +87,8 @@ const SCRIPTS: CastScript[] = [
   HOTEISHIKI_J_DARK, HOTEISHIKI_J_KISAKU, KAGAKU_HENKA_J_DARK, KAGAKU_HENKA_J_KISAKU, EDO_SEIRITSU_J_DARK, EDO_SEIRITSU_J_KISAKU,
   TAISHA_H_CHARISMA, TAISHA_H_KYOJU, TAISHA_H_NEKKETSU, BIBUN_H_CHARISMA, BIBUN_H_KYOJU, BIBUN_H_NEKKETSU,
   MOL_H_CHARISMA, MOL_H_KYOJU, MOL_H_NEKKETSU, DOPPLER_H_CHARISMA, DOPPLER_H_KYOJU, DOPPLER_H_NEKKETSU,
+  NIJIKANSU_H_CHARISMA, NIJIKANSU_H_KYOJU, NIJIKANSU_H_NEKKETSU, MEIJI_H_CHARISMA, MEIJI_H_KYOJU, MEIJI_H_NEKKETSU,
+  KANDAI_H_CHARISMA, KANDAI_H_KYOJU, KANDAI_H_NEKKETSU,
 ];
 
 /** 骨組みとキャストのせりふを合わせて1本の授業にする（問題の {seito} は相方の名前に） */
