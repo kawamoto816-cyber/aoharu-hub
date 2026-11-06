@@ -13,6 +13,15 @@ import { BUNSU_WARI_E_YASASHI } from "./data/e-math-6-bunsu-wari.e-yasashi";
 import { FURIKO_BASE } from "./data/e-science-5-furiko";
 import { FURIKO_E_POP } from "./data/e-science-5-furiko.e-pop";
 import { FURIKO_E_YASASHI } from "./data/e-science-5-furiko.e-yasashi";
+import { TAISEKI_BASE } from "./data/e-math-5-taiseki";
+import { TAISEKI_E_POP } from "./data/e-math-5-taiseki.e-pop";
+import { TAISEKI_E_YASASHI } from "./data/e-math-5-taiseki.e-yasashi";
+import { MENSEKI_BASE } from "./data/e-math-5-menseki";
+import { MENSEKI_E_POP } from "./data/e-math-5-menseki.e-pop";
+import { MENSEKI_E_YASASHI } from "./data/e-math-5-menseki.e-yasashi";
+import { HATSUGA_BASE } from "./data/e-science-5-hatsuga";
+import { HATSUGA_E_POP } from "./data/e-science-5-hatsuga.e-pop";
+import { HATSUGA_E_YASASHI } from "./data/e-science-5-hatsuga.e-yasashi";
 import { KAMAKURA_BASE } from "./data/j-soc-hist-kamakura";
 import { KAMAKURA_J_DARK } from "./data/j-soc-hist-kamakura.j-dark";
 import { KAMAKURA_J_KISAKU } from "./data/j-soc-hist-kamakura.j-kisaku";
@@ -49,9 +58,10 @@ import { DOPPLER_H_NEKKETSU } from "./data/h-sci-phy-doppler.h-nekketsu";
 
 export const JUGYO_HOME = "/learn/jugyo";
 
-const BASES: UnitBase[] = [WARIAI_BASE, HAYASA_BASE, BUNSU_WARI_BASE, FURIKO_BASE, KAMAKURA_BASE, SEIFU_BASE, DENRYU_BASE, FUTEISHI_BASE, TAISHA_BASE, BIBUN_BASE, MOL_BASE, DOPPLER_BASE];
+const BASES: UnitBase[] = [WARIAI_BASE, HAYASA_BASE, BUNSU_WARI_BASE, FURIKO_BASE, TAISEKI_BASE, MENSEKI_BASE, HATSUGA_BASE, KAMAKURA_BASE, SEIFU_BASE, DENRYU_BASE, FUTEISHI_BASE, TAISHA_BASE, BIBUN_BASE, MOL_BASE, DOPPLER_BASE];
 const SCRIPTS: CastScript[] = [
   WARIAI_E_POP, WARIAI_E_YASASHI, HAYASA_E_POP, HAYASA_E_YASASHI, BUNSU_WARI_E_POP, BUNSU_WARI_E_YASASHI, FURIKO_E_POP, FURIKO_E_YASASHI,
+  TAISEKI_E_POP, TAISEKI_E_YASASHI, MENSEKI_E_POP, MENSEKI_E_YASASHI, HATSUGA_E_POP, HATSUGA_E_YASASHI,
   KAMAKURA_J_DARK, KAMAKURA_J_KISAKU, SEIFU_J_DARK, SEIFU_J_KISAKU, DENRYU_J_DARK, DENRYU_J_KISAKU, FUTEISHI_J_DARK, FUTEISHI_J_KISAKU,
   TAISHA_H_CHARISMA, TAISHA_H_KYOJU, TAISHA_H_NEKKETSU, BIBUN_H_CHARISMA, BIBUN_H_KYOJU, BIBUN_H_NEKKETSU,
   MOL_H_CHARISMA, MOL_H_KYOJU, MOL_H_NEKKETSU, DOPPLER_H_CHARISMA, DOPPLER_H_KYOJU, DOPPLER_H_NEKKETSU,
