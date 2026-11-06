@@ -3,6 +3,15 @@ import { getCast, stageOf } from "./cast";
 import { WARIAI_BASE } from "./data/e-math-5-wariai";
 import { WARIAI_E_POP } from "./data/e-math-5-wariai.e-pop";
 import { WARIAI_E_YASASHI } from "./data/e-math-5-wariai.e-yasashi";
+import { HAYASA_BASE } from "./data/e-math-5-hayasa";
+import { HAYASA_E_POP } from "./data/e-math-5-hayasa.e-pop";
+import { HAYASA_E_YASASHI } from "./data/e-math-5-hayasa.e-yasashi";
+import { BUNSU_WARI_BASE } from "./data/e-math-6-bunsu-wari";
+import { BUNSU_WARI_E_POP } from "./data/e-math-6-bunsu-wari.e-pop";
+import { BUNSU_WARI_E_YASASHI } from "./data/e-math-6-bunsu-wari.e-yasashi";
+import { FURIKO_BASE } from "./data/e-science-5-furiko";
+import { FURIKO_E_POP } from "./data/e-science-5-furiko.e-pop";
+import { FURIKO_E_YASASHI } from "./data/e-science-5-furiko.e-yasashi";
 import { KAMAKURA_BASE } from "./data/j-soc-hist-kamakura";
 import { KAMAKURA_J_DARK } from "./data/j-soc-hist-kamakura.j-dark";
 import { KAMAKURA_J_KISAKU } from "./data/j-soc-hist-kamakura.j-kisaku";
@@ -17,8 +26,8 @@ import { TAISHA_H_NEKKETSU } from "./data/h-sci-biob-taisha.h-nekketsu";
 
 export const JUGYO_HOME = "/learn/jugyo";
 
-const BASES: UnitBase[] = [WARIAI_BASE, KAMAKURA_BASE, TAISHA_BASE];
-const SCRIPTS: CastScript[] = [WARIAI_E_POP, WARIAI_E_YASASHI, KAMAKURA_J_DARK, KAMAKURA_J_KISAKU, TAISHA_H_CHARISMA, TAISHA_H_KYOJU, TAISHA_H_NEKKETSU];
+const BASES: UnitBase[] = [WARIAI_BASE, HAYASA_BASE, BUNSU_WARI_BASE, FURIKO_BASE, KAMAKURA_BASE, TAISHA_BASE];
+const SCRIPTS: CastScript[] = [WARIAI_E_POP, WARIAI_E_YASASHI, HAYASA_E_POP, HAYASA_E_YASASHI, BUNSU_WARI_E_POP, BUNSU_WARI_E_YASASHI, FURIKO_E_POP, FURIKO_E_YASASHI, KAMAKURA_J_DARK, KAMAKURA_J_KISAKU, TAISHA_H_CHARISMA, TAISHA_H_KYOJU, TAISHA_H_NEKKETSU];
 
 /** 骨組みとキャストのせりふを合わせて1本の授業にする（問題の {seito} は相方の名前に） */
 export function buildLesson(base: UnitBase, script: CastScript): Lesson {
