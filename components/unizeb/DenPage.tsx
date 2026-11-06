@@ -2,12 +2,12 @@ import { LearnShell } from "@/components/learn/LearnShell";
 import { Rich } from "@/components/lecture/Rich";
 import { UZ_SCENES } from "@/lib/unizeb/registry";
 import type { Den } from "@/lib/unizeb/types";
-import { Checks, Kicker, NextLinks, SectionView, SkillLinks, Sources, UZ_HOME, uzCrumbs } from "./parts";
+import { Checks, figBases, Kicker, NextLinks, SectionView, SkillLinks, Sources, UZ_HOME, uzCrumbs } from "./parts";
 
 // 起業家列伝（/learn/unizeb/den/<id>）：年表 → 0→1の場面 → つまずきと立て直し → 使ったスキル → 持ち帰れること → 出典。
 
 export function DenPage({ d }: { d: Den }) {
-  const fig = { n: 0, p: 0 };
+  const bases = figBases(d.sections, UZ_SCENES[`den/${d.id}`]);
   return (
     <LearnShell narrow crumbs={uzCrumbs(d.name, { href: `${UZ_HOME}#den`, label: "起業家列伝" })}>
       <Kicker>起業家列伝　{d.era}・{d.country}・{d.field}</Kicker>
@@ -24,7 +24,7 @@ export function DenPage({ d }: { d: Den }) {
         </ol>
       </section>
       {d.sections.map((s, i) => (
-        <SectionView key={s.heading} s={s} i={i} idp="den-s" fig={fig} last={i === d.sections.length - 1} scenes={UZ_SCENES[`den/${d.id}`]} />
+        <SectionView key={s.heading} s={s} i={i} idp="den-s" fig={bases[i]} last={i === d.sections.length - 1} scenes={UZ_SCENES[`den/${d.id}`]} />
       ))}
       <SkillLinks title="使ったスキル（ユニゼブのカード）" items={d.skills} />
       <section aria-label="持ち帰れること" className="mt-10 rounded-[18px] border-[1.5px] border-[#15172B] bg-white p-4">

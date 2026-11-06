@@ -5,7 +5,7 @@ import { Rich } from "@/components/lecture/Rich";
 import { UZ_SCENES } from "@/lib/unizeb/registry";
 import { LectureStoryView } from "@/components/lecture/Story";
 import { cardInfo, deptLabel } from "@/lib/unizeb";
-import { Checks, Kicker, NextLinks, SectionView, UZ_HOME, uzCrumbs } from "./parts";
+import { Checks, figBases, Kicker, NextLinks, SectionView, UZ_HOME, uzCrumbs } from "./parts";
 
 // ゼロワンOSユース版の図解レクチャー（/learn/unizeb/lec/<カードid>）。
 // 型は lib/lecture の Lecture のまま。読者は「若き起業家」。最後は「このスキルを自分の事業で使う → カードへ」。
@@ -13,7 +13,7 @@ import { Checks, Kicker, NextLinks, SectionView, UZ_HOME, uzCrumbs } from "./par
 export function UzLecturePage({ lec, id }: { lec: Lecture; id: string }) {
   const c = cardInfo(id);
   const name = lec.nameRuby ?? c?.name ?? id;
-  const fig = { n: 0, p: 0 };
+  const bases = figBases(lec.sections, UZ_SCENES[`lec/${id}`]);
   const m = lec.mission;
   return (
     <LearnShell narrow crumbs={uzCrumbs(c?.name ?? id, { href: `${UZ_HOME}#lec`, label: "教科書" })} homeHref="/learn">
@@ -60,7 +60,7 @@ export function UzLecturePage({ lec, id }: { lec: Lecture; id: string }) {
           s={s}
           i={i}
           idp="lec-s"
-          fig={fig}
+          fig={bases[i]}
           last={i === lec.sections.length - 1}
           scenes={UZ_SCENES[`lec/${id}`]}
           extra={

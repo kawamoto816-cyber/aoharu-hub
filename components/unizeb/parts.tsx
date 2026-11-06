@@ -24,8 +24,20 @@ export function Kicker({ children }: { children: React.ReactNode }) {
   return <p className="m-0 text-xs font-black tracking-wider text-[#1533B8]">{children}</p>;
 }
 
-/** 節（見出し・要点・本文・図・写真・次へのひとこと）。fig は図の通し番号を数える入れ物 */
-export function SectionView({ s, i, idp, fig, last, extra, scenes }: { s: LectureSection; i: number; idp: string; fig: { n: number; p: number; s?: number }; last: boolean; extra?: React.ReactNode; scenes?: Scene[] }) {
+/** 節ごとの図・写真・場面イラストの通し番号の起点（その節より前にいくつあるか）。描画の中で数を書きかえないために先に数える */
+export function figBases(sections: LectureSection[], scenes?: Scene[]): { n: number; p: number; s: number }[] {
+  let n = 0, p = 0, sc = 0;
+  return sections.map((sec, i) => {
+    const b = { n, p, s: sc };
+    p += sec.photos?.length ?? 0;
+    sc += scenes?.filter((x) => x.at === i).length ?? 0;
+    if (sec.figure) n += 1;
+    return b;
+  });
+}
+
+/** 節（見出し・要点・本文・図・写真・次へのひとこと）。fig はこの節の通し番号の起点（figBases） */
+export function SectionView({ s, i, idp, fig, last, extra, scenes }: { s: LectureSection; i: number; idp: string; fig: { n: number; p: number; s: number }; last: boolean; extra?: React.ReactNode; scenes?: Scene[] }) {
   return (
     <section id={`${idp}${i + 1}`} aria-labelledby={`${idp}${i + 1}-h`} className="mt-9 scroll-mt-4">
       <h2 id={`${idp}${i + 1}-h`} className="m-0 flex items-start gap-2.5 text-[19px] font-black leading-snug">
@@ -42,9 +54,9 @@ export function SectionView({ s, i, idp, fig, last, extra, scenes }: { s: Lectur
           <Rich text={para} />
         </p>
       ))}
-      {s.photos?.map((ph) => <UzPhoto key={ph.src} ph={ph} no={++fig.p} />)}
-      {scenes?.filter((sc) => sc.at === i).map((sc, k) => <SceneView key={k} sc={sc} no={(fig.s = (fig.s ?? 0) + 1)} />)}
-      {s.figure && <LectureFigure fig={s.figure} no={++fig.n} />}
+      {s.photos?.map((ph, k) => <UzPhoto key={ph.src} ph={ph} no={fig.p + k + 1} />)}
+      {scenes?.filter((sc) => sc.at === i).map((sc, k) => <SceneView key={k} sc={sc} no={fig.s + k + 1} />)}
+      {s.figure && <LectureFigure fig={s.figure} no={fig.n + 1} />}
       {extra}
       {s.cliff && !last && (
         <p className="m-0 mt-4 text-right text-[13.5px] font-black text-[#1533B8]">

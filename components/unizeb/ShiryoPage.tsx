@@ -26,7 +26,7 @@ function Chevron({ group }: { group: "ch" | "dp" }) {
   );
 }
 
-function ItemView({ c, it, i, fig }: { c: ShiryoChapter; it: ShiryoItem; i: number; fig: { n: number } }) {
+function ItemView({ c, it, i, no }: { c: ShiryoChapter; it: ShiryoItem; i: number; no: number }) {
   return (
     <article id={`ch${c.ch}-${i + 1}`} className="mt-8 scroll-mt-4 first:mt-5">
       <h3 className="m-0 flex flex-wrap items-center gap-2 text-[17px] font-black leading-snug">
@@ -36,7 +36,7 @@ function ItemView({ c, it, i, fig }: { c: ShiryoChapter; it: ShiryoItem; i: numb
       </h3>
       <p className="m-0 mt-2 rounded-[12px] border-l-4 border-[#FFE45C] bg-[#FFFBE6] px-3 py-2 text-[14px] font-bold leading-[1.75]"><Rich text={it.body} /></p>
       {it.reading?.map((p, k) => <p key={k} className="m-0 mt-3 text-[15px] leading-[1.9] [text-indent:1em]"><Rich text={p} /></p>)}
-      {it.figure && <LectureFigure fig={it.figure} no={++fig.n} />}
+      {it.figure && <LectureFigure fig={it.figure} no={no} />}
       <Sources items={it.sources} compact />
     </article>
   );
@@ -100,7 +100,12 @@ function Glossary({ c, terms }: { c: ShiryoChapter; terms: { it: ShiryoItem; i: 
 }
 
 export function ShiryoPage({ chapters }: { chapters: ShiryoChapter[] }) {
-  const fig = { n: 0 };
+  // 図の通し番号（ItemView で出す項目だけを、出る順に数える。用語集にまとめた語は数えない）
+  const figNo = new Map<ShiryoItem, number>();
+  for (const c of chapters) {
+    const glossary = c.items.filter(isTerm).length >= 10;
+    for (const it of c.items) if (it.figure && !(glossary && isTerm(it))) figNo.set(it, figNo.size + 1);
+  }
   return (
     <LearnShell narrow crumbs={uzCrumbs("資料集")}>
       <Kicker>資料集　図表・制度の早見表・用語集</Kicker>
@@ -142,7 +147,7 @@ export function ShiryoPage({ chapters }: { chapters: ShiryoChapter[] }) {
                     ))}
                   </ol>
                 )}
-                {items.map(({ it, i }) => <ItemView key={it.heading} c={c} it={it} i={i} fig={fig} />)}
+                {items.map(({ it, i }) => <ItemView key={it.heading} c={c} it={it} i={i} no={figNo.get(it) ?? 0} />)}
                 {glossary && <Glossary c={c} terms={terms} />}
               </div>
             </details>

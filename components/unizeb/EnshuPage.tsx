@@ -7,7 +7,7 @@
 // AI昇進試験（kind "shoshin"）：ミッションごとに データパック → 出題 → Unicorn と Zebra の言い分（左右、スマホでは上下）→ 第3の答え。
 // 結果に Feedback_U・Feedback_Z・Next_Action（AIメンターの次の一歩）と軸ごとの点を出し、合格なら昇進の記録としてスキルアセットへ。
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import type { Enshu, EnshuMaterial, EnshuTask } from "@/lib/unizeb/types";
 import { LectureFigure } from "@/components/lecture/Figure";
@@ -96,6 +96,12 @@ function MaterialBlock({ m, vars, no, small = false }: { m: EnshuMaterial; vars:
   );
 }
 
+const noSubscribe = () => () => {};
+const isLateNow = () => {
+  const h = new Date().getHours();
+  return h >= 22 || h < 5;
+};
+
 export function EnshuPage({ e, skillNames }: { e: Enshu; skillNames: SkillName }) {
   const [plan, setPlan] = useState<UzPlan | null>(null);
   const [ready, setReady] = useState(false);
@@ -109,7 +115,8 @@ export function EnshuPage({ e, skillNames }: { e: Enshu; skillNames: SkillName }
   const [savedAt, setSavedAt] = useState<string | null>(null);
   const [assetSaved, setAssetSaved] = useState(false);
   const [notice, setNotice] = useState("");
-  const [late, setLate] = useState(false);
+  // 22時〜5時かどうか（サーバーの描画では false。ブラウザで読み直す）
+  const late = useSyncExternalStore(noSubscribe, isLateNow, () => false);
   const stRef = useRef<UzState>({ assets: [] });
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const tasksRef = useRef<HTMLElement>(null);
@@ -123,16 +130,14 @@ export function EnshuPage({ e, skillNames }: { e: Enshu; skillNames: SkillName }
   const unit = sho ? "ミッション" : "課題";
 
   useEffect(() => {
-    const h = new Date().getHours();
-    setLate(h >= 22 || h < 5);
-    try {
-      const m = localStorage.getItem(MODE_KEY);
-      if (m === "all" || m === "one") setMode(m);
-    } catch {
-      /* 保存できない表示では、その場だけ */
-    }
     currentPlan().then(setPlan);
     loadState().then((s) => {
+      try {
+        const m = localStorage.getItem(MODE_KEY);
+        if (m === "all" || m === "one") setMode(m);
+      } catch {
+        /* 保存できない表示では、その場だけ */
+      }
       stRef.current = s;
       const d = s.enshuDraft?.[e.id] ?? {};
       const { _v, ...rest } = d;
@@ -208,7 +213,8 @@ export function EnshuPage({ e, skillNames }: { e: Enshu; skillNames: SkillName }
           answers: { ...answers, _v: String(vi) },
           ...(r.sample ? { sample: true } : {}),
         });
-        const { [e.id]: _done, ...drafts } = next.enshuDraft ?? {};
+        const drafts = { ...(next.enshuDraft ?? {}) };
+        delete drafts[e.id];
         stRef.current = { ...next, enshuDraft: drafts };
         await saveState(stRef.current);
         setAssetSaved(true);
