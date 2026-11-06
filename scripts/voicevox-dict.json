@@ -56,5 +56,14 @@
  {"surface": "夜ごと", "yomi": "ヨルゴト", "accent": 0, "pos": "普通名詞", "priority": 7, "lines": 2},
  {"surface": "遼東半島", "yomi": "リョートーハントー", "accent": 6, "pos": "固有名詞", "priority": 7, "lines": 2},
  {"surface": "投票所", "yomi": "トウヒョウジョ", "accent": 5, "pos": "普通名詞", "priority": 8, "lines": 1},
- {"surface": "期日前", "yomi": "キジツゼン", "accent": 3, "pos": "普通名詞", "priority": 8, "lines": 1}
+ {"surface": "期日前", "yomi": "キジツゼン", "accent": 3, "pos": "普通名詞", "priority": 8, "lines": 1},
+ {"surface": "帯分数", "yomi": "タイブンスー", "accent": 3, "pos": "普通名詞", "priority": 7, "lines": 0},
+ {"surface": "仮分数", "yomi": "カブンスー", "accent": 2, "pos": "普通名詞", "priority": 7, "lines": 0},
+ {"surface": "数直線", "yomi": "スーチョクセン", "accent": 3, "pos": "普通名詞", "priority": 7, "lines": 0},
+ {"surface": "絶対値", "yomi": "ゼッタイチ", "accent": 3, "pos": "普通名詞", "priority": 7, "lines": 0},
+ {"surface": "導関数", "yomi": "ドーカンスー", "accent": 3, "pos": "普通名詞", "priority": 7, "lines": 0},
+ {"surface": "標線", "yomi": "ヒョーセン", "accent": 0, "pos": "普通名詞", "priority": 7, "lines": 0},
+ {"surface": "赤方偏移", "yomi": "セキホーヘンイ", "accent": 5, "pos": "普通名詞", "priority": 7, "lines": 0},
+ {"surface": "水分子", "yomi": "ミズブンシ", "accent": 3, "pos": "普通名詞", "priority": 7, "lines": 0},
+ {"surface": "分速", "yomi": "フンソク", "accent": 0, "pos": "普通名詞", "priority": 7, "lines": 0}
 ]
