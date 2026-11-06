@@ -251,6 +251,36 @@ import { H_GENSHI_BASE } from "./data/h-sci-chemb-genshi";
 import { H_GENSHI_H_CHARISMA } from "./data/h-sci-chemb-genshi.h-charisma";
 import { H_GENSHI_H_KYOJU } from "./data/h-sci-chemb-genshi.h-kyoju";
 import { H_GENSHI_H_NEKKETSU } from "./data/h-sci-chemb-genshi.h-nekketsu";
+import { ASUKA_NARA_BASE } from "./data/e-social-6-asuka-nara";
+import { ASUKA_NARA_E_POP } from "./data/e-social-6-asuka-nara.e-pop";
+import { ASUKA_NARA_E_YASASHI } from "./data/e-social-6-asuka-nara.e-yasashi";
+import { HANASHI_KAKI_BASE } from "./data/e-japanese-6-hanashi-kaki";
+import { HANASHI_KAKI_E_POP } from "./data/e-japanese-6-hanashi-kaki.e-pop";
+import { HANASHI_KAKI_E_YASASHI } from "./data/e-japanese-6-hanashi-kaki.e-yasashi";
+import { ALPHA_KAKU_BASE } from "./data/e-english-56-alpha-kaku";
+import { ALPHA_KAKU_E_POP } from "./data/e-english-56-alpha-kaku.e-pop";
+import { ALPHA_KAKU_E_YASASHI } from "./data/e-english-56-alpha-kaku.e-yasashi";
+import { HINSHI_BASE } from "./data/j-ja-1-bunpo-hinshi";
+import { HINSHI_J_DARK } from "./data/j-ja-1-bunpo-hinshi.j-dark";
+import { HINSHI_J_KISAKU } from "./data/j-ja-1-bunpo-hinshi.j-kisaku";
+import { BUNKA_BASE } from "./data/j-soc-civ-bunka";
+import { BUNKA_J_DARK } from "./data/j-soc-civ-bunka.j-dark";
+import { BUNKA_J_KISAKU } from "./data/j-soc-civ-bunka.j-kisaku";
+import { EN_BE_BASE } from "./data/j-en-1-be";
+import { EN_BE_J_DARK } from "./data/j-en-1-be.j-dark";
+import { EN_BE_J_KISAKU } from "./data/j-en-1-be.j-kisaku";
+import { BOSAI_BASE } from "./data/h-geo-sogo-bosai";
+import { BOSAI_H_CHARISMA } from "./data/h-geo-sogo-bosai.h-charisma";
+import { BOSAI_H_KYOJU } from "./data/h-geo-sogo-bosai.h-kyoju";
+import { BOSAI_H_NEKKETSU } from "./data/h-geo-sogo-bosai.h-nekketsu";
+import { HYOGEN_BASE } from "./data/h-jpn-bungaku-hyogen";
+import { HYOGEN_H_CHARISMA } from "./data/h-jpn-bungaku-hyogen.h-charisma";
+import { HYOGEN_H_KYOJU } from "./data/h-jpn-bungaku-hyogen.h-kyoju";
+import { HYOGEN_H_NEKKETSU } from "./data/h-jpn-bungaku-hyogen.h-nekketsu";
+import { ALGORITHM_BASE } from "./data/h-info-1-algorithm";
+import { ALGORITHM_H_CHARISMA } from "./data/h-info-1-algorithm.h-charisma";
+import { ALGORITHM_H_KYOJU } from "./data/h-info-1-algorithm.h-kyoju";
+import { ALGORITHM_H_NEKKETSU } from "./data/h-info-1-algorithm.h-nekketsu";
 
 // 止まる授業（動画型・試作）。/learn/jugyo と /learn/jugyo/<単元id>（?cast=<キャストid> で確認用に指定。canonical は cast なし）。
 // 検索に載せ、sitemap にも入れる（2026-11-06 代表の決定）。入口は教科の地図の単元の箱・単元の教科書のページ・まなぶのトップ。
@@ -259,7 +289,7 @@ import { H_GENSHI_H_NEKKETSU } from "./data/h-sci-chemb-genshi.h-nekketsu";
 
 export const JUGYO_HOME = "/learn/jugyo";
 
-const BASES: UnitBase[] = [WARIAI_BASE, HAYASA_BASE, BUNSU_WARI_BASE, FURIKO_BASE, TAISEKI_BASE, MENSEKI_BASE, HATSUGA_BASE, KAMAKURA_BASE, SEIFU_BASE, DENRYU_BASE, FUTEISHI_BASE, HOTEISHIKI_BASE, KAGAKU_HENKA_BASE, EDO_SEIRITSU_BASE, TAISHA_BASE, BIBUN_BASE, MOL_BASE, DOPPLER_BASE, NIJIKANSU_BASE, MEIJI_BASE, KANDAI_BASE, EN_MENSEKI_BASE, HI_BASE, KAKUDAI_BASE, HIREI_BASE, HEIMEN_BASE, SAIBO_BASE, SANKAKUHI_BASE, DNA_BASE, JISEI_BASE, MOEKATA_BASE, KARADA_BASE, TSUKI_HOSHI_BASE, TENKI_BASE, MEIJI_ISHIN_BASE, HIKAKU_BASE, H_KAMAKURA_BASE, SANKA_BASE, JUDO_BASE, HIREI_HANPIREI_BASE, HEIKIN_BASE, MEIJI_E_BASE, JIKAI_BASE, MUROMACHI_BASE, UKEMI_BASE, CHUWA_BASE, SENKYO_BASE, NIJIHOTEISHIKI_BASE, KAMAKURA_E_BASE, TANNI_BASE, DENJISHAKU_BASE, KANKEI_BASE, MOJI_BASE, HEIAN_BASE, MENEKI_BASE, KAKUMEI_BASE, KATEIHO_BASE, TEKO_BASE, MOJI_SHIKI_BASE, KOME_BASE, MIRAI_BASE, SEIDENKI_BASE, TENKA_TOITSU_BASE, DATA_BASE, H_EDO_SEIRITSU_BASE, SHIJO_BASE, SUIYOEKI_BASE, EDO_SEIJI_BASE, NAGARERU_BASE, KANRYO_BASE, KUKAN_BASE, DOBUTSU_BASE, H_FUTEISHI_BASE, SHUGO_BASE, H_GENSHI_BASE];
+const BASES: UnitBase[] = [WARIAI_BASE, HAYASA_BASE, BUNSU_WARI_BASE, FURIKO_BASE, TAISEKI_BASE, MENSEKI_BASE, HATSUGA_BASE, KAMAKURA_BASE, SEIFU_BASE, DENRYU_BASE, FUTEISHI_BASE, HOTEISHIKI_BASE, KAGAKU_HENKA_BASE, EDO_SEIRITSU_BASE, TAISHA_BASE, BIBUN_BASE, MOL_BASE, DOPPLER_BASE, NIJIKANSU_BASE, MEIJI_BASE, KANDAI_BASE, EN_MENSEKI_BASE, HI_BASE, KAKUDAI_BASE, HIREI_BASE, HEIMEN_BASE, SAIBO_BASE, SANKAKUHI_BASE, DNA_BASE, JISEI_BASE, MOEKATA_BASE, KARADA_BASE, TSUKI_HOSHI_BASE, TENKI_BASE, MEIJI_ISHIN_BASE, HIKAKU_BASE, H_KAMAKURA_BASE, SANKA_BASE, JUDO_BASE, HIREI_HANPIREI_BASE, HEIKIN_BASE, MEIJI_E_BASE, JIKAI_BASE, MUROMACHI_BASE, UKEMI_BASE, CHUWA_BASE, SENKYO_BASE, NIJIHOTEISHIKI_BASE, KAMAKURA_E_BASE, TANNI_BASE, DENJISHAKU_BASE, KANKEI_BASE, MOJI_BASE, HEIAN_BASE, MENEKI_BASE, KAKUMEI_BASE, KATEIHO_BASE, TEKO_BASE, MOJI_SHIKI_BASE, KOME_BASE, MIRAI_BASE, SEIDENKI_BASE, TENKA_TOITSU_BASE, DATA_BASE, H_EDO_SEIRITSU_BASE, SHIJO_BASE, SUIYOEKI_BASE, EDO_SEIJI_BASE, NAGARERU_BASE, KANRYO_BASE, KUKAN_BASE, DOBUTSU_BASE, H_FUTEISHI_BASE, SHUGO_BASE, H_GENSHI_BASE, ASUKA_NARA_BASE, HANASHI_KAKI_BASE, ALPHA_KAKU_BASE, HINSHI_BASE, BUNKA_BASE, EN_BE_BASE, BOSAI_BASE, HYOGEN_BASE, ALGORITHM_BASE];
 const SCRIPTS: CastScript[] = [
   WARIAI_E_POP, WARIAI_E_YASASHI, HAYASA_E_POP, HAYASA_E_YASASHI, BUNSU_WARI_E_POP, BUNSU_WARI_E_YASASHI, FURIKO_E_POP, FURIKO_E_YASASHI,
   TAISEKI_E_POP, TAISEKI_E_YASASHI, MENSEKI_E_POP, MENSEKI_E_YASASHI, HATSUGA_E_POP, HATSUGA_E_YASASHI,
@@ -295,6 +325,11 @@ const SCRIPTS: CastScript[] = [
   KANRYO_J_DARK, KANRYO_J_KISAKU, KUKAN_J_DARK, KUKAN_J_KISAKU, DOBUTSU_J_DARK, DOBUTSU_J_KISAKU,
   H_FUTEISHI_H_CHARISMA, H_FUTEISHI_H_KYOJU, H_FUTEISHI_H_NEKKETSU, SHUGO_H_CHARISMA, SHUGO_H_KYOJU, SHUGO_H_NEKKETSU,
   H_GENSHI_H_CHARISMA, H_GENSHI_H_KYOJU, H_GENSHI_H_NEKKETSU,
+  ASUKA_NARA_E_POP, ASUKA_NARA_E_YASASHI, HANASHI_KAKI_E_POP, HANASHI_KAKI_E_YASASHI,
+  ALPHA_KAKU_E_POP, ALPHA_KAKU_E_YASASHI,
+  HINSHI_J_DARK, HINSHI_J_KISAKU, BUNKA_J_DARK, BUNKA_J_KISAKU, EN_BE_J_DARK, EN_BE_J_KISAKU,
+  BOSAI_H_CHARISMA, BOSAI_H_KYOJU, BOSAI_H_NEKKETSU, HYOGEN_H_CHARISMA, HYOGEN_H_KYOJU, HYOGEN_H_NEKKETSU,
+  ALGORITHM_H_CHARISMA, ALGORITHM_H_KYOJU, ALGORITHM_H_NEKKETSU,
 ];
 
 /** 骨組みとキャストのせりふを合わせて1本の授業にする（問題の {seito} は相方の名前に） */
