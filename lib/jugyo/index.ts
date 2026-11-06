@@ -131,6 +131,36 @@ import { JUDO_BASE } from "./data/h-eng-gram-judo";
 import { JUDO_H_CHARISMA } from "./data/h-eng-gram-judo.h-charisma";
 import { JUDO_H_KYOJU } from "./data/h-eng-gram-judo.h-kyoju";
 import { JUDO_H_NEKKETSU } from "./data/h-eng-gram-judo.h-nekketsu";
+import { HIREI_HANPIREI_BASE } from "./data/e-math-6-hirei-hanpirei";
+import { HIREI_HANPIREI_E_POP } from "./data/e-math-6-hirei-hanpirei.e-pop";
+import { HIREI_HANPIREI_E_YASASHI } from "./data/e-math-6-hirei-hanpirei.e-yasashi";
+import { HEIKIN_BASE } from "./data/e-math-5-heikin";
+import { HEIKIN_E_POP } from "./data/e-math-5-heikin.e-pop";
+import { HEIKIN_E_YASASHI } from "./data/e-math-5-heikin.e-yasashi";
+import { MEIJI_E_BASE } from "./data/e-social-6-meiji";
+import { MEIJI_E_E_POP } from "./data/e-social-6-meiji.e-pop";
+import { MEIJI_E_E_YASASHI } from "./data/e-social-6-meiji.e-yasashi";
+import { JIKAI_BASE } from "./data/j-sci-2-jikai";
+import { JIKAI_J_DARK } from "./data/j-sci-2-jikai.j-dark";
+import { JIKAI_J_KISAKU } from "./data/j-sci-2-jikai.j-kisaku";
+import { MUROMACHI_BASE } from "./data/j-soc-hist-muromachi";
+import { MUROMACHI_J_DARK } from "./data/j-soc-hist-muromachi.j-dark";
+import { MUROMACHI_J_KISAKU } from "./data/j-soc-hist-muromachi.j-kisaku";
+import { UKEMI_BASE } from "./data/j-en-2-ukemi";
+import { UKEMI_J_DARK } from "./data/j-en-2-ukemi.j-dark";
+import { UKEMI_J_KISAKU } from "./data/j-en-2-ukemi.j-kisaku";
+import { CHUWA_BASE } from "./data/h-sci-chemb-chuwa";
+import { CHUWA_H_CHARISMA } from "./data/h-sci-chemb-chuwa.h-charisma";
+import { CHUWA_H_KYOJU } from "./data/h-sci-chemb-chuwa.h-kyoju";
+import { CHUWA_H_NEKKETSU } from "./data/h-sci-chemb-chuwa.h-nekketsu";
+import { SENKYO_BASE } from "./data/h-civ-kokyo-senkyo";
+import { SENKYO_H_CHARISMA } from "./data/h-civ-kokyo-senkyo.h-charisma";
+import { SENKYO_H_KYOJU } from "./data/h-civ-kokyo-senkyo.h-kyoju";
+import { SENKYO_H_NEKKETSU } from "./data/h-civ-kokyo-senkyo.h-nekketsu";
+import { NIJIHOTEISHIKI_BASE } from "./data/h-math-1-nijihoteishiki";
+import { NIJIHOTEISHIKI_H_CHARISMA } from "./data/h-math-1-nijihoteishiki.h-charisma";
+import { NIJIHOTEISHIKI_H_KYOJU } from "./data/h-math-1-nijihoteishiki.h-kyoju";
+import { NIJIHOTEISHIKI_H_NEKKETSU } from "./data/h-math-1-nijihoteishiki.h-nekketsu";
 
 // 止まる授業（動画型・試作）。/learn/jugyo と /learn/jugyo/<単元id>（?cast=<キャストid> で確認用に指定。canonical は cast なし）。
 // 検索に載せ、sitemap にも入れる（2026-11-06 代表の決定）。入口は教科の地図の単元の箱・単元の教科書のページ・まなぶのトップ。
@@ -139,7 +169,7 @@ import { JUDO_H_NEKKETSU } from "./data/h-eng-gram-judo.h-nekketsu";
 
 export const JUGYO_HOME = "/learn/jugyo";
 
-const BASES: UnitBase[] = [WARIAI_BASE, HAYASA_BASE, BUNSU_WARI_BASE, FURIKO_BASE, TAISEKI_BASE, MENSEKI_BASE, HATSUGA_BASE, KAMAKURA_BASE, SEIFU_BASE, DENRYU_BASE, FUTEISHI_BASE, HOTEISHIKI_BASE, KAGAKU_HENKA_BASE, EDO_SEIRITSU_BASE, TAISHA_BASE, BIBUN_BASE, MOL_BASE, DOPPLER_BASE, NIJIKANSU_BASE, MEIJI_BASE, KANDAI_BASE, EN_MENSEKI_BASE, HI_BASE, KAKUDAI_BASE, HIREI_BASE, HEIMEN_BASE, SAIBO_BASE, SANKAKUHI_BASE, DNA_BASE, JISEI_BASE, MOEKATA_BASE, KARADA_BASE, TSUKI_HOSHI_BASE, TENKI_BASE, MEIJI_ISHIN_BASE, HIKAKU_BASE, H_KAMAKURA_BASE, SANKA_BASE, JUDO_BASE];
+const BASES: UnitBase[] = [WARIAI_BASE, HAYASA_BASE, BUNSU_WARI_BASE, FURIKO_BASE, TAISEKI_BASE, MENSEKI_BASE, HATSUGA_BASE, KAMAKURA_BASE, SEIFU_BASE, DENRYU_BASE, FUTEISHI_BASE, HOTEISHIKI_BASE, KAGAKU_HENKA_BASE, EDO_SEIRITSU_BASE, TAISHA_BASE, BIBUN_BASE, MOL_BASE, DOPPLER_BASE, NIJIKANSU_BASE, MEIJI_BASE, KANDAI_BASE, EN_MENSEKI_BASE, HI_BASE, KAKUDAI_BASE, HIREI_BASE, HEIMEN_BASE, SAIBO_BASE, SANKAKUHI_BASE, DNA_BASE, JISEI_BASE, MOEKATA_BASE, KARADA_BASE, TSUKI_HOSHI_BASE, TENKI_BASE, MEIJI_ISHIN_BASE, HIKAKU_BASE, H_KAMAKURA_BASE, SANKA_BASE, JUDO_BASE, HIREI_HANPIREI_BASE, HEIKIN_BASE, MEIJI_E_BASE, JIKAI_BASE, MUROMACHI_BASE, UKEMI_BASE, CHUWA_BASE, SENKYO_BASE, NIJIHOTEISHIKI_BASE];
 const SCRIPTS: CastScript[] = [
   WARIAI_E_POP, WARIAI_E_YASASHI, HAYASA_E_POP, HAYASA_E_YASASHI, BUNSU_WARI_E_POP, BUNSU_WARI_E_YASASHI, FURIKO_E_POP, FURIKO_E_YASASHI,
   TAISEKI_E_POP, TAISEKI_E_YASASHI, MENSEKI_E_POP, MENSEKI_E_YASASHI, HATSUGA_E_POP, HATSUGA_E_YASASHI,
@@ -157,6 +187,11 @@ const SCRIPTS: CastScript[] = [
   TENKI_J_DARK, TENKI_J_KISAKU, MEIJI_ISHIN_J_DARK, MEIJI_ISHIN_J_KISAKU, HIKAKU_J_DARK, HIKAKU_J_KISAKU,
   H_KAMAKURA_H_CHARISMA, H_KAMAKURA_H_KYOJU, H_KAMAKURA_H_NEKKETSU, SANKA_H_CHARISMA, SANKA_H_KYOJU, SANKA_H_NEKKETSU,
   JUDO_H_CHARISMA, JUDO_H_KYOJU, JUDO_H_NEKKETSU,
+  HIREI_HANPIREI_E_POP, HIREI_HANPIREI_E_YASASHI, HEIKIN_E_POP, HEIKIN_E_YASASHI,
+  MEIJI_E_E_POP, MEIJI_E_E_YASASHI,
+  JIKAI_J_DARK, JIKAI_J_KISAKU, MUROMACHI_J_DARK, MUROMACHI_J_KISAKU, UKEMI_J_DARK, UKEMI_J_KISAKU,
+  CHUWA_H_CHARISMA, CHUWA_H_KYOJU, CHUWA_H_NEKKETSU, SENKYO_H_CHARISMA, SENKYO_H_KYOJU, SENKYO_H_NEKKETSU,
+  NIJIHOTEISHIKI_H_CHARISMA, NIJIHOTEISHIKI_H_KYOJU, NIJIHOTEISHIKI_H_NEKKETSU,
 ];
 
 /** 骨組みとキャストのせりふを合わせて1本の授業にする（問題の {seito} は相方の名前に） */
