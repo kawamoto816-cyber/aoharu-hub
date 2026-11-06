@@ -71,6 +71,36 @@ import { KANDAI_BASE } from "./data/h-eng-gram-kandai";
 import { KANDAI_H_CHARISMA } from "./data/h-eng-gram-kandai.h-charisma";
 import { KANDAI_H_KYOJU } from "./data/h-eng-gram-kandai.h-kyoju";
 import { KANDAI_H_NEKKETSU } from "./data/h-eng-gram-kandai.h-nekketsu";
+import { EN_MENSEKI_BASE } from "./data/e-math-6-en-menseki";
+import { EN_MENSEKI_E_POP } from "./data/e-math-6-en-menseki.e-pop";
+import { EN_MENSEKI_E_YASASHI } from "./data/e-math-6-en-menseki.e-yasashi";
+import { HI_BASE } from "./data/e-math-6-hi";
+import { HI_E_POP } from "./data/e-math-6-hi.e-pop";
+import { HI_E_YASASHI } from "./data/e-math-6-hi.e-yasashi";
+import { KAKUDAI_BASE } from "./data/e-math-6-kakudai";
+import { KAKUDAI_E_POP } from "./data/e-math-6-kakudai.e-pop";
+import { KAKUDAI_E_YASASHI } from "./data/e-math-6-kakudai.e-yasashi";
+import { HIREI_BASE } from "./data/j-math-1-hirei";
+import { HIREI_J_DARK } from "./data/j-math-1-hirei.j-dark";
+import { HIREI_J_KISAKU } from "./data/j-math-1-hirei.j-kisaku";
+import { HEIMEN_BASE } from "./data/j-math-1-heimen";
+import { HEIMEN_J_DARK } from "./data/j-math-1-heimen.j-dark";
+import { HEIMEN_J_KISAKU } from "./data/j-math-1-heimen.j-kisaku";
+import { SAIBO_BASE } from "./data/j-sci-2-saibo";
+import { SAIBO_J_DARK } from "./data/j-sci-2-saibo.j-dark";
+import { SAIBO_J_KISAKU } from "./data/j-sci-2-saibo.j-kisaku";
+import { SANKAKUHI_BASE } from "./data/h-math-1-sankakuhi";
+import { SANKAKUHI_H_CHARISMA } from "./data/h-math-1-sankakuhi.h-charisma";
+import { SANKAKUHI_H_KYOJU } from "./data/h-math-1-sankakuhi.h-kyoju";
+import { SANKAKUHI_H_NEKKETSU } from "./data/h-math-1-sankakuhi.h-nekketsu";
+import { DNA_BASE } from "./data/h-sci-biob-dna";
+import { DNA_H_CHARISMA } from "./data/h-sci-biob-dna.h-charisma";
+import { DNA_H_KYOJU } from "./data/h-sci-biob-dna.h-kyoju";
+import { DNA_H_NEKKETSU } from "./data/h-sci-biob-dna.h-nekketsu";
+import { JISEI_BASE } from "./data/h-eng-gram-jisei";
+import { JISEI_H_CHARISMA } from "./data/h-eng-gram-jisei.h-charisma";
+import { JISEI_H_KYOJU } from "./data/h-eng-gram-jisei.h-kyoju";
+import { JISEI_H_NEKKETSU } from "./data/h-eng-gram-jisei.h-nekketsu";
 
 // 止まる授業（動画型・試作）。/learn/jugyo と /learn/jugyo/<単元id>（?cast=<キャストid> で確認用に指定。canonical は cast なし）。
 // 検索に載せ、sitemap にも入れる（2026-11-06 代表の決定）。入口は教科の地図の単元の箱・単元の教科書のページ・まなぶのトップ。
@@ -79,7 +109,7 @@ import { KANDAI_H_NEKKETSU } from "./data/h-eng-gram-kandai.h-nekketsu";
 
 export const JUGYO_HOME = "/learn/jugyo";
 
-const BASES: UnitBase[] = [WARIAI_BASE, HAYASA_BASE, BUNSU_WARI_BASE, FURIKO_BASE, TAISEKI_BASE, MENSEKI_BASE, HATSUGA_BASE, KAMAKURA_BASE, SEIFU_BASE, DENRYU_BASE, FUTEISHI_BASE, HOTEISHIKI_BASE, KAGAKU_HENKA_BASE, EDO_SEIRITSU_BASE, TAISHA_BASE, BIBUN_BASE, MOL_BASE, DOPPLER_BASE, NIJIKANSU_BASE, MEIJI_BASE, KANDAI_BASE];
+const BASES: UnitBase[] = [WARIAI_BASE, HAYASA_BASE, BUNSU_WARI_BASE, FURIKO_BASE, TAISEKI_BASE, MENSEKI_BASE, HATSUGA_BASE, KAMAKURA_BASE, SEIFU_BASE, DENRYU_BASE, FUTEISHI_BASE, HOTEISHIKI_BASE, KAGAKU_HENKA_BASE, EDO_SEIRITSU_BASE, TAISHA_BASE, BIBUN_BASE, MOL_BASE, DOPPLER_BASE, NIJIKANSU_BASE, MEIJI_BASE, KANDAI_BASE, EN_MENSEKI_BASE, HI_BASE, KAKUDAI_BASE, HIREI_BASE, HEIMEN_BASE, SAIBO_BASE, SANKAKUHI_BASE, DNA_BASE, JISEI_BASE];
 const SCRIPTS: CastScript[] = [
   WARIAI_E_POP, WARIAI_E_YASASHI, HAYASA_E_POP, HAYASA_E_YASASHI, BUNSU_WARI_E_POP, BUNSU_WARI_E_YASASHI, FURIKO_E_POP, FURIKO_E_YASASHI,
   TAISEKI_E_POP, TAISEKI_E_YASASHI, MENSEKI_E_POP, MENSEKI_E_YASASHI, HATSUGA_E_POP, HATSUGA_E_YASASHI,
@@ -89,6 +119,10 @@ const SCRIPTS: CastScript[] = [
   MOL_H_CHARISMA, MOL_H_KYOJU, MOL_H_NEKKETSU, DOPPLER_H_CHARISMA, DOPPLER_H_KYOJU, DOPPLER_H_NEKKETSU,
   NIJIKANSU_H_CHARISMA, NIJIKANSU_H_KYOJU, NIJIKANSU_H_NEKKETSU, MEIJI_H_CHARISMA, MEIJI_H_KYOJU, MEIJI_H_NEKKETSU,
   KANDAI_H_CHARISMA, KANDAI_H_KYOJU, KANDAI_H_NEKKETSU,
+  EN_MENSEKI_E_POP, EN_MENSEKI_E_YASASHI, HI_E_POP, HI_E_YASASHI, KAKUDAI_E_POP, KAKUDAI_E_YASASHI,
+  HIREI_J_DARK, HIREI_J_KISAKU, HEIMEN_J_DARK, HEIMEN_J_KISAKU, SAIBO_J_DARK, SAIBO_J_KISAKU,
+  SANKAKUHI_H_CHARISMA, SANKAKUHI_H_KYOJU, SANKAKUHI_H_NEKKETSU,
+  DNA_H_CHARISMA, DNA_H_KYOJU, DNA_H_NEKKETSU, JISEI_H_CHARISMA, JISEI_H_KYOJU, JISEI_H_NEKKETSU,
 ];
 
 /** 骨組みとキャストのせりふを合わせて1本の授業にする（問題の {seito} は相方の名前に） */
