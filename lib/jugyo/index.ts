@@ -34,6 +34,15 @@ import { DENRYU_J_KISAKU } from "./data/j-sci-2-denryu.j-kisaku";
 import { FUTEISHI_BASE } from "./data/j-en-2-futeishi";
 import { FUTEISHI_J_DARK } from "./data/j-en-2-futeishi.j-dark";
 import { FUTEISHI_J_KISAKU } from "./data/j-en-2-futeishi.j-kisaku";
+import { HOTEISHIKI_BASE } from "./data/j-math-1-hoteishiki";
+import { HOTEISHIKI_J_DARK } from "./data/j-math-1-hoteishiki.j-dark";
+import { HOTEISHIKI_J_KISAKU } from "./data/j-math-1-hoteishiki.j-kisaku";
+import { KAGAKU_HENKA_BASE } from "./data/j-sci-2-kagaku-henka";
+import { KAGAKU_HENKA_J_DARK } from "./data/j-sci-2-kagaku-henka.j-dark";
+import { KAGAKU_HENKA_J_KISAKU } from "./data/j-sci-2-kagaku-henka.j-kisaku";
+import { EDO_SEIRITSU_BASE } from "./data/j-soc-hist-edo-seiritsu";
+import { EDO_SEIRITSU_J_DARK } from "./data/j-soc-hist-edo-seiritsu.j-dark";
+import { EDO_SEIRITSU_J_KISAKU } from "./data/j-soc-hist-edo-seiritsu.j-kisaku";
 import { TAISHA_BASE } from "./data/h-sci-biob-taisha";
 import { TAISHA_H_CHARISMA } from "./data/h-sci-biob-taisha.h-charisma";
 import { TAISHA_H_KYOJU } from "./data/h-sci-biob-taisha.h-kyoju";
@@ -58,11 +67,12 @@ import { DOPPLER_H_NEKKETSU } from "./data/h-sci-phy-doppler.h-nekketsu";
 
 export const JUGYO_HOME = "/learn/jugyo";
 
-const BASES: UnitBase[] = [WARIAI_BASE, HAYASA_BASE, BUNSU_WARI_BASE, FURIKO_BASE, TAISEKI_BASE, MENSEKI_BASE, HATSUGA_BASE, KAMAKURA_BASE, SEIFU_BASE, DENRYU_BASE, FUTEISHI_BASE, TAISHA_BASE, BIBUN_BASE, MOL_BASE, DOPPLER_BASE];
+const BASES: UnitBase[] = [WARIAI_BASE, HAYASA_BASE, BUNSU_WARI_BASE, FURIKO_BASE, TAISEKI_BASE, MENSEKI_BASE, HATSUGA_BASE, KAMAKURA_BASE, SEIFU_BASE, DENRYU_BASE, FUTEISHI_BASE, HOTEISHIKI_BASE, KAGAKU_HENKA_BASE, EDO_SEIRITSU_BASE, TAISHA_BASE, BIBUN_BASE, MOL_BASE, DOPPLER_BASE];
 const SCRIPTS: CastScript[] = [
   WARIAI_E_POP, WARIAI_E_YASASHI, HAYASA_E_POP, HAYASA_E_YASASHI, BUNSU_WARI_E_POP, BUNSU_WARI_E_YASASHI, FURIKO_E_POP, FURIKO_E_YASASHI,
   TAISEKI_E_POP, TAISEKI_E_YASASHI, MENSEKI_E_POP, MENSEKI_E_YASASHI, HATSUGA_E_POP, HATSUGA_E_YASASHI,
   KAMAKURA_J_DARK, KAMAKURA_J_KISAKU, SEIFU_J_DARK, SEIFU_J_KISAKU, DENRYU_J_DARK, DENRYU_J_KISAKU, FUTEISHI_J_DARK, FUTEISHI_J_KISAKU,
+  HOTEISHIKI_J_DARK, HOTEISHIKI_J_KISAKU, KAGAKU_HENKA_J_DARK, KAGAKU_HENKA_J_KISAKU, EDO_SEIRITSU_J_DARK, EDO_SEIRITSU_J_KISAKU,
   TAISHA_H_CHARISMA, TAISHA_H_KYOJU, TAISHA_H_NEKKETSU, BIBUN_H_CHARISMA, BIBUN_H_KYOJU, BIBUN_H_NEKKETSU,
   MOL_H_CHARISMA, MOL_H_KYOJU, MOL_H_NEKKETSU, DOPPLER_H_CHARISMA, DOPPLER_H_KYOJU, DOPPLER_H_NEKKETSU,
 ];
