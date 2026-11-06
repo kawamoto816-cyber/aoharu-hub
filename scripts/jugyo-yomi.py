@@ -14,6 +14,7 @@
 #   lib/tts/yomi.gen.ts の補正を当てたもの）と、jugyoPauseAudio（「ここで問題」の問いと選択肢・答えとわけ。
 #   pause の say で記号・数式の読みを書く）。npx tsx で台本から取り出す。
 # - 正しい読みは scripts/jugyo-yomi.json に持つ：{ 単元id: [ { "text": 字幕（ルビは親字・{{ }} を外す）, "yomi": カタカナ } ] }。
+#   キャスト（lib/jugyo/cast.ts）がちがっても、字幕が同じなら読みは同じなので、単元ごとに1つ持つ。
 #   字幕で引くので、say を直しても登録はそのまま使える（問題の読み上げは、字幕バーに出す「問題。〈問い〉 1、〈選択肢〉。…」で引く）。読みは文脈で確定したもの（音読み・訓読み・熟字訓・数字・助数詞）。
 #   書き方は pyopenjtalk と同じ「発音どおり」：助詞の「は」→ワ、「へ」→エ、「を」→ヲ。句読点・記号はあってもなくてもよい。
 # - 読みがちがう語だけを say でひらがな（外来語はカタカナ）に開く。文全体を開くとアクセントが崩れるので開かない。
@@ -44,14 +45,14 @@ const out: unknown[] = [];
 for (const l of LESSONS)
   l.scenes.forEach((sc, i) => {
     if (sc.kind === "pause") {
-      const q = jugyoPauseAudio(sc);
+      const q = jugyoPauseAudio(sc, l.cast);
       for (const [part, a] of [["問題", q.ask], ["答え", q.reply]] as const)
-        if (a) out.push({ unit: l.unitId, scene: i, who: `sensei ${part}`, text: plain(a.display), speech: a.text, key: a.key, hasSay: sc.say !== undefined });
+        if (a) out.push({ unit: l.unitId, cast: l.cast.id, scene: i, who: `sensei ${part}`, text: plain(a.display), speech: a.text, key: a.key, hasSay: sc.say !== undefined });
       return;
     }
     if (sc.kind !== "talk") return;
-    const a = jugyoAudio(sc);
-    out.push({ unit: l.unitId, scene: i, who: sc.who, text: plain(sc.text), speech: a.text, key: a.key, hasSay: sc.say !== undefined });
+    const a = jugyoAudio(sc, l.cast);
+    out.push({ unit: l.unitId, cast: l.cast.id, scene: i, who: sc.who, text: plain(sc.text), speech: a.text, key: a.key, hasSay: sc.say !== undefined });
   });
 console.log(JSON.stringify(out));
 """
@@ -99,12 +100,14 @@ def main():
         got = pyopenjtalk.g2p(x["speech"], kana=True)
         k = (x["unit"], x["text"])
         want = table.get(k)
-        tag = f'{x["unit"]} #{x["scene"]} {x["who"]}'
+        tag = f'{x["unit"]} × {x["cast"]} #{x["scene"]} {x["who"]}'
         if "--all" in args:
             print(f"{tag}{' (say)' if x['hasSay'] else ''}\n  文  {x['speech']}\n  読み {got}")
         if want is None:
             missing.append(tag)
-            draft.setdefault(x["unit"], []).append({"text": x["text"], "yomi": got})
+            # 同じ字幕が複数のキャストにあれば、下書きは1つ
+            if all(e["text"] != x["text"] for e in draft.get(x["unit"], [])):
+                draft.setdefault(x["unit"], []).append({"text": x["text"], "yomi": got})
             continue
         used.add(k)
         if norm(got) != norm(want):

@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Figure } from "@/lib/lecture/types";
-import type { CastMember, ChapterScene, PauseScene, TalkScene, Who } from "@/lib/jugyo/types";
+import type { ChapterScene, Look, PauseScene, Stage, TalkScene, Who } from "@/lib/jugyo/types";
+import { trackEvent } from "@/lib/analytics";
 import { SFX_LEAD_MS, playCorrect, playWrong, unlockSfx } from "@/lib/jugyo/sfx";
 import { LectureFigure } from "@/components/lecture/Figure";
 import { Rich } from "@/components/lecture/Rich";
@@ -13,7 +14,9 @@ import { Avatar } from "./Avatar";
 // つかみ（依頼と謎）→ 節ごとに先生と生徒が話し、黒板に図解 → pause で本当に止まり、答えてから進む → 謎の答え合わせ → 先生役へ。
 // 声：public/audio/jugyo/<キー>.mp3 があればそれ（ページが、ある分だけ src を渡す）。無ければブラウザの speechSynthesis（ja-JP）の
 // 「仮の声」。それも使えなければ字幕だけで自動送り。
-// 「ここで問題」では先生の声で問いと選択肢を読み（読み上げ中でも答えられる。答えたら止める）、答えたあとは「答えとわけ」を読む。
+// 「ここで問題」では説明役の声で問いと選択肢を読み（読み上げ中でも答えられる。答えたら止める）、答えたあとは「答えとわけ」を読む。
+// 計測（GA4 の gtag があるときだけ。lib/analytics の trackEvent）：jugyo_start・jugyo_pause_answer（正誤）・jugyo_complete（最後まで）・
+// jugyo_leave（途中で離れた位置）。どれにも単元・段階・キャストid・ふり分けの出どころ（assign / stored / query）をつける。個人がわかる情報は送らない。
 
 export type PlayerTalk = TalkScene & { speech: string; src: string | null };
 /** 読み上げ1つ。text = 字幕バーに出す文（ルビつき）、speech = 読む文 */
@@ -22,10 +25,19 @@ export type PlayerClip = { text: string; speech: string; src: string | null };
 export type PlayerPause = Omit<PauseScene, "say"> & { ask: PlayerClip; reply: PlayerClip | null };
 export type PlayerScene = PlayerTalk | PlayerPause | ChapterScene;
 
+/** プレイヤーに渡すキャスト（名前と見た目だけ） */
+export interface PlayerCast {
+  id: string;
+  members: Record<Who, { name: string; look: Look }>;
+}
+
 export interface PlayerProps {
   unit: string;
+  stage: Stage;
   title: string;
-  cast: Record<Who, CastMember>;
+  cast: PlayerCast;
+  /** キャストがどう決まったか（計測用）：assign = いまふり分けた、stored = 端末に覚えていた、query = ?cast= で指定 */
+  castFrom: "assign" | "stored" | "query";
   scenes: PlayerScene[];
   sections: { heading: string; body: string; figure?: Figure }[];
   mission?: { from: string; request: string; thanks: string };
@@ -156,6 +168,8 @@ export function JugyoPlayer(p: PlayerProps) {
   // 速さは途中で変えても、いまのせりふを最初から読み直さない（mp3 はその場で、仮の声は次の文から）
   const speedRef = useRef<number>(speed);
   const iRef = useRef(i);
+  const completeSent = useRef(false);
+  const leaveSent = useRef(false);
   useEffect(() => {
     speedRef.current = speed;
     setRate(audioRef.current, speed);
@@ -181,6 +195,12 @@ export function JugyoPlayer(p: PlayerProps) {
   }, [scenes]);
 
   const scene = scenes[i];
+  // 計測のパラメータ（個人がわかる情報は入れない）
+  const tp = { unit: p.unit, stage: p.stage, cast: p.cast.id, cast_from: p.castFrom };
+  const tpRef = useRef(tp);
+  useEffect(() => {
+    tpRef.current = tp;
+  });
   const voiceEnv = useCallback(
     (): VoiceEnv => ({
       audio: () => (audioRef.current ??= new Audio()),
@@ -219,6 +239,10 @@ export function JugyoPlayer(p: PlayerProps) {
     if (iRef.current + 1 >= scenes.length) {
       setPlaying(false);
       setEnded(true);
+      if (!completeSent.current) {
+        completeSent.current = true;
+        trackEvent("jugyo_complete", tpRef.current);
+      }
       return;
     }
     iRef.current += 1;
@@ -333,6 +357,7 @@ export function JugyoPlayer(p: PlayerProps) {
     setTtsOk(ok);
     setStarted(true);
     setPlaying(true);
+    trackEvent("jugyo_start", tpRef.current);
   }
 
   function toggle() {
@@ -345,6 +370,32 @@ export function JugyoPlayer(p: PlayerProps) {
     if (scene.kind === "pause") return;
     setPlaying((v) => !v);
   }
+
+  // 途中で離れた位置（ページを閉じた・別のページへ移った）。始めていて、最後まで見ていないときだけ1回
+  const posRef = useRef({ started: false, ended: false, at: 0 });
+  useEffect(() => {
+    posRef.current = { started, ended, at: i };
+  }, [started, ended, i]);
+  useEffect(() => {
+    const leave = () => {
+      const s = posRef.current;
+      if (!s.started || s.ended || completeSent.current || leaveSent.current) return;
+      leaveSent.current = true;
+      const ch = [...chapters].reverse().find((c) => c.index <= s.at);
+      trackEvent("jugyo_leave", {
+        ...tpRef.current,
+        scene: s.at,
+        percent: total ? Math.round(((starts[s.at] ?? 0) / total) * 100) : 0,
+        chapter: ch?.title,
+        transport_type: "beacon",
+      });
+    };
+    window.addEventListener("pagehide", leave);
+    return () => {
+      window.removeEventListener("pagehide", leave);
+      leave();
+    };
+  }, [chapters, starts, total]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -458,9 +509,9 @@ export function JugyoPlayer(p: PlayerProps) {
 
         {/* 字幕と話し手 */}
         <div className="absolute inset-x-0 bottom-0 z-10 flex items-end gap-2.5 bg-[#15172B]/92 px-3 py-2.5 sm:px-4">
-          <Avatar who={pauseClip ? "sensei" : speaker} talking={(playing && !!talk) || reading} size={44} />
+          <Avatar look={p.cast.members[pauseClip ? "sensei" : speaker].look} talking={(playing && !!talk) || reading} size={44} />
           <div className="min-w-0 flex-1">
-            <p className="m-0 text-[11px] font-black text-[#FFE45C]">{p.cast[pauseClip ? "sensei" : speaker].name}</p>
+            <p className="m-0 text-[11px] font-black text-[#FFE45C]">{p.cast.members[pauseClip ? "sensei" : speaker].name}</p>
             {subs && (
               <p aria-live="polite" className="jugyo-sub m-0 mt-0.5 line-clamp-4 text-[14.5px] font-bold leading-[1.6] text-white sm:text-[16px]">
                 {pauseClip ? <Rich text={pauseClip.text} /> : lastTalk ? <Rich text={lastTalk.text} /> : ""}
@@ -480,8 +531,9 @@ export function JugyoPlayer(p: PlayerProps) {
         {started && scene.kind === "pause" && !ended && (
           <PauseCard key={i} q={scene} picked={picked} setPicked={(v) => {
             if (scene.choices && v) (v === scene.answer ? playCorrect : playWrong)();
+            trackEvent("jugyo_pause_answer", { ...tp, source: scene.source, scene: i, result: scene.choices ? (v === scene.answer ? "correct" : "wrong") : "free" });
             setPicked(v);
-          }} onNext={() => { next(); setPlaying(true); }} sensei={p.cast.sensei.name} />
+          }} onNext={() => { next(); setPlaying(true); }} sensei={p.cast.members.sensei} />
         )}
 
         {/* はじめの画面 */}
@@ -494,15 +546,15 @@ export function JugyoPlayer(p: PlayerProps) {
             <div className="flex items-center gap-4">
               {(["sensei", "seito"] as const).map((w) => (
                 <span key={w} className="flex items-center gap-1.5 text-[12px] font-bold">
-                  <Avatar who={w} size={36} />
-                  {p.cast[w].name}
+                  <Avatar look={p.cast.members[w].look} size={36} />
+                  {p.cast.members[w].name}
                 </span>
               ))}
             </div>
             <button type="button" onClick={start} className="mt-1 inline-flex min-h-[52px] items-center gap-2 rounded-full border-[1.5px] border-[#15172B] bg-[#FFE45C] px-6 text-[17px] font-black text-[#15172B] shadow-[3px_3px_0_#000]">
               ▶ 授業をはじめる
             </button>
-            <p className="m-0 max-w-[480px] text-[12px] leading-relaxed text-white/80">約{Math.round(total / 60)}分。とちゅうで先生が止まって問題を出します。答えてから続きへ進みます。</p>
+            <p className="m-0 max-w-[480px] text-[12px] leading-relaxed text-white/80">約{Math.round(total / 60)}分。とちゅうで{p.cast.members.sensei.name}が止まって問題を出します。答えてから続きへ進みます。</p>
           </div>
         )}
 
@@ -612,7 +664,7 @@ export function JugyoPlayer(p: PlayerProps) {
   );
 }
 
-function PauseCard({ q, picked, setPicked, onNext, sensei }: { q: PlayerPause; picked: string | null; setPicked: (v: string) => void; onNext: () => void; sensei: string }) {
+function PauseCard({ q, picked, setPicked, onNext, sensei }: { q: PlayerPause; picked: string | null; setPicked: (v: string) => void; onNext: () => void; sensei: { name: string; look: Look } }) {
   const choices = q.choices ?? null;
   const done = picked !== null;
   const right = picked === q.answer;
@@ -620,8 +672,8 @@ function PauseCard({ q, picked, setPicked, onNext, sensei }: { q: PlayerPause; p
     <div className="absolute inset-0 z-20 flex items-center justify-center overflow-y-auto bg-[#15172B]/70 p-3">
       <div role="dialog" aria-label="ここで問題" className="w-full max-w-[560px] rounded-[16px] border-[1.5px] border-[#15172B] bg-white p-4 shadow-[4px_4px_0_#15172B]">
         <p className="m-0 flex items-center gap-2 text-[12px] font-black text-[#B42318]">
-          <Avatar who="sensei" size={28} />
-          {sensei}が止まりました　ここで問題
+          <Avatar look={sensei.look} size={28} />
+          {sensei.name}が止まりました　ここで問題
         </p>
         <p className="m-0 mt-2 text-[16px] font-black leading-relaxed">
           <Rich text={q.question} />

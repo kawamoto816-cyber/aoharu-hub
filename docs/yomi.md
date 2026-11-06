@@ -4,7 +4,7 @@ VOICEVOX は文字→読みに OpenJTalk を使う。読みは「台本の say�
 
 ## 新しい台本を作るとき
 
-1. **ブラインド読み**：機械を見ずに、台本を1行ずつ読んで正しい読みを書く（授業は scripts/jugyo-yomi.json。`python3 scripts/jugyo-yomi.py --draft` の形）。要注意語（lib/tts/yomi-watch.ts：方・人・日・今日・十分 など）は特に文脈で決める。
+1. **ブラインド読み**：機械を見ずに、台本を1行ずつ読んで正しい読みを書く（授業は scripts/jugyo-yomi.json。`python3 scripts/jugyo-yomi.py --draft` の形）。授業はキャスト（lib/jugyo/cast.ts）ごとに台本があるが、読みは単元ごと・字幕ごとに1つ（同じ字幕なら、どのキャストでも同じ読み）。要注意語（lib/tts/yomi-watch.ts：方・人・日・今日・十分 など）は特に文脈で決める。
 2. **機械とくらべる**：`python3 scripts/jugyo-yomi.py --dict`（授業）・`python3 scripts/yomi-check.py --dict`（漫才・朗読・ツッコミ）。pyopenjtalk に同じユーザー辞書を当てて、VOICEVOX の読みを予測する。
 3. **食いちがいだけ判定**：食いちがった行だけ、どちらが正しいかを決める。機械がまちがいなら、その語だけを say でひらがなに開く（文全体は開かない。アクセントが崩れる）。人の読みがまちがいなら jugyo-yomi.json を直す。`npx tsx scripts/check-jugyo.ts` の要注意語の警告が 0 件になるまで。
    よく出て読みまちがえやすい語（人名・教科の用語）は scripts/voicevox-dict.json に足す（`python3 scripts/voicevox_dict.py --build` で集め直せる。手で足した語は `"keep": true`）。1文字の語・要注意語は入れない。

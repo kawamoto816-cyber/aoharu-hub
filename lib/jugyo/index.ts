@@ -1,16 +1,52 @@
-import type { Lesson } from "./types";
-import { JUGYO_E_MATH_5_WARIAI } from "./data/e-math-5-wariai";
-import { JUGYO_J_SOC_HIST_KAMAKURA } from "./data/j-soc-hist-kamakura";
-import { JUGYO_H_SCI_BIOB_TAISHA } from "./data/h-sci-biob-taisha";
+import type { CastScript, Lesson, Scene, UnitBase } from "./types";
+import { getCast, stageOf } from "./cast";
+import { WARIAI_BASE } from "./data/e-math-5-wariai";
+import { WARIAI_E_POP } from "./data/e-math-5-wariai.e-pop";
+import { WARIAI_E_YASASHI } from "./data/e-math-5-wariai.e-yasashi";
+import { KAMAKURA_BASE } from "./data/j-soc-hist-kamakura";
+import { KAMAKURA_J_DARK } from "./data/j-soc-hist-kamakura.j-dark";
+import { KAMAKURA_J_KISAKU } from "./data/j-soc-hist-kamakura.j-kisaku";
+import { TAISHA_BASE } from "./data/h-sci-biob-taisha";
+import { TAISHA_H_CHARISMA } from "./data/h-sci-biob-taisha.h-charisma";
+import { TAISHA_H_KYOJU } from "./data/h-sci-biob-taisha.h-kyoju";
+import { TAISHA_H_NEKKETSU } from "./data/h-sci-biob-taisha.h-nekketsu";
 
-// 止まる授業（動画型・試作）。/learn/jugyo と /learn/jugyo/<単元id>。試作なので noindex・sitemap に入れない。
-// 台本を足すときは data/<単元id>.ts を書いてここに並べ、`npx tsx scripts/check-jugyo.ts` で点検する。
+// 止まる授業（動画型・試作）。/learn/jugyo と /learn/jugyo/<単元id>（?cast=<キャストid> で確認用に指定）。試作なので noindex・sitemap に入れない。
+// 台本を足すとき：単元の骨組み data/<単元id>.ts（問題）と、キャストごとのせりふ data/<単元id>.<キャストid>.ts を書いて
+// ここに並べ、`npx tsx scripts/check-jugyo.ts` で点検する。
 
 export const JUGYO_HOME = "/learn/jugyo";
-export const LESSONS: Lesson[] = [JUGYO_E_MATH_5_WARIAI, JUGYO_J_SOC_HIST_KAMAKURA, JUGYO_H_SCI_BIOB_TAISHA];
 
-const BY_UNIT = new Map(LESSONS.map((l) => [l.unitId, l]));
-export const getLesson = (unit: string) => BY_UNIT.get(unit);
+const BASES: UnitBase[] = [WARIAI_BASE, KAMAKURA_BASE, TAISHA_BASE];
+const SCRIPTS: CastScript[] = [WARIAI_E_POP, WARIAI_E_YASASHI, KAMAKURA_J_DARK, KAMAKURA_J_KISAKU, TAISHA_H_CHARISMA, TAISHA_H_KYOJU, TAISHA_H_NEKKETSU];
+
+/** 骨組みとキャストのせりふを合わせて1本の授業にする（問題の {seito} は相方の名前に） */
+export function buildLesson(base: UnitBase, script: CastScript): Lesson {
+  const cast = getCast(script.castId);
+  if (!cast) throw new Error(`キャスト ${script.castId} がない`);
+  const scenes: Scene[] = script.scenes.map((s) => {
+    if (s.kind !== "pause") return s;
+    const p = base.pauses[s.ref];
+    if (!p) throw new Error(`${script.unitId}: 問題 ${s.ref} が骨組みにない`);
+    const who = (t: string) => t.replaceAll("{seito}", cast.members.seito.name);
+    return { kind: "pause", source: s.ref, ...p, question: who(p.question), say: p.say && { ...p.say, question: p.say.question && who(p.say.question) } };
+  });
+  return { unitId: script.unitId, stage: stageOf(script.unitId), title: script.title, cast, scenes };
+}
+
+const BASE_OF = new Map(BASES.map((b) => [b.unitId, b]));
+/** すべての授業（単元 × キャスト） */
+export const LESSONS: Lesson[] = SCRIPTS.map((s) => {
+  const b = BASE_OF.get(s.unitId);
+  if (!b) throw new Error(`単元 ${s.unitId} の骨組みがない`);
+  return buildLesson(b, s);
+});
+/** 単元 id（並び順） */
+export const UNITS: string[] = [...new Set(LESSONS.map((l) => l.unitId))];
+
+/** 単元の授業（キャストの数だけ） */
+export const getLessons = (unit: string) => LESSONS.filter((l) => l.unitId === unit);
+export const getLesson = (unit: string, castId: string) => LESSONS.find((l) => l.unitId === unit && l.cast.id === castId);
 export const jugyoHref = (unit: string) => `${JUGYO_HOME}/${unit}`;
 
 /** 1分に話す字数の目安 */

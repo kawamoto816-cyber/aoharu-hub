@@ -4,47 +4,67 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { LearnShell } from "@/components/learn/LearnShell";
-import { JugyoPlayer, type PlayerScene } from "@/components/jugyo/JugyoPlayer";
+import type { PlayerScene } from "@/components/jugyo/JugyoPlayer";
+import { JugyoCastPicker, type CastVariant } from "@/components/jugyo/JugyoCastPicker";
 import { KoeSetsumei } from "@/components/koe/KoeSetsumei";
 import { plain } from "@/components/lecture/Rich";
-import { LESSONS, JUGYO_HOME, getLesson } from "@/lib/jugyo";
-import { JUGYO_CREDIT, jugyoAudio, jugyoPauseAudio } from "@/lib/jugyo/audio";
+import { JUGYO_HOME, UNITS, getLessons } from "@/lib/jugyo";
+import { castCredit, jugyoAudio, jugyoPauseAudio } from "@/lib/jugyo/audio";
+import { stageOf } from "@/lib/jugyo/cast";
+import type { Lesson } from "@/lib/jugyo/types";
 import { getLecture, lectureHref, lectureUnitInfo } from "@/lib/lecture";
 import { getUnitMoshi, unitMoshiHref } from "@/lib/moshi/unit";
 import { getOshieru, oshieruHref } from "@/lib/oshieru";
 import { isLowUnit } from "@/lib/naze";
 
 // /learn/jugyo/<単元id>：止まる授業（動画型・試作）。試作なので noindex・sitemap に入れない。LecturePage にはまだ入口を置かない。
+// その段階のキャスト全部の台本を渡し、ブラウザでふり分ける（components/jugyo/JugyoCastPicker。?cast=<id> で指定）。
 
 export function generateStaticParams() {
-  return LESSONS.map((l) => ({ unit: l.unitId }));
+  return UNITS.map((unit) => ({ unit }));
 }
 export const dynamicParams = false;
 
 export async function generateMetadata({ params }: { params: Promise<{ unit: string }> }): Promise<Metadata> {
-  const l = getLesson((await params).unit);
-  if (!l) return {};
-  return { title: `${plain(l.title)}｜止まる授業（試作）｜アオハルラーン`, robots: { index: false, follow: false } };
+  const unit = (await params).unit;
+  if (!getLessons(unit).length) return {};
+  const name = lectureUnitInfo(unit)?.name ?? unit;
+  return { title: `${plain(name)}｜止まる授業（試作）｜アオハルラーン`, robots: { index: false, follow: false } };
 }
 
 export default async function Page({ params }: { params: Promise<{ unit: string }> }) {
   const unit = (await params).unit;
-  const lesson = getLesson(unit);
+  const lessons = getLessons(unit);
   const lec = getLecture(unit);
-  if (!lesson || !lec) notFound();
+  if (!lessons.length || !lec) notFound();
   const info = lectureUnitInfo(unit);
   // 音声ファイルがあるせりふ・問題の読み上げだけ src を渡す（無ければプレイヤーが仮の声で読む）
   const have = (src: string) => (existsSync(join(process.cwd(), "public", src)) ? src : null);
-  const scenes: PlayerScene[] = lesson.scenes.map((s) => {
-    if (s.kind === "chapter") return s;
-    if (s.kind === "pause") {
-      const a = jugyoPauseAudio(s);
-      const clip = (c: NonNullable<typeof a.reply>) => ({ text: c.display, speech: c.text, src: have(c.src) });
-      return { kind: "pause", question: s.question, choices: a.shown, answer: s.answer, why: s.why, source: s.source, ask: clip(a.ask), reply: a.reply ? clip(a.reply) : null };
-    }
-    const a = jugyoAudio(s);
-    return { ...s, speech: a.text, src: have(a.src) };
-  });
+  const toScenes = (lesson: Lesson): PlayerScene[] =>
+    lesson.scenes.map((s) => {
+      if (s.kind === "chapter") return s;
+      if (s.kind === "pause") {
+        const a = jugyoPauseAudio(s, lesson.cast);
+        const clip = (c: NonNullable<typeof a.reply>) => ({ text: c.display, speech: c.text, src: have(c.src) });
+        return { kind: "pause", question: s.question, choices: a.shown, answer: s.answer, why: s.why, source: s.source, ask: clip(a.ask), reply: a.reply ? clip(a.reply) : null };
+      }
+      const a = jugyoAudio(s, lesson.cast);
+      return { ...s, speech: a.text, src: have(a.src) };
+    });
+  const variants: CastVariant[] = lessons.map((l) => ({
+    id: l.cast.id,
+    label: l.cast.label,
+    name: l.cast.name,
+    genre: l.cast.genre,
+    weight: l.cast.weight,
+    members: {
+      sensei: { name: l.cast.members.sensei.name, role: l.cast.members.sensei.role, look: l.cast.members.sensei.look },
+      seito: { name: l.cast.members.seito.name, role: l.cast.members.seito.role, look: l.cast.members.seito.look },
+    },
+    credit: castCredit(l.cast),
+    title: l.title,
+    scenes: toScenes(l),
+  }));
   const reveal = lec.sections.find((s) => s.reveal)?.reveal;
   return (
     <LearnShell crumbs={[{ href: "/learn", label: "まなぶ" }, { href: JUGYO_HOME, label: "止まる授業（試作）" }, { label: info?.name ?? unit }]}>
@@ -53,20 +73,20 @@ export default async function Page({ params }: { params: Promise<{ unit: string 
       </p>
       <h1 className="m-0 mt-1 text-[24px] font-black leading-tight">{plain(info?.name ?? unit)}</h1>
       <div className="mt-4">
-        <JugyoPlayer
-          unit={unit}
-          title={lesson.title}
-          cast={lesson.cast}
-          scenes={scenes}
-          sections={lec.sections.map((s) => ({ heading: s.heading, body: s.body, figure: s.figure }))}
-          mission={lec.mission}
-          mystery={lec.mystery}
-          reveal={reveal}
-          credit={JUGYO_CREDIT}
-          links={{
-            lecture: lectureHref(unit),
-            moshi: getUnitMoshi(unit) ? unitMoshiHref(unit) : undefined,
-            oshieru: getOshieru(unit) ? oshieruHref(unit) : undefined,
+        <JugyoCastPicker
+          stage={stageOf(unit)}
+          variants={variants}
+          shared={{
+            unit,
+            sections: lec.sections.map((s) => ({ heading: s.heading, body: s.body, figure: s.figure })),
+            mission: lec.mission,
+            mystery: lec.mystery,
+            reveal,
+            links: {
+              lecture: lectureHref(unit),
+              moshi: getUnitMoshi(unit) ? unitMoshiHref(unit) : undefined,
+              oshieru: getOshieru(unit) ? oshieruHref(unit) : undefined,
+            },
           }}
         />
       </div>
@@ -75,7 +95,7 @@ export default async function Page({ params }: { params: Promise<{ unit: string 
         <p className="m-0 mt-1 text-[13px] leading-relaxed text-[#3A3D55]">授業で聞いたことを、こんどは自分のことばで説明してみましょう。</p>
         <KoeSetsumei unit={unit} low={isLowUnit(unit)} className="mt-3" />
         <p className="m-0 mt-4 text-[12px] text-[#3A3D55]">
-          内容は<Link href={lectureHref(unit)} className="font-bold text-[#1533B8]">図解レクチャー</Link>の本文から。声：{JUGYO_CREDIT}（音声ファイルが無いせりふは、ブラウザの仮の声で読みます）
+          内容は<Link href={lectureHref(unit)} className="font-bold text-[#1533B8]">図解レクチャー</Link>の本文から。声は、授業の下の「授業の声・キャラ」に。
         </p>
       </section>
     </LearnShell>

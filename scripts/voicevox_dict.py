@@ -51,12 +51,12 @@ for (const [unit, list] of Object.entries(TSUKKOMI))
   });
 for (const l of LESSONS)
   l.scenes.forEach((sc, i) => {
-    if (sc.kind === "talk") out.push({ id: `${l.unitId}|j|${i}`, base: manzaiSay({ text: sc.text }), speech: jugyoAudio(sc).text });
+    if (sc.kind === "talk") out.push({ id: `${l.unitId}|${l.cast.id}|j|${i}`, base: manzaiSay({ text: sc.text }), speech: jugyoAudio(sc, l.cast).text });
     if (sc.kind === "pause") {
-      const raw = jugyoPauseAudio({ ...sc, say: undefined });
-      const q = jugyoPauseAudio(sc);
-      out.push({ id: `${l.unitId}|j|${i}|q`, base: manzaiSay({ text: raw.ask.display }), speech: q.ask.text });
-      if (raw.reply && q.reply) out.push({ id: `${l.unitId}|j|${i}|a`, base: manzaiSay({ text: raw.reply.display }), speech: q.reply.text });
+      const raw = jugyoPauseAudio({ ...sc, say: undefined }, l.cast);
+      const q = jugyoPauseAudio(sc, l.cast);
+      out.push({ id: `${l.unitId}|${l.cast.id}|j|${i}|q`, base: manzaiSay({ text: raw.ask.display }), speech: q.ask.text });
+      if (raw.reply && q.reply) out.push({ id: `${l.unitId}|${l.cast.id}|j|${i}|a`, base: manzaiSay({ text: raw.reply.display }), speech: q.reply.text });
     }
   });
 console.log(JSON.stringify(out));

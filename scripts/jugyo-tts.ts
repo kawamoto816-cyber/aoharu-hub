@@ -1,6 +1,8 @@
 // 止まる授業（lib/jugyo）の先生と生徒の声を、1せりふずつ mp3 にする。手元のパソコンで動かす（scripts/manzai-tts.ts と同じ作り）。
 // 声は VOICEVOX（アプリを起動しておく。http://localhost:50021 で待ち受ける）。mp3 への変換は ffmpeg（なければ npm install で入る ffmpeg-static）。
-// せりふ（talk）と「ここで問題」の読み上げ（pause の問いと選択肢・答えとわけ）。先生＝青山龍星・生徒＝四国めたん（lib/jugyo/audio.ts）。画面には「VOICEVOX:青山龍星・四国めたん」と出す。
+// せりふ（talk）と「ここで問題」の読み上げ（pause の問いと選択肢・答えとわけ）。声はキャストごと（lib/jugyo/cast.ts の members の voice・rate）。
+// 画面には、そのキャストの「VOICEVOX:名前・名前」を出す（lib/jugyo/audio.ts の castCredit）。キーに声と速さが入るので、キャストごとに別のファイルになる。
+// 使う声（VOICEVOX のアプリの「キャラクター」で入れておく）：青山龍星・四国めたん・玄野武宏・ずんだもん・春日部つむぎ・東北きりたん・雀松朱司。
 //
 //   数をたしかめる:  npx tsx scripts/jugyo-tts.ts --count
 //   全部作る:        npx tsx scripts/jugyo-tts.ts
@@ -24,7 +26,7 @@ import { jugyoAudio, jugyoPauseAudio } from "../lib/jugyo/audio";
 import { VV, checkYomi, registerUserDict, type AudioQuery } from "./vv-yomi";
 
 /** label = 字幕（ルビは親字・{{ }} を外す）。scripts/jugyo-yomi.json の "text" と同じ形 */
-type Job = { key: string; text: string; voice: string; rate: number; unit: string; label: string; scene: number };
+type Job = { key: string; text: string; voice: string; rate: number; unit: string; cast: string; label: string; scene: number };
 
 const RUBY = /｜([^｜《》\n]+?)《([^《》\n]+?)》|([㐀-鿿々〆ヶ]+)《([^《》\n]+?)》/g;
 const plain = (s: string) => s.replace(RUBY, (_a, b1, _r1, b2) => b1 ?? b2).replace(/\{\{|\}\}/g, "").replace(/\s+/g, " ").trim();
@@ -36,16 +38,16 @@ function collect(): Job[] {
   const jobs = new Map<string, Job>();
   for (const l of LESSONS)
     l.scenes.forEach((sc, i) => {
+      const base = { unit: l.unitId, cast: l.cast.id, scene: i };
       if (sc.kind === "pause") {
-        // 「ここで問題」の読み上げ（問いと選択肢・答えとわけ。先生の声）
-        const q = jugyoPauseAudio(sc);
-        for (const a of [q.ask, q.reply])
-          if (a) jobs.set(a.key, { key: a.key, text: a.text, voice: a.voice, rate: a.rate, unit: l.unitId, label: plain(a.display), scene: i });
+        // 「ここで問題」の読み上げ（問いと選択肢・答えとわけ。説明役の声）
+        const q = jugyoPauseAudio(sc, l.cast);
+        for (const a of [q.ask, q.reply]) if (a) jobs.set(a.key, { ...base, key: a.key, text: a.text, voice: a.voice, rate: a.rate, label: plain(a.display) });
         return;
       }
       if (sc.kind !== "talk") return;
-      const a = jugyoAudio(sc);
-      jobs.set(a.key, { key: a.key, text: a.text, voice: a.voice, rate: a.rate, unit: l.unitId, label: plain(sc.text), scene: i });
+      const a = jugyoAudio(sc, l.cast);
+      jobs.set(a.key, { ...base, key: a.key, text: a.text, voice: a.voice, rate: a.rate, label: plain(sc.text) });
     });
   return [...jobs.values()];
 }
@@ -117,7 +119,7 @@ async function finalCheck(list: Job[]): Promise<Map<string, AudioQuery>> {
       process.exit(1);
     }
   for (const j of list)
-    jobs.push({ key: j.key, text: j.text, speaker: ids.get(j.voice)!, label: `${j.unit} #${j.scene}「${j.label.slice(0, 30)}」`, want: want(j) });
+    jobs.push({ key: j.key, text: j.text, speaker: ids.get(j.voice)!, label: `${j.unit} × ${j.cast} #${j.scene}「${j.label.slice(0, 30)}」`, want: want(j) });
   return checkYomi(jobs, {
     expectFile: YOMI_JSON,
     howToFix: "未登録の行は、Claude の環境で python3 scripts/jugyo-yomi.py --draft から読みを確かめて登録する",
@@ -157,7 +159,11 @@ async function main() {
   const jobs = collect();
   const todo = jobs.filter((j) => !existsSync(`${DIR}/${j.key}.mp3`));
   const chars = todo.reduce((n, j) => n + j.text.length, 0);
-  console.log(`授業 ${LESSONS.length} 本・${jobs.length} せりふ`);
+  console.log(`授業 ${LESSONS.length} 本（単元 × キャスト）・${jobs.length} せりふ`);
+  for (const l of LESSONS) {
+    const n = jobs.filter((j) => j.unit === l.unitId && j.cast === l.cast.id).length;
+    console.log(`  ${l.unitId} × ${l.cast.id}（${l.cast.members.sensei.voice.slice(3)}・${l.cast.members.seito.voice.slice(3)}）${n} 個`);
+  }
   console.log(`作るのは ${todo.length} 個（約 ${chars.toLocaleString()} 字）`);
   const used = new Set(jobs.map((j) => `${j.key}.mp3`));
   const stale = existsSync(DIR) ? readdirSync(DIR).filter((f) => f.endsWith(".mp3") && !used.has(f)) : [];
@@ -185,7 +191,7 @@ async function main() {
       try {
         writeFileSync(`${DIR}/${j.key}.mp3`, await synth(j));
       } catch (e) {
-        failed.push(`${j.unit}: ${j.text.slice(0, 20)}… ${(e as Error).message}`);
+        failed.push(`${j.unit} × ${j.cast}: ${j.text.slice(0, 20)}… ${(e as Error).message}`);
       }
       if (++done % 20 === 0) console.log(`  ${done} / ${todo.length}`);
     }

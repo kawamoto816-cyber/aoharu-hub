@@ -3,7 +3,9 @@
 // 1. pause の answer / why が lecture の check・mistakes とそのまま一致するか（mistake は answer = right）。選択肢に答えがあるか
 // 2. board の section / figure が lecture にあるか。focus がその図の字の中にあるか（ルビ・{{ }} を外して）
 // 3. 台本の数字（半角・全角の数字の並び）が lecture の本文（hook・mystery・mission・body・reading・figure・reveal・cliff・mistakes・check）のどこかにあるか
-// 4. 話す字数と目安の分数（1分＝300字）、pause の数（3〜4）。pause の say.choices の数が choices と同じか（say の数字も 3 と同じく点検）
+// 4. 話す字数と目安の分数（1分＝300字）、pause の数。pause の say.choices の数が choices と同じか（say の数字も 3 と同じく点検）
+//    中学・高校：1,500〜2,400字・3〜4回。小学校：1,800〜3,000字（10分まで）・4〜7回で、止まる間は2分（600字）まで（最後の問題から終わりまでは3分まで）
+// 6. キャスト：単元ごとに、その段階のキャストが全部そろっているか。声が "vv:" か。{seito} が残っていないか
 // 5.（警告）要注意語（lib/tts/yomi-watch.ts：方・人・日・今日など文脈で読みが割れる語）が、音声にする文に漢字のまま残り、
 //    scripts/jugyo-yomi.json にも正しい読みが無い行。say でその語をひらがなに開くか、jugyo-yomi.json に登録する。
 //    （登録がある行で say で開いていない要注意語の数も出す：読みは jugyo-yomi.py と VOICEVOX 本体の点検で確かめる）
@@ -11,7 +13,8 @@
 
 import { getLecture } from "../lib/lecture";
 import type { Lecture } from "../lib/lecture/types";
-import { CHARS_PER_MIN, LESSONS } from "../lib/jugyo";
+import { CHARS_PER_MIN, LESSONS, UNITS } from "../lib/jugyo";
+import { CASTS, castsOfStage, stageOf } from "../lib/jugyo/cast";
 import { manzaiSay } from "../lib/tts/manzai";
 import { existsSync, readFileSync } from "node:fs";
 import { jugyoAudio, jugyoPauseAudio } from "../lib/jugyo/audio";
@@ -62,10 +65,27 @@ const watch = (u: string, at: string, caption: string, speech: string) => {
   warn(u, `${at} 要注意語 ${ws.map((w) => `「${w.word}」(${w.yomi.join("/")})`).join("・")} の読みが決まっていない（say で開くか、jugyo-yomi.json に登録）：${label(caption).slice(0, 30)}…`);
 };
 
+/** 段階ごとの長さと止まる回数の決まり（gap = 止まる間の最大字数、tail = 最後の問題から終わりまで） */
+const RULE = {
+  e: { chars: [1800, 3000], pauses: [4, 7], gap: 2 * CHARS_PER_MIN, tail: 3 * CHARS_PER_MIN },
+  j: { chars: [1500, 2400], pauses: [3, 4], gap: Infinity, tail: Infinity },
+  h: { chars: [1500, 2400], pauses: [3, 4], gap: Infinity, tail: Infinity },
+} as const;
+
+for (const c of CASTS)
+  for (const w of ["sensei", "seito"] as const)
+    if (!c.members[w].voice.startsWith("vv:")) err(c.id, `${w} の声 ${c.members[w].voice} が VOICEVOX（vv:）でない`);
+for (const unit of UNITS)
+  for (const c of castsOfStage(stageOf(unit)))
+    if (!LESSONS.some((l) => l.unitId === unit && l.cast.id === c.id)) err(unit, `キャスト ${c.id}（${c.name}）の台本がない`);
+
+const summary: string[] = [];
 for (const lesson of LESSONS) {
-  const u = lesson.unitId;
-  const lec = getLecture(u);
-  console.log(`■ ${u}「${plain(lesson.title)}」`);
+  const unit = lesson.unitId;
+  const u = `${unit} × ${lesson.cast.id}`;
+  const lec = getLecture(unit);
+  const rule = RULE[lesson.stage];
+  console.log(`■ ${u}（${lesson.cast.label} ${lesson.cast.name}）「${plain(lesson.title)}」`);
   if (!lec) {
     err(u, "lecture がない");
     continue;
@@ -77,11 +97,12 @@ for (const lesson of LESSONS) {
   let pauses = 0;
   let talks = 0;
   const minutesAt: string[] = [];
+  let lastPauseAt = 0;
   lesson.scenes.forEach((sc, i) => {
     const at = `#${i}`;
     if (sc.kind === "talk") {
       talks++;
-      watch(u, at, sc.text, jugyoAudio(sc).text);
+      watch(unit, `${lesson.cast.id} ${at}`, sc.text, jugyoAudio(sc, lesson.cast).text);
       chars += manzaiSay(sc).length;
       for (const src of [sc.text, sc.say ?? ""])
         for (const m of half(plain(src)).match(NUM) ?? []) if (!hasNum(m)) err(u, `${at} 数字「${m}」が lecture の本文にない：${plain(src).slice(0, 40)}…`);
@@ -100,9 +121,12 @@ for (const lesson of LESSONS) {
       }
     } else if (sc.kind === "pause") {
       pauses++;
-      const qa = jugyoPauseAudio(sc);
-      for (const a of [qa.ask, qa.reply]) if (a) watch(u, `${at}（問題の読み上げ）`, a.display, a.text);
+      const qa = jugyoPauseAudio(sc, lesson.cast);
+      for (const a of [qa.ask, qa.reply]) if (a) watch(unit, `${lesson.cast.id} ${at}（問題の読み上げ）`, a.display, a.text);
+      if (sc.question.includes("{seito}") || sc.say?.question?.includes("{seito}")) err(u, `${at} 問いに {seito} が残っている`);
       minutesAt.push((chars / CHARS_PER_MIN).toFixed(1));
+      if (chars - lastPauseAt > rule.gap) err(u, `${at} 前に止まってから ${((chars - lastPauseAt) / CHARS_PER_MIN).toFixed(1)} 分（${rule.gap / CHARS_PER_MIN}分までに1回止まる）`);
+      lastPauseAt = chars;
       const [kind, n] = sc.source.split(":");
       const i2 = Number(n);
       if (kind === "check") {
@@ -128,11 +152,16 @@ for (const lesson of LESSONS) {
         for (const m of half(plain(src)).match(NUM) ?? []) if (!hasNum(m)) err(u, `${at} 数字「${m}」が lecture の本文にない：${plain(src).slice(0, 40)}…`);
     }
   });
-  if (pauses < 3 || pauses > 4) err(u, `pause が ${pauses} 回（3〜4回に）`);
+  if (pauses < rule.pauses[0] || pauses > rule.pauses[1]) err(u, `pause が ${pauses} 回（${rule.pauses[0]}〜${rule.pauses[1]}回に）`);
+  if (chars - lastPauseAt > rule.tail) err(u, `最後の問題から終わりまで ${((chars - lastPauseAt) / CHARS_PER_MIN).toFixed(1)} 分（${rule.tail / CHARS_PER_MIN}分までに）`);
   const min = chars / CHARS_PER_MIN;
-  if (chars < 1500 || chars > 2400) err(u, `話す字数 ${chars} 字（1,500〜2,400字に）`);
-  console.log(`  せりふ ${talks}・話す字数 ${chars.toLocaleString()} 字・目安 ${min.toFixed(1)} 分・止まる ${pauses} 回（${minutesAt.map((m) => `${m}分`).join("・")}ごろ）`);
+  if (chars < rule.chars[0] || chars > rule.chars[1]) err(u, `話す字数 ${chars} 字（${rule.chars[0].toLocaleString()}〜${rule.chars[1].toLocaleString()}字に）`);
+  const line = `せりふ ${talks}・話す字数 ${chars.toLocaleString()} 字・目安 ${min.toFixed(1)} 分・止まる ${pauses} 回（${minutesAt.map((m) => `${m}分`).join("・")}ごろ）`;
+  console.log(`  ${line}`);
+  summary.push(`${u.padEnd(34)} ${line}`);
 }
+
+console.log(`\n${summary.join("\n")}`);
 
 console.log(`\n要注意語の警告 ${warnings} 件（読みが登録ずみの行の要注意語 ${watchedOk} 語は jugyo-yomi.py・VOICEVOX 本体の点検で確かめる）`);
 console.log(errors ? `エラー ${errors} 件` : "エラー 0 件");
