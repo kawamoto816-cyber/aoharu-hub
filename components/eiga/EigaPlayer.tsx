@@ -287,6 +287,17 @@ export function EigaPlayer({ film }: { film: EigaFilm }) {
     return () => window.removeEventListener("keydown", onKey);
   }, [goLine, hasLines, seek, toggleLoop, togglePlay]);
 
+  // 字幕で反復のセリフ一覧は、今の行が見える所まで一覧の中だけをスクロールする（ページは動かさない）
+  const listRef = useRef<HTMLOListElement>(null);
+  useEffect(() => {
+    const box = listRef.current;
+    if (mode !== "hanpuku" || !box || cur < 0) return;
+    const item = box.children[cur] as HTMLElement | undefined;
+    if (!item) return;
+    const top = item.offsetTop; // ol が relative なので ol の中での位置
+    if (top < box.scrollTop || top + item.offsetHeight > box.scrollTop + box.clientHeight) box.scrollTop = Math.max(0, top - 8);
+  }, [cur, mode]);
+
   const inSong = film.songs.some((s) => t >= s.start && t < s.end);
   const curLine = cur >= 0 ? lines[cur] : null;
   const showSub = mode === "hanpuku" && sub !== "off" && (curLine || inSong);
@@ -475,7 +486,7 @@ export function EigaPlayer({ film }: { film: EigaFilm }) {
       {mode === "hanpuku" && hasLines && (
         <section aria-label="セリフの一覧" className="mt-3 rounded-[14px] border-[1.5px] border-[#15172B] bg-white px-2 py-2">
           <p className="m-0 px-1.5 pb-1 text-[12.5px] font-black text-[#1533B8]">セリフの一覧（押すとそこから）</p>
-          <ol className="m-0 max-h-[320px] list-none overflow-y-auto p-0">
+          <ol ref={listRef} className="relative m-0 max-h-[320px] list-none overflow-y-auto p-0">
             {lines.map((l, k) => (
               <li key={l.id}>
                 <button
