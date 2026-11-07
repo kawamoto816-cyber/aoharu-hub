@@ -101,7 +101,11 @@ export function yomiNorm(s: string): string {
     .replace(/[^ァ-ヺー]/g, "")
     .replace(/ヲ/g, "オ")
     .replace(/ヂ/g, "ジ")
-    .replace(/ヅ/g, "ズ");
+    .replace(/ヅ/g, "ズ")
+    // VOICEVOX に無い音（フュ・フィ・クォ）は、エンジンが2つに分けて読む（リフューズ→リフユウズ）。同じ読みとしてくらべる
+    .replace(/フュ/g, "フユ")
+    .replace(/フィ/g, "フイ")
+    .replace(/クォ/g, "クオ");
   const out: string[] = [];
   for (let c of k) {
     const prev = out.length ? ROW[out[out.length - 1]] : undefined;
