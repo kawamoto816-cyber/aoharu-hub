@@ -140,7 +140,8 @@ export async function checkYomi(jobs: YomiJob[], opts: { expectFile: string; how
       queries.set(j.key, query);
       if (j.want === undefined) missing.push(`？ ${j.label}`);
       // 英語の語やアルファベット（1文字でも）がある行は、VOICEVOX が英単語として読むので期待（1文字ずつの読み）と合わない。止めずに件数だけ出す
-      else if (/[A-Za-zＡ-Ｚａ-ｚ]/.test(j.text) && yomiNorm(kana) !== yomiNorm(j.want)) english.push(j.label);
+      // 英文をカタカナで書いた行（「アイ ソー ザ …」のように語を空白で区切る）も同じ。VOICEVOX にはフュ・フィなどの音が無く、フユ・フイのように分けて読むため
+      else if ((/[A-Za-zＡ-Ｚａ-ｚ]/.test(j.text) || /[ァ-ヺー]{2,}[ 　]+[ァ-ヺー]{2,}/.test(j.text)) && yomiNorm(kana) !== yomiNorm(j.want)) english.push(j.label);
       else if (yomiNorm(kana) !== yomiNorm(j.want))
         bad.push(`✕ ${j.label}\n    文       ${j.text}\n    VOICEVOX ${kana}\n    期待     ${j.want}\n    ちがい   ${diffAt(yomiNorm(kana), yomiNorm(j.want))}（VOICEVOX／期待）`);
     }
