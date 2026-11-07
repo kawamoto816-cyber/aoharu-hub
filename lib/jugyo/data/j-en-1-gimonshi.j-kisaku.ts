@@ -115,7 +115,7 @@ export const GIMONSHI_J_KISAKU: CastScript = {
       who: "seito",
       board: { section: 2, focus: "How many" },
       text: "マザーグースの How many miles is it to Babylon? って、miles が複数形なんだよね。答えが2以上かもしれないから。",
-      say: "マザーグースの、ハウ メニー マイルズ イズ イット トゥー バビロン、って、マイルズが、複数形なんだよね。答えが、2以上かもしれないから。",
+      say: "マザーグースの、ハウ メニー マイルズ イズ イット トゥー バビロン、って、マイルズが、ふくすうけいなんだよね。答えが、2以上かもしれないから。",
     },
     {
       kind: "talk",
@@ -129,7 +129,7 @@ export const GIMONSHI_J_KISAKU: CastScript = {
       kind: "talk",
       who: "sensei",
       text: "How much は値段や量。数なら How many で、後ろは複数形。How many book じゃなくて How many books だよ。",
-      say: "ハウ マッチは、値段や量。かずなら、ハウ メニーで、うしろは、複数形。ハウ メニー ブックじゃなくて、ハウ メニー ブックスだよ。",
+      say: "ハウ マッチは、値段や量。かずなら、ハウ メニーで、うしろは、ふくすうけい。ハウ メニー ブックじゃなくて、ハウ メニー ブックスだよ。",
     },
 
     { kind: "chapter", title: "4. Who が主語になるとき" },
