@@ -2,10 +2,45 @@
 // ゼロワンOSユース版（lib/unizeb の図解レクチャー）の止まる授業の登録。
 // 単元 id は lecture の unit（"unizeb-<カードid>"）。データのファイル名はカードid（z1-01.ts・z1-01.h-charisma.ts）。
 import type { CastScript, UnitBase } from "../types";
+import { UZ_Z1_01_BASE } from "./data/z1-01";
+import { UZ_Z2_01_BASE } from "./data/z2-01";
+import { UZ_Z3_01_BASE } from "./data/z3-01";
+import { UZ_Z4_01_BASE } from "./data/z4-01";
+import { UZ_Z5_01_BASE } from "./data/z5-01";
+import { UZ_Z6_01_BASE } from "./data/z6-01";
+import { UZ_Z7_01_BASE } from "./data/z7-01";
+import { UZ_Z8_01_BASE } from "./data/z8-01";
+import { UZ_Z1_02_BASE } from "./data/z1-02";
+import { UZ_Z1_01_H_CHARISMA } from "./data/z1-01.h-charisma";
+import { UZ_Z1_01_H_KYOJU } from "./data/z1-01.h-kyoju";
+import { UZ_Z1_01_H_NEKKETSU } from "./data/z1-01.h-nekketsu";
+import { UZ_Z2_01_H_CHARISMA } from "./data/z2-01.h-charisma";
+import { UZ_Z2_01_H_KYOJU } from "./data/z2-01.h-kyoju";
+import { UZ_Z2_01_H_NEKKETSU } from "./data/z2-01.h-nekketsu";
+import { UZ_Z3_01_H_CHARISMA } from "./data/z3-01.h-charisma";
+import { UZ_Z3_01_H_KYOJU } from "./data/z3-01.h-kyoju";
+import { UZ_Z3_01_H_NEKKETSU } from "./data/z3-01.h-nekketsu";
+import { UZ_Z4_01_H_CHARISMA } from "./data/z4-01.h-charisma";
+import { UZ_Z4_01_H_KYOJU } from "./data/z4-01.h-kyoju";
+import { UZ_Z4_01_H_NEKKETSU } from "./data/z4-01.h-nekketsu";
+import { UZ_Z5_01_H_CHARISMA } from "./data/z5-01.h-charisma";
+import { UZ_Z5_01_H_KYOJU } from "./data/z5-01.h-kyoju";
+import { UZ_Z5_01_H_NEKKETSU } from "./data/z5-01.h-nekketsu";
+import { UZ_Z6_01_H_CHARISMA } from "./data/z6-01.h-charisma";
+import { UZ_Z6_01_H_KYOJU } from "./data/z6-01.h-kyoju";
+import { UZ_Z6_01_H_NEKKETSU } from "./data/z6-01.h-nekketsu";
+import { UZ_Z7_01_H_CHARISMA } from "./data/z7-01.h-charisma";
+import { UZ_Z7_01_H_KYOJU } from "./data/z7-01.h-kyoju";
+import { UZ_Z7_01_H_NEKKETSU } from "./data/z7-01.h-nekketsu";
+import { UZ_Z8_01_H_CHARISMA } from "./data/z8-01.h-charisma";
+import { UZ_Z8_01_H_KYOJU } from "./data/z8-01.h-kyoju";
+import { UZ_Z8_01_H_NEKKETSU } from "./data/z8-01.h-nekketsu";
+import { UZ_Z1_02_H_CHARISMA } from "./data/z1-02.h-charisma";
+import { UZ_Z1_02_H_KYOJU } from "./data/z1-02.h-kyoju";
+import { UZ_Z1_02_H_NEKKETSU } from "./data/z1-02.h-nekketsu";
 
-
-export const UZ_BASES: UnitBase[] = [];
-export const UZ_SCRIPTS: CastScript[] = [];
+export const UZ_BASES: UnitBase[] = [UZ_Z1_01_BASE, UZ_Z2_01_BASE, UZ_Z3_01_BASE, UZ_Z4_01_BASE, UZ_Z5_01_BASE, UZ_Z6_01_BASE, UZ_Z7_01_BASE, UZ_Z8_01_BASE, UZ_Z1_02_BASE];
+export const UZ_SCRIPTS: CastScript[] = [UZ_Z1_01_H_CHARISMA, UZ_Z1_01_H_KYOJU, UZ_Z1_01_H_NEKKETSU, UZ_Z2_01_H_CHARISMA, UZ_Z2_01_H_KYOJU, UZ_Z2_01_H_NEKKETSU, UZ_Z3_01_H_CHARISMA, UZ_Z3_01_H_KYOJU, UZ_Z3_01_H_NEKKETSU, UZ_Z4_01_H_CHARISMA, UZ_Z4_01_H_KYOJU, UZ_Z4_01_H_NEKKETSU, UZ_Z5_01_H_CHARISMA, UZ_Z5_01_H_KYOJU, UZ_Z5_01_H_NEKKETSU, UZ_Z6_01_H_CHARISMA, UZ_Z6_01_H_KYOJU, UZ_Z6_01_H_NEKKETSU, UZ_Z7_01_H_CHARISMA, UZ_Z7_01_H_KYOJU, UZ_Z7_01_H_NEKKETSU, UZ_Z8_01_H_CHARISMA, UZ_Z8_01_H_KYOJU, UZ_Z8_01_H_NEKKETSU, UZ_Z1_02_H_CHARISMA, UZ_Z1_02_H_KYOJU, UZ_Z1_02_H_NEKKETSU];
 
 /** 音声の置き場所（本体の public/audio/jugyo とは分ける） */
 export const UZ_AUDIO_DIR = "public/audio/jugyo/uz";
