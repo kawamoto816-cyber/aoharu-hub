@@ -106,5 +106,8 @@
  {"surface": "静脈血", "yomi": "ジョーミャクケツ", "accent": 4, "pos": "普通名詞", "priority": 7, "lines": 0},
  {"surface": "動脈血", "yomi": "ドーミャクケツ", "accent": 4, "pos": "普通名詞", "priority": 7, "lines": 0},
  {"surface": "不要物", "yomi": "フヨーブツ", "accent": 2, "pos": "普通名詞", "priority": 7, "lines": 0},
- {"surface": "空所", "yomi": "クーショ", "accent": 0, "pos": "普通名詞", "priority": 7, "lines": 0}
+ {"surface": "空所", "yomi": "クーショ", "accent": 0, "pos": "普通名詞", "priority": 7, "lines": 0},
+ {"surface": "地熱", "yomi": "チネツ", "accent": 0, "pos": "普通名詞", "priority": 7, "lines": 0},
+ {"surface": "対句法", "yomi": "ツイクホー", "accent": 0, "pos": "普通名詞", "priority": 7, "lines": 0},
+ {"surface": "対句", "yomi": "ツイク", "accent": 0, "pos": "普通名詞", "priority": 7, "lines": 0}
 ]
