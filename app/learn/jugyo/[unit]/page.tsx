@@ -1,5 +1,3 @@
-import { existsSync } from "node:fs";
-import { join } from "node:path";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -47,8 +45,9 @@ export default async function Page({ params }: { params: Promise<{ unit: string 
   const lec = getLecture(unit);
   if (!lessons.length || !lec) notFound();
   const info = lectureUnitInfo(unit);
-  // 音声ファイルがあるせりふ・問題の読み上げだけ src を渡す（無ければプレイヤーが仮の声で読む）
-  const have = (src: string) => (existsSync(join(process.cwd(), "public", src)) ? src : null);
+  // 音声の src はいつも渡す（音声は push 前に jugyo-tts.ts がすべて作る）。読み込めなければプレイヤーが仮の声に切りかえる。
+  // ファイルの有無を fs で見ると、トレースが public/audio（数百MB）を関数に入れ、デプロイが失敗するため見ない（next.config.ts も参照）
+  const have = (src: string): string | null => src;
   const toScenes = (lesson: Lesson): PlayerScene[] =>
     lesson.scenes.map((s) => {
       if (s.kind === "chapter") return s;

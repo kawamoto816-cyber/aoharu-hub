@@ -372,9 +372,12 @@ export function scoreCard(
 let CARD_MAP: Map<string, V3Card> | null = null;
 export function getCardData(id: string): V3Card | null {
   if (!CARD_MAP) {
-    const root = process.cwd();
-    const read = (p: string) => JSON.parse(fs.readFileSync(path.join(root, p), "utf8")) as V3Card[];
-    const all = [...read("public/media/unizeb/v3/cards-free.json"), ...read("lib/unizeb/v3/cards-pro.json")];
+    // パスは文字列のまま書く（変数で組み立てると、ビルドのトレースがプロジェクト全体を関数に入れてしまう）
+    const read = (file: string) => JSON.parse(fs.readFileSync(file, "utf8")) as V3Card[];
+    const all = [
+      ...read(path.join(process.cwd(), "public/media/unizeb/v3/cards-free.json")),
+      ...read(path.join(process.cwd(), "lib/unizeb/v3/cards-pro.json")),
+    ];
     CARD_MAP = new Map(all.map((c) => [String(c.id), c]));
   }
   return CARD_MAP.get(String(id)) || null;

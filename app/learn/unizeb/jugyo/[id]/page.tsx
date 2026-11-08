@@ -1,5 +1,3 @@
-import { existsSync } from "node:fs";
-import { join } from "node:path";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -48,10 +46,9 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
   if (!lessons.length || !lec || !c) notFound();
   if (c.lv > 3 && !canReadLecture(await serverPlan(), c.lv))
     return <UzLocked kicker={`止まる授業　Lv${c.lv}`} title={plain(lec.title)} lead={plain(lec.hook)} mid={{ href: "/learn/unizeb#lec", label: "図解レクチャー" }} plan="pro" />;
-  const have = (key: string) => {
-    const src = uzJugyoSrc(key);
-    return existsSync(join(process.cwd(), "public", src)) ? src : null;
-  };
+  // このページはプランを見るため実行時に描く。関数には public/ を入れない（next.config.ts）ので、ファイルの有無は見ずに src を渡す。
+  // 無い音声はプレイヤーが読み込みに失敗した時点でブラウザの仮の声に切りかえる
+  const have = (key: string) => uzJugyoSrc(key);
   const toScenes = (lesson: Lesson): PlayerScene[] =>
     lesson.scenes.map((s) => {
       if (s.kind === "chapter") return s;
