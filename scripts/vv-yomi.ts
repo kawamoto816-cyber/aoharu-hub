@@ -105,7 +105,10 @@ export function yomiNorm(s: string): string {
     // VOICEVOX に無い音（フュ・フィ・クォ）は、エンジンが2つに分けて読む（リフューズ→リフユウズ）。同じ読みとしてくらべる
     .replace(/フュ/g, "フユ")
     .replace(/フィ/g, "フイ")
-    .replace(/クォ/g, "クオ");
+    .replace(/クォ/g, "クオ")
+    // 歴史的仮名づかいのヰ・ヱは、エンジンがイ・エと読む
+    .replace(/ヰ/g, "イ")
+    .replace(/ヱ/g, "エ");
   const out: string[] = [];
   for (let c of k) {
     const prev = out.length ? ROW[out[out.length - 1]] : undefined;
