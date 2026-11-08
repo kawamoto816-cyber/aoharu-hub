@@ -25,6 +25,7 @@ import { UZ_CASES, UZ_DEN, UZ_ENSHU, UZ_EP, UZ_LECTURES } from "@/lib/unizeb";
 import { APL_LECTURES } from "@/lib/apply-lec";
 import { TSUKKOMI_HOME, TSUKKOMI_UNITS, tsukkomiHref } from "@/lib/tsukkomi";
 import { JUGYO_HOME, UNITS as JUGYO_UNITS, jugyoHref } from "@/lib/jugyo";
+import { uzJugyoPublicPaths } from "@/lib/jugyo/uz/lessons";
 
 // 検索エンジン向けサイトマップ。入口ページを追加したらここに足す。
 // /guide の記事は静的記事とDBの記事の両方を載せる (取り込んだ記事が当日中に見つかるように)。
@@ -78,6 +79,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // 止まる授業（?cast= は入れない。canonical は cast なし）
     { url: `${base}${JUGYO_HOME}`, lastModified: now, changeFrequency: "weekly" as const, priority: 0.7 },
     ...JUGYO_UNITS.map((u) => ({ url: `${base}${jugyoHref(u)}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
+    // ゼロワンOSユース版の授業は Lv1〜3 だけ（Lv4 以降は Pro・Max 限定）
+    ...uzJugyoPublicPaths().map((p) => ({ url: `${base}${p}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.5 })),
     ...["", "/koritsu", "/kyotsu", "/shiritsu", "/teiki"].map((m) => ({ url: `${base}/learn/exam${m}`, lastModified: now, changeFrequency: "weekly" as const, priority: 0.7 })),
     ...UNIT_MOSHI_IDS.map((u) => ({ url: `${base}/learn/moshi/${u}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
     // 選ばれる力の図解の教科書（小論文・面接・総合型選抜）。書いた単元だけ

@@ -8,6 +8,9 @@ import { castCredit } from "@/lib/jugyo/audio";
 import { STAGE_NAME, castsOfStage, stageOf } from "@/lib/jugyo/cast";
 import type { Stage } from "@/lib/jugyo/types";
 import { getLecture, lectureUnitInfo } from "@/lib/lecture";
+import { uzJugyoHref } from "@/lib/jugyo/uz";
+import { UZ_JUGYO_PUBLIC_IDS, uzJugyoSpan } from "@/lib/jugyo/uz/lessons";
+import { cardInfo } from "@/lib/unizeb";
 
 // /learn/jugyo：止まる授業（動画型・試作）の一覧。検索に載せ、sitemap にも入れる。
 // 段階ごとのキャスト（キャラの組み合わせ）を紹介する。どのキャストで見るかは、単元のページでふり分ける（ABテスト）。
@@ -88,6 +91,32 @@ export default function Page() {
           </section>
         );
       })}
+      {UZ_JUGYO_PUBLIC_IDS.length > 0 && (
+        <section aria-labelledby="jugyo-uz" className="mt-7">
+          <h2 id="jugyo-uz" className="m-0 text-[18px] font-black">
+            起業の教科書の授業（ゼロワンOSユース版）
+          </h2>
+          <p className="m-0 mt-1 text-[12.5px] leading-relaxed text-[#3A3D55]">高校の3つのキャストで。Lv1〜3 はだれでも見られます。</p>
+          <ul className="m-0 mt-3 grid list-none gap-3 p-0">
+            {UZ_JUGYO_PUBLIC_IDS.map((id) => {
+              const c = cardInfo(id);
+              const span = uzJugyoSpan(id);
+              if (!c || !span) return null;
+              return (
+                <li key={id}>
+                  <Link href={uzJugyoHref(id)} className="block rounded-[16px] border-[1.5px] border-[#15172B] bg-white p-4 text-[#15172B] no-underline shadow-[3px_3px_0_#15172B]">
+                    <span className="block text-[12px] font-black text-[#1533B8]">Lv{c.lv}・{id.toUpperCase()}</span>
+                    <span className="mt-1 block text-[17px] font-black leading-snug">{plain(c.name)}</span>
+                    <span className="mt-1.5 block text-[12.5px] font-bold text-[#3A3D55]">
+                      約{span.minutes}分・{span.stops}回止まる　▶ 見る
+                    </span>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      )}
     </LearnShell>
   );
 }
