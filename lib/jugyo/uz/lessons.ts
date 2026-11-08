@@ -8,6 +8,11 @@ export const getUzLessons = (cardId: string) => UZ_LESSONS.filter((l) => l.unitI
 /** 授業があるカードid（並び順） */
 export const UZ_JUGYO_IDS: string[] = [...new Set(UZ_LESSONS.map((l) => l.unitId.replace(/^unizeb-/, "")))];
 
+/** 一覧・sitemap・検索に出してよい授業のカードid（Lv1〜3。Lv4 以降は Pro・Max 限定なので出さない） */
+export const UZ_JUGYO_PUBLIC_IDS: string[] = UZ_JUGYO_IDS.filter((id) => Number(id.split("-")[1]) <= 3);
+/** 公開の授業ページの URL（sitemap 用） */
+export const uzJugyoPublicPaths = (): string[] => UZ_JUGYO_PUBLIC_IDS.map((id) => `/learn/unizeb/jugyo/${id}`);
+
 /** 「約N分・M回止まる」の N・M（キャストで違えば幅で） */
 export function uzJugyoSpan(cardId: string): { minutes: string; stops: string } | null {
   const ls = getUzLessons(cardId);

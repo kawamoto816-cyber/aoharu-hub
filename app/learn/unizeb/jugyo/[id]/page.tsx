@@ -18,8 +18,9 @@ import { canReadLecture } from "@/lib/unizeb/access";
 import { serverPlan } from "@/lib/unizeb/server";
 
 // /learn/unizeb/jugyo/<カードid>：ゼロワンOSユース版の図解レクチャーを「止まる授業」で（台本は lib/jugyo/uz）。
-// 見せる範囲はレクチャーと同じ（Lv1〜3 はだれでも、Lv4 以降は Pro・Max）。公開の一覧（/learn/jugyo）・sitemap には入れず、検索にも出さない
-// （公開の範囲は代表が決める。決まるまでは、レクチャーのページの「授業で見る」からだけ入る）。
+// 見せる範囲はレクチャーと同じ（Lv1〜3 はだれでも、Lv4 以降は Pro・Max）。
+// 検索には Lv1〜3 だけを出す（2026-11-08 代表の判断）。Lv4 以降は Pro・Max 限定なので出さない。
+// 一覧（/learn/jugyo）と sitemap への追加は本体側（lib/jugyo/uz/lessons.ts の UZ_JUGYO_PUBLIC_IDS・uzJugyoPublicPaths を使う）。
 // 音声は public/audio/jugyo/uz/<キー>.mp3（scripts/jugyo-tts.ts が作る）。無いせりふはブラウザの仮の声で読む。
 
 export function generateStaticParams() {
@@ -35,7 +36,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   return {
     title: `${c.name}の授業（Lv${c.lv}）｜止まる授業｜ゼロワンOSユース版｜アオハルOS`,
     description: `起業の教科書「${c.name}」を、2人のキャラが図を見ながら話す授業で。約${span.minutes}分・とちゅうで${span.stops}回止まって問題。`,
-    robots: { index: false, follow: true },
+    robots: { index: c.lv <= 3, follow: true },
   };
 }
 
