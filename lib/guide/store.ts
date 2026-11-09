@@ -39,18 +39,25 @@ function toArticle(row: GuideRow): GuideArticle {
   };
 }
 
-/** 公開中の記事 (新しい順)。テーブルが未作成でも画面を落とさず空配列を返す */
+/** 一覧・関連記事・sitemap に要る列だけ（本文 body・lead は読まない） */
+const SUMMARY_COLUMNS = "slug,title,description,segment,topic,keywords,published_at,updated_at";
+
+/**
+ * 公開中の記事 (新しい順)。テーブルが未作成でも画面を落とさず空配列を返す。
+ * 本文（sections・faq など）は入らない。1本の本文は getStoredArticle で読む。
+ * （以前は全記事の本文を毎回読んでいて、記事ページを開くたびに数MBを Supabase から受け取っていた：2026-11 の Egress の94%）
+ */
 export async function listPublishedArticles(limit = 500): Promise<GuideArticle[]> {
   try {
     const supabase = getSupabaseAdmin();
     const { data, error } = await supabase
       .from("guide_articles")
-      .select("*")
+      .select(SUMMARY_COLUMNS)
       .eq("status", "published")
       .order("published_at", { ascending: false })
       .limit(limit);
     if (error) return [];
-    return ((data ?? []) as GuideRow[]).map(toArticle);
+    return ((data ?? []) as unknown as Omit<GuideRow, "lead" | "body">[]).map((row) => toArticle({ ...row, lead: "", body: { sections: [], faq: [], sources: [], cta: { app: "try", heading: "", text: "", button: "" } } } as GuideRow));
   } catch {
     return [];
   }
