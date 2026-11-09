@@ -5,6 +5,7 @@ import { APPS } from "@/lib/apps-config";
 import { PlanActions } from "@/components/PlanActions";
 import { CheckoutIntentHandler } from "@/components/CheckoutIntentHandler";
 import { CheckoutSuccessTracker } from "@/components/CheckoutSuccessTracker";
+import { PurchaseWelcome } from "@/components/billing/PurchaseWelcome";
 import { Landing } from "@/components/landing/Landing";
 import { LearnResumeCard } from "@/components/learn/LearnResumeCard";
 import { resumeTopics } from "@/lib/learn/topics";
@@ -77,6 +78,7 @@ function Hub({
   return (
     <main className="mx-auto w-full max-w-4xl flex-1 px-6 py-16 sm:py-20">
       <CheckoutIntentHandler />
+      <PurchaseWelcome />
       <CheckoutSuccessTracker />
       <p className="text-xs font-bold uppercase tracking-wide text-indigo-600">
         アオハルOS

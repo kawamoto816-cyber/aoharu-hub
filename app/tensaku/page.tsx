@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { PreviewForm, type Kind } from "@/components/tensaku/PreviewForm";
 import { CheckoutSuccessTracker } from "@/components/CheckoutSuccessTracker";
+import { PurchaseWelcome } from "@/components/billing/PurchaseWelcome";
 import { DemoButton } from "@/components/landing/DemoButton";
 import { zen, klee } from "@/components/landing/fonts";
 
@@ -123,6 +124,7 @@ export default async function TensakuPage({ searchParams }: { searchParams: SP }
             </div>
           </div>
           <PreviewForm handFont={klee.className} initialKind={kind} />
+          <PurchaseWelcome />
           <CheckoutSuccessTracker />
         </div>
       </section>
