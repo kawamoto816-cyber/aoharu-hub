@@ -102,6 +102,8 @@ export function buildEmail(step: Step, userId: string, name: string): { subject:
   }
   // 使い切った人へのお知らせ。受け取る人の多くは高校生 (未成年) なので、有料プランを勧める文面にはしない
   // (2026-10-31 じゅんさんと決めた線引き)。来月また使えることと、それまでにできることだけを伝える。
+  // 2026-11-10 じゅんさんの判断：保護者向けページ (/parents#season) を「おうちの人と相談するときに見せるページ」として
+  // 1行だけ紹介する。買うように勧める言い方はしない。
   return {
     subject: "今月の無料添削（2本）を使い終えました",
     text: [
@@ -112,6 +114,9 @@ export function buildEmail(step: Step, userId: string, name: string): { subject:
       "",
       "▼ 小論文・面接のコツをカードで読む（無料・回数の制限なし）",
       `${BASE}/learn?utm_source=email&utm_medium=onboarding&utm_campaign=quota`,
+      "",
+      "▼ おうちの人と相談するときは、このページを見せてください（保護者の方向けの説明）",
+      `${BASE}/parents?utm_source=email&utm_medium=onboarding&utm_campaign=quota#season`,
       "",
       "プランの内容は、マイページの「現在のプラン」から確認できます。",
       footer(userId),
