@@ -24,6 +24,7 @@ import { UNIT_MOSHI_IDS } from "@/lib/moshi/unit";
 import { UZ_CASES, UZ_DEN, UZ_ENSHU, UZ_EP, UZ_LECTURES } from "@/lib/unizeb";
 import { APL_LECTURES } from "@/lib/apply-lec";
 import { TSUKKOMI_HOME, TSUKKOMI_UNITS, tsukkomiHref } from "@/lib/tsukkomi";
+import { isLockedCard } from "@/lib/learn/lock";
 import { JUGYO_HOME, UNITS as JUGYO_UNITS, jugyoHref } from "@/lib/jugyo";
 import { uzJugyoPublicPaths } from "@/lib/jugyo/uz/lessons";
 
@@ -48,23 +49,23 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${base}/learn/gakko`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
     { url: `${base}/learn/gakko/dashboard`, lastModified: now, changeFrequency: "monthly", priority: 0.6 },
     { url: `${base}/learn/shoronbun`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
-    ...SHORONBUN.cards.map((c) => ({ url: `${base}/learn/shoronbun/${c.no}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
+    ...SHORONBUN.cards.filter((c) => !isLockedCard(SHORONBUN, c)).map((c) => ({ url: `${base}/learn/shoronbun/${c.no}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
     { url: `${base}/learn/jibun`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
-    ...JIBUN.cards.map((c) => ({ url: `${base}/learn/jibun/${c.no}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
+    ...JIBUN.cards.filter((c) => !isLockedCard(JIBUN, c)).map((c) => ({ url: `${base}/learn/jibun/${c.no}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
     { url: `${base}/learn/daigaku`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
-    ...DAIGAKU.cards.map((c) => ({ url: `${base}/learn/daigaku/${c.no}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
+    ...DAIGAKU.cards.filter((c) => !isLockedCard(DAIGAKU, c)).map((c) => ({ url: `${base}/learn/daigaku/${c.no}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
     { url: `${base}/learn/kyoyo`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
-    ...KYOYO.cards.map((c) => ({ url: `${base}/learn/kyoyo/${c.no}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
+    ...KYOYO.cards.filter((c) => !isLockedCard(KYOYO, c)).map((c) => ({ url: `${base}/learn/kyoyo/${c.no}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
     { url: `${base}/learn/paradigm`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
-    ...PARADIGM.cards.map((c) => ({ url: `${base}/learn/paradigm/${c.no}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
+    ...PARADIGM.cards.filter((c) => !isLockedCard(PARADIGM, c)).map((c) => ({ url: `${base}/learn/paradigm/${c.no}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
     { url: `${base}/learn/kindai`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
-    ...KINDAI.cards.map((c) => ({ url: `${base}/learn/kindai/${c.no}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
+    ...KINDAI.cards.filter((c) => !isLockedCard(KINDAI, c)).map((c) => ({ url: `${base}/learn/kindai/${c.no}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
     { url: `${base}/learn/chiseigaku`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
-    ...CHISEIGAKU.cards.map((c) => ({ url: `${base}/learn/chiseigaku/${c.no}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
+    ...CHISEIGAKU.cards.filter((c) => !isLockedCard(CHISEIGAKU, c)).map((c) => ({ url: `${base}/learn/chiseigaku/${c.no}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
     { url: `${base}/learn/kokusai`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
-    ...KOKUSAI.cards.map((c) => ({ url: `${base}/learn/kokusai/${c.no}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
+    ...KOKUSAI.cards.filter((c) => !isLockedCard(KOKUSAI, c)).map((c) => ({ url: `${base}/learn/kokusai/${c.no}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
     { url: `${base}/learn/gendai`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
-    ...GENDAI.cards.map((c) => ({ url: `${base}/learn/gendai/${c.no}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
+    ...GENDAI.cards.filter((c) => !isLockedCard(GENDAI, c)).map((c) => ({ url: `${base}/learn/gendai/${c.no}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
     { url: `${base}/learn/library`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
     { url: `${base}/learn/apply`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
     { url: `${base}/learn/school`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
@@ -113,9 +114,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...WORD_STAGES.filter((s) => s.open).map((s) => ({ url: `${base}/learn/eitango/${s.no}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
     ...BOOKS.map((b) => ({ url: `${base}/learn/library/${b.id}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.5 })),
     { url: `${base}/learn/shiboriyusho`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
-    ...SHIBORIYUSHO.cards.map((c) => ({ url: `${base}/learn/shiboriyusho/${c.no}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
+    ...SHIBORIYUSHO.cards.filter((c) => !isLockedCard(SHIBORIYUSHO, c)).map((c) => ({ url: `${base}/learn/shiboriyusho/${c.no}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
     { url: `${base}/learn/mensetsu`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
-    ...MENSETSU.cards.map((c) => ({ url: `${base}/learn/mensetsu/${c.no}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
+    ...MENSETSU.cards.filter((c) => !isLockedCard(MENSETSU, c)).map((c) => ({ url: `${base}/learn/mensetsu/${c.no}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
     ...["shiboriyu", "tensakun", "mensatsu"].map((k) => ({ url: `${base}/tutorial/${k}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.8 })),
     ...articles.map((a) => ({
       url: `${base}/guide/${a.slug}`,

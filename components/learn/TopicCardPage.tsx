@@ -22,7 +22,9 @@ export function topicCardMetadata(topic: LearnRegionTopic, no: number): Metadata
   const title = `${card.title}｜${topic.label}のコツ No.${card.no}｜アオハルOS`;
   // Pro のカードは本文をメタ情報にも出さない
   const description = isLockedCard(topic, card) ? `${card.front}。${topic.label}のカード（Pro）。` : `${card.front}。${card.back}`.slice(0, 120);
-  return { title, description, alternates: { canonical: url }, openGraph: { title, description, url } };
+  // Pro のカードは本文を見せないので、検索には出さない（中身のないページとしてソフト404 と判定されるため：2026-11）
+  const robots = isLockedCard(topic, card) ? { index: false, follow: true } : undefined;
+  return { title, description, alternates: { canonical: url }, openGraph: { title, description, url }, robots };
 }
 
 export function TopicCardPage({ topic, no }: { topic: LearnRegionTopic; no: number }) {
