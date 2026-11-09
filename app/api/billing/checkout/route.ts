@@ -5,6 +5,9 @@ import { currentUser } from "@clerk/nextjs/server";
 import {
   getCurrentUserId,
   createCheckoutSession,
+  createSeasonPassCheckoutSession,
+  getOrCreateSubscription,
+  SEASON_PASS,
 } from "@bluespring/aoharu-entitlements";
 
 const VALID_PLANS = ["pro", "max"] as const;
@@ -28,6 +31,10 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json().catch(() => ({}));
+
+    // 受験シーズンパス（買い切り・自動更新なし）
+    if (body?.plan === "season") return seasonPass(req, userId, body?.payer === "parent");
+
     const plan = body?.plan as UpgradePlan | undefined;
     if (!plan || !VALID_PLANS.includes(plan)) {
       return NextResponse.json(
@@ -75,4 +82,26 @@ export async function POST(req: Request) {
       { status: 500 }
     );
   }
+}
+
+/** 受験シーズンパスの支払い画面。月額の契約中の人には出さない（二重に払わせない） */
+async function seasonPass(req: Request, userId: string, forParent: boolean) {
+  const row = await getOrCreateSubscription(userId);
+  if (row.plan !== "free" && row.status === "active") {
+    return NextResponse.json({ error: "すでに有料プランをご利用中です", reason: "already_paid" }, { status: 409 });
+  }
+  const origin = new URL(req.url).origin;
+  const user = forParent ? null : await currentUser();
+  const userEmail = user?.emailAddresses?.[0]?.emailAddress;
+  const successUrl = forParent
+    ? `${origin}/parents/thanks?plan=season&value=${SEASON_PASS.priceJpy}&session_id={CHECKOUT_SESSION_ID}`
+    : `${origin}/tensaku?checkout=success&plan=season&value=${SEASON_PASS.priceJpy}&session_id={CHECKOUT_SESSION_ID}`;
+  const session = await createSeasonPassCheckoutSession({
+    userId,
+    successUrl,
+    cancelUrl: forParent ? `${origin}/parents` : `${origin}/tensaku?checkout=cancel`,
+    userEmail,
+  });
+  if (!session.url) return NextResponse.json({ error: "Checkoutセッションの作成に失敗しました" }, { status: 500 });
+  return NextResponse.json({ url: session.url });
 }

@@ -34,6 +34,8 @@ const EVENT_LABEL: Record<string, string> = {
   share_to_child: "子に送る",
   sign_up_click: "登録クリック",
   guide_cta_click: "記事CTA",
+  season_offer_view: "パスの案内を見た",
+  ask_parent_link: "保護者リンク作成",
   begin_checkout: "決済開始",
   purchase: "購入",
 };

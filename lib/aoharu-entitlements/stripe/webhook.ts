@@ -5,7 +5,9 @@ import {
   findUserIdByStripeCustomerId,
   upsertSubscriptionFromStripe,
   downgradeToFree,
+  grantSeasonPass,
 } from "../supabase/subscriptions";
+import { SEASON_PASS, seasonPassPriceId } from "../config/season-pass";
 
 /**
  * Stripe Webhookのイベントを受け取り、subscriptionsテーブルに同期する。
@@ -45,6 +47,16 @@ export async function handleStripeWebhookEvent(event: Stripe.Event): Promise<voi
 async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
   const userId = session.client_reference_id ?? session.metadata?.clerk_user_id;
   const customerId = session.customer as string | null;
+
+  // 受験シーズンパス（買い切り）：サブスクリプションは無いので、期限つきで max を付ける
+  if (session.mode === "payment" && session.metadata?.kind === SEASON_PASS.metadataKind) {
+    if (!userId || !customerId || session.payment_status !== "paid") {
+      console.error("[aoharu-entitlements] season pass: userId/customerId が不足、または未払い", { userId, customerId, paymentStatus: session.payment_status });
+      return;
+    }
+    await grantSeasonPass({ userId, stripeCustomerId: customerId, stripePriceId: seasonPassPriceId() ?? null, endsAt: session.metadata?.ends_at });
+    return;
+  }
   const subscriptionId = session.subscription as string | null;
 
   if (!userId || !customerId || !subscriptionId) {

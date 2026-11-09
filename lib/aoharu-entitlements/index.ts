@@ -39,9 +39,12 @@ export {
   upsertSubscriptionFromStripe,
   findUserIdByStripeCustomerId,
   downgradeToFree,
+  grantSeasonPass,
+  expireSeasonPasses,
 } from "./supabase/subscriptions";
+export { SEASON_PASS, isSeasonPassRow, isExpiredSeasonPass } from "./config/season-pass";
 export type { SubscriptionRow } from "./supabase/subscriptions";
 
 export { getStripe } from "./stripe/client";
-export { createCheckoutSession, createBillingPortalSession } from "./stripe/checkout";
+export { createCheckoutSession, createSeasonPassCheckoutSession, createBillingPortalSession } from "./stripe/checkout";
 export { handleStripeWebhookEvent } from "./stripe/webhook";

@@ -1,5 +1,6 @@
 import { getSupabaseAdmin } from "./client";
 import type { Plan, SubscriptionStatus } from "../config/plans";
+import { SEASON_PASS, isExpiredSeasonPass } from "../config/season-pass";
 
 export interface SubscriptionRow {
   id: string;
@@ -34,7 +35,15 @@ export async function getOrCreateSubscription(
     throw new Error(`subscriptions取得に失敗: ${selectError.message}`);
   }
 
-  if (existing) return existing as SubscriptionRow;
+  if (existing) {
+    const row = existing as SubscriptionRow;
+    // 期限の過ぎた受験シーズンパスは、読んだ時点で無料プランにもどす（毎日の定時処理より先に気づいた場合）
+    if (isExpiredSeasonPass(row)) {
+      await expireSeasonPassRow(row.user_id);
+      return { ...row, plan: "free", status: "canceled", current_period_end: null, stripe_price_id: null, cancel_at_period_end: false };
+    }
+    return row;
+  }
 
   const { data: created, error: insertError } = await supabase
     .from("subscriptions")
@@ -123,4 +132,57 @@ export async function downgradeToFree(userId: string): Promise<void> {
   if (error) {
     throw new Error(`freeプランへのダウングレードに失敗: ${error.message}`);
   }
+}
+
+/**
+ * 受験シーズンパス（買い切り）の支払いが済んだとき、Webhook から呼ぶ。
+ * plan: max・期限つき（current_period_end）・サブスクリプションなし で入れる。
+ */
+export async function grantSeasonPass(params: {
+  userId: string;
+  stripeCustomerId: string;
+  stripePriceId: string | null;
+  endsAt?: string;
+}): Promise<void> {
+  const supabase = getSupabaseAdmin();
+  const { error } = await supabase.from("subscriptions").upsert(
+    {
+      user_id: params.userId,
+      plan: "max",
+      status: "active",
+      stripe_customer_id: params.stripeCustomerId,
+      stripe_subscription_id: null,
+      stripe_price_id: params.stripePriceId ?? SEASON_PASS.metadataKind,
+      current_period_end: new Date(params.endsAt ?? SEASON_PASS.endsAt).toISOString(),
+      // 自動更新しない（期限で終わる）ことを、ほかのアプリの「プラン管理」の表示にも伝える
+      cancel_at_period_end: true,
+    },
+    { onConflict: "user_id" }
+  );
+  if (error) throw new Error(`シーズンパスの付与に失敗: ${error.message}`);
+}
+
+async function expireSeasonPassRow(userId: string): Promise<void> {
+  const supabase = getSupabaseAdmin();
+  const { error } = await supabase
+    .from("subscriptions")
+    .update({ plan: "free", status: "canceled", stripe_price_id: null, current_period_end: null, cancel_at_period_end: false })
+    .eq("user_id", userId)
+    .is("stripe_subscription_id", null);
+  if (error) throw new Error(`シーズンパスの期限切れ処理に失敗: ${error.message}`);
+}
+
+/** 期限の過ぎた受験シーズンパスをまとめて無料プランにもどす（毎日の定時処理から呼ぶ）。もどした件数を返す */
+export async function expireSeasonPasses(now = new Date()): Promise<number> {
+  const supabase = getSupabaseAdmin();
+  const { data, error } = await supabase
+    .from("subscriptions")
+    .update({ plan: "free", status: "canceled", stripe_price_id: null, current_period_end: null, cancel_at_period_end: false })
+    .is("stripe_subscription_id", null)
+    .neq("plan", "free")
+    .not("current_period_end", "is", null)
+    .lt("current_period_end", now.toISOString())
+    .select("user_id");
+  if (error) throw new Error(`シーズンパスの期限切れ処理に失敗: ${error.message}`);
+  return data?.length ?? 0;
 }

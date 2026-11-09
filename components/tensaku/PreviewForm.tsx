@@ -5,7 +5,7 @@ import Link from "next/link";
 import { SmartSignUpButton } from "@/components/SmartSignUpButton";
 import { trackEvent } from "@/lib/analytics";
 import { learnIdFromLocation, markDone } from "@/lib/learn/progress";
-import { UpgradeActions } from "@/components/billing/UpgradeActions";
+import { SeasonPassOffer } from "@/components/billing/SeasonPassOffer";
 
 // /tensaku の添削フォーム。
 //   未登録: 貼る → 指摘が3つ返る (お試し) → 全文の添削は無料登録で
@@ -295,11 +295,10 @@ export function PreviewForm({ handFont, initialKind = "shibo" }: { handFont: str
       )}
 
       {outOfQuota && (
-        <div className="mt-4 rounded-xl border-[1.5px] border-[#15172B] bg-[#FFF6C4] p-4 text-sm leading-[1.8]">
-          <p className="m-0 font-bold">今月の無料添削（2本）を使い切りました。</p>
-          <p className="mb-0 mt-1">来月1日にまた2本使えます。出願や面接が近いなら、Pro（月980円・いつでも解約可）で回数の制限なく添削できます。</p>
-          <UpgradeActions location="tensaku_quota" />
-        </div>
+        <SeasonPassOffer
+          location="tensaku_quota"
+          lead="今月の無料添削（2本）を使い切りました。来月1日にまた2本使えます。出願や面接が近いなら、直すたびに何度でも添削できます。"
+        />
       )}
 
       {error && (
@@ -396,6 +395,14 @@ export function PreviewForm({ handFont, initialKind = "shibo" }: { handFont: str
           >
             直して、もう一度添削する ↑
           </button>
+
+          {/* 無料プランの人に：いちばん「もっと直したい」場面で、出願まで使い放題の道を見せる */}
+          {signedIn && !status?.unlimited && (
+            <SeasonPassOffer
+              location="tensaku_full_result"
+              lead={`いまは${full.total}点。上の指摘を直したら、もう一度添削して点の上がり方を確かめましょう。無料は月2本までですが、パスなら直すたびに何度でも添削できます。`}
+            />
+          )}
         </div>
       )}
     </div>
