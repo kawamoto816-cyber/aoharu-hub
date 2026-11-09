@@ -33,7 +33,7 @@ export function CheckoutIntentHandler() {
 
     const plan = parsed.plan;
     const ts = parsed.ts;
-    if (plan !== "pro" && plan !== "max") return;
+    if (plan !== "pro" && plan !== "max" && plan !== "season") return;
     if (typeof ts !== "number" || Date.now() - ts > PENDING_PLAN_TTL_MS) return;
 
     (async () => {

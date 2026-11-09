@@ -1,7 +1,7 @@
 import { getStripe } from "./client";
 import { getPriceIdForPlan, type Plan } from "../config/plans";
 import { getOrCreateSubscription } from "../supabase/subscriptions";
-import { SEASON_PASS, seasonPassPriceId } from "../config/season-pass";
+import { SEASON_PASS, seasonPassPriceId, seasonPassPriceJpy } from "../config/season-pass";
 
 /**
  * Pro/Maxへのアップグレード用Checkoutセッションを作成する。
@@ -68,7 +68,7 @@ export async function createSeasonPassCheckoutSession(params: {
             quantity: 1,
             price_data: {
               currency: "jpy",
-              unit_amount: SEASON_PASS.priceJpy,
+              unit_amount: seasonPassPriceJpy(),
               product_data: { name: `アオハルOS ${SEASON_PASS.name}（${SEASON_PASS.endsLabel}まで）`, description: SEASON_PASS.stripeDescription },
             },
           },

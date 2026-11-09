@@ -1,7 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { useClerk } from "@clerk/nextjs";
+import { openSignUpWithRecovery } from "@/lib/authReloadGuard";
+import { PENDING_PLAN_STORAGE_KEY } from "@/lib/checkout-intent";
 import { trackEvent } from "@/lib/analytics";
+import { seasonPrice, yen, SEASON_ENDS_LABEL } from "@/lib/aoharu-entitlements/config/season-price";
 
 // 有料にする2つの道（無料枠を使い切ったとき・添削の結果のあとなどに出す）。
 //   1. 自分で手続きする → そのまま Stripe の支払い画面へ
@@ -12,18 +16,26 @@ import { trackEvent } from "@/lib/analytics";
 
 export type UpgradeProduct = "pro" | "season";
 
-const PRODUCT = {
-  pro: { value: 980, plan: "pro", button: "Proにする（月980円）", note: "いつでも解約できます。" },
-  season: { value: 9800, plan: "season", button: "シーズンパスにする（9,800円）", note: "1回払うだけ・自動更新なし。" },
-} as const;
+function productOf(product: UpgradeProduct) {
+  if (product === "pro") return { value: 980, plan: "pro", button: "Proにする（月980円）", note: "いつでも解約できます。" } as const;
+  const sp = seasonPrice();
+  return {
+    value: sp.jpy,
+    plan: "season",
+    button: `シーズンパスにする（${yen(sp.jpy)}円）`,
+    note: sp.early ? `1回払うだけ・自動更新なし。${sp.earlyLabel}までの早割の値段です。` : "1回払うだけ・自動更新なし。",
+  } as const;
+}
 
 async function createCheckout(product: UpgradeProduct, payer: "self" | "parent"): Promise<string> {
   const res = await fetch("/api/billing/checkout", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ plan: PRODUCT[product].plan, payer }),
+    body: JSON.stringify({ plan: productOf(product).plan, payer }),
   });
-  const data = (await res.json().catch(() => ({}))) as { url?: string; error?: string };
+  const data = (await res.json().catch(() => ({}))) as { url?: string; error?: string; reason?: string };
+  if (res.status === 401 || data.reason === "auth_required") throw new Error("auth_required");
+  if (res.status === 409 || data.reason === "already_paid") throw new Error("already_paid");
   if (!res.ok || !data.url) throw new Error(data.error || `HTTP ${res.status}`);
   return data.url;
 }
@@ -31,7 +43,7 @@ async function createCheckout(product: UpgradeProduct, payer: "self" | "parent")
 function parentMessage(product: UpgradeProduct, url: string, endsLabel: string): string {
   const ask =
     product === "season"
-      ? `出願と面接が終わるまで使い放題になる「受験シーズンパス」（${endsLabel}まで・9,800円の1回払い・自動更新なし）にしてもらえませんか。`
+      ? `出願と面接が終わるまで使い放題になる「受験シーズンパス」（${endsLabel}まで・${yen(seasonPrice().jpy)}円の1回払い・自動更新なし）にしてもらえませんか。${seasonPrice().early ? `${seasonPrice().earlyLabel}までは早割の値段です。` : ""}`
       : "無料プランは月2本までなので、Pro（月980円・いつでも解約できます）にしてもらえませんか。";
   return [
     "受験の志望理由書・小論文の添削や面接練習に「アオハルOS」というAIのサービスを使っています。",
@@ -39,16 +51,40 @@ function parentMessage(product: UpgradeProduct, url: string, endsLabel: string):
     "下のリンクから支払いの手続きができます（24時間有効）。",
     url,
     "",
-    "サービスの説明（保護者の方向け）: https://app.bluespring.co.jp/parents",
+    `サービスの説明（保護者の方向け）: https://app.bluespring.co.jp/parents${product === "season" ? "#season" : ""}`,
   ].join("\n");
 }
 
-export function UpgradeActions({ location, product = "pro", endsLabel = "2027年3月31日" }: { location: string; product?: UpgradeProduct; endsLabel?: string }) {
-  const p = PRODUCT[product];
+export function UpgradeActions({ location, product = "pro", endsLabel = SEASON_ENDS_LABEL }: { location: string; product?: UpgradeProduct; endsLabel?: string }) {
+  const p = productOf(product);
   const [loading, setLoading] = useState<"self" | "parent" | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const clerk = useClerk();
+
+  /** ログインしていない・すでに有料、のときの扱い。ほかの失敗なら false */
+  function handleKnown(e: unknown): boolean {
+    const m = e instanceof Error ? e.message : "";
+    if (m === "auth_required") {
+      // 登録・ログインのあと、トップ（CheckoutIntentHandler）がそのまま支払い画面へ進める
+      try {
+        sessionStorage.setItem(PENDING_PLAN_STORAGE_KEY, JSON.stringify({ plan: p.plan, ts: Date.now() }));
+      } catch {
+        /* 保存できなくても登録は続けられる */
+      }
+      trackEvent("sign_up_click", { location: `${location}_${p.plan}` });
+      openSignUpWithRecovery(clerk);
+      setLoading(null);
+      return true;
+    }
+    if (m === "already_paid") {
+      setError("すでに有料プランをご利用中です。いまのプランのまま、回数の制限なく使えます。");
+      setLoading(null);
+      return true;
+    }
+    return false;
+  }
 
   async function goSelf() {
     setLoading("self");
@@ -57,7 +93,8 @@ export function UpgradeActions({ location, product = "pro", endsLabel = "2027年
       const url = await createCheckout(product, "self");
       trackEvent("begin_checkout", { currency: "JPY", value: p.value, plan: p.plan, location, payer: "self" });
       window.location.href = url;
-    } catch {
+    } catch (e) {
+      if (handleKnown(e)) return;
       setError("支払い画面を開けませんでした。少し時間をおいてもう一度お試しください。");
       setLoading(null);
     }
@@ -80,7 +117,8 @@ export function UpgradeActions({ location, product = "pro", endsLabel = "2027年
           /* 共有を閉じただけなら、下のコピー欄から送れる */
         }
       }
-    } catch {
+    } catch (e) {
+      if (handleKnown(e)) return;
       setError("リンクを作れませんでした。少し時間をおいてもう一度お試しください。");
     } finally {
       setLoading(null);

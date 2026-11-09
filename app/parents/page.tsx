@@ -3,11 +3,16 @@ import Link from "next/link";
 import { SmartSignUpButton } from "@/components/SmartSignUpButton";
 import { ShareToChild } from "@/components/ShareToChild";
 import { TrackedLink } from "@/components/TrackedLink";
+import { VoiceList } from "@/components/voices/VoiceList";
+import { seasonPrice, yen, SEASON_ENDS_LABEL } from "@/lib/aoharu-entitlements/config/season-price";
 
 // /parents: 保護者向けLP。
 // 高校生本人はSNSから /try に来るが、決済者は保護者。検索から来た保護者に
 // 「塾との費用差」「学術的な裏付け」「本人が考えて書く設計」「いつでも解約」を伝え、
 // 無料登録か「お子さんに送る」に誘導する。個人情報・顔出し・体験談は載せない方針。
+
+// 受験シーズンパスの早割（日付で値段が変わる）を出すので、1時間ごとに作り直す
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: "保護者の方へ｜アオハルOS",
@@ -31,7 +36,7 @@ const FAQ: { q: string; a: string }[] = [
   },
   {
     q: "支払いはどうすればいいですか？",
-    a: "有料プランの決済はStripe（世界中のサービスで使われている決済基盤）でクレジットカード決済です。アカウントはお子さん本人のメールアドレスで作り、お支払いだけ保護者のカードで行う形が一般的です。お子さんの画面の「保護者にお願いする」から、保護者の方がそのまま支払えるリンク（24時間有効）を送ってもらうこともできます。",
+    a: "決済はStripe（世界中のサービスで使われている決済基盤）で、クレジットカード・PayPay・Apple Pay・Google Pay が使えます（月額のプランはクレジットカードのみの場合があります）。アカウントはお子さん本人のメールアドレスで作り、お支払いだけ保護者の方が行う形が一般的です。お子さんの画面の「保護者にお願いする」から、保護者の方がそのまま支払えるリンク（24時間有効）を送ってもらえます。リンクの期限が切れたときは、お子さんにもう一度送ってもらってください。",
   },
   {
     q: "子どもの書いた文章はどう扱われますか？",
@@ -39,7 +44,46 @@ const FAQ: { q: string; a: string }[] = [
   },
 ];
 
+function SeasonForParents() {
+  const sp = seasonPrice();
+  const rows: [string, string][] = [
+    ["値段", sp.early ? `${yen(sp.jpy)}円（税込・1回払い）※${sp.earlyLabel}までの早割。通常は${yen(sp.regularJpy)}円` : `${yen(sp.jpy)}円（税込・1回払い）`],
+    ["使える期間", `お支払いの日から${SEASON_ENDS_LABEL}まで`],
+    ["使えるもの", "アオハルOSの全アプリ（志望理由書・小論文の添削、志望理由書の構成づくり、AI面接官との面接練習など）が回数の制限なし"],
+    ["自動更新", "ありません。期限が来たら無料プランにもどるだけで、追加の請求はありません"],
+    ["払い方", "クレジットカード・PayPay・Apple Pay・Google Pay（Stripe の決済画面）"],
+    ["販売者", "株式会社ブルースプリング（詳しくは特定商取引法に基づく表記）"],
+  ];
+  return (
+    <section id="season" className="scroll-mt-16 border-y border-amber-200 bg-amber-50/70 py-12">
+      <div className="mx-auto max-w-4xl px-6">
+        <p className="text-xs font-bold text-amber-700">お子さんから「保護者にお願いする」のリンクが届いた方へ</p>
+        <h2 className="mt-2 text-xl font-bold text-slate-900">受験シーズンパスについて</h2>
+        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-600">
+          出願・面接が終わるまでの期間だけ、全アプリを使い放題にする買い切りのパスです。月額の契約ではないので、解約の手続きは要りません。
+          届いたリンクを開いて支払うと、お子さんのアカウントがすぐに使い放題になります（保護者の方の登録は要りません）。
+        </p>
+        <dl className="mt-5 divide-y divide-amber-100 overflow-hidden rounded-2xl border border-amber-200 bg-white text-sm">
+          {rows.map(([k, v]) => (
+            <div key={k} className="grid gap-1 px-5 py-3 sm:grid-cols-[8rem_1fr]">
+              <dt className="font-bold text-slate-900">{k}</dt>
+              <dd className="m-0 text-slate-700">{v}</dd>
+            </div>
+          ))}
+        </dl>
+        <p className="mt-3 text-xs text-slate-500">
+          ご不明な点は pr@bluespring.co.jp までお問い合わせください。／{" "}
+          <Link href="/legal/tokushoho" className="underline underline-offset-2">
+            特定商取引法に基づく表記
+          </Link>
+        </p>
+      </div>
+    </section>
+  );
+}
+
 export default function ParentsPage() {
+  const sp = seasonPrice();
   return (
     <main className="flex-1">
       <section className="mx-auto max-w-4xl px-6 pt-16 pb-12 sm:pt-24">
@@ -72,6 +116,8 @@ export default function ParentsPage() {
         </div>
       </section>
 
+      <SeasonForParents />
+
       <section className="bg-slate-50/60 py-14">
         <div className="mx-auto max-w-4xl px-6">
           <h2 className="text-xl font-bold text-slate-900">費用の比較</h2>
@@ -100,6 +146,14 @@ export default function ParentsPage() {
                   <td className="px-5 py-4 font-bold text-indigo-700">980円</td>
                   <td className="px-5 py-4 font-bold text-indigo-700">11,760円（いつでも解約可）</td>
                   <td className="px-5 py-4 text-slate-700">添削・模擬面接・志望理由書づくりが回数無制限</td>
+                </tr>
+                <tr className="bg-amber-50/50">
+                  <td className="px-5 py-4 font-bold text-slate-900">アオハルOS 受験シーズンパス</td>
+                  <td className="px-5 py-4 text-slate-700">—（1回払い）</td>
+                  <td className="px-5 py-4 font-bold text-slate-900">
+                    {yen(sp.jpy)}円{sp.early ? `（${sp.earlyLabel}までの早割）` : ""}・{SEASON_ENDS_LABEL}まで
+                  </td>
+                  <td className="px-5 py-4 text-slate-700">全アプリが回数無制限・自動更新なし</td>
                 </tr>
                 <tr>
                   <td className="px-5 py-4 font-bold text-slate-900">アオハルOS Free</td>
@@ -145,6 +199,8 @@ export default function ParentsPage() {
           いずれも教育心理学・キャリア理論（P-E Fit理論など）に基づいて設計しています。AIが本人の代わりに書くのではなく、本人が書いた・話した内容を土台に、添削と問いかけで引き上げる仕組みです。
         </p>
       </section>
+
+      <VoiceList title="使った高校生の声" className="mx-auto max-w-4xl px-6 pb-14" />
 
       <section className="bg-slate-50/60 py-14">
         <div className="mx-auto max-w-4xl px-6">

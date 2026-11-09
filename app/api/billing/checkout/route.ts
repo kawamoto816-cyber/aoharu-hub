@@ -7,7 +7,7 @@ import {
   createCheckoutSession,
   createSeasonPassCheckoutSession,
   getOrCreateSubscription,
-  SEASON_PASS,
+  seasonPassPriceJpy,
 } from "@bluespring/aoharu-entitlements";
 
 const VALID_PLANS = ["pro", "max"] as const;
@@ -94,12 +94,12 @@ async function seasonPass(req: Request, userId: string, forParent: boolean) {
   const user = forParent ? null : await currentUser();
   const userEmail = user?.emailAddresses?.[0]?.emailAddress;
   const successUrl = forParent
-    ? `${origin}/parents/thanks?plan=season&value=${SEASON_PASS.priceJpy}&session_id={CHECKOUT_SESSION_ID}`
-    : `${origin}/tensaku?checkout=success&plan=season&value=${SEASON_PASS.priceJpy}&session_id={CHECKOUT_SESSION_ID}`;
+    ? `${origin}/parents/thanks?plan=season&value=${seasonPassPriceJpy()}&session_id={CHECKOUT_SESSION_ID}`
+    : `${origin}/tensaku?checkout=success&plan=season&value=${seasonPassPriceJpy()}&session_id={CHECKOUT_SESSION_ID}`;
   const session = await createSeasonPassCheckoutSession({
     userId,
     successUrl,
-    cancelUrl: forParent ? `${origin}/parents` : `${origin}/tensaku?checkout=cancel`,
+    cancelUrl: forParent ? `${origin}/parents#season` : `${origin}/tensaku?checkout=cancel`,
     userEmail,
   });
   if (!session.url) return NextResponse.json({ error: "Checkoutセッションの作成に失敗しました" }, { status: 500 });

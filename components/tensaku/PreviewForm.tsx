@@ -6,6 +6,7 @@ import { SmartSignUpButton } from "@/components/SmartSignUpButton";
 import { trackEvent } from "@/lib/analytics";
 import { learnIdFromLocation, markDone } from "@/lib/learn/progress";
 import { SeasonPassOffer } from "@/components/billing/SeasonPassOffer";
+import { VoiceForm } from "@/components/voices/VoiceForm";
 
 // /tensaku の添削フォーム。
 //   未登録: 貼る → 指摘が3つ返る (お試し) → 全文の添削は無料登録で
@@ -50,12 +51,35 @@ const ERR: Record<string, string> = {
   limit_ip: "お試しは1日3回までです。無料登録すると、このページで全文を添削できます（月2本まで無料）。",
   limit_daily: "本日のお試し枠が埋まりました。無料登録すると、このページで全文を添削できます。",
   not_configured: "添削は準備中です。少し時間をおいてお試しください。",
-  quota_exceeded: "今月の無料添削（2本）を使い切りました。来月1日にまた使えます。今すぐ続けるならProで回数の制限なく添削できます。",
+  quota_exceeded: "今月の無料添削（2本）を使い切りました。来月1日にまた使えます。今すぐ続けるなら、受験シーズンパスかProで回数の制限なく添削できます。",
   payment_issue: "お支払いの確認が取れていないため、添削を一時停止しています。登録メールのご案内をご確認ください。",
   no_plan: "このプランでは使えない機能です。",
   unauthenticated: "ログインが切れました。もう一度ログインしてください。",
   failed: "うまく添削できませんでした。少し時間をおいてもう一度お試しください（回数には数えていません）。",
 };
+
+// 前回の全文添削の点数（書き直して点の上がり方を見せるため）。端末ごと・種類ごと。60日より古いものは使わない。
+const LAST_SCORE_KEY = "aoharu_tensaku_last_score";
+type LastScore = { total: number; criteria: Record<string, number>; at: number };
+function readLastScore(kind: Kind): LastScore | null {
+  try {
+    const all = JSON.parse(localStorage.getItem(LAST_SCORE_KEY) || "{}") as Record<string, LastScore>;
+    const v = all[kind];
+    if (!v || typeof v.total !== "number" || Date.now() - v.at > 60 * 86_400_000) return null;
+    return v;
+  } catch {
+    return null;
+  }
+}
+function saveLastScore(kind: Kind, r: FullResult) {
+  try {
+    const all = JSON.parse(localStorage.getItem(LAST_SCORE_KEY) || "{}") as Record<string, LastScore>;
+    all[kind] = { total: r.total, criteria: Object.fromEntries(r.criteria.map((c) => [c.name, c.score])), at: Date.now() };
+    localStorage.setItem(LAST_SCORE_KEY, JSON.stringify(all));
+  } catch {
+    /* 保存できなくても添削の結果はそのまま見せる */
+  }
+}
 
 function readDraft(): { kind?: Kind; target?: string; text?: string } {
   try {
@@ -103,6 +127,7 @@ export function PreviewForm({ handFont, initialKind = "shibo" }: { handFont: str
   const [errorCode, setErrorCode] = useState<string | null>(null);
   const [preview, setPreview] = useState<PreviewResult | null>(null);
   const [full, setFull] = useState<FullResult | null>(null);
+  const [prev, setPrev] = useState<LastScore | null>(null);
   const [status, setStatus] = useState<Status | null>(null);
   // 「まなぶ」のカードから来たとき (?learn=<カードid>)、添削の結果が出たらそのカードを「習得」にする
   const [learnId, setLearnId] = useState<string | null>(null);
@@ -205,8 +230,13 @@ export function PreviewForm({ handFont, initialKind = "shibo" }: { handFont: str
         trackEvent("tensaku_full_error", { reason: String(json.error ?? res.status) });
         if (json.error === "quota_exceeded") setStatus((s) => (s ? { ...s, remaining: 0 } : s));
       } else {
-        setFull(json as FullResult);
-        trackEvent("tensaku_full_result", { kind, total: (json as FullResult).total });
+        const r = json as FullResult;
+        const last = readLastScore(kind);
+        setPrev(last);
+        saveLastScore(kind, r);
+        setFull(r);
+        trackEvent("tensaku_full_result", { kind, total: r.total });
+        if (last) trackEvent("tensaku_full_rescore", { kind, total: r.total, delta: r.total - last.total });
         if (learnId) {
           markDone(learnId);
           trackEvent("learn_card_done", { card: learnId });
@@ -361,6 +391,16 @@ export function PreviewForm({ handFont, initialKind = "shibo" }: { handFont: str
             <p className="m-0 text-[48px] font-black leading-none text-[#1533B8]">{full.total}</p>
             <p className="m-0 pb-1 text-sm font-bold text-[#5A5D73]">/ 100点</p>
           </div>
+          {prev && (
+            <p
+              className={`mb-0 mt-3 inline-block rounded-full px-3 py-1 text-sm font-black ${
+                full.total > prev.total ? "bg-[#E7F6EC] text-[#1B7F3B]" : "bg-[#EEEDE7] text-[#3A3D55]"
+              }`}
+            >
+              前回 {prev.total}点 → 今回 {full.total}点
+              {full.total > prev.total ? `（+${full.total - prev.total}点）` : full.total < prev.total ? `（${full.total - prev.total}点）` : "（同じ点）"}
+            </p>
+          )}
           {full.summary && <p className="mb-0 mt-3 text-[15px] font-bold leading-[1.8]">{full.summary}</p>}
 
           <ul className="m-0 mt-5 flex list-none flex-col gap-3 p-0">
@@ -368,7 +408,15 @@ export function PreviewForm({ handFont, initialKind = "shibo" }: { handFont: str
               <li key={c.name}>
                 <div className="flex justify-between text-sm font-bold">
                   <span>{c.name}</span>
-                  <span>{c.score} / 25</span>
+                  <span>
+                    {prev && typeof prev.criteria[c.name] === "number" && c.score !== prev.criteria[c.name] && (
+                      <span className={`mr-1.5 text-xs ${c.score > prev.criteria[c.name] ? "text-[#1B7F3B]" : "text-[#B42318]"}`}>
+                        {c.score > prev.criteria[c.name] ? "+" : ""}
+                        {c.score - prev.criteria[c.name]}
+                      </span>
+                    )}
+                    {c.score} / 25
+                  </span>
                 </div>
                 <div className="mt-1 h-2 rounded-full bg-[#EEEDE7]">
                   <div className="h-2 rounded-full bg-[#1533B8]" style={{ width: `${(c.score / 25) * 100}%` }} />
@@ -396,11 +444,18 @@ export function PreviewForm({ handFont, initialKind = "shibo" }: { handFont: str
             直して、もう一度添削する ↑
           </button>
 
+          {/* 書き直して2回目以上の添削をした人に：使った人の声を集める（名前なし・載せるかは本人が選ぶ） */}
+          {signedIn && prev && <VoiceForm kind={kind} before={prev.total} after={full.total} />}
+
           {/* 無料プランの人に：いちばん「もっと直したい」場面で、出願まで使い放題の道を見せる */}
           {signedIn && !status?.unlimited && (
             <SeasonPassOffer
               location="tensaku_full_result"
-              lead={`いまは${full.total}点。上の指摘を直したら、もう一度添削して点の上がり方を確かめましょう。無料は月2本までですが、パスなら直すたびに何度でも添削できます。`}
+              lead={
+                prev && full.total > prev.total
+                  ? `前回から+${full.total - prev.total}点。直すほど点は上がります。無料は月2本までですが、パスなら直すたびに何度でも添削できます。`
+                  : `いまは${full.total}点。上の指摘を直したら、もう一度添削して点の上がり方を確かめましょう。無料は月2本までですが、パスなら直すたびに何度でも添削できます。`
+              }
             />
           )}
         </div>

@@ -42,7 +42,8 @@ export {
   grantSeasonPass,
   expireSeasonPasses,
 } from "./supabase/subscriptions";
-export { SEASON_PASS, isSeasonPassRow, isExpiredSeasonPass } from "./config/season-pass";
+export { SEASON_PASS, isSeasonPassRow, isExpiredSeasonPass, seasonPassPriceJpy } from "./config/season-pass";
+export { seasonPrice, yen, SEASON_REGULAR_JPY, SEASON_EARLY_JPY, SEASON_EARLY_UNTIL, SEASON_ENDS_LABEL } from "./config/season-price";
 export type { SubscriptionRow } from "./supabase/subscriptions";
 
 export { getStripe } from "./stripe/client";

@@ -15,10 +15,12 @@ import { useClerk, useUser } from "@clerk/nextjs";
 import { PENDING_PLAN_STORAGE_KEY } from "@/lib/checkout-intent";
 import { openSignUpWithRecovery } from "@/lib/authReloadGuard";
 import { trackEvent } from "@/lib/analytics";
+import { seasonPrice, yen, SEASON_ENDS_LABEL } from "@/lib/aoharu-entitlements/config/season-price";
 
-type TierKey = "free" | "pro" | "max";
+type TierKey = "free" | "pro" | "max" | "season";
+type PaidKey = Exclude<TierKey, "free">;
 
-const PRICING: {
+type Tier = {
   key: TierKey;
   name: string;
   price: string;
@@ -26,7 +28,12 @@ const PRICING: {
   description: string;
   features: string[];
   highlight: boolean;
-}[] = [
+  /** 線を引いて見せる通常の値段（早割の期間中だけ） */
+  was?: string;
+  badge?: string;
+};
+
+const PRICING: Tier[] = [
   {
     key: "free",
     name: "Free",
@@ -56,10 +63,25 @@ const PRICING: {
   },
 ];
 
-const PLAN_VALUE_JPY: Record<"pro" | "max", number> = {
-  pro: 980,
-  max: 2980,
-};
+/** 受験シーズンパスのカード（値段は早割を反映するので、表示のたびに作る） */
+function seasonTier(): Tier {
+  const sp = seasonPrice();
+  return {
+    key: "season",
+    name: "受験シーズンパス",
+    price: `¥${yen(sp.jpy)}`,
+    period: "（1回払い）",
+    description: `${SEASON_ENDS_LABEL}まで。出願・面接が終わるまでの受験生に`,
+    features: ["全アプリ使い放題（Max と同じ）", "添削・構成づくり・面接練習が回数制限なし", "自動更新なし・追加の請求なし", "保護者の方が支払えるリンクも作れます"],
+    highlight: false,
+    was: sp.early ? `¥${yen(sp.regularJpy)}` : undefined,
+    badge: sp.early ? `早割 ${sp.earlyLabel}まで` : "受験生におすすめ",
+  };
+}
+
+function planValue(plan: PaidKey): number {
+  return plan === "pro" ? 980 : plan === "max" ? 2980 : seasonPrice().jpy;
+}
 
 export function PricingTable() {
   const { isLoaded, isSignedIn } = useUser();
@@ -67,7 +89,7 @@ export function PricingTable() {
   const [loading, setLoading] = useState<TierKey | null>(null);
 
   const startCheckout = useCallback(
-    async (plan: "pro" | "max") => {
+    async (plan: PaidKey) => {
       setLoading(plan);
       try {
         const res = await fetch("/api/billing/checkout", {
@@ -98,7 +120,8 @@ export function PricingTable() {
         }
         trackEvent("begin_checkout", {
           currency: "JPY",
-          value: PLAN_VALUE_JPY[plan],
+          value: planValue(plan),
+          location: "pricing",
           plan,
         });
         window.location.href = data.url;
@@ -112,7 +135,7 @@ export function PricingTable() {
   );
 
   const handleUpgradeClick = useCallback(
-    (plan: "pro" | "max") => {
+    (plan: PaidKey) => {
       if (!isLoaded || loading !== null) return;
 
       if (isSignedIn) {
@@ -141,8 +164,8 @@ export function PricingTable() {
   );
 
   return (
-    <div className="mt-8 grid gap-4 sm:grid-cols-3">
-      {PRICING.map((tier) => (
+    <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      {[...PRICING, seasonTier()].map((tier) => (
         <div
           key={tier.key}
           className={`relative flex flex-col rounded-[18px] bg-white p-7 text-[#15172B] ${
@@ -154,8 +177,14 @@ export function PricingTable() {
               出願シーズンにおすすめ
             </span>
           )}
+          {tier.badge && (
+            <span className="absolute -top-3.5 left-6 rounded-full border-[1.5px] border-[#15172B] bg-[#E8412C] px-3 py-1 text-xs font-bold text-white">
+              {tier.badge}
+            </span>
+          )}
           <p className="text-base font-bold">{tier.name}</p>
           <p className="mt-2 text-4xl font-black">
+            {tier.was && <s className="mr-1.5 text-lg font-bold text-[#5A5D73]">{tier.was}</s>}
             {tier.price}
             <span className="text-[15px] font-medium text-[#5A5D73]">{tier.period}</span>
           </p>
@@ -181,7 +210,7 @@ export function PricingTable() {
             </button>
           ) : (
             <button
-              onClick={() => handleUpgradeClick(tier.key as "pro" | "max")}
+              onClick={() => handleUpgradeClick(tier.key as PaidKey)}
               disabled={loading !== null}
               className={`mt-6 min-h-[48px] rounded-xl px-4 py-3 text-sm font-bold transition-colors disabled:opacity-50 ${
                 tier.highlight
@@ -189,7 +218,7 @@ export function PricingTable() {
                   : "border-2 border-[#15172B] text-[#15172B] hover:bg-[#FFF6C4]"
               }`}
             >
-              {loading === tier.key ? "お申し込み手続き中…" : "このプランで申し込む"}
+              {loading === tier.key ? "お申し込み手続き中…" : tier.key === "season" ? "シーズンパスを申し込む" : "このプランで申し込む"}
             </button>
           )}
         </div>

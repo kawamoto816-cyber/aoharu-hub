@@ -44,6 +44,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${base}/try?for=career`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
     { url: `${base}/tensaku`, lastModified: now, changeFrequency: "weekly", priority: 0.95 },
     { url: `${base}/parents`, lastModified: now, changeFrequency: "weekly", priority: 0.9 },
+    { url: `${base}/season`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
     { url: `${base}/guide`, lastModified: now, changeFrequency: "daily", priority: 0.8 },
     { url: `${base}/learn`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
     { url: `${base}/learn/gakko`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },

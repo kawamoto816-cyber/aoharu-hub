@@ -12,6 +12,7 @@ import { ApplicationBoard } from "@/components/ApplicationBoard";
 import { listApplications, type Application } from "@/lib/applications/store";
 import { ParentShareCard } from "@/components/ParentShareCard";
 import { getShareToken } from "@/lib/parent-share/store";
+import { SeasonPassOffer } from "@/components/billing/SeasonPassOffer";
 
 const SITE_URL = "https://app.bluespring.co.jp";
 
@@ -116,6 +117,9 @@ function Hub({
           </div>
           <PlanActions plan={plan} />
         </div>
+        {plan === "free" && (
+          <SeasonPassOffer location="hub_pricing" lead="受験生は、出願・面接が終わるまで月額ではなく1回払いで全部使えるパスがおすすめです。" />
+        )}
       </section>
 
       <section className="mt-10">

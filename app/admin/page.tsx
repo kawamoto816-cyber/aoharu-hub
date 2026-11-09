@@ -34,6 +34,8 @@ const EVENT_LABEL: Record<string, string> = {
   share_to_child: "子に送る",
   sign_up_click: "登録クリック",
   guide_cta_click: "記事CTA",
+  tensaku_full_rescore: "書き直して再添削",
+  voice_submit: "声が届いた",
   season_offer_view: "パスの案内を見た",
   ask_parent_link: "保護者リンク作成",
   begin_checkout: "決済開始",
@@ -155,6 +157,12 @@ export default async function AdminPage({
             className="rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1 font-bold text-indigo-700"
           >
             法人営業ダッシュボード →
+          </Link>
+          <Link
+            href="/admin/voices"
+            className="rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1 font-bold text-indigo-700"
+          >
+            利用者の声 →
           </Link>
         </nav>
       </div>

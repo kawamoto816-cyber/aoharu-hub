@@ -15,6 +15,7 @@
 import React, { createContext, useCallback, useContext, useEffect, useState } from "react";
 import { useClerk } from "@clerk/nextjs";
 import type { UpgradeReason } from "@/lib/api-error";
+import { SeasonPassOffer } from "@/components/billing/SeasonPassOffer";
 
 interface UpgradeModalContextValue {
   showUpgradeModal: (reason: UpgradeReason) => void;
@@ -29,7 +30,7 @@ const COPY: Record<UpgradeReason, { title: string; body: string }> = {
   },
   quota_exceeded: {
     title: "今月の無料枠を使い切りました",
-    body: "無料プランでは、添削レポート・面接の評価レポート・志望理由書の構成案など、各アプリの「結果」を毎月決まった回数まで無料でご利用いただけます。枠は毎月リセットされます。Proプラン(月980円)なら回数制限なくお使いいただけます。",
+    body: "無料プランでは、添削レポート・面接の評価レポート・志望理由書の構成案など、各アプリの「結果」を毎月決まった回数まで無料でご利用いただけます。枠は毎月リセットされます。受験生は、出願・面接が終わるまで1回払いで使い放題の「受験シーズンパス」がおすすめです。月ごとに使うなら Proプラン(月980円)もあります。",
   },
   no_plan: {
     title: "この機能はProプランからご利用いただけます",
@@ -112,7 +113,7 @@ export function UpgradeModalProvider({ children }: { children: React.ReactNode }
           onClick={close}
         >
           <div
-            className="w-full max-w-sm rounded-2xl border border-slate-100 bg-white p-6 shadow-2xl animate-in zoom-in-95 duration-150"
+            className={`max-h-[92vh] w-full overflow-y-auto rounded-2xl border border-slate-100 bg-white p-6 shadow-2xl animate-in zoom-in-95 duration-150 ${reason === "quota_exceeded" ? "max-w-md" : "max-w-sm"}`}
             onClick={(e) => e.stopPropagation()}
           >
             <h2 className="mb-2 text-base font-black tracking-tight text-slate-800">
@@ -121,6 +122,14 @@ export function UpgradeModalProvider({ children }: { children: React.ReactNode }
             <p className="mb-6 text-[13px] leading-relaxed font-medium text-slate-500">
               {COPY[reason].body}
             </p>
+            {reason === "quota_exceeded" && (
+              <div className="-mt-4 mb-4">
+                <SeasonPassOffer
+                  location={`modal_quota${typeof window !== "undefined" ? window.location.pathname.replace(/\//g, "_") : ""}`}
+                  compact
+                />
+              </div>
+            )}
             <div className="flex flex-col gap-2">
               {reason === "auth_required" && (
                 <button
