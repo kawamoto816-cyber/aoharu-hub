@@ -4,6 +4,8 @@ import { SeasonPassOffer } from "@/components/billing/SeasonPassOffer";
 import { VoiceList } from "@/components/voices/VoiceList";
 import { seasonPrice, yen, SEASON_ENDS_LABEL } from "@/lib/aoharu-entitlements/config/season-price";
 
+const SEASON_PASS_ENDS_AT = "2027-03-31T23:59:59+09:00";
+
 // /season：受験シーズンパスの1枚ページ。
 // しぼりゆ・メンサツ（別のアプリ）で無料枠を使い切った人が ?from=<アプリ> つきで来る。
 // 買うボタンは SeasonPassOffer（ログインしていなければ登録 → トップで自動的に支払い画面へ）。
@@ -31,13 +33,18 @@ const FAQ: { q: string; a: string }[] = [
   { q: "月額のサブスクリプションですか？", a: `いいえ。1回払うだけです。${SEASON_ENDS_LABEL}が来たら無料プランにもどるだけで、自動で更新されたり追加で請求されたりすることはありません。` },
   { q: "親に払ってもらえますか？", a: "はい。「保護者にお願いする」を押すと、保護者の方が支払えるリンク（24時間有効）ができるので、LINEやメールで送れます。保護者の方が支払うと、あなたのアカウントがすぐに使い放題になります。" },
   { q: "どんな払い方ができますか？", a: "クレジットカード・PayPay・Apple Pay・Google Pay が使えます（端末によって出る払い方が変わります）。決済は Stripe という決済サービスで行います。" },
-  { q: "Pro（月980円）とどちらがいいですか？", a: "出願や面接が数か月先まで続くなら、シーズンパスのほうが安く、全アプリが使えます。1〜2か月だけ使うなら Pro（いつでも解約可）が向いています。" },
+  { q: "Pro（月980円）とどちらがいいですか？", a: "添削・構成づくり・面接練習の3つだけを使うなら、Pro（月980円・毎月自動で更新・いつでも解約可）がいちばん安く済みます。シーズンパスは、1回払いで解約の手続きが要らないこと、全アプリ（Max と同じ）が使えること、保護者の方が PayPay などでまとめて払いやすいことが良いところです。" },
 ];
 
 export default async function SeasonPage({ searchParams }: { searchParams: Promise<{ from?: string }> }) {
   const { from } = await searchParams;
   const fromKey = from && APP_LABEL[from] ? from : null;
   const sp = seasonPrice();
+  // 今日から期限までの月数（小数第1位で切り上げ）。1か月あたりと、Max を同じ期間使った場合との差を見せる
+  const months = Math.max(1, Math.ceil(((Date.parse(SEASON_PASS_ENDS_AT) - Date.now()) / (30.4 * 86_400_000)) * 10) / 10);
+  const perMonth = Math.round(sp.jpy / months / 10) * 10;
+  const maxMonths = Math.ceil(months);
+  const maxTotal = 2980 * maxMonths;
 
   return (
     <main className="flex-1 bg-[#FBF8EE] text-[#15172B]">
@@ -54,6 +61,9 @@ export default async function SeasonPage({ searchParams }: { searchParams: Promi
           </p>
         )}
         <SeasonPassOffer location={`season_page${fromKey ? `_${fromKey}` : ""}`} />
+        <p className="mt-3 text-[12.5px] leading-relaxed text-[#3A3D55]">
+          {SEASON_ENDS_LABEL}までの約{months}か月で、1か月あたり約{yen(perMonth)}円。全アプリが使える Max（月2,980円）で{maxMonths}か月分払うと{yen(maxTotal)}円なので、{yen(maxTotal - sp.jpy)}円おトクです。
+        </p>
       </section>
 
       <section className="mx-auto max-w-2xl px-4 pb-10">

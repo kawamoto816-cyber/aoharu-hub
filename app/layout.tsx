@@ -13,6 +13,7 @@ import { jaJP } from "@clerk/localizations";
 import { SmartSignUpButton } from "@/components/SmartSignUpButton";
 import { GA_MEASUREMENT_ID } from "@/lib/analytics";
 import { UpgradeModalProvider } from "@/components/UpgradeModal";
+import { SeasonEarlyBanner } from "@/components/billing/SeasonEarlyBanner";
 import { BillingPortalLink } from "@/components/BillingPortalLink";
 import { AccountCorner } from "@/components/AccountCorner";
 import "./globals.css";
@@ -77,6 +78,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
       >
         <body className="min-h-full flex flex-col bg-white text-slate-900">
+          <SeasonEarlyBanner />
           <SignUpTracker />
           {/* GA4計測タグ(gtag.js): コンバージョン計測(sign_up_click / begin_checkout /
               purchase)の土台。ページの見た目には一切影響しない。 */}
