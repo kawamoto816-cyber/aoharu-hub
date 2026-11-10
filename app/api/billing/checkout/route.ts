@@ -2,6 +2,7 @@
 // Pro/MaxプランへのアップグレードのためのStripe Checkoutセッションを作成する。
 import { NextResponse } from "next/server";
 import { currentUser } from "@clerk/nextjs/server";
+import { resolveShareToken } from "@/lib/parent-share/store";
 import {
   getCurrentUserId,
   createCheckoutSession,
@@ -22,6 +23,15 @@ const PLAN_VALUE_JPY: Record<UpgradePlan, number> = {
 
 export async function POST(req: Request) {
   try {
+    // 保護者ビュー（/parent-view/<トークン>）から、保護者がそのまま受験シーズンパスを払うとき。
+    // 保護者はログインしていないので、共有トークンでお子さんのアカウントを決める（トークンを持つ人はお子さんの分を払えるだけ）。
+    const peek = (await req.clone().json().catch(() => ({}))) as { plan?: string; shareToken?: string };
+    if (peek.plan === "season" && typeof peek.shareToken === "string" && peek.shareToken.length > 10) {
+      const childId = await resolveShareToken(peek.shareToken);
+      if (!childId) return NextResponse.json({ error: "リンクが無効です" }, { status: 404 });
+      return seasonPass(req, childId, true);
+    }
+
     const userId = await getCurrentUserId();
     if (!userId) {
       return NextResponse.json(

@@ -309,6 +309,13 @@ export function PreviewForm({ handFont, initialKind = "shibo" }: { handFont: str
           <p className="mb-0 mt-2 text-center text-xs text-[#5A5D73]">
             {status?.unlimited ? "Proプラン：回数の制限なし" : typeof status?.remaining === "number" ? `今月の無料添削 あと${status.remaining}本` : "無料プランは月2本まで"}
           </p>
+          {!status?.unlimited && status?.remaining === 1 && !full && (
+            <p className="mb-0 mt-1 text-center text-xs">
+              <a href="/season?from=tensaku_last1" className="font-bold text-[#1533B8] underline">
+                出願まで何度も直すなら：受験シーズンパス
+              </a>
+            </p>
+          )}
         </>
       ) : (
         <>
@@ -454,7 +461,9 @@ export function PreviewForm({ handFont, initialKind = "shibo" }: { handFont: str
               lead={
                 prev && full.total > prev.total
                   ? `前回から+${full.total - prev.total}点。直すほど点は上がります。無料は月2本までですが、パスなら直すたびに何度でも添削できます。`
-                  : `いまは${full.total}点。上の指摘を直したら、もう一度添削して点の上がり方を確かめましょう。無料は月2本までですが、パスなら直すたびに何度でも添削できます。`
+                  : status?.remaining === 1
+                    ? `いまは${full.total}点。今月の無料の添削は、あと1本です。出願まで何度も直すなら、パスなら回数を気にせず添削できます。`
+                    : `いまは${full.total}点。上の指摘を直したら、もう一度添削して点の上がり方を確かめましょう。無料は月2本までですが、パスなら直すたびに何度でも添削できます。`
               }
             />
           )}

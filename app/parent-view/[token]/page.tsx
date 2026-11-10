@@ -4,7 +4,8 @@ import { lastActivityByApp } from "@/lib/parent-share/activity";
 import { listApplications, admissionLabel } from "@/lib/applications/store";
 import { daysLeft } from "@/lib/applications/next-step";
 import { applicationProgress, type DocProgress } from "@/lib/applications/parent-progress";
-import { APP_KEYS, type AppKey } from "@bluespring/aoharu-entitlements";
+import { APP_KEYS, type AppKey, getOrCreateSubscription } from "@bluespring/aoharu-entitlements";
+import { ParentViewSeasonOffer } from "@/components/billing/ParentViewSeasonOffer";
 
 // /parent-view/[token]: 保護者ビュー。ログイン不要、URLのトークンだけが鍵。
 // 書いた文章・面接の回答内容そのものは一切出さない。出すのは
@@ -56,7 +57,13 @@ export default async function ParentViewPage({ params }: { params: Promise<{ tok
     );
   }
 
-  const [applications, activity] = await Promise.all([listApplications(userId), lastActivityByApp(userId)]);
+  const [applications, activity, sub] = await Promise.all([
+    listApplications(userId),
+    lastActivityByApp(userId),
+    getOrCreateSubscription(userId).catch(() => null),
+  ]);
+  // お子さんが無料プランのときだけ、受験シーズンパスの案内を出す
+  const showSeasonOffer = sub?.plan === "free";
   const progressList = applications.map(applicationProgress);
 
   return (
@@ -143,6 +150,8 @@ export default async function ParentViewPage({ params }: { params: Promise<{ tok
           })}
         </div>
       </section>
+
+      {showSeasonOffer && <ParentViewSeasonOffer shareToken={token} />}
 
       <p className="mt-10 text-[11px] leading-relaxed text-slate-400">
         このページはリンクを知っている人であれば誰でも見られます。他の人に共有したくない場合は、本人にリンクの作り直しを頼んでください。
