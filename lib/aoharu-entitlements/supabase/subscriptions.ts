@@ -140,7 +140,8 @@ export async function downgradeToFree(userId: string): Promise<void> {
  */
 export async function grantSeasonPass(params: {
   userId: string;
-  stripeCustomerId: string;
+  /** 塾向けプランの招待コードで入った人は Stripe の顧客ではないので省略する（既存の値を消さない） */
+  stripeCustomerId?: string | null;
   stripePriceId: string | null;
   endsAt?: string;
 }): Promise<void> {
@@ -150,7 +151,7 @@ export async function grantSeasonPass(params: {
       user_id: params.userId,
       plan: "max",
       status: "active",
-      stripe_customer_id: params.stripeCustomerId,
+      ...(params.stripeCustomerId ? { stripe_customer_id: params.stripeCustomerId } : {}),
       stripe_subscription_id: null,
       stripe_price_id: params.stripePriceId ?? SEASON_PASS.metadataKind,
       current_period_end: new Date(params.endsAt ?? SEASON_PASS.endsAt).toISOString(),

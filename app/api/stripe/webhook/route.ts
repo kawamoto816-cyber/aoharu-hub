@@ -5,6 +5,7 @@
 //  全アプリ共有のため、同期処理は1箇所で十分)
 import { NextResponse } from "next/server";
 import { getStripe, handleStripeWebhookEvent } from "@bluespring/aoharu-entitlements";
+import { ensureTeamPassForSession, TEAM_METADATA_KIND } from "@/lib/team-pass/store";
 
 export async function POST(req: Request) {
   const signature = req.headers.get("stripe-signature");
@@ -32,6 +33,11 @@ export async function POST(req: Request) {
   }
 
   try {
+    // 塾向けシーズンプラン（ログインなしで塾が払う）：招待コードを発行して、メールで送る
+    if (event.type === "checkout.session.completed" && event.data.object.metadata?.kind === TEAM_METADATA_KIND) {
+      await ensureTeamPassForSession(event.data.object.id);
+      return NextResponse.json({ received: true });
+    }
     await handleStripeWebhookEvent(event);
     return NextResponse.json({ received: true });
   } catch (err: any) {
