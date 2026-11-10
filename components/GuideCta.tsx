@@ -43,13 +43,15 @@ export function ctaCopy(article: GuideArticle): { heading: string; text: string;
       href: "/learn/mensetsu",
     };
   }
-  if (article.segment === "highschool" && uni && article.cta.app === "tensakun") {
+  // 大学別の書類の記事は、記事の CTA が しぼりゆ でも、まず「その大学の書類を採点」（登録なしで3つ指摘が見られる /tensaku）へ
+  if (article.segment === "highschool" && uni) {
     const doc = /自己推薦/.test(article.title) ? "自己推薦書" : /事前課題|小論文/.test(article.title) ? "事前課題・小論文" : "志望理由書";
+    const kind = doc === "自己推薦書" ? "?kind=jiko" : doc === "事前課題・小論文" ? "?kind=shoronbun" : "";
     return {
       heading: `${uni}の${doc}を、AIが100点満点で採点`,
       text: "書いた文章を貼るだけで、点数と「どこを・どう直すか」が返ってきます。登録なしでも3つの指摘をお試しできます。",
       button: "書いた文章を採点する",
-      href: ctaHref(article),
+      href: `/tensaku${kind}`,
     };
   }
   return { heading: article.cta.heading, text: article.cta.text, button: article.cta.button, href: ctaHref(article) };
@@ -68,7 +70,7 @@ export function ctaHref(article: GuideArticle): string {
 export function GuideCta({ article, variant = "end" }: { article: GuideArticle; variant?: "end" | "inline" }) {
   const { cta } = article;
   const c = ctaCopy(article);
-  const params = { slug: article.slug, app: c.href === "/learn/mensetsu" ? "mensatsu" : cta.app, segment: article.segment, place: variant };
+  const params = { slug: article.slug, app: c.href === "/learn/mensetsu" ? "mensatsu" : c.href.startsWith("/tensaku") ? "tensakun" : cta.app, segment: article.segment, place: variant };
   if (variant === "inline") {
     return (
       <aside className="rounded-xl border border-indigo-200 bg-indigo-50/60 p-5">
