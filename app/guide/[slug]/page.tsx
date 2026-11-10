@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { GuideCta, GuideStickyCta } from "@/components/GuideCta";
+import { SeasonPassOffer } from "@/components/billing/SeasonPassOffer";
 import { GUIDE_ARTICLES, TOPIC_LABEL, loadGuideArticle, loadGuideArticles, pickRelated } from "@/lib/guide";
 import type { GuideBlock } from "@/lib/guide/types";
 import { SEGMENT_COPY } from "@/lib/segments";
@@ -217,6 +218,8 @@ export default async function GuideArticlePage({ params }: { params: Promise<{ s
         </section>
 
         <GuideCta article={article} />
+        {/* 高校生向けの記事：出願・面接が終わるまでの道具として、受験シーズンパスも小さく見せる */}
+        {article.segment === "highschool" && <SeasonPassOffer location={`guide_${article.slug}`} compact />}
 
         <section className="mt-10">
           <h2 className="text-sm font-bold text-slate-500">出典・参考</h2>
