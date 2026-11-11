@@ -239,7 +239,7 @@ export function OshieruAiStage({ unit, boards, mock, mockScript, jugyoHref }: { 
   }
 
   // ── 会話 ──
-  const turnsOf = (list: Msg[]): Turn[] => list.map(({ role, text }) => ({ role, text }));
+  const turnsOf = (list: Msg[]): Turn[] => list.map(({ role, text, board: b }) => (b !== undefined ? { role, text, board: b } : { role, text }));
 
   function start() {
     const first: Msg = { role: "haru", text: unit.opener, face: "thinking" };
@@ -292,7 +292,8 @@ export function OshieruAiStage({ unit, boards, mock, mockScript, jugyoHref }: { 
     if (!text || busy) return;
     setError("");
     setDraft("");
-    const list: Msg[] = [...msgs, { role: "student", text }];
+    const shown = boards[board]?.section;
+    const list: Msg[] = [...msgs, shown !== undefined ? { role: "student", text, board: shown } : { role: "student", text }];
     // 安全の決まり：つらいことが書かれていたら、送らずに相談窓口を出す
     if (needsSos(text)) {
       setMsgs([...msgs, { role: "haru", text: sosLine(low), face: "normal" }]);

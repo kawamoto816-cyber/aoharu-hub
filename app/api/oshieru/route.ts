@@ -29,7 +29,9 @@ function parseTurns(v: unknown): Turn[] | null {
     if ((r.role !== "haru" && r.role !== "student") || typeof r.text !== "string") return null;
     const text = r.text.trim().slice(0, MAX_TEXT);
     if (!text) return null;
-    out.push({ role: r.role, text });
+    // オシエルAI（声で教える授業）：先生役の生徒が、そのとき黒板に出していた節の番号（任意）
+    const board = typeof r.board === "number" && Number.isInteger(r.board) && r.board >= 0 && r.board < 40 ? r.board : undefined;
+    out.push(board !== undefined && r.role === "student" ? { role: r.role, text, board } : { role: r.role, text });
   }
   return out;
 }

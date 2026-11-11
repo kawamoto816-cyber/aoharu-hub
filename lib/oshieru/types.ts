@@ -60,6 +60,8 @@ export interface OshieruSet {
 export interface Turn {
   role: "haru" | "student";
   text: string;
+  /** オシエルAI（声で教える授業）：生徒が話したとき黒板に出していた、レクチャーの節の番号 */
+  board?: number;
 }
 
 export type HaruFace = "normal" | "thinking" | "happy";
