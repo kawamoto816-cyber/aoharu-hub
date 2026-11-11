@@ -157,7 +157,7 @@ export const J_ION_J_DARK: CastScript = {
       kind: "talk",
       who: "seito",
       text: "銅は、陽の字がつくほうの極に付く。陽極。まちがいないでしょう。",
-      say: "銅は、陽の字がつくほうの極に付く。陽極。まちがいないでしょう。",
+      say: "銅は、ようの字がつくほうの極に付く。陽極。まちがいないでしょう。",
     },
     { kind: "talk", who: "sensei", text: "Cu²⁺ の符号を見よ。三つ目の封印だ。", say: "銅イオンの、符号を見よ。みっつめの封印だ。" },
     { kind: "pause", ref: "mistake:2" },

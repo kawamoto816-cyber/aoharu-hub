@@ -111,5 +111,6 @@
  {"surface": "対句法", "yomi": "ツイクホー", "accent": 0, "pos": "普通名詞", "priority": 7, "lines": 0},
  {"surface": "対句", "yomi": "ツイク", "accent": 0, "pos": "普通名詞", "priority": 7, "lines": 0},
  {"surface": "日本国憲法", "yomi": "ニホンコクケンポー", "accent": 6, "pos": "固有名詞", "priority": 8, "lines": 0},
- {"surface": "客体", "yomi": "キャクタイ", "accent": 0, "pos": "普通名詞", "priority": 7, "lines": 0}
+ {"surface": "客体", "yomi": "キャクタイ", "accent": 0, "pos": "普通名詞", "priority": 7, "lines": 0},
+ {"surface": "ディオクレティアヌス帝", "yomi": "ディオクレティアヌステー", "accent": 0, "pos": "固有名詞", "priority": 8, "lines": 0}
 ]
