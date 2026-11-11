@@ -47,7 +47,7 @@ export const J_HEIHOKON_J_DARK: CastScript = {
       kind: "talk",
       who: "sensei",
       text: "「平方」は2乗、「根」は木の根もとのように、もとになる数という意味だ。",
-      say: "平方は2乗、根は、木の根もとのように、もとになるかず、という意味だ。",
+      say: "平方は2乗、こんは、木の根もとのように、もとになるかず、という意味だ。",
     },
     {
       kind: "talk",
