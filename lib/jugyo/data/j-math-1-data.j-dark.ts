@@ -127,7 +127,7 @@ export const J_DATA1_J_DARK: CastScript = {
       text: "最頻値は簡単。いちばん多い度数は8。だから最頻値は8人。それしかないでしょう。",
       say: "最頻値は、簡単。いちばん多い度数は、8。だから、最頻値は、8にん。それしかないでしょう。",
     },
-    { kind: "talk", who: "sensei", text: "……「値」とは何の値だ。三つ目の封印だ。", say: "……値とは、なんの値だ。みっつめの封印だ。" },
+    { kind: "talk", who: "sensei", text: "……「値」とは何の値だ。三つ目の封印だ。", say: "……あたいとは、なんのあたいだ。みっつめの封印だ。" },
     { kind: "pause", ref: "mistake:1" },
     {
       kind: "talk",
