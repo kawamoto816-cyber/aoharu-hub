@@ -505,7 +505,7 @@ function Notes() {
   );
 }
 
-function SosPanel({ low, onBack }: { low: boolean; onBack: () => void }) {
+export function SosPanel({ low, onBack }: { low: boolean; onBack: () => void }) {
   return (
     <section role="alert" className="rounded-[18px] border-[2px] border-[#B42318] bg-white p-4">
       <p className="m-0 text-[15px] font-black">{low ? "ひとりで かかえこまないでね" : "ひとりでかかえこまないでね"}</p>
@@ -522,7 +522,7 @@ function SosPanel({ low, onBack }: { low: boolean; onBack: () => void }) {
   );
 }
 
-function GoldBadge({ small = false }: { small?: boolean }) {
+export function GoldBadge({ small = false }: { small?: boolean }) {
   const s = small ? 22 : 64;
   return (
     <svg width={s} height={s} viewBox="0 0 64 64" aria-hidden="true">
@@ -533,7 +533,7 @@ function GoldBadge({ small = false }: { small?: boolean }) {
   );
 }
 
-function ResultView({ unit, result, mock, rejudgeUsed, error, onRejudge, onRetry }: { unit: OshieruPublic; result: ScoreResult; mock: boolean; rejudgeUsed: boolean; error: string; onRejudge: () => void; onRetry: () => void }) {
+export function ResultView({ unit, result, mock, rejudgeUsed, error, onRejudge, onRetry }: { unit: OshieruPublic; result: ScoreResult; mock: boolean; rejudgeUsed: boolean; error: string; onRejudge: () => void; onRetry: () => void }) {
   return (
     <div className="grid gap-4">
       {result.mastered ? (

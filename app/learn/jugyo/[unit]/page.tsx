@@ -13,6 +13,7 @@ import type { Lesson } from "@/lib/jugyo/types";
 import { getLecture, lectureHref, lectureUnitInfo } from "@/lib/lecture";
 import { getUnitMoshi, unitMoshiHref } from "@/lib/moshi/unit";
 import { getOshieru, oshieruHref } from "@/lib/oshieru";
+import { oshieruAiHref } from "@/lib/oshieru/ai-lesson-home";
 import { isLowUnit } from "@/lib/naze";
 
 // /learn/jugyo/<単元id>：止まる授業（動画型・試作）。検索に載せ、sitemap にも入れる。?cast= のURLも canonical は cast なし。
@@ -94,6 +95,7 @@ export default async function Page({ params }: { params: Promise<{ unit: string 
               lecture: lectureHref(unit),
               moshi: getUnitMoshi(unit) ? unitMoshiHref(unit) : undefined,
               oshieru: getOshieru(unit) ? oshieruHref(unit) : undefined,
+              oshieruAi: getOshieru(unit) ? oshieruAiHref(unit) : undefined,
             },
           }}
         />

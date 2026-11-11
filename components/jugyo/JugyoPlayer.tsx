@@ -45,7 +45,7 @@ export interface PlayerProps {
   reveal?: string;
   credit: string;
   /** 終わりの画面のリンク */
-  links: { lecture: string; moshi?: string; oshieru?: string };
+  links: { lecture: string; moshi?: string; oshieru?: string; oshieruAi?: string };
 }
 
 const CPS = 5; // 字幕だけのときの速さ（1秒に5字＝1分300字）
@@ -569,6 +569,12 @@ export function JugyoPlayer(p: PlayerProps) {
                 <span>声で説明する</span>
                 <span aria-hidden="true">↓</span>
               </a>
+              {p.links.oshieruAi && (
+                <Link href={p.links.oshieruAi} className="flex min-h-[46px] items-center justify-between rounded-[12px] bg-white px-4 text-[15px] font-black text-[#15172B] no-underline">
+                  <span>ハルに声で教える（オシエルAI・試作）</span>
+                  <span aria-hidden="true">→</span>
+                </Link>
+              )}
               {p.links.oshieru && (
                 <Link href={p.links.oshieru} className="flex min-h-[46px] items-center justify-between rounded-[12px] bg-white px-4 text-[15px] font-black text-[#15172B] no-underline">
                   <span>オシエルで教えてみる</span>
