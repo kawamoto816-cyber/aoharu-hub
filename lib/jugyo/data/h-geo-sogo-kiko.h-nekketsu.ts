@@ -100,7 +100,7 @@ export const H_KIKO_H_NEKKETSU: CastScript = {
       kind: "talk",
       who: "seito",
       text: "名前が「偏西風」だし……偏西風が赤道に向かってふく風！",
-      say: "名前が、偏西風だし、偏西風が、赤道に向かって、ふく風！",
+      say: "名前が、偏西風だし、偏西風が、赤道に向かって、ふくかぜ！",
     },
     { kind: "talk", who: "sensei", text: "勝負の分かれ目！　問題だ！" },
     { kind: "pause", ref: "mistake:2" },
