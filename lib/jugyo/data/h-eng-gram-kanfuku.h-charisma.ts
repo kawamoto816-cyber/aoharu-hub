@@ -62,7 +62,7 @@ export const H_KANFUKU_H_CHARISMA: CastScript = {
       kind: "talk",
       who: "sensei",
       text: "the day は時で、後ろの we first met に欠けがない。だから when。ここで差がつくのが how。how は{{the way と並べて使えない}}。",
-      say: "ザ デイは、ときで、うしろの、ウィー ファースト メットに欠けがない。だからウェン。ここで差がつくのがハウ。ハウは、ザ ウェイと並べて使えない。",
+      say: "ザ デイは、ときで、うしろの、ウィー ファースト メットに欠けがない。だからウェン。ここで差がつくのがハウ。ハウは、ザ ウェイとならべて使えない。",
     },
     {
       kind: "talk",
