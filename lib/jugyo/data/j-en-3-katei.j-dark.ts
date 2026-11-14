@@ -136,7 +136,7 @@ export const J_KATEI_J_DARK: CastScript = {
       who: "seito",
       board: { section: 3, focus: "I wish I could swim." },
       text: "泳げたらいいのに、は I wish I could swim. でもギターなら I wish I can play the guitar. 弾けるようになりたいんだから、can のままでいいでしょう。",
-      say: "泳げたらいいのに、わ、アイ ウィッシュ アイ クッド スイム。でも、ギターなら、アイ ウィッシュ アイ キャン プレイ ザ ギター。弾けるように、なりたいんだから、キャンのままで、いいでしょう。",
+      say: "泳げたらいいのに、わ、アイ ウィッシュ アイ クッド スイム。でも、ギターなら、アイ ウィッシュ アイ キャン プレイ ザ ギター。ひけるように、なりたいんだから、キャンのままで、いいでしょう。",
     },
     { kind: "talk", who: "sensei", text: "……最後の封印だ。", say: "……最後の封印だ。" },
     { kind: "pause", ref: "mistake:2" },
