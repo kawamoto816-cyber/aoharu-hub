@@ -8,6 +8,7 @@ import { learnIdFromLocation, markDone } from "@/lib/learn/progress";
 import { SeasonPassOffer } from "@/components/billing/SeasonPassOffer";
 import { VoiceForm } from "@/components/voices/VoiceForm";
 import { TicketBuyButton } from "@/components/billing/TicketBuyButton";
+import { DeadlineNote } from "@/components/tensaku/DeadlineNote";
 
 // /tensaku の添削フォーム。
 //   未登録: 貼る → 指摘が3つ返る (お試し) → 全文の添削は無料登録で
@@ -289,6 +290,7 @@ export function PreviewForm({ handFont, initialKind = "shibo" }: { handFont: str
         placeholder={kind === "shoronbun" ? "例: 社会学部／地方の人口減少への対策" : "例: 同志社大学 社会学部"}
         className="mt-2 w-full rounded-xl border-[1.5px] border-[#C9C7BC] px-4 py-3 text-base outline-none focus:border-[#1533B8]"
       />
+      <DeadlineNote target={target} />
 
       <label className="mt-5 block text-sm font-bold" htmlFor="tensaku-text">
         文章を書く・貼る（{MIN}〜{max}字）
