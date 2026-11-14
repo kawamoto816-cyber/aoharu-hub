@@ -37,6 +37,8 @@ interface FullResult {
   criteria: { name: string; score: number; comment: string }[];
   points: Point[];
   nextStep: string;
+  /** 無料の2本目から：見せていない残りの指摘の数 */
+  lockedPoints?: number;
 }
 interface Status {
   signedIn: boolean;
@@ -458,8 +460,17 @@ export function PreviewForm({ handFont, initialKind = "shibo" }: { handFont: str
             </p>
           )}
 
-          <p className="mb-0 mt-6 text-xs font-bold text-[#D9341F]">直すべき箇所（{full.points.length}つ）</p>
+          <p className="mb-0 mt-6 text-xs font-bold text-[#D9341F]">直すべき箇所（{full.points.length + (full.lockedPoints ?? 0)}つ）</p>
           <PointList points={full.points} handFont={handFont} />
+          {(full.lockedPoints ?? 0) > 0 && (
+            <div className="mt-4 rounded-xl border-[1.5px] border-dashed border-[#15172B]/40 bg-white px-4 py-4">
+              <p className="m-0 text-sm font-bold">ほかに直すべき箇所が、あと{full.lockedPoints}つあります。</p>
+              <p className="mb-0 mt-1 text-xs leading-relaxed text-[#5A5D73]">
+                無料プランでは、登録して最初の1本だけ、すべての指摘と観点ごとのコメントを見られます。2本目からは、点数といちばん大事な指摘1つまでです。
+              </p>
+              <TicketBuyButton location="tensaku_locked" className="mt-3" />
+            </div>
+          )}
 
           <button
             type="button"
