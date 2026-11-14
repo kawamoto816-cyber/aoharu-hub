@@ -63,7 +63,7 @@ export const E_YOUBI_TENKI_E_YASASHI: CastScript = {
       kind: "talk",
       who: "seito",
       text: "Tuesday、Thursday……。音《おと》もにていて、どちらが火曜日《かようび》か、分《わ》からなくなりそうです。",
-      say: "チューズデー、サーズデー……。音もにていて、どちらが火曜日か、わからなくなりそうです。",
+      say: "チューズデー、サーズデー……。音もにていて、どちらがかようびか、わからなくなりそうです。",
     },
     {
       kind: "talk",
@@ -77,7 +77,7 @@ export const E_YOUBI_TENKI_E_YASASHI: CastScript = {
       who: "sensei",
       board: { section: 0, focus: "Tuesday" },
       text: "Tuesday は火曜日《かようび》、Thursday は木曜日《もくようび》です。曜日《ようび》の順《じゅん》は、火《か》、水《すい》、木《もく》。Tuesday のあとに Wednesday、そのあとに Thursday が来《き》ます。",
-      say: "チューズデーは火曜日、サーズデーは木曜日です。曜日の順は、か、すい、もく。チューズデーのあとにウェンズデー、そのあとにサーズデーが来ます。",
+      say: "チューズデーはかようび、サーズデーはもくようびです。曜日の順は、か、すい、もく。チューズデーのあとにウェンズデー、そのあとにサーズデーが来ます。",
     },
     {
       kind: "talk",
