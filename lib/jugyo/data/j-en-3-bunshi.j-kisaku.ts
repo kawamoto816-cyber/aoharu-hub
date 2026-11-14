@@ -48,7 +48,7 @@ export const J_BUNSHI3_J_KISAKU: CastScript = {
       who: "sensei",
       board: { section: 0, focus: "a broken window" },
       text: "The cat is sleeping. の sleeping を前に出すと a sleeping cat、寝ているねこ。The window was broken. からは a broken window、割れた窓。進行形と受け身と同じ形だから、意味もそのままでいいよ。",
-      say: "ザ キャット イズ スリーピング。の、スリーピングを、まえに出すと、ア スリーピング キャット。寝ているねこ。ザ ウィンドウ ワズ ブロークン。からは、ア ブロークン ウィンドウ。割れた窓。進行形と、受け身と、同じかたちだから、意味も、そのままでいいよ。",
+      say: "ザ キャット イズ スリーピング。の、スリーピングを、まえに出すと、ア スリーピング キャット。寝ているねこ。ザ ウィンドウ ワズ ブロークン。からは、ア ブロークン ウィンドウ。割れた窓。しんこうけいと、受け身と、同じかたちだから、意味も、そのままでいいよ。",
     },
     {
       kind: "talk",
