@@ -70,7 +70,7 @@ export const J_KANRYO_SHINKO_J_KISAKU: CastScript = {
       who: "sensei",
       board: { section: 1 },
       text: "形は、進行形の be＋ing と、現在完了の have＋過去分詞の合体。be を過去分詞の{{been}}にして、have のあとに入れるんだ。",
-      say: "かたちわ、進行形の、ビー たす イングと、現在完了の、ハブ たす 過去分詞の、合体。ビーを、過去分詞の、ビーンにして、ハブのあとに、入れるんだ。",
+      say: "かたちわ、しんこうけいの、ビー たす イングと、現在完了の、ハブ たす 過去分詞の、合体。ビーを、過去分詞の、ビーンにして、ハブのあとに、入れるんだ。",
     },
     {
       kind: "talk",
@@ -121,7 +121,7 @@ export const J_KANRYO_SHINKO_J_KISAKU: CastScript = {
       who: "sensei",
       board: { section: 2, focus: "状態の動詞" },
       text: "状態の動詞は、もともと「続いている」意味が入ってるから、進行形にしないんだよね。",
-      say: "状態の動詞わ、もともと、続いている、意味が、入ってるから、進行形に、しないんだよね。",
+      say: "状態の動詞わ、もともと、続いている、意味が、入ってるから、しんこうけいに、しないんだよね。",
     },
     {
       kind: "talk",
@@ -178,7 +178,7 @@ export const J_KANRYO_SHINKO_J_KISAKU: CastScript = {
       who: "sensei",
       board: { section: 3, focus: "for / since / How long" },
       text: "for・since・How long が見えたら、完了進行形の目じるし。この短編だって People have been reading this story for more than 200 years. なんだよ。",
-      say: "フォー、シンス、ハウ ロングが、見えたら、完了進行形の、めじるし。この短編だって、ピープル ハブ ビーン リーディング ディス ストーリー フォー モア ザン トゥーハンドレッド イヤーズ、なんだよ。",
+      say: "フォー、シンス、ハウ ロングが、見えたら、完了しんこうけいの、めじるし。この短編だって、ピープル ハブ ビーン リーディング ディス ストーリー フォー モア ザン トゥーハンドレッド イヤーズ、なんだよ。",
     },
     {
       kind: "talk",
