@@ -7,13 +7,20 @@ import { getSetting, setSetting } from "@/lib/social/store";
 //   (リンク先はスマホでも崩れない /tensaku。テンサクン本体はスマホで画面がはみ出すため)
 //   nudge : 登録から3日たっても、まだ使っていない人へ「書きかけでも大丈夫です」(1回だけ)
 //   quota : 無料プランでテンサクンの今月の2本を使い切った人へ (その月に1回だけ)
+//   ippan : 12/1〜12/14 に、登録済みの全員へ1回だけ「一般選抜の小論文・面接にも使えます」(2026-11-15 じゅんさんの判断)。
+//           受け取る人の多くは高校生 (未成年) なので、有料プランや1通300円の添削は勧めない。無料で使えることだけを伝える。
 // どのメールにも配信停止のリンクを付ける。停止した人には二度と送らない。
 // 送信は ONBOARDING_SEND=1 のときだけ。未設定なら「送るはずだった件数」を返すだけ (dry run)。
 
 const FROM = process.env.ONBOARDING_FROM_EMAIL ?? process.env.SALES_FROM_EMAIL ?? "アオハルOS（株式会社ブルースプリング） <pr@bluespring.co.jp>";
 const BASE = "https://app.bluespring.co.jp";
 
-export type Step = "first" | "nudge" | "quota";
+export type Step = "first" | "nudge" | "quota" | "ippan";
+
+// 一般選抜の案内を送る期間 (日本時間)。1回の実行で送る上限は IPPAN_PER_RUN 通 (まとめて送って迷惑メール扱いされないように)
+const IPPAN_FROM = "2026-12-01T00:00:00+09:00";
+const IPPAN_UNTIL = "2026-12-15T00:00:00+09:00";
+const IPPAN_PER_RUN = 40;
 
 function jstMonth(d = new Date()): string {
   return new Date(d.getTime() + 9 * 3600_000).toISOString().slice(0, 7);
@@ -77,6 +84,25 @@ export function buildEmail(step: Step, userId: string, name: string): { subject:
         "",
         "▼ 使う前と後の見本（どんな結果が返ってくるか）",
         `${BASE}/tutorial/tensakun`,
+        "",
+        "名前や学校名は書かずに貼ってください。",
+        footer(userId),
+      ].join("\n"),
+    };
+  }
+  if (step === "ippan") {
+    return {
+      subject: "一般選抜の小論文・面接の練習にも使えます",
+      text: [
+        `${hi}、アオハルOSです。推薦入試の書類でアオハルOSを使っていただき、ありがとうございます。`,
+        "",
+        "これから一般選抜で小論文や面接がある人へのお知らせです。小論文の添削も、面接の練習も、推薦の書類と同じように使えます。今月も無料プランで添削が2本使えます。",
+        "",
+        "▼ 小論文を添削する（過去問の答案をそのまま貼れます）",
+        `${BASE}/tensaku?kind=shoronbun&utm_source=email&utm_medium=onboarding&utm_campaign=ippan`,
+        "",
+        "▼ 小論文・面接のコツをカードで読む（無料・回数の制限なし）",
+        `${BASE}/learn?utm_source=email&utm_medium=onboarding&utm_campaign=ippan`,
         "",
         "名前や学校名は書かずに貼ってください。",
         footer(userId),
@@ -208,6 +234,29 @@ export async function runOnboarding(now = new Date()): Promise<RunResult> {
       result.sent.push({ step, userId: s.user_id });
     } catch (e) {
       result.errors.push(`${s.user_id}: ${e instanceof Error ? e.message : String(e)}`);
+    }
+  }
+  // 一般選抜の案内：期間中だけ、登録済みの全員に1回ずつ (上の30日分とは別に見る)
+  if (now >= new Date(IPPAN_FROM) && now < new Date(IPPAN_UNTIL)) {
+    const { data: all } = await supabase.from("subscriptions").select("user_id").lt("created_at", IPPAN_FROM).limit(5000);
+    let n = 0;
+    for (const s of (all ?? []) as { user_id: string }[]) {
+      if (n >= IPPAN_PER_RUN) break;
+      const key = `onboarding:${s.user_id}:ippan2026`;
+      try {
+        if ((await getSetting(key)) || (await isOptedOut(s.user_id))) continue;
+        if (!dryRun) {
+          const who = await clerkEmail(s.user_id);
+          if (!who) continue;
+          const mail = buildEmail("ippan", s.user_id, who.name);
+          await sendViaResend(who.email, mail.subject, mail.text);
+          await setSetting(key, now.toISOString());
+        }
+        result.sent.push({ step: "ippan", userId: s.user_id });
+        n += 1;
+      } catch (e) {
+        result.errors.push(`${s.user_id}: ${e instanceof Error ? e.message : String(e)}`);
+      }
     }
   }
   return result;
