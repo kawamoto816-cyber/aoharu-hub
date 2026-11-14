@@ -3,6 +3,7 @@
 import { NextResponse } from "next/server";
 import { currentUser } from "@clerk/nextjs/server";
 import { resolveShareToken } from "@/lib/parent-share/store";
+import { createTicketCheckoutSession, TICKET } from "@/lib/tensaku/ticket";
 import {
   getCurrentUserId,
   createCheckoutSession,
@@ -44,6 +45,20 @@ export async function POST(req: Request) {
 
     // 受験シーズンパス（買い切り・自動更新なし）
     if (body?.plan === "season") return seasonPass(req, userId, body?.payer === "parent");
+
+    // 1通分の添削（300円・書き直したあとの再添削1回つき）
+    if (body?.plan === "ticket") {
+      const origin = new URL(req.url).origin;
+      const user = await currentUser();
+      const session = await createTicketCheckoutSession({
+        userId,
+        successUrl: `${origin}/tensaku?checkout=success&plan=ticket&value=${TICKET.priceJpy}&session_id={CHECKOUT_SESSION_ID}`,
+        cancelUrl: `${origin}/tensaku?checkout=cancel`,
+        userEmail: user?.emailAddresses?.[0]?.emailAddress,
+      });
+      if (!session.url) return NextResponse.json({ error: "Checkoutセッションの作成に失敗しました" }, { status: 500 });
+      return NextResponse.json({ url: session.url });
+    }
 
     const plan = body?.plan as UpgradePlan | undefined;
     if (!plan || !VALID_PLANS.includes(plan)) {

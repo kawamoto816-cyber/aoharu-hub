@@ -7,6 +7,7 @@ import { trackEvent } from "@/lib/analytics";
 import { learnIdFromLocation, markDone } from "@/lib/learn/progress";
 import { SeasonPassOffer } from "@/components/billing/SeasonPassOffer";
 import { VoiceForm } from "@/components/voices/VoiceForm";
+import { TicketBuyButton } from "@/components/billing/TicketBuyButton";
 
 // /tensaku の添削フォーム。
 //   未登録: 貼る → 指摘が3つ返る (お試し) → 全文の添削は無料登録で
@@ -42,6 +43,8 @@ interface Status {
   unlimited?: boolean;
   remaining?: number | null;
   quota?: number;
+  /** 1通分（300円）で買った、残りの添削の回数 */
+  tickets?: number;
 }
 
 const ERR: Record<string, string> = {
@@ -158,7 +161,8 @@ export function PreviewForm({ handFont, initialKind = "shibo" }: { handFont: str
 
   const len = text.trim().length;
   const signedIn = Boolean(status?.signedIn);
-  const outOfQuota = signedIn && !status?.unlimited && status?.remaining === 0;
+  const tickets = status?.tickets ?? 0;
+  const outOfQuota = signedIn && !status?.unlimited && status?.remaining === 0 && tickets === 0;
   const max = signedIn ? FULL_MAX : PREVIEW_MAX;
   const returnUrl = `/tensaku?kind=${kind}`;
 
@@ -241,7 +245,13 @@ export function PreviewForm({ handFont, initialKind = "shibo" }: { handFont: str
           markDone(learnId);
           trackEvent("learn_card_done", { card: learnId });
         }
-        setStatus((s) => (s && !s.unlimited && typeof s.remaining === "number" ? { ...s, remaining: Math.max(0, s.remaining - 1) } : s));
+        setStatus((s) =>
+          s && !s.unlimited && typeof s.remaining === "number"
+            ? s.remaining > 0
+              ? { ...s, remaining: s.remaining - 1 }
+              : { ...s, tickets: Math.max(0, (s.tickets ?? 0) - 1) }
+            : s,
+        );
       }
     } catch {
       setError(ERR.failed);
@@ -307,7 +317,13 @@ export function PreviewForm({ handFont, initialKind = "shibo" }: { handFont: str
             {loading === "full" ? "採点しています…（30秒ほど）" : "全文を添削して採点する"}
           </button>
           <p className="mb-0 mt-2 text-center text-xs text-[#5A5D73]">
-            {status?.unlimited ? "Proプラン：回数の制限なし" : typeof status?.remaining === "number" ? `今月の無料添削 あと${status.remaining}本` : "無料プランは月2本まで"}
+            {status?.unlimited
+              ? "Proプラン：回数の制限なし"
+              : status?.remaining === 0 && tickets > 0
+                ? `1通分の添削 あと${tickets}回`
+                : typeof status?.remaining === "number"
+                  ? `今月の無料添削 あと${status.remaining}本${tickets > 0 ? `（ほかに1通分の添削 ${tickets}回）` : ""}`
+                  : "無料プランは月2本まで"}
           </p>
           {!status?.unlimited && status?.remaining === 1 && !full && (
             <p className="mb-0 mt-1 text-center text-xs">
@@ -330,6 +346,8 @@ export function PreviewForm({ handFont, initialKind = "shibo" }: { handFont: str
           <p className="mb-0 mt-2 text-center text-xs text-[#5A5D73]">{signedIn ? "お試しは1日3回まで（回数に数えません）" : "登録なし・1日3回まで"}</p>
         </>
       )}
+
+      {outOfQuota && <TicketBuyButton location="tensaku_quota" className="mt-5" />}
 
       {outOfQuota && (
         <SeasonPassOffer

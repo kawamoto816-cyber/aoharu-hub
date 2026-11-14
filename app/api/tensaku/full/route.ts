@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { checkAppAccess, getCurrentUserId, getFreeTierStatus, logUsage } from "@/lib/aoharu-entitlements";
 import { FULL_MAX_CHARS, runFull } from "@/lib/tensaku/full";
 import { MIN_CHARS, type DocKind } from "@/lib/tensaku/preview";
+import { consumeTicket, getTickets } from "@/lib/tensaku/ticket";
 
 // 登録後の全文添削 (/tensaku から使う)。テンサクンと同じ回数枠で数える。
 //   GET  /api/tensaku/full            → { signedIn, unlimited, remaining, quota }
@@ -18,8 +19,8 @@ export async function GET() {
   const userId = await getCurrentUserId();
   if (!userId) return NextResponse.json({ signedIn: false });
   try {
-    const s = await getFreeTierStatus(userId, APP);
-    return NextResponse.json({ signedIn: true, unlimited: s.unlimited, remaining: s.remaining, quota: s.quota, plan: s.plan }, { headers: { "Cache-Control": "no-store" } });
+    const [s, tickets] = await Promise.all([getFreeTierStatus(userId, APP), getTickets(userId)]);
+    return NextResponse.json({ signedIn: true, unlimited: s.unlimited, remaining: s.remaining, quota: s.quota, plan: s.plan, tickets }, { headers: { "Cache-Control": "no-store" } });
   } catch {
     return NextResponse.json({ signedIn: true, unlimited: false, remaining: null, quota: 2 });
   }
@@ -42,11 +43,15 @@ export async function POST(req: Request) {
   if (text.length > FULL_MAX_CHARS) return NextResponse.json({ error: "too_long", max: FULL_MAX_CHARS }, { status: 400 });
 
   const access = await checkAppAccess(userId, APP, ACTION);
-  if (!access.allowed) return NextResponse.json({ error: access.reason }, { status: 402 });
+  // 無料の枠を使い切っていても、1通分（300円）の回数が残っていればそれを使う
+  const byTicket = !access.allowed && access.reason === "quota_exceeded" && (await getTickets(userId)) > 0;
+  if (!access.allowed && !byTicket) return NextResponse.json({ error: access.reason }, { status: 402 });
 
   try {
     const result = await runFull({ kind, target, text });
-    await logUsage({ userId, appKey: APP, action: ACTION, metadata: { source: "hub_tensaku", kind, length: text.length } });
+    if (byTicket) await consumeTicket(userId);
+    // 1通分で使った回は、無料の枠の数え方（score）に入れない
+    await logUsage({ userId, appKey: APP, action: byTicket ? "score_ticket" : ACTION, metadata: { source: "hub_tensaku", kind, length: text.length } });
     return NextResponse.json(result, { headers: { "Cache-Control": "no-store" } });
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);

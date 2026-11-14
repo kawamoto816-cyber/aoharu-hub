@@ -6,6 +6,7 @@
 import { NextResponse } from "next/server";
 import { getStripe, handleStripeWebhookEvent } from "@bluespring/aoharu-entitlements";
 import { ensureTeamPassForSession, TEAM_METADATA_KIND } from "@/lib/team-pass/store";
+import { grantTicketForSession, TICKET } from "@/lib/tensaku/ticket";
 
 export async function POST(req: Request) {
   const signature = req.headers.get("stripe-signature");
@@ -36,6 +37,11 @@ export async function POST(req: Request) {
     // 塾向けシーズンプラン（ログインなしで塾が払う）：招待コードを発行して、メールで送る
     if (event.type === "checkout.session.completed" && event.data.object.metadata?.kind === TEAM_METADATA_KIND) {
       await ensureTeamPassForSession(event.data.object.id);
+      return NextResponse.json({ received: true });
+    }
+    // 1通分の添削（300円）：その人の添削の回数を2つ足す
+    if (event.type === "checkout.session.completed" && event.data.object.metadata?.kind === TICKET.metadataKind) {
+      await grantTicketForSession(event.data.object.id);
       return NextResponse.json({ received: true });
     }
     await handleStripeWebhookEvent(event);
