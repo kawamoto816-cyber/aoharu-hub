@@ -53,11 +53,14 @@ export async function createSeasonPassCheckoutSession(params: {
   successUrl: string;
   cancelUrl: string;
   userEmail?: string;
+  /** 個人の先生の紹介コード（あれば、その値段で売り、コードを metadata に残す。lib/referral/store.ts） */
+  referral?: { code: string; unitAmountJpy: number };
 }) {
   const stripe = getStripe();
   const existing = await getOrCreateSubscription(params.userId);
-  const priceId = seasonPassPriceId();
-  const metadata = { clerk_user_id: params.userId, kind: SEASON_PASS.metadataKind, ends_at: SEASON_PASS.endsAt };
+  const priceId = params.referral ? undefined : seasonPassPriceId();
+  const metadata: Record<string, string> = { clerk_user_id: params.userId, kind: SEASON_PASS.metadataKind, ends_at: SEASON_PASS.endsAt };
+  if (params.referral) metadata.ref = params.referral.code;
 
   return stripe.checkout.sessions.create({
     mode: "payment",
@@ -68,7 +71,7 @@ export async function createSeasonPassCheckoutSession(params: {
             quantity: 1,
             price_data: {
               currency: "jpy",
-              unit_amount: seasonPassPriceJpy(),
+              unit_amount: params.referral?.unitAmountJpy ?? seasonPassPriceJpy(),
               product_data: { name: `アオハルOS ${SEASON_PASS.name}（${SEASON_PASS.endsLabel}まで）`, description: SEASON_PASS.stripeDescription },
             },
           },

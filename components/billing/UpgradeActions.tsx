@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { readStoredRef } from "./RefCapture";
 import { useClerk } from "@clerk/nextjs";
 import { openSignUpWithRecovery } from "@/lib/authReloadGuard";
 import { PENDING_PLAN_STORAGE_KEY } from "@/lib/checkout-intent";
@@ -28,10 +29,12 @@ function productOf(product: UpgradeProduct) {
 }
 
 async function createCheckout(product: UpgradeProduct, payer: "self" | "parent"): Promise<string> {
+  // 個人の先生の紹介コード（パスだけ10%引き）。サーバーが確かめて、使えなければふつうの値段になる
+  const ref = product === "season" ? readStoredRef() : null;
   const res = await fetch("/api/billing/checkout", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ plan: productOf(product).plan, payer }),
+    body: JSON.stringify({ plan: productOf(product).plan, payer, ...(ref ? { ref } : {}) }),
   });
   const data = (await res.json().catch(() => ({}))) as { url?: string; error?: string; reason?: string };
   if (res.status === 401 || data.reason === "auth_required") throw new Error("auth_required");
@@ -40,10 +43,10 @@ async function createCheckout(product: UpgradeProduct, payer: "self" | "parent")
   return data.url;
 }
 
-function parentMessage(product: UpgradeProduct, url: string, endsLabel: string): string {
+function parentMessage(product: UpgradeProduct, url: string, endsLabel: string, refPrice?: number | null): string {
   const ask =
     product === "season"
-      ? `出願と面接が終わるまで使い放題になる「受験シーズンパス」（${endsLabel}まで・${yen(seasonPrice().jpy)}円の1回払い・自動更新なし）にしてもらえませんか。${seasonPrice().early ? `${seasonPrice().earlyLabel}までは早割の値段です。` : ""}`
+      ? `出願と面接が終わるまで使い放題になる「受験シーズンパス」（${endsLabel}まで・${yen(refPrice ?? seasonPrice().jpy)}円の1回払い・自動更新なし）にしてもらえませんか。${refPrice ? "先生の紹介で10%引きになっています。" : seasonPrice().early ? `${seasonPrice().earlyLabel}までは早割の値段です。` : ""}`
       : "無料プランは月2本までなので、Pro（月980円・いつでも解約できます）にしてもらえませんか。";
   return [
     "受験の志望理由書・小論文の添削や面接練習に「アオハルOS」というAIのサービスを使っています。",
@@ -62,6 +65,19 @@ export function UpgradeActions({ location, product = "pro", endsLabel = SEASON_E
   const [message, setMessage] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const clerk = useClerk();
+  // 紹介コードが使えるときは「先生の紹介で10%引き」と値段を出す
+  const [refPrice, setRefPrice] = useState<number | null>(null);
+  useEffect(() => {
+    if (product !== "season") return;
+    const ref = readStoredRef();
+    if (!ref) return;
+    fetch(`/api/referral?code=${encodeURIComponent(ref)}`)
+      .then((r) => r.json())
+      .then((j: { ok?: boolean; priceJpy?: number }) => {
+        if (j.ok && typeof j.priceJpy === "number") setRefPrice(j.priceJpy);
+      })
+      .catch(() => undefined);
+  }, [product]);
 
   /** ログインしていない・すでに有料、のときの扱い。ほかの失敗なら false */
   function handleKnown(e: unknown): boolean {
@@ -105,7 +121,7 @@ export function UpgradeActions({ location, product = "pro", endsLabel = SEASON_E
     setError(null);
     try {
       const url = await createCheckout(product, "parent");
-      const text = parentMessage(product, url, endsLabel);
+      const text = parentMessage(product, url, endsLabel, refPrice);
       trackEvent("ask_parent_link", { location, plan: p.plan });
       setMessage(text);
       // スマホなら共有メニュー (LINE など) をそのまま開く
@@ -146,7 +162,7 @@ export function UpgradeActions({ location, product = "pro", endsLabel = SEASON_E
           disabled={loading !== null}
           className="min-h-[48px] rounded-xl bg-[#15172B] px-4 text-sm font-bold text-white disabled:opacity-60"
         >
-          {loading === "self" ? "支払い画面を開いています…" : p.button}
+          {loading === "self" ? "支払い画面を開いています…" : refPrice ? `シーズンパスにする（${yen(refPrice)}円）` : p.button}
         </button>
         <button
           type="button"
@@ -157,6 +173,7 @@ export function UpgradeActions({ location, product = "pro", endsLabel = SEASON_E
           {loading === "parent" ? "リンクを作っています…" : "保護者にお願いする"}
         </button>
       </div>
+      {refPrice && <p className="m-0 text-xs font-bold text-[#1B7F3B]">先生の紹介コードで10%引きになっています（{yen(refPrice)}円）。</p>}
       <p className="m-0 text-xs text-[#5A5D73]">{p.note}「保護者にお願いする」は、保護者の方が支払えるリンクを作ってLINEやメールで送れます。</p>
       {message && (
         <div className="rounded-xl border border-[#15172B]/30 bg-white p-3">

@@ -16,6 +16,7 @@ import { UpgradeModalProvider } from "@/components/UpgradeModal";
 import { SeasonEarlyBanner } from "@/components/billing/SeasonEarlyBanner";
 import { BillingPortalLink } from "@/components/BillingPortalLink";
 import { AccountCorner } from "@/components/AccountCorner";
+import { RefCapture } from "@/components/billing/RefCapture";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -80,6 +81,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <body className="min-h-full flex flex-col bg-white text-slate-900">
           <SeasonEarlyBanner />
           <SignUpTracker />
+          <RefCapture />
           {/* GA4計測タグ(gtag.js): コンバージョン計測(sign_up_click / begin_checkout /
               purchase)の土台。ページの見た目には一切影響しない。 */}
           <Script

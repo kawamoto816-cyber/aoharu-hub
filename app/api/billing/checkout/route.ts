@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 import { currentUser } from "@clerk/nextjs/server";
 import { resolveShareToken } from "@/lib/parent-share/store";
 import { createTicketCheckoutSession, TICKET } from "@/lib/tensaku/ticket";
+import { discounted, getReferral } from "@/lib/referral/store";
 import {
   getCurrentUserId,
   createCheckoutSession,
@@ -26,11 +27,11 @@ export async function POST(req: Request) {
   try {
     // 保護者ビュー（/parent-view/<トークン>）から、保護者がそのまま受験シーズンパスを払うとき。
     // 保護者はログインしていないので、共有トークンでお子さんのアカウントを決める（トークンを持つ人はお子さんの分を払えるだけ）。
-    const peek = (await req.clone().json().catch(() => ({}))) as { plan?: string; shareToken?: string };
+    const peek = (await req.clone().json().catch(() => ({}))) as { plan?: string; shareToken?: string; ref?: string };
     if (peek.plan === "season" && typeof peek.shareToken === "string" && peek.shareToken.length > 10) {
       const childId = await resolveShareToken(peek.shareToken);
       if (!childId) return NextResponse.json({ error: "リンクが無効です" }, { status: 404 });
-      return seasonPass(req, childId, true);
+      return seasonPass(req, childId, true, peek.ref);
     }
 
     const userId = await getCurrentUserId();
@@ -44,7 +45,7 @@ export async function POST(req: Request) {
     const body = await req.json().catch(() => ({}));
 
     // 受験シーズンパス（買い切り・自動更新なし）
-    if (body?.plan === "season") return seasonPass(req, userId, body?.payer === "parent");
+    if (body?.plan === "season") return seasonPass(req, userId, body?.payer === "parent", typeof body?.ref === "string" ? body.ref : undefined);
 
     // 1通分の添削（300円・書き直したあとの再添削1回つき）
     if (body?.plan === "ticket") {
@@ -110,7 +111,7 @@ export async function POST(req: Request) {
 }
 
 /** 受験シーズンパスの支払い画面。月額の契約中の人には出さない（二重に払わせない） */
-async function seasonPass(req: Request, userId: string, forParent: boolean) {
+async function seasonPass(req: Request, userId: string, forParent: boolean, refCode?: string) {
   const row = await getOrCreateSubscription(userId);
   if (row.plan !== "free" && row.status === "active") {
     return NextResponse.json({ error: "すでに有料プランをご利用中です", reason: "already_paid" }, { status: 409 });
@@ -118,10 +119,14 @@ async function seasonPass(req: Request, userId: string, forParent: boolean) {
   const origin = new URL(req.url).origin;
   const user = forParent ? null : await currentUser();
   const userEmail = user?.emailAddresses?.[0]?.emailAddress;
+  // 個人の先生の紹介コード：10%引き（コードが見つからなければ、ふつうの値段）
+  const ref = refCode ? await getReferral(refCode).catch(() => null) : null;
+  const price = ref ? discounted(seasonPassPriceJpy()) : seasonPassPriceJpy();
   const successUrl = forParent
-    ? `${origin}/parents/thanks?plan=season&value=${seasonPassPriceJpy()}&session_id={CHECKOUT_SESSION_ID}`
-    : `${origin}/tensaku?checkout=success&plan=season&value=${seasonPassPriceJpy()}&session_id={CHECKOUT_SESSION_ID}`;
+    ? `${origin}/parents/thanks?plan=season&value=${price}&session_id={CHECKOUT_SESSION_ID}`
+    : `${origin}/tensaku?checkout=success&plan=season&value=${price}&session_id={CHECKOUT_SESSION_ID}`;
   const session = await createSeasonPassCheckoutSession({
+    referral: ref ? { code: ref.code, unitAmountJpy: price } : undefined,
     userId,
     successUrl,
     cancelUrl: forParent ? `${origin}/parents#season` : `${origin}/tensaku?checkout=cancel`,
