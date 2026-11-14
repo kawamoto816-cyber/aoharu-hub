@@ -113,7 +113,7 @@ export const H_SENRYO_H_NEKKETSU: CastScript = {
       kind: "talk",
       who: "seito",
       text: "じゃあ、日本国憲法はGHQ草案が一字も変わらずに成立した！　コピーしたみたいに！",
-      say: "じゃあ、日本国憲法は、ジーエイチキュー草案が、いちじも変わらずに、成立した！　コピーしたみたいに！",
+      say: "じゃあ、にほんこくけんぽうは、ジーエイチキュー草案が、いちじも変わらずに、成立した！　コピーしたみたいに！",
     },
     { kind: "talk", who: "sensei", text: "待った！　問題！" },
     { kind: "pause", ref: "mistake:1" },

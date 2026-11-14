@@ -127,7 +127,7 @@ export const H_ZENCHISHI_H_CHARISMA: CastScript = {
       kind: "talk",
       who: "sensei",
       text: "対になるのが for と during。for three days は長さを数字で、during the summer vacation はどの期間かを名前で言う。during three days とは言わない。",
-      say: "対になるのが、フォーと、デュアリング。フォー スリー デイズは、長さを、数字で。デュアリング ザ サマー ヴェイケイションは、どの期間かを、名前で言う。デュアリング スリー デイズとは、言わない。",
+      say: "ついになるのが、フォーと、デュアリング。フォー スリー デイズは、長さを、数字で。デュアリング ザ サマー ヴェイケイションは、どの期間かを、名前で言う。デュアリング スリー デイズとは、言わない。",
     },
 
     { kind: "chapter", title: "4. 2語で1つの前置詞" },

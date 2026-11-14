@@ -119,7 +119,7 @@ export const H_SENRYO_H_CHARISMA: CastScript = {
       kind: "talk",
       who: "seito",
       text: "だったら、日本国憲法はGHQ草案が一字も変わらずに成立した、ですよね。",
-      say: "だったら、日本国憲法は、ジーエイチキュー草案が、いちじも変わらずに、成立した、ですよね。",
+      say: "だったら、にほんこくけんぽうは、ジーエイチキュー草案が、いちじも変わらずに、成立した、ですよね。",
     },
     { kind: "talk", who: "sensei", text: "そこが落とし穴。問題。" },
     { kind: "pause", ref: "mistake:1" },
