@@ -41,7 +41,7 @@ export const H_BUNSHIKOBUN_H_NEKKETSU: CastScript = {
       kind: "talk",
       who: "seito",
       text: "あれ？　過去形の walked が消えたら、いつの話か分からなくならない？",
-      say: "あれ？　過去形のウォークトが消えたら、いつの話か、わからなくならない？",
+      say: "あれ？　かこけいのウォークトが消えたら、いつの話か、わからなくならない？",
     },
     {
       kind: "talk",
