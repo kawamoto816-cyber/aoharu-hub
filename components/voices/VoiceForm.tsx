@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { trackEvent } from "@/lib/analytics";
 
-// テンサクンの結果の画面の「ひとこと送る」。書き直して2回目以上の添削をした人に出す。
+// テンサクンの結果の画面の「ひとこと送る」。添削の結果を見た人に出す（2026-11-15〜。それまでは書き直した人だけ）。
 // 名前・学校名は聞かない（学年と点数の変化だけ）。載せてよいかは本人が選ぶ。
 const GRADES = ["高1", "高2", "高3", "既卒", "その他"] as const;
 
@@ -11,7 +11,7 @@ export function VoiceForm({ kind, before, after }: { kind: string; before: numbe
   const [open, setOpen] = useState(false);
   const [grade, setGrade] = useState<string>("");
   const [comment, setComment] = useState("");
-  const [consent, setConsent] = useState(true);
+  const [consent, setConsent] = useState(false); // 載せてよいかは本人が選ぶ（初めはオフ）
   const [state, setState] = useState<"idle" | "sending" | "done" | "error">("idle");
 
   async function send() {

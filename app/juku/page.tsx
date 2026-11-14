@@ -51,6 +51,9 @@ export default function JukuPage() {
           ))}
         </div>
         <p className="mt-3 text-xs text-[#5A5D73]">お支払いはクレジットカード・PayPay など（Stripe）。お支払い後すぐに招待コードが表示され、メールでも届きます。</p>
+        <Link href="/juku/shindan" className="mt-5 flex min-h-[52px] items-center justify-center rounded-[14px] border-[1.5px] border-[#1533B8] bg-[#E6EAFB] px-4 text-center text-sm font-black text-[#1533B8] no-underline">
+          まずは無料で：生徒の志望理由書を10人分まとめて診断する →
+        </Link>
       </section>
 
       <section className="mx-auto max-w-3xl px-4 pb-10">

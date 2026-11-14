@@ -51,6 +51,7 @@ export interface Proposal {
 }
 
 const TRY_URL = "https://app.bluespring.co.jp/try";
+const SHINDAN_URL = "https://app.bluespring.co.jp/juku/shindan";
 
 function signature(): string {
   const replyTo = process.env.SALES_REPLY_TO ?? "pr@bluespring.co.jp";
@@ -163,8 +164,10 @@ const SHUCHO: Record<Active, { subject: string; body: (lead: LeadForProposal) =>
 
 アオハルOSは、志望理由書・小論文の添削と模擬面接をAIが何度でも引き受け、生徒には「なぜ？」を返し続けます。先生は、問いを投げることに時間を使えます（生徒ごとのつまずきが見える先生用の画面は、いま試作中です）。
 
-この考えに反対の塾には、このメールは不要です。共感いただけた塾だけ、1クラス分をまずは無料でお使いください。「試す」と一言ご返信いただければ、こちらで準備します。
-${TRY_URL}${signature()}`,
+この考えに反対の塾には、このメールは不要です。共感いただけた塾は、まず生徒の志望理由書を10人分まで、無料でまとめて診断してみてください。点数と「いちばん大事な直し」を一覧で返します。
+${SHINDAN_URL}
+
+1クラス分をまずは無料で使ってみたい場合は、「試す」と一言ご返信ください。こちらで準備します。${signature()}`,
   },
   school_support: {
     subject: "「書けない子」に、赤ペンは要りません",
@@ -200,9 +203,10 @@ const TANBUN: Record<Active, { subject: string; body: (lead: LeadForProposal) =>
     body: (lead) => `${lead.name} 塾長様
 
 アオハルOSの川本です。貴塾のホームページを拝見しました。
-志望理由書・小論文の添削と面接練習をAIが引き受けるサービスです。1クラス分、まずは無料でお使いいただけます。
-試してみたい場合は「試す」とだけご返信ください。
-${TRY_URL}${signature()}`,
+志望理由書・小論文の添削と面接練習をAIが引き受けるサービスです。
+生徒の志望理由書を10人分まで、無料でまとめて診断できます（点数と直す場所を一覧に）。
+${SHINDAN_URL}
+1クラス分をまずは無料で使ってみたい場合は「試す」とだけご返信ください。${signature()}`,
   },
   school_support: {
     subject: "志望理由書の添削と面接練習を、AIで（無料でお試し）",

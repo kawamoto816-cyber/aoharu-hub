@@ -451,8 +451,8 @@ export function PreviewForm({ handFont, initialKind = "shibo" }: { handFont: str
             直して、もう一度添削する ↑
           </button>
 
-          {/* 書き直して2回目以上の添削をした人に：使った人の声を集める（名前なし・載せるかは本人が選ぶ） */}
-          {signedIn && prev && <VoiceForm kind={kind} before={prev.total} after={full.total} />}
+          {/* 添削の結果を見た人に：使った人の声を集める（名前なし・載せるかは本人が選ぶ）。2026-11-15 まで書き直した人だけに出していて、声が0件だった */}
+          {signedIn && <VoiceForm kind={kind} before={prev ? prev.total : null} after={full.total} />}
 
           {/* 無料プランの人に：いちばん「もっと直したい」場面で、出願まで使い放題の道を見せる */}
           {signedIn && !status?.unlimited && (
