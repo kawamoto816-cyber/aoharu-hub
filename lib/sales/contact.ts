@@ -8,6 +8,9 @@
 const PLACEHOLDER_DOMAINS = /(^|\.)(example|sample|test|dummy|domain|yourdomain|xxx+)\.(com|jp|co\.jp|ne\.jp|org|net)$/i;
 // ※ mail@ / info@ は実在の宛先として普通に使われるので、ここには入れない
 const PLACEHOLDER_LOCAL = /^(x{2,}|sample|example|test|dummy|your[-_.]?(name|mail|email|address)|aaa+)$/i;
+// 埋め込みのカレンダー・計測サービスなど、サイトのしくみが持っているアドレス（人に届かない）。
+// 例: japanese__ja@holiday.calendar.google.com（Googleカレンダーの祝日表示）に送っていた（2026-11-13）
+const SERVICE_DOMAINS = /(^|\.)(calendar\.google\.com|group\.calendar\.google\.com|sentry\.io|sentry-next\.wixpress\.com|wixpress\.com|googlegroups\.com)$/i;
 const FILE_TLD = /\.(png|jpe?g|gif|svg|webp|avif|ico|bmp|css|js|json|pdf|mp4|webm)$/i;
 
 export function isUsableEmail(email: string | null | undefined): boolean {
@@ -18,6 +21,7 @@ export function isUsableEmail(email: string | null | undefined): boolean {
   const [, local, domain] = m;
   if (FILE_TLD.test(domain)) return false; // logo@2x.png など
   if (PLACEHOLDER_DOMAINS.test(domain)) return false;
+  if (SERVICE_DOMAINS.test(domain)) return false; // カレンダー埋め込みなど
   if (PLACEHOLDER_LOCAL.test(local)) return false;
   return true;
 }
