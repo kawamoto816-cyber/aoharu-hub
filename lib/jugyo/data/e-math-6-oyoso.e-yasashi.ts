@@ -76,7 +76,7 @@ export const E_OYOSO6_E_YASASHI: CastScript = {
       who: "sensei",
       board: { section: 0, focus: "円柱" },
       text: "ジュースのかんは、{{円柱《えんちゅう》}}とみます。式《しき》は、底面積《ていめんせき》×高《たか》さです。",
-      say: "ジュースのかんは、円柱とみます。式は、底面積かける高さです。",
+      say: "ジュースのかんは、円柱とみます。式は、ていめんせきかける高さです。",
     },
     {
       kind: "talk",
