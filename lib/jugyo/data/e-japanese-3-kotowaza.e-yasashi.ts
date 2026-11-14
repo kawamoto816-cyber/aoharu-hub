@@ -163,7 +163,7 @@ export const E_KOTOWAZA3_E_YASASHI: CastScript = {
       kind: "talk",
       who: "sensei",
       text: "では、もう一《ひと》つ。「ひみつを話《はな》さない」ことを、「口《くち》が」何《なに》と言《い》うでしょう。",
-      say: "では、もうひとつ。「ひみつを話さない」ことを、「口が」何と言うでしょう。",
+      say: "では、もうひとつ。「ひみつを話さない」ことを、「口が」なんと言うでしょう。",
     },
     { kind: "pause", ref: "check:1" },
     {

@@ -73,6 +73,7 @@ export const E_OKURIGANA4_E_POP: CastScript = {
     {
       kind: "talk",
       who: "sensei",
+      card: "mystery",
       text: "そのとおり！　ではここで問題《もんだい》！",
       say: "そのとおり！　ではここで問題！",
     },

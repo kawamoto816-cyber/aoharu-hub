@@ -279,7 +279,7 @@ export const E_SEISAN3_E_YASASHI: CastScript = {
       who: "sensei",
       board: { section: 3, focus: "直売所" },
       text: "農家《のうか》が{{直売《ちょくばい》所《しょ》}}で、直接《ちょくせつ》お客《きゃく》に売《う》ることもあります。",
-      say: "農家が直売所で、直接お客に売ることもあります。",
+      say: "農家がちょくばいじょで、直接お客に売ることもあります。",
     },
     {
       kind: "talk",

@@ -67,6 +67,7 @@ export const E_OKURIGANA4_E_YASASHI: CastScript = {
     {
       kind: "talk",
       who: "sensei",
+      card: "mystery",
       text: "はい。では、たしかめてみましょう。問題《もんだい》です。",
       say: "はい。では、たしかめてみましょう。問題です。",
     },
