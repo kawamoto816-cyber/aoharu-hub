@@ -107,7 +107,7 @@ export const H_DAIMEISHI_H_KYOJU: CastScript = {
       who: "sensei",
       board: { section: 1, focus: "形式目的語 it" },
       text: "I found it easy to solve the puzzle. も同じで、こちらは{{形式目的語}}。it は意味をほとんど持たない「仮置きの札」なのだよ。",
-      say: "アイ ファウンド イット イージー トゥ ソルヴ ザ パズル、も同じで、こちらは、形式目的語。イットは、意味を、ほとんど持たない、仮置きのふだなのだよ。",
+      say: "アイ ファウンド イット イージー トゥ ソルヴ ザ パズル、も同じで、こちらは、形式目的語。イットは、意味を、ほとんど持たない、かりおきのふだなのだよ。",
     },
 
     { kind: "chapter", title: "3. 同じ物か、同じ種類か" },

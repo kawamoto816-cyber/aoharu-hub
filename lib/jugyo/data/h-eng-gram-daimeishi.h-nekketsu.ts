@@ -99,7 +99,7 @@ export const H_DAIMEISHI_H_NEKKETSU: CastScript = {
       who: "seito",
       board: { section: 1, focus: "形式目的語 it" },
       text: "I found it easy to solve the puzzle. の it は{{形式目的語}}なんだよね。意味をほとんど持たない「仮置きの札」！",
-      say: "アイ ファウンド イット イージー トゥ ソルヴ ザ パズルの、イットは、形式目的語なんだよね。意味を、ほとんど持たない、仮置きのふだ！",
+      say: "アイ ファウンド イット イージー トゥ ソルヴ ザ パズルの、イットは、形式目的語なんだよね。意味を、ほとんど持たない、かりおきのふだ！",
     },
     { kind: "talk", who: "sensei", text: "そのとおり！　画面の前のきみも、この空らんを埋めてくれ！", say: "そのとおり！　画面の前のきみも、このくうらんを、うめてくれ！" },
     { kind: "pause", ref: "check:1" },
