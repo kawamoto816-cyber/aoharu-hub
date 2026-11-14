@@ -197,10 +197,19 @@ async function main() {
   async function worker() {
     while (next < todo.length) {
       const j = todo[next++];
-      try {
-        writeFileSync(`${j.dir}/${j.key}.mp3`, await synth(j));
-      } catch (e) {
-        failed.push(`${j.unit} × ${j.cast}: ${j.text.slice(0, 20)}… ${(e as Error).message}`);
+      // VOICEVOX 本体が一瞬つながらないこと（fetch failed）があるので、少し待って2回までやり直す（2026-11-14 に 8929 個中 3 個）
+      for (let tries = 1; ; tries++) {
+        try {
+          writeFileSync(`${j.dir}/${j.key}.mp3`, await synth(j));
+          break;
+        } catch (e) {
+          if (tries < 3) {
+            await new Promise((r) => setTimeout(r, 3000 * tries));
+            continue;
+          }
+          failed.push(`${j.unit} × ${j.cast}: ${j.text.slice(0, 20)}… ${(e as Error).message}`);
+          break;
+        }
       }
       if (++done % 20 === 0) console.log(`  ${done} / ${todo.length}`);
     }
