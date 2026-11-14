@@ -1,4 +1,5 @@
 [
+ {"surface": "リッシャクジ", "yomi": "リッシャクジ", "accent": 3, "pos": "固有名詞", "priority": 8, "lines": 1},
  {"surface": "七海", "yomi": "ナナミ", "accent": 0, "pos": "固有名詞", "priority": 7, "lines": 13},
  {"surface": "番頭", "yomi": "バントー", "accent": 2, "pos": "普通名詞", "priority": 7, "lines": 9},
  {"surface": "新吉", "yomi": "シンキチ", "accent": 1, "pos": "固有名詞", "priority": 7, "lines": 7},
