@@ -14,7 +14,7 @@ export const E_SHINBUN4_BASE: UnitBase = {
       answer: "割《わ》り付け",
       why: "記事の場所と大きさを、書く前に決めます。",
       say: {
-        question: "紙面のどこに、何の記事を書くかを決めることを、何という？",
+        question: "紙面のどこに、なんの記事を書くかを決めることを、何という？",
         answer: "わりつけ",
         choices: ["取材", "わりつけ"],
       },
