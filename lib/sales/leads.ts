@@ -2,7 +2,7 @@ import { getSupabaseAdmin } from "@/lib/aoharu-entitlements/supabase/client";
 import { jstNow } from "@/lib/social/queue";
 import { upsertDriveDoc, SALES_FOLDER_ID } from "./outreach";
 import { placeDetails, textSearch } from "./places";
-import { buildProposal, type LeadForProposal, type PatternKey } from "./patterns";
+import { ACTIVE_PATTERNS, buildProposal, type LeadForProposal, type PatternKey } from "./patterns";
 import { isUsableEmail, isUsableFormUrl } from "./contact";
 
 // 法人営業の見込み先を、Google Places API で機械的に大量発見するパイプライン。
@@ -51,7 +51,9 @@ const CATEGORY_QUERIES: CategoryQuery[] = [
 
 function allCombos(): { pref: string; query: CategoryQuery }[] {
   const out: { pref: string; query: CategoryQuery }[] = [];
-  for (const pref of PREFECTURES) for (const query of CATEGORY_QUERIES) out.push({ pref, query });
+  // 止めているパターン (習い事教室) は、もう探さない
+  const active = CATEGORY_QUERIES.filter((q) => ACTIVE_PATTERNS.includes(q.pattern));
+  for (const pref of PREFECTURES) for (const query of active) out.push({ pref, query });
   return out;
 }
 
@@ -287,6 +289,16 @@ export async function generateCandidateDoc(limit = 150): Promise<{ count: number
       .in("id", ngLeads.map((l) => l.id));
   }
   const ngIds = new Set(ngLeads.map((l) => l.id));
+
+  // 止めているパターン (習い事教室) の見込み先は、提案文を作らずに除外する
+  const pausedLeads = leads.filter((l) => !ngIds.has(l.id) && !ACTIVE_PATTERNS.includes(l.pattern_key));
+  if (pausedLeads.length > 0) {
+    await supabase
+      .from("sales_leads")
+      .update({ status: "excluded", exclude_reason: "pattern_paused", updated_at: new Date().toISOString() })
+      .in("id", pausedLeads.map((l) => l.id));
+    for (const l of pausedLeads) ngIds.add(l.id);
+  }
 
   // 送れない連絡先 (記入例・画像名・javascript: など) しか無い見込み先は、ここで除外にする
   const unusable = leads.filter((l) => !ngIds.has(l.id) && !isUsableEmail(l.contact_email) && !isUsableFormUrl(l.contact_form_url));

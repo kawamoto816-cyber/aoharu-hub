@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { isAdminUser } from "@/lib/metrics/admin-auth";
-import { listRecentOutreach, salesFunnelStats, SALES_FOLDER_ID } from "@/lib/sales/outreach";
+import { listRecentOutreach, salesFunnelStats, salesVariantStats, SALES_FOLDER_ID } from "@/lib/sales/outreach";
 import { countApprovedWaiting, countQueuedWithEmail, leadsPipelineStats, listRecentLeads } from "@/lib/sales/leads";
 import { approveAllQueuedEmailsAction } from "./actions";
-import { PATTERN_LABEL } from "@/lib/sales/patterns";
+import { PATTERN_LABEL, VARIANTS, VARIANT_LABEL } from "@/lib/sales/patterns";
 import { getServiceAccount } from "@/lib/metrics/google-auth";
 
 // /admin/sales: 法人営業の見込み先リスト（Places APIでの発見〜提案〜送信）と
@@ -63,14 +63,16 @@ export default async function AdminSalesPage() {
     );
   }
 
-  const [stats, recent, leadsStats, leads, approvedWaiting, queuedWithEmail] = await Promise.all([
+  const [stats, recent, leadsStats, leads, approvedWaiting, queuedWithEmail, byVariant] = await Promise.all([
     salesFunnelStats(),
     listRecentOutreach(50),
     leadsPipelineStats(),
     listRecentLeads(80),
     countApprovedWaiting(),
     countQueuedWithEmail(),
+    salesVariantStats().catch(() => null),
   ]);
+  const pct = (a: number, b: number) => (b ? `${Math.round((a / b) * 1000) / 10}%` : "—");
   const openRate = stats.sent ? Math.round((stats.opened / stats.sent) * 100) : 0;
   const replyRate = stats.sent ? Math.round((stats.replied / stats.sent) * 100) : 0;
   const serviceAccountEmail = getServiceAccount()?.client_email ?? null;
@@ -195,6 +197,40 @@ export default async function AdminSalesPage() {
           </div>
         ))}
       </section>
+
+      {byVariant && (
+        <section className="mt-8">
+          <h2 className="text-lg font-bold text-slate-900">文面の比べ（11/15〜・塾／高校／通信制サポート校）</h2>
+          <p className="mt-1 text-sm text-slate-500">法人名で3種類に分けて送っています。件名で種類を見分けます。各100通ほど送ったところで比べます。</p>
+          <div className="mt-3 overflow-x-auto">
+            <table className="w-full min-w-[560px] border-collapse text-sm">
+              <thead>
+                <tr className="border-b border-slate-200 text-left text-slate-500">
+                  <th className="py-2 pr-4">文面</th>
+                  <th className="py-2 pr-4">送信</th>
+                  <th className="py-2 pr-4">開封</th>
+                  <th className="py-2 pr-4">返信</th>
+                  <th className="py-2 pr-4">面談</th>
+                </tr>
+              </thead>
+              <tbody>
+                {VARIANTS.map((v) => {
+                  const s = byVariant[v];
+                  return (
+                    <tr key={v} className="border-b border-slate-100">
+                      <td className="py-2 pr-4 font-bold text-slate-900">{VARIANT_LABEL[v]}</td>
+                      <td className="py-2 pr-4">{s.sent}</td>
+                      <td className="py-2 pr-4">{s.opened}（{pct(s.opened, s.sent)}）</td>
+                      <td className="py-2 pr-4">{s.replied}（{pct(s.replied, s.sent)}）</td>
+                      <td className="py-2 pr-4">{s.meeting}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      )}
 
       <section className="mt-10">
         <h2 className="text-lg font-bold text-slate-900">送信アクション履歴（新しい順）</h2>

@@ -12,6 +12,25 @@
 
 export type PatternKey = "club" | "juku" | "school_support" | "high_school";
 
+// 送る相手のパターン。習い事教室 (club) は 2026-11-15 から止めた (返信はすべて「不要」で、商品と合っていなかった)。
+// 見込み先の発見・提案文づくり・送信のすべてで、ここにないパターンは扱わない。
+export const ACTIVE_PATTERNS: readonly PatternKey[] = ["juku", "school_support", "high_school"];
+
+// 文面の3種類 (2026-11-15〜 比べる)。どれを送ったかは件名でわかる (sales_outreach.subject)。
+//   teinei: これまでの丁寧な案内
+//   shucho: 教育の考えをはっきり言い、合わない相手には最初から断ってもらう「ゼロか100か」の文面
+//   tanbun: 5行ほどの超短文
+export type Variant = "teinei" | "shucho" | "tanbun";
+export const VARIANTS: readonly Variant[] = ["teinei", "shucho", "tanbun"];
+export const VARIANT_LABEL: Record<Variant, string> = { teinei: "丁寧型", shucho: "主張型", tanbun: "超短文型" };
+
+/** 法人名から文面の種類を決める (同じ相手にはいつも同じ種類。3種類にほぼ均等に分かれる) */
+export function pickVariant(name: string): Variant {
+  let h = 0;
+  for (const ch of name.normalize("NFKC")) h = (h * 31 + ch.codePointAt(0)!) >>> 0;
+  return VARIANTS[h % VARIANTS.length];
+}
+
 export const PATTERN_LABEL: Record<PatternKey, string> = {
   club: "スポーツ・文化系の習い事教室",
   juku: "個別指導塾・小規模塾",
@@ -127,6 +146,98 @@ const SUBJECTS: Record<PatternKey, string> = {
   high_school: "進路指導部向け、1クラス無料トライアルのご案内",
 };
 
-export function buildProposal(lead: LeadForProposal): Proposal {
-  return { subject: SUBJECTS[lead.patternKey], body: BODIES[lead.patternKey](lead) };
+// ------------------------------------------------------------------
+// 主張型・超短文型 (塾・通信制サポート校・私立高校だけ。習い事教室は送らない)
+// 守ること: 実際にできることだけを言う (先生用の画面はまだ試作なので「試作」と書く)。価格と無料の月数は書かない。
+// ------------------------------------------------------------------
+type Active = Exclude<PatternKey, "club">;
+
+const SHUCHO: Record<Active, { subject: string; body: (lead: LeadForProposal) => string }> = {
+  juku: {
+    subject: "志望理由書を「直す」のは、もうやめませんか",
+    body: (lead) => `${lead.name} 塾長様
+
+いきなり強い件名で失礼します。株式会社ブルースプリング「アオハルOS」の川本です。貴塾のホームページを拝見し、ご連絡しました。
+
+私たちは、推薦入試の対策では、先生が赤ペンで直すより「なぜ？」と問い続けるほうが合格に近づくと考えています。赤ペンで整えた文章は、面接で一つ突っ込まれると崩れるからです。
+
+アオハルOSは、志望理由書・小論文の添削と模擬面接をAIが何度でも引き受け、生徒には「なぜ？」を返し続けます。先生は、問いを投げることに時間を使えます（生徒ごとのつまずきが見える先生用の画面は、いま試作中です）。
+
+この考えに反対の塾には、このメールは不要です。共感いただけた塾だけ、1クラス分をまずは無料でお使いください。「試す」と一言ご返信いただければ、こちらで準備します。
+${TRY_URL}${signature()}`,
+  },
+  school_support: {
+    subject: "「書けない子」に、赤ペンは要りません",
+    body: (lead) => `${lead.name} ご担当者様
+
+突然のご連絡失礼します。株式会社ブルースプリング「アオハルOS」の川本です。貴校のホームページを拝見し、ご連絡しました。
+
+志望理由書が書けない生徒に必要なのは、正しい書き方の見本より、「なぜそう思うの？」と何度でも聞いてくれる相手だと、私たちは考えています。
+
+アオハルOSのAIは、生徒が書いた志望理由書や小論文に「なぜ？」を返し、添削し、模擬面接の相手もします。夜中でも、何度でも、急かさずに付き合います。
+
+この考えに合わない学校には、このメールは不要です。共感いただけた学校だけ、まずは無料でお試しください。「試す」と一言ご返信いただければ、こちらで準備します。
+${TRY_URL}${signature()}`,
+  },
+  high_school: {
+    subject: "志望理由書は、先生が直すほど生徒の言葉でなくなります",
+    body: (lead) => `${lead.name} 進路指導ご担当者様
+
+突然のご連絡失礼します。株式会社ブルースプリング「アオハルOS」の川本です。
+
+推薦・総合型選抜の志望理由書は、先生が丁寧に直すほど整い、そのぶん生徒自身の言葉から離れていきます。面接で問われるのは、その「生徒の言葉」のほうです。
+
+アオハルOSのAIは、文章を書き換えるのではなく、生徒に「なぜ？」と問い返し、本人の言葉で書き直させます。添削と模擬面接は何度でもでき、先生は最後の確認だけに時間を使えます。
+
+この考えに賛同いただけない場合、このメールは不要です。共感いただけたら、1クラス分をまずは無料でお試しください。「試す」と一言ご返信いただければ、こちらで準備します。
+${TRY_URL}${signature()}`,
+  },
+};
+
+const TANBUN: Record<Active, { subject: string; body: (lead: LeadForProposal) => string }> = {
+  juku: {
+    subject: "推薦対策の添削、AIに任せてみませんか（1クラス無料）",
+    body: (lead) => `${lead.name} 塾長様
+
+アオハルOSの川本です。貴塾のホームページを拝見しました。
+志望理由書・小論文の添削と面接練習をAIが引き受けるサービスです。1クラス分、まずは無料でお使いいただけます。
+試してみたい場合は「試す」とだけご返信ください。
+${TRY_URL}${signature()}`,
+  },
+  school_support: {
+    subject: "志望理由書の添削と面接練習を、AIで（無料でお試し）",
+    body: (lead) => `${lead.name} ご担当者様
+
+アオハルOSの川本です。貴校のホームページを拝見しました。
+生徒の志望理由書・小論文の添削と面接練習を、AIが何度でも引き受けます。まずは無料でお試しいただけます。
+試してみたい場合は「試す」とだけご返信ください。
+${TRY_URL}${signature()}`,
+  },
+  high_school: {
+    subject: "志望理由書の添削と面接練習を、AIで（1クラス無料）",
+    body: (lead) => `${lead.name} 進路指導ご担当者様
+
+アオハルOSの川本です。
+生徒の志望理由書・小論文の添削と面接練習を、AIが何度でも引き受けるサービスです。1クラス分、まずは無料でお使いいただけます。
+試してみたい場合は「試す」とだけご返信ください。
+${TRY_URL}${signature()}`,
+  },
+};
+
+/** 提案文を組み立てる。variant を省くと法人名から決める (習い事教室はいつも丁寧型。ただし送信対象からは外している) */
+export function buildProposal(lead: LeadForProposal, variant: Variant = pickVariant(lead.name)): Proposal {
+  if (lead.patternKey === "club" || variant === "teinei") return { subject: SUBJECTS[lead.patternKey], body: BODIES[lead.patternKey](lead) };
+  const t = (variant === "shucho" ? SHUCHO : TANBUN)[lead.patternKey];
+  return { subject: t.subject, body: t.body(lead) };
+}
+
+/** 件名から文面の種類を当てる (ダッシュボードで種類ごとに数えるため) */
+export function variantOfSubject(subject: string | null | undefined): Variant | null {
+  if (!subject) return null;
+  for (const k of Object.keys(SHUCHO) as Active[]) {
+    if (SHUCHO[k].subject === subject) return "shucho";
+    if (TANBUN[k].subject === subject) return "tanbun";
+    if (SUBJECTS[k] === subject) return "teinei";
+  }
+  return null;
 }

@@ -2,7 +2,8 @@ import { createHash } from "node:crypto";
 import { getSupabaseAdmin } from "@/lib/aoharu-entitlements/supabase/client";
 import { getGoogleAccessToken, getServiceAccount } from "@/lib/metrics/google-auth";
 import { jstNow } from "@/lib/social/queue";
-import { buildProposal, type PatternKey } from "./patterns";
+import { ACTIVE_PATTERNS, buildProposal, variantOfSubject, VARIANTS, type PatternKey, type Variant } from "./patterns";
+import { pausedContacts } from "./paused";
 import { isUsableEmail } from "./contact";
 
 // 法人営業のアウトリーチ送信 (じゅんさんの「送信OK」後にサーバーが送る)。
@@ -217,7 +218,7 @@ export async function loadApprovedLeadItems(limit = 300): Promise<OutreachItem[]
   if (error) return [];
   const rows = (data ?? []) as { name: string; pattern_key: PatternKey; activity_label: string | null; pref: string | null; contact_email: string }[];
   return rows
-    .filter((r) => isUsableEmail(r.contact_email))
+    .filter((r) => isUsableEmail(r.contact_email) && ACTIVE_PATTERNS.includes(r.pattern_key))
     .map((r) => {
       const p = buildProposal({ name: r.name, pref: r.pref, activityLabel: r.activity_label, patternKey: r.pattern_key });
       return { method: "email" as const, to: r.contact_email.trim(), company: r.name, subject: p.subject, body: p.body };
@@ -486,6 +487,28 @@ export async function salesFunnelStats(): Promise<SalesFunnelStats> {
   return { sent: sentQ.count ?? 0, opened: openedQ.count ?? 0, replied: repliedQ.count ?? 0, meeting: meetingQ.count ?? 0 };
 }
 
+/** 文面の種類ごとの数字 (2026-11-15 からの比較。件名で種類を見分ける) */
+export const VARIANT_TEST_START = "2026-11-15T00:00:00+09:00";
+export async function salesVariantStats(): Promise<Record<Variant, SalesFunnelStats>> {
+  const supabase = getSupabaseAdmin();
+  const { data } = await supabase
+    .from("sales_outreach")
+    .select("subject,opened_at,replied_at,meeting_at")
+    .in("status", ["sent", "manual_sent"])
+    .gte("created_at", VARIANT_TEST_START)
+    .limit(5000);
+  const out = Object.fromEntries(VARIANTS.map((v) => [v, { sent: 0, opened: 0, replied: 0, meeting: 0 }])) as Record<Variant, SalesFunnelStats>;
+  for (const r of (data ?? []) as { subject: string | null; opened_at: string | null; replied_at: string | null; meeting_at: string | null }[]) {
+    const v = variantOfSubject(r.subject);
+    if (!v) continue;
+    out[v].sent += 1;
+    if (r.opened_at) out[v].opened += 1;
+    if (r.replied_at) out[v].replied += 1;
+    if (r.meeting_at) out[v].meeting += 1;
+  }
+  return out;
+}
+
 export async function listRecentOutreach(limit = 50) {
   const supabase = getSupabaseAdmin();
   const { data, error } = await supabase
@@ -500,6 +523,13 @@ export async function listRecentOutreach(limit = 50) {
 // ------------------------------------------------------------------
 // Resend
 // ------------------------------------------------------------------
+/** 本文 (テキスト) を、見た目を変えずに HTML にする。URL はリンクにする */
+export function textToHtml(text: string): string {
+  const esc = (t: string) => t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  const linked = esc(text).replace(/https?:\/\/[^\s<]+/g, (u) => `<a href="${u}">${u}</a>`);
+  return `<div style="font-family:sans-serif;font-size:14px;line-height:1.7;white-space:pre-wrap">${linked}</div>`;
+}
+
 export async function sendEmail(item: OutreachItem): Promise<{ id: string }> {
   const key = process.env.RESEND_API_KEY;
   if (!key) throw new Error("RESEND_API_KEY が未設定です");
@@ -512,6 +542,8 @@ export async function sendEmail(item: OutreachItem): Promise<{ id: string }> {
       reply_to: REPLY_TO,
       subject: item.subject,
       text: item.body,
+      // 開封・クリックを数えるには HTML 版が要る (テキストだけのメールには開封の目印を入れられない。2026-11-15 まで開封0のままだった)
+      html: textToHtml(item.body),
       headers: { "List-Unsubscribe": `<mailto:${REPLY_TO}?subject=配信停止>` },
     }),
   });
@@ -600,6 +632,8 @@ export async function runOutreach(opts: { date?: string; days?: number; dry?: bo
   const controls = await getSalesControls();
   const started = Date.now();
   const state = await prefetchRecipientState(items.map((it) => it.to));
+  // 止めているパターン (習い事教室) の宛先は、承認済みでも送らない (2026-11-15〜)
+  const paused = await pausedContacts(items.map((it) => it.to)).catch(() => new Set<string>());
 
   for (const it of items) {
     const base = { method: it.method, to: it.to, company: it.company };
@@ -610,6 +644,10 @@ export async function runOutreach(opts: { date?: string; days?: number; dry?: bo
     }
     if (state.suppressed.has(key)) {
       results.push({ ...base, status: "suppressed" });
+      continue;
+    }
+    if (paused.has(key)) {
+      results.push({ ...base, status: "suppressed", error: "送るのを止めているパターン（習い事教室）" });
       continue;
     }
     if (state.recent.has(key)) {

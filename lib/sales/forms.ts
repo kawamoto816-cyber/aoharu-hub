@@ -2,6 +2,7 @@ import { getSupabaseAdmin } from "@/lib/aoharu-entitlements/supabase/client";
 import { markLeadContacted } from "./outreach";
 import { isUsableFormUrl } from "./contact";
 import { nameMatchesSuppression, nameSuppressionPatterns } from "./leads";
+import { pausedContacts } from "./paused";
 
 // 法人営業のフォーム宛て自動送信 (GitHub Actions の sales-forms ワークフローが使う)。
 //   平日09:30 の送信ジョブが、承認済みの [form] 項目を sales_outreach に status='manual' で記録する。
@@ -64,6 +65,7 @@ export async function listPendingForms(limit = 30): Promise<PendingForm[]> {
   const patterns = [...new Set(urls.flatMap((u) => [u, `@${hostOf(u)}`]))];
   const { data: supRows } = await supabase.from("sales_suppression").select("pattern").in("pattern", patterns);
   const suppressed = new Set(((supRows ?? []) as { pattern: string }[]).map((r) => r.pattern));
+  const paused = await pausedContacts(urls).catch(() => new Set<string>());
 
   const out: PendingForm[] = [];
   const seen = new Set<string>();
@@ -74,6 +76,7 @@ export async function listPendingForms(limit = 30): Promise<PendingForm[]> {
     else if (alreadySent.has(r.recipient)) skip = "90日以内に同じフォームへ送信済み";
     else if (alreadyTried.has(r.recipient)) skip = "以前に見送り・失敗になったフォーム (同じフォームに繰り返し送らない)";
     else if (suppressed.has(r.recipient) || suppressed.has(`@${hostOf(r.recipient)}`)) skip = "送信停止リストにある宛先";
+    else if (paused.has(r.recipient.toLowerCase())) skip = "送るのを止めているパターン（習い事教室）";
     else if (!isUsableFormUrl(r.recipient)) skip = "フォームのURLではない";
     else if (/^https?:\/\/(lin\.ee|line\.me|page\.line\.me)\//i.test(r.recipient)) skip = "LINEの友だち追加リンク (フォームではない)";
     else if (company && nameMatchesSuppression(company, ngNames)) skip = "送信NGリストの法人";
