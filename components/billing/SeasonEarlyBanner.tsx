@@ -35,7 +35,7 @@ export function SeasonEarlyBanner() {
 
   if (!sp.early || !target || hidden) return null;
   return (
-    <div className="relative z-[55] flex items-center justify-center gap-2 bg-[#15172B] px-10 py-2 text-center text-[12.5px] font-bold leading-snug text-white">
+    <div className="season-banner relative z-[55] flex items-center justify-center gap-2 bg-[#15172B] px-10 py-2 text-center text-[12.5px] font-bold leading-snug text-white">
       <Link href="/season?from=banner" onClick={() => trackEvent("season_banner_click", { path })} className="text-white no-underline">
         <span className="mr-1.5 rounded-full bg-[#E8412C] px-2 py-0.5 text-[11px]">早割</span>
         受験シーズンパス {yen(sp.jpy)}円（通常{yen(sp.regularJpy)}円）は{sp.earlyLabel}まで・あと{sp.earlyDaysLeft}日

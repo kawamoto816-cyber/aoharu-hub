@@ -17,3 +17,10 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* スマホでは、早割の帯が出ているとき、右上のアカウントの枠を帯の下にずらす（帯の文字に重なっていたため。2026-11-15） */
+@media (max-width: 639px) {
+  .season-banner ~ .account-corner {
+    top: 72px;
+  }
+}

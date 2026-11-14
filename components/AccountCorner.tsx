@@ -14,5 +14,5 @@ const FOCUS = [/^\/learn\/(math|sansu|kousuu)\/\d+\/?$/, /^\/learn\/math\/shinda
 export function AccountCorner({ children }: { children: ReactNode }) {
   const path = usePathname() ?? "";
   const focus = FOCUS.some((re) => re.test(path));
-  return <div className={`${focus ? "absolute" : "fixed"} top-4 right-4 z-[9999] flex flex-col items-end gap-1.5`}>{children}</div>;
+  return <div className={`account-corner ${focus ? "absolute" : "fixed"} top-4 right-4 z-[9999] flex flex-col items-end gap-1.5`}>{children}</div>;
 }
