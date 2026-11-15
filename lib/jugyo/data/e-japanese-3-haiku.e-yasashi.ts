@@ -117,7 +117,7 @@ export const E_HAIKU3_E_YASASHI: CastScript = {
       who: "sensei",
       board: { section: 1, focus: "ー" },
       text: "のばす音《おと》の「ー」も、一音《いちおん》です。「ケーキ」は、ケ・ー・キの3音《さんおん》ですね。",
-      say: "のばす音も、いちおんです。「ケーキ」は、ケ、ー、キの、さんおんですね。",
+      say: "のばす音も、いちおんです。「ケーキ」は、ケ、エ、キの、さんおんですね。",
     },
     {
       kind: "talk",
