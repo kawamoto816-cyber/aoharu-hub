@@ -539,7 +539,7 @@ export function JugyoPlayer(p: PlayerProps) {
         {/* はじめの画面 */}
         {!started && (
           <div className="absolute inset-0 z-30 flex flex-col items-center justify-center gap-3 bg-[#15172B]/80 p-4 text-center text-white">
-            <p className="m-0 text-[12px] font-black text-[#FFE45C]">止まる授業（試作）</p>
+            <p className="m-0 text-[12px] font-black text-[#FFE45C]">止まる授業</p>
             <p className="m-0 max-w-[560px] text-[19px] font-black leading-snug sm:text-[22px]">
               <Rich text={p.title} />
             </p>

@@ -1774,7 +1774,7 @@ import { H_RINRI_NIHON_H_KYOJU } from "./data/h-civ-rinri-nihon.h-kyoju";
 import { H_RINRI_NIHON_H_NEKKETSU } from "./data/h-civ-rinri-nihon.h-nekketsu";
 import { UZ_BASES, UZ_SCRIPTS } from "./uz";
 
-// 止まる授業（動画型・試作）。/learn/jugyo と /learn/jugyo/<単元id>（?cast=<キャストid> で確認用に指定。canonical は cast なし）。
+// 止まる授業（動画型）。/learn/jugyo と /learn/jugyo/<単元id>（?cast=<キャストid> で確認用に指定。canonical は cast なし）。
 // 検索に載せ、sitemap にも入れる（2026-11-06 代表の決定）。入口は教科の地図の単元の箱・単元の教科書のページ・まなぶのトップ。
 // 台本を足すとき：単元の骨組み data/<単元id>.ts（問題）と、キャストごとのせりふ data/<単元id>.<キャストid>.ts を書いて
 // ここに並べ、`npx tsx scripts/check-jugyo.ts` で点検する。

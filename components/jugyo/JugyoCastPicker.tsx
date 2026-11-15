@@ -92,7 +92,7 @@ export function JugyoCastPicker({ stage, variants, shared }: { stage: Stage; var
       />
       <section aria-label="授業の声・キャラ" className="mx-auto mt-3 w-full max-w-[960px] rounded-[14px] border-[1.5px] border-[#15172B] bg-white px-3 py-2.5">
         <p className="m-0 text-[12px] font-black text-[#1533B8]">
-          授業の声・キャラ　<span className="text-[#3A3D55]">（試作中：{v.label}「{v.name}」）</span>
+          授業の声・キャラ　<span className="text-[#3A3D55]">（{v.label}「{v.name}」）</span>
         </p>
         <div className="mt-1.5 grid gap-1.5 sm:grid-cols-2">
           {(["sensei", "seito"] as const).map((w) => (

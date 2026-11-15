@@ -16,7 +16,7 @@ import { getOshieru, oshieruHref } from "@/lib/oshieru";
 import { oshieruAiHref } from "@/lib/oshieru/ai-lesson-home";
 import { isLowUnit } from "@/lib/naze";
 
-// /learn/jugyo/<単元id>：止まる授業（動画型・試作）。検索に載せ、sitemap にも入れる。?cast= のURLも canonical は cast なし。
+// /learn/jugyo/<単元id>：止まる授業（動画型）。検索に載せ、sitemap にも入れる。?cast= のURLも canonical は cast なし。
 // 入口：教科の地図の単元の箱（▶ 授業）・単元の教科書のページ（LecturePage）・一覧 /learn/jugyo。
 // その段階のキャスト全部の台本を渡し、ブラウザでふり分ける（components/jugyo/JugyoCastPicker。?cast=<id> で指定）。
 
@@ -76,9 +76,9 @@ export default async function Page({ params }: { params: Promise<{ unit: string 
   }));
   const reveal = lec.sections.find((s) => s.reveal)?.reveal;
   return (
-    <LearnShell crumbs={[{ href: "/learn", label: "まなぶ" }, { href: JUGYO_HOME, label: "止まる授業（試作）" }, { label: info?.name ?? unit }]}>
+    <LearnShell crumbs={[{ href: "/learn", label: "まなぶ" }, { href: JUGYO_HOME, label: "止まる授業" }, { label: info?.name ?? unit }]}>
       <p className="m-0 text-xs font-black tracking-wider text-[#1533B8]">
-        止まる授業（試作）{info && `　${info.level}・${info.subject}・${info.group}`}
+        止まる授業{info && `　${info.level}・${info.subject}・${info.group}`}
       </p>
       <h1 className="m-0 mt-1 text-[24px] font-black leading-tight">{plain(info?.name ?? unit)}</h1>
       <div className="mt-4">
