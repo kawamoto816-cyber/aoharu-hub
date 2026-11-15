@@ -28,6 +28,7 @@ import { recordStumbles } from "@/lib/zukan/store";
 import { dayNo, mdLabel, type NewMistake } from "@/lib/zukan/schedule";
 import { ZUKAN_HREF } from "@/lib/zukan/words";
 import { ExamResultPanel, type ExamResultData } from "@/components/exam/ExamResult";
+import { hasListen, ListenRich, listenPlain } from "./Listen";
 
 // 定期テスト模試の本体: 表紙 → 試験 (解説なし・残り時間の目安・答えはページ内 state) → 採点 (自動＋記述の自己採点) → 結果 → 解き方 → まちがいノート。
 
@@ -131,7 +132,7 @@ function mineText(it: Item, r: Response): string {
 
 /** まちがいノート (ふつうの文字で表示) に入れる文字: ルビは「漢字（かんじ）」に、{{ }} ははずす */
 function noteText(s: string): string {
-  return s
+  return listenPlain(s)
     .replace(/｜([^｜《》\n]+?)《([^《》\n]+?)》|([\u3400-\u9FFF々〆ヶ]+)《([^《》\n]+?)》/g, (_m, b1, r1, b2, r2) => `${b1 ?? b2}（${r1 ?? r2}）`)
     .replace(/\{\{(.+?)\}\}/g, "$1");
 }
@@ -150,12 +151,12 @@ function materialAsText(ms: Material[] | undefined): string {
 export function MaterialView({ m, figNo }: { m: Material; figNo: number }) {
   switch (m.kind) {
     case "text":
-      return <p className="m-0 mt-3 whitespace-pre-line text-[15px] leading-relaxed"><Rich text={m.body} /></p>;
+      return <p className="m-0 mt-3 whitespace-pre-line text-[15px] leading-relaxed"><ListenRich text={m.body} /></p>;
     case "passage":
       return (
         <div className="mt-3 rounded-[12px] border-[1.5px] border-[#15172B] bg-white p-3">
           {m.title && <p className="m-0 text-[14px] font-black"><Rich text={m.title} /></p>}
-          <p className={`m-0 mt-1 whitespace-pre-line text-[15px] leading-[1.9] ${m.lang === "en" ? "font-sans" : ""}`}><Rich text={m.body} /></p>
+          <p className={`m-0 mt-1 whitespace-pre-line text-[15px] leading-[1.9] ${m.lang === "en" ? "font-sans" : ""}`}><ListenRich text={m.body} /></p>
           {m.notes?.length ? (
             <p className="m-0 mt-2 text-[12.5px] text-[#3A3D55]">
               {m.notes.map((n) => `${n.word}：${n.meaning}`).join("　")}
@@ -745,7 +746,7 @@ export function MoshiPlay({
                   <li key={key} className="border-t border-dashed border-[#C9C6B4] pt-4">
                     <p className="m-0 whitespace-pre-line text-[15.5px] leading-relaxed [overflow-wrap:anywhere]">
                       <span className="mr-1.5 font-black text-[#1533B8]">{it.no}</span>
-                      <Rich text={it.prompt} />
+                      <ListenRich text={it.prompt} />
                       <span className="ml-1.5 whitespace-nowrap text-[12px] font-bold text-[#5A5D73]">［{w.points(it.points)}］</span>
                     </p>
                     {it.figure && !isFigureRef(it.figure) && <LectureFigure fig={it.figure} no={figNos.exam[key] ?? 0} />}
@@ -808,7 +809,7 @@ export function MoshiPlay({
                 <Rich text={d.title} /> {it.no}
                 <span className="ml-2 text-[13px] text-[#3A3D55]">{w.points(it.points)}</span>
               </h3>
-              <p className="m-0 mt-1 whitespace-pre-line text-[14px] leading-relaxed text-[#3A3D55]"><Rich text={it.prompt} /></p>
+              <p className="m-0 mt-1 whitespace-pre-line text-[14px] leading-relaxed text-[#3A3D55]"><ListenRich text={it.prompt} reveal /></p>
               <p className="m-0 mt-3 text-[12.5px] font-black text-[#3A3D55]">{w.yourAnswer}</p>
               <p className="m-0 mt-1 whitespace-pre-line rounded-[10px] border-[1.5px] border-[#15172B] bg-white p-3 text-[14.5px] leading-relaxed [overflow-wrap:anywhere]">{text || w.blank}</p>
               {autoOk !== null && <p className={`m-0 mt-2 text-[13px] font-black ${autoOk ? "text-[#1533B8]" : "text-[#D9341F]"}`}>{autoOk ? w.autoOk : w.autoNg}</p>}
@@ -972,6 +973,13 @@ export function MoshiPlay({
             <span className="mr-2 inline-flex h-7 w-7 items-center justify-center rounded-[8px] bg-[#15172B] text-[14px] text-white">{di + 1}</span>
             <Rich text={d.title} />
           </h3>
+          {d.material?.map((m, k) =>
+            (m.kind === "text" || m.kind === "passage") && hasListen(m.body) ? (
+              <p key={k} className="m-0 mt-2 whitespace-pre-line text-[14px] leading-relaxed">
+                <ListenRich text={m.body} reveal />
+              </p>
+            ) : null,
+          )}
           <div className="mt-2 grid gap-3">
             {d.items.map((it) => {
               const key = keyOf(d, it);
@@ -993,7 +1001,7 @@ export function MoshiPlay({
                       {res.score}/{it.points}
                     </span>
                   </summary>
-                  <p className="m-0 mt-2 whitespace-pre-line text-[14px] leading-relaxed text-[#3A3D55] [overflow-wrap:anywhere]"><Rich text={it.prompt} /></p>
+                  <p className="m-0 mt-2 whitespace-pre-line text-[14px] leading-relaxed text-[#3A3D55] [overflow-wrap:anywhere]"><ListenRich text={it.prompt} reveal /></p>
                   {it.dependsOn && (
                     <p className="m-0 mt-1 text-[12.5px] font-bold text-[#5A5D73]">
                       {kids ? "まえの もんだいの こたえを つかうよ" : `前の小問（${d.items.find((x) => x.id === it.dependsOn)?.no ?? ""}）の答え ${modelText(d.items.find((x) => x.id === it.dependsOn) ?? it)} を使って解きます。`}

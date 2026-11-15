@@ -36,6 +36,8 @@ export interface DaimonSpec {
   points: number;
   /** material=資料・本文つきのまとまりを優先、single=1問ずつの小問を優先 */
   prefer?: "material" | "single";
+  /** 試験モードだけの問題 (lib/exam/pool) のうち、この tag のものだけから組む */
+  poolTag?: string;
 }
 
 /** 1回分の仕様 (モード × えらんだ範囲) */

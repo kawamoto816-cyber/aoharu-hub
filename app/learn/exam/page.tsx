@@ -39,6 +39,17 @@ export default function ExamHome() {
           </li>
         ))}
       </ul>
+      <p className="m-0 mt-5 max-w-[720px] rounded-[14px] bg-[#F7F6F1] p-3 text-[13.5px] font-bold leading-relaxed">
+        回ごとの模試（同じ回はみんな同じ問題）は
+        <Link href="/learn/koko-moshi" className="text-[#1533B8]">
+          公立高校入試模試
+        </Link>
+        ・
+        <Link href="/learn/kyotsu-moshi" className="text-[#1533B8]">
+          共通テスト模試
+        </Link>
+        から。
+      </p>
       <aside aria-label="ご注意" className="mt-6 max-w-[720px] rounded-[14px] border-[1.5px] border-dashed border-[#15172B] bg-[#FFFBE6] p-4 text-[13px] leading-relaxed text-[#3A3D55]">
         <p className="m-0 font-black text-[#15172B]">ご注意</p>
         <p className="m-0 mt-1">{NOTICE_COMMON}</p>

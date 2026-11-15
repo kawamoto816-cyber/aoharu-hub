@@ -2,8 +2,9 @@ import { LEVELS } from "@/lib/school";
 import { REGISTRY, UNIT_REGISTRY } from "@/lib/moshi/registry";
 import { makeRng, hashSeed } from "@/lib/moshi/rng";
 import { buildRound, daimonToSection, pickQuestions, questionCatalog, type Round } from "@/lib/moshi/unit";
-import type { Material, MoshiSection, Question, WrittenQ } from "@/lib/moshi/types";
+import type { Material, MoshiSection, QKind, Question, WrittenQ } from "@/lib/moshi/types";
 import { examSpecOf } from "./modes";
+import { EXAM_POOL } from "./pool";
 import type { DaimonSpec, ExamChoice, ExamScope, ExamSpec, ModeId } from "./types";
 
 // 試験モードの1回分を組む (サーバー側で使う。単元模試と大問の全データを読む)。
@@ -59,6 +60,8 @@ interface Block {
   questions: Question[];
   /** 資料つき・前を指す小問をふくむ (切りつめるときは2問以上残す) */
   linked: boolean;
+  /** 試験モードだけの問題 (lib/exam/pool) の tag */
+  tag?: string;
 }
 
 /** 前の小問・図を指す言い方 (この小問だけ取り出すと意味が通らない) */
@@ -105,6 +108,8 @@ function allBlocks(): Block[] {
     if (UNIT_REGISTRY[unit]) continue;
     for (const d of ds) out.push(...sectionBlocks(daimonToSection(d), unit, true));
   }
+  // 試験モードだけの問題 (tag つき。tag のない大問には出さない)
+  for (const p of EXAM_POOL) for (const b of sectionBlocks(p.section, p.unit, false)) out.push({ ...b, key: `pool:${p.tag}:${b.key}`, tag: p.tag });
   BLOCKS = out;
   return out;
 }
@@ -114,13 +119,28 @@ function filterBlock(b: Block, allowed: Set<string>, spec: DaimonSpec, qs: Quest
   const keep: Question[] = [];
   const dropped = new Set<string>();
   for (const q of qs) {
-    const ok = allowed.has(q.unit!) && (!spec.types || spec.types.includes(q.type)) && (!spec.kinds || q.type === "A" || spec.kinds.includes(q.answer.kind)) && !(q.dependsOn && dropped.has(q.dependsOn));
+    const ok = allowed.has(q.unit!) && (!spec.types || spec.types.includes(q.type)) && (!spec.kinds || spec.kinds.includes(kindOf(q))) && !(q.dependsOn && dropped.has(q.dependsOn));
     if (ok) keep.push(q);
     else dropped.add(q.id);
   }
-  // A の答えの形式は生成しないとわからないので、kinds の判定は組んだあと (assemble) で見る
   void b;
   return keep;
+}
+
+/** 答えの形式。A は生成しないとわからないので、決まったシードで1度だけ作ってみる (生成のたびに形式が変わる A はない前提。check-exam が確かめる) */
+const A_KIND = new WeakMap<object, QKind>();
+function kindOf(q: Question): QKind {
+  if (q.type !== "A") return q.answer.kind;
+  let k = A_KIND.get(q.generate);
+  if (!k) {
+    try {
+      k = q.generate(makeRng(1)).answer.kind;
+    } catch {
+      k = "written";
+    }
+    A_KIND.set(q.generate, k);
+  }
+  return k;
 }
 
 /** 単元ごとの問題数 (範囲をえらぶ画面用) */
@@ -197,7 +217,7 @@ export function assemble(spec: ExamSpec, seed: number): ExamBuild {
     const rng = makeRng(hashSeed(`${spec.id}:${seed}:${si}`));
     // 候補 (このシードでの中身: B の pick は元の節のルールで選ぶ)
     const cands = rng
-      .shuffle(allBlocks().filter((b) => !used.has(b.key)))
+      .shuffle(allBlocks().filter((b) => !used.has(b.key) && b.tag === ds.poolTag))
       .map((b) => {
         const base = b.material?.length && b.sec.pick !== undefined ? pickQuestions(b.sec, seed, b.key).map((q) => withUnit(q, b.questions[0].unit!)) : b.questions;
         return { b, qs: filterBlock(b, allowed, ds, base) };

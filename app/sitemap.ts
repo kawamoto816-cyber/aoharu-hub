@@ -85,6 +85,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // ゼロワンOSユース版の授業は Lv1〜3 だけ（Lv4 以降は Pro・Max 限定）
     ...uzJugyoPublicPaths().map((p) => ({ url: `${base}${p}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.5 })),
     ...["", "/koritsu", "/kyotsu", "/shiritsu", "/teiki"].map((m) => ({ url: `${base}/learn/exam${m}`, lastModified: now, changeFrequency: "weekly" as const, priority: 0.7 })),
+    ...["/learn/koko-moshi", "/learn/kyotsu-moshi"].map((p) => ({ url: `${base}${p}`, lastModified: now, changeFrequency: "weekly" as const, priority: 0.8 })),
     ...UNIT_MOSHI_IDS.map((u) => ({ url: `${base}/learn/moshi/${u}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
     // 選ばれる力の図解の教科書（小論文・面接・総合型選抜）。書いた単元だけ
     { url: `${base}/learn/apply/lec`, lastModified: now, changeFrequency: "weekly" as const, priority: 0.7 },

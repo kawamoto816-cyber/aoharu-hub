@@ -399,6 +399,31 @@ export default function LearnHub() {
           </ul>
         </section>
 
+        {/* 6.5 模試 */}
+        <section aria-labelledby="moshi-heading" className="mt-12">
+          <h2 id="moshi-heading" className="m-0 text-[20px] font-black">
+            模試で、いまの力を測る
+          </h2>
+          <p className="m-0 mt-1 text-[13px] leading-relaxed text-[#3A3D55]">本番と同じ時間で解いて、大問別・単元別に弱いところがわかります。</p>
+          <ul className="m-0 mt-3 grid list-none gap-3 p-0 sm:grid-cols-2">
+            {[
+              { href: "/learn/koko-moshi", tag: "中3向け", name: "公立高校入試模試", desc: "国語・数学・英語・理科・社会。各50分・100点で、第1回〜第6回" },
+              { href: "/learn/kyotsu-moshi", tag: "高校向け", name: "共通テスト模試", desc: "国語・数学Ⅰ・A・数学Ⅱ・B・C・英語リーディング・リスニング・情報Ⅰ" },
+            ].map((x) => (
+              <li key={x.href}>
+                <Link href={x.href} className="flex h-full flex-col gap-1.5 rounded-[16px] border-[1.5px] border-[#15172B] bg-white p-4 text-[#15172B] no-underline shadow-[3px_3px_0_#15172B]">
+                  <span className="w-fit rounded-full bg-[#FFE45C] px-2 py-0.5 text-[11.5px] font-black">{x.tag}</span>
+                  <span className="flex items-center justify-between gap-2 text-[18px] font-black">
+                    {x.name}
+                    <Arrow />
+                  </span>
+                  <span className="text-[13px] font-bold leading-relaxed text-[#3A3D55]">{x.desc}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+
         {/* 7. あたらしいがっこう */}
         <section aria-labelledby="school-heading" className="mt-12">
           <Link href="/learn/gakko" className="flex flex-col gap-2.5 rounded-[18px] bg-[#15172B] p-[18px] text-white no-underline shadow-[4px_4px_0_#1533B8] transition-transform hover:-translate-y-0.5 focus-visible:-translate-y-0.5">

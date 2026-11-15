@@ -119,6 +119,36 @@ const KYOTSU: Record<string, { name: string; scopeLabel: string; subjectKey: str
       sec("第4問　場合の数と確率", "次の問いに答えよ。", 20, [3, 6], STD, { units: ["h-math-a-baai", "h-math-a-kakuritsu", "h-math-a-joken", "h-math-a-yakusu", "h-math-a-gojo", "h-math-a-nshin"] }, { kinds: MARK }),
     ],
   },
+  "kokugo": {
+    name: "国語型",
+    scopeLabel: "現代の国語・言語文化・論理国語・文学国語・古典探究",
+    subjectKey: "kokugo",
+    subject: "ja",
+    minutes: 90,
+    sections: [
+      sec("第1問　論理的な文章（評論）", "次の文章を読んで、後の問いに答えよ。", 45, [4, 6], STD, { units: ["h-jpn-ronri-hyoron", "h-jpn-ronri-kozo", "h-jpn-ronri-yoyaku", "h-jpn-gen-ronri", "h-jpn-bungaku-hyoron", "h-jpn-ronri-yogo", "h-jpn-gen-goi", "h-jpn-gen-kanji"] }, { kinds: MARK, prefer: "material" }),
+      sec("第2問　文学的な文章（小説・詩歌）", "次の文章を読んで、後の問いに答えよ。", 45, [4, 6], STD, { units: ["h-jpn-bungaku-shosetsu", "h-jpn-bungaku-shi", "h-jpn-bungaku-tanka", "h-jpn-bungaku-hyogen", "h-jpn-bunka-kindai", "h-jpn-bunka-shiika"] }, { kinds: MARK, prefer: "material" }),
+      sec("第3問　実用的な文章・資料", "次の資料を読んで、後の問いに答えよ。", 20, [2, 4], STD, { units: ["h-jpn-ronri-shiryo", "h-jpn-gen-jitsuyo", "h-jpn-gen-hokoku", "h-jpn-gen-iken", "h-jpn-gen-hanasu"] }, { kinds: MARK, prefer: "material" }),
+      sec("第4問　古文", "次の文章を読んで、後の問いに答えよ。", 45, [4, 6], STD, { units: ["h-jpn-koten-monogatari", "h-jpn-koten-nikki", "h-jpn-koten-waka", "h-jpn-koten-keigo", "h-jpn-koten-joshi", "h-jpn-koten-joshiki", "h-jpn-koten-shikibetsu", "h-jpn-bunka-kobun-dokkai", "h-jpn-bunka-kobun-tango", "h-jpn-bunka-jodoshi", "h-jpn-bunka-yogen"] }, { kinds: MARK, prefer: "material" }),
+      sec("第5問　漢文", "次の文章を読んで、後の問いに答えよ。", 45, [4, 6], STD, { units: ["h-jpn-koten-shiso", "h-jpn-koten-gentei", "h-jpn-koten-gimon", "h-jpn-koten-hikaku", "h-jpn-koten-hitei", "h-jpn-koten-shieki", "h-jpn-bunka-kanshi", "h-jpn-bunka-kundoku", "h-jpn-bunka-saidoku", "h-jpn-bunka-koji"] }, { kinds: MARK, prefer: "material" }),
+    ],
+  },
+  "math2bc": {
+    name: "数学Ⅱ・B・C型",
+    scopeLabel: "数学Ⅱ・数学B・数学C",
+    subjectKey: "math",
+    subject: "math",
+    minutes: 70,
+    groups: ["数学Ⅱ", "数学B", "数学C"],
+    sections: [
+      sec("第1問　三角関数・指数関数・対数関数", "次の問いに答えよ。", 15, [3, 5], STD, { units: ["h-math-2-sankaku", "h-math-2-kahou", "h-math-2-shisu", "h-math-2-taisu"] }, { kinds: MARK }),
+      sec("第2問　微分法・積分法", "次の問いに答えよ。", 15, [3, 5], STD, { units: ["h-math-2-bibun", "h-math-2-sekibun"] }, { kinds: MARK }),
+      sec("第3問　図形と方程式・式と証明・複素数", "次の問いに答えよ。", 22, [3, 6], STD, { units: ["h-math-2-chokusen", "h-math-2-en", "h-math-2-kiseki", "h-math-2-shomei", "h-math-2-koji", "h-math-2-fukuso"] }, { kinds: MARK }),
+      sec("第4問　数列", "次の問いに答えよ。", 16, [3, 5], STD, { units: ["h-math-b-tosa", "h-math-b-sigma", "h-math-b-zenka", "h-math-b-kino"] }, { kinds: MARK }),
+      sec("第5問　統計的な推測", "次の問いに答えよ。", 16, [3, 5], STD, { units: ["h-math-b-bunpu", "h-math-b-nikou", "h-math-b-suitei", "h-math-b-kentei"] }, { kinds: MARK }),
+      sec("第6問　ベクトル・平面上の曲線と複素数平面", "次の問いに答えよ。", 16, [3, 5], STD, { units: ["h-math-c-heimen", "h-math-c-kukan", "h-math-c-baikai", "h-math-c-zukei", "h-math-c-nijikyokusen", "h-math-c-fukuso"] }, { kinds: MARK }),
+    ],
+  },
   "eng-r": {
     name: "英語リーディング型",
     scopeLabel: "高校英語（読解）",
@@ -126,12 +156,38 @@ const KYOTSU: Record<string, { name: string; scopeLabel: string; subjectKey: str
     subject: "eng",
     minutes: 80,
     sections: [
-      sec("第1問　短い掲示・案内の読み取り", "次の英文を読み、問いに答えよ。", 10, [2, 4], BASIC, { units: ["h-eng-skill-chobun", "h-eng-vocab-kaiwa"] }, { kinds: MARK, prefer: "material" }),
-      sec("第2問　事実と意見の区別", "次の英文を読み、問いに答えよ。", 20, [3, 5], STD, { units: ["h-eng-skill-chobun"] }, { kinds: MARK, prefer: "material" }),
-      sec("第3問　物語・体験の読み取り", "次の英文を読み、問いに答えよ。", 15, [2, 4], STD, { units: ["h-eng-skill-chobun"] }, { kinds: MARK, prefer: "material" }),
-      sec("第4問　複数の資料の読み取り", "次の英文を読み、問いに答えよ。", 16, [3, 5], STD, { units: ["h-eng-skill-chobun"] }, { kinds: MARK, prefer: "material" }),
-      sec("第5問　長めの物語文", "次の英文を読み、問いに答えよ。", 15, [3, 5], STD, { units: ["h-eng-skill-chobun"] }, { kinds: MARK, prefer: "material" }),
-      sec("第6問　説明文・論説文", "次の英文を読み、問いに答えよ。", 24, [4, 6], HARD, { units: ["h-eng-skill-chobun"] }, { kinds: MARK, prefer: "material" }),
+      sec("第1問　短い掲示・案内の読み取り", "次の英文を読み、問いに答えよ。", 10, [2, 4], BASIC, { units: ["h-eng-skill-chobun", "h-eng-vocab-kaiwa"] }, { kinds: MARK, prefer: "material", poolTag: "r1" }),
+      sec("第2問　事実と意見の区別", "次の英文を読み、問いに答えよ。", 20, [3, 5], STD, { units: ["h-eng-skill-chobun"] }, { kinds: MARK, prefer: "material", poolTag: "r2" }),
+      sec("第3問　物語・体験の読み取り", "次の英文を読み、問いに答えよ。", 15, [2, 4], STD, { units: ["h-eng-skill-chobun"] }, { kinds: MARK, prefer: "material", poolTag: "r3" }),
+      sec("第4問　複数の資料の読み取り", "次の英文を読み、問いに答えよ。", 16, [3, 5], STD, { units: ["h-eng-skill-chobun"] }, { kinds: MARK, prefer: "material", poolTag: "r4" }),
+      sec("第5問　長めの物語文", "次の英文を読み、問いに答えよ。", 15, [3, 5], STD, { units: ["h-eng-skill-chobun"] }, { kinds: MARK, prefer: "material", poolTag: "r5" }),
+      sec("第6問　説明文・論説文", "次の英文を読み、問いに答えよ。", 24, [4, 6], HARD, { units: ["h-eng-skill-chobun"] }, { kinds: MARK, prefer: "material", poolTag: "r6" }),
+    ],
+  },
+  "eng-l": {
+    name: "英語リスニング型",
+    scopeLabel: "高校英語（リスニング）",
+    subjectKey: "english",
+    subject: "eng",
+    minutes: 30,
+    sections: [
+      sec("第1問　短い発話の聞き取り", "英文を聞き、問いに答えよ。", 25, [3, 5], BASIC, { units: ["h-eng-skill-listening"] }, { kinds: MARK, prefer: "single", poolTag: "l1" }),
+      sec("第2問　対話の聞き取り", "対話を聞き、問いに答えよ。", 25, [3, 5], STD, { units: ["h-eng-skill-listening"] }, { kinds: MARK, poolTag: "l2" }),
+      sec("第3問　条件に合うものを選ぶ", "英文を聞き、条件に最も合うものを選べ。", 25, [2, 4], STD, { units: ["h-eng-skill-listening"] }, { kinds: MARK, poolTag: "l3" }),
+      sec("第4問　講義・長めの英文", "英文を聞き、問いに答えよ。", 25, [2, 4], HARD, { units: ["h-eng-skill-listening"] }, { kinds: MARK, poolTag: "l4" }),
+    ],
+  },
+  "joho1": {
+    name: "情報Ⅰ型",
+    scopeLabel: "情報Ⅰ",
+    subjectKey: "info",
+    subject: "math",
+    minutes: 60,
+    sections: [
+      sec("第1問　小問集合（情報社会・デジタル・ネットワーク）", "次の問いに答えよ。", 20, [4, 6], BASIC, { units: ["h-info-1-media", "h-info-1-moral", "h-info-1-chizai", "h-info-1-digital", "h-info-1-assyuku", "h-info-1-network", "h-info-1-computer"] }, { kinds: MARK, prefer: "single" }),
+      sec("第2問　情報デザイン・モデル化とシミュレーション", "次の問いに答えよ。", 30, [3, 6], STD, { units: ["h-info-1-design", "h-info-1-hyogen", "h-info-1-model", "h-info-1-system"] }, { kinds: MARK }),
+      sec("第3問　アルゴリズムとプログラミング", "次の問いに答えよ。", 25, [3, 5], STD, { units: ["h-info-1-algorithm", "h-info-1-program"] }, { kinds: MARK }),
+      sec("第4問　データの活用", "次の問いに答えよ。", 25, [3, 5], STD, { units: ["h-info-1-data"] }, { kinds: MARK }),
     ],
   },
 };
@@ -154,11 +210,11 @@ export const MODES: ModeInfo[] = [
     id: "kyotsu",
     name: "共通テスト型",
     target: "高校向け",
-    catch: "マーク式の大問構成で、数学Ⅰ・A型（70分）と英語リーディング型（80分）",
+    catch: "マーク式の大問構成で、国語・数学・英語・情報Ⅰの6つの型",
     lead: "選択肢と数値の答えだけで解くマーク式の練習です。高校の範囲の問題が集まるほど、出題が充実していきます。",
     notice: "大学入学共通テストの公式の問題・形式ではありません。大問の分け方・時間は練習のための目安です。",
     pick: "subject",
-    subjects: Object.entries(KYOTSU).map(([key, v]) => ({ key, name: v.name, note: "枠を用意しました。問題は順次ふえます" })),
+    subjects: Object.entries(KYOTSU).map(([key, v]) => ({ key, name: v.name })),
     minuteOptions: [],
   },
   {
@@ -203,7 +259,7 @@ export const teikiCount = (minutes: number) => Math.max(5, Math.min(24, Math.rou
 
 const SHO_SUBJECT: Record<string, Subject> = { japanese: "ja", math: "sansu", science: "sci", social: "soc", english: "eng" };
 const CHU_SUBJECT: Record<string, Subject> = { kokugo: "ja", math: "math", eigo: "eng", rika: "sci", shakai: "soc" };
-const KO_SUBJECT: Record<string, Subject> = { kokugo: "ja", math: "math", english: "eng", science: "sci", geohist: "soc", civics: "soc" };
+const KO_SUBJECT: Record<string, Subject> = { kokugo: "ja", math: "math", english: "eng", science: "sci", geohist: "soc", civics: "soc", info: "math" };
 export const subjectOf = (level: ExamScope["level"], subjectKey: string): Subject | undefined => (level === "sho" ? SHO_SUBJECT : level === "chu" ? CHU_SUBJECT : KO_SUBJECT)[subjectKey];
 
 /**
