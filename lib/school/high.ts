@@ -558,6 +558,17 @@ export const SUBJECTS: SchoolSubject[] = [
           { id: "h-civ-seikei-togo", name: "地域経済統合と南北問題", engines: ["覚える"], href: "/learn/ko-komin#h-civ-seikei-togo" },
         ],
       },
+      {
+        title: "特別授業　吉田松陰と松下村塾",
+        units: [
+          { id: "h-civ-shoin-nyujuku", name: "第1講　入塾：松下村塾という学び舎", engines: ["覚える"], href: "/learn/lecture/h-civ-shoin-nyujuku" },
+          { id: "h-civ-shoin-risshi", name: "第2講　志を立てる：士規七則", engines: ["覚える"], href: "/learn/lecture/h-civ-shoin-risshi" },
+          { id: "h-civ-shoin-dokusho", name: "第3講　書を読み、行う：講孟余話", engines: ["覚える"], href: "/learn/lecture/h-civ-shoin-dokusho" },
+          { id: "h-civ-shoin-kodo", name: "第4講　動いて、つまずく：下田踏海と野山獄", engines: ["覚える"], href: "/learn/lecture/h-civ-shoin-kodo" },
+          { id: "h-civ-shoin-shisei", name: "第5講　死と志：留魂録", engines: ["覚える"], href: "/learn/lecture/h-civ-shoin-shisei" },
+          { id: "h-civ-shoin-hikari", name: "第6講　光と影：松陰をどう受けつぐか", engines: ["覚える"], href: "/learn/lecture/h-civ-shoin-hikari" },
+        ],
+      },
     ],
   },
   {
