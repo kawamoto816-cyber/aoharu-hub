@@ -79,7 +79,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...LECTURES.map((l) => ({ url: `${base}/learn/lecture/${l.unit}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.7 })),
     { url: `${base}${TSUKKOMI_HOME}`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
     ...TSUKKOMI_UNITS.map((u) => ({ url: `${base}${tsukkomiHref(u)}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
-    // 止まる授業（?cast= は入れない。canonical は cast なし）
+    // ちょっと待った授業（?cast= は入れない。canonical は cast なし）
     { url: `${base}${JUGYO_HOME}`, lastModified: now, changeFrequency: "weekly" as const, priority: 0.7 },
     ...JUGYO_UNITS.map((u) => ({ url: `${base}${jugyoHref(u)}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
     // ゼロワンOSユース版の授業は Lv1〜3 だけ（Lv4 以降は Pro・Max 限定）

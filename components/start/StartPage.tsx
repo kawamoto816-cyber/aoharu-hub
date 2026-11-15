@@ -66,7 +66,7 @@ function MoshiPair({ v }: { v: StartVariant }) {
 
 function FreeTable() {
   const rows: [string, string, string][] = [
-    ["止まる授業・図解レクチャー・ドリル・単元模試", "◯ 何本でも", "◯"],
+    ["ちょっと待った授業・図解レクチャー・ドリル・単元模試", "◯ 何本でも", "◯"],
     ["公立高校入試模試・共通テスト模試", "1回", "月2回"],
     ["志望理由書・小論文の添削", "—", "月2本（2本目からは点数と大事な指摘1つまで）"],
     ["学びの記録（どこまで進んだか）", "この端末だけ", "◯"],
@@ -105,7 +105,7 @@ function FreeTable() {
 
 function Compare() {
   const rows: [string, string, string][] = [
-    ["授業", "教室で、決まった時間に", "止まる授業。とちゅうで止まって「ここで問題」"],
+    ["授業", "教室で、決まった時間に", "ちょっと待った授業。とちゅうで止まって「ここで問題」"],
     ["宿題・演習", "プリント", "ドリル・単元模試（解くたびに問題が変わる）"],
     ["小テスト", "授業のはじめに", "授業のとちゅうと最後に"],
     ["模試", "会場で、年に数回", "公立高校入試・共通テストの形で、スマホで"],
@@ -165,7 +165,7 @@ function VariantA({ d, v }: { d: StartData; v: StartVariant }) {
       <MoshiPair v={v} />
       <ol className="m-0 mt-8 grid list-none gap-3 p-0 sm:grid-cols-3">
         {[
-          ["授業を受ける", `止まる授業 ${d.jugyo}本・図解レクチャー ${d.lectures}単元。とちゅうで止まって「ここで問題」。`, "/learn/jugyo"],
+          ["授業を受ける", `ちょっと待った授業 ${d.jugyo}本・図解レクチャー ${d.lectures}単元。とちゅうで止まって「ここで問題」。`, "/learn/jugyo"],
           ["問題で鍛える", "単元ごとの模試とドリル。解くたびに数字や問題が変わるので、何度でも。", "/learn/moshi"],
           ["力を測る", "公立高校入試模試・共通テスト模試を、本番と同じ時間で。自動で採点し、弱い単元がわかります。", "/learn/koko-moshi"],
         ].map(([h, b, href], i) => (
@@ -253,7 +253,7 @@ function VariantC({ d, v }: { d: StartData; v: StartVariant }) {
       <Ctas v={v} sample={d.sample} />
       <MoshiPair v={v} />
       <p className="m-0 mt-6 text-[14px] leading-relaxed">
-        止まる授業 <b>{d.jugyo}本</b>・図解レクチャー <b>{d.lectures}単元</b>・公立高校入試模試と共通テスト模試。登録なしで、いますぐ使えます。
+        ちょっと待った授業 <b>{d.jugyo}本</b>・図解レクチャー <b>{d.lectures}単元</b>・公立高校入試模試と共通テスト模試。登録なしで、いますぐ使えます。
       </p>
       <FreeTable />
     </>

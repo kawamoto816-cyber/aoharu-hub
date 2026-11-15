@@ -64,7 +64,7 @@ export function UzLecturePage({ lec, id }: { lec: Lecture; id: string }) {
           </span>
           <span className="min-w-0">
             <span className="block text-[14.5px] font-black leading-snug">このレクチャーを授業で見る</span>
-            <span className="block text-[12px] font-bold text-[#C9CEF2]">約{jugyo.minutes}分・{jugyo.stops}回止まる　止まる授業</span>
+            <span className="block text-[12px] font-bold text-[#C9CEF2]">約{jugyo.minutes}分・{jugyo.stops}回止まる　ちょっと待った授業</span>
           </span>
           <span aria-hidden="true" className="ml-auto flex-none text-[16px] font-black">→</span>
         </Link>

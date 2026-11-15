@@ -5,7 +5,7 @@ import type { Look, Stage, Who } from "@/lib/jugyo/types";
 import { Avatar } from "./Avatar";
 import { JugyoPlayer, type PlayerProps, type PlayerScene } from "./JugyoPlayer";
 
-// 止まる授業のキャスト（キャラの組み合わせ）のふり分け（ABテスト）。
+// ちょっと待った授業のキャスト（キャラの組み合わせ）のふり分け（ABテスト）。
 // - ?cast=<キャストid>（同じ段階のキャスト）があればそれ（確認用。端末には覚えない）。
 // - なければ端末に覚えたキャスト（localStorage「jugyo-cast:<段階>」）。
 // - それもなければ weight の割合でふり分けて、端末に覚える。localStorage が使えなくても、その回はふり分けて見せる。

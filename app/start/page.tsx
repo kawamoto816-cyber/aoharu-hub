@@ -10,7 +10,7 @@ import { LECTURES, lectureUnitInfo } from "@/lib/lecture";
 
 const URL = "https://app.bluespring.co.jp/start";
 const TITLE = "塾に行く前に、まずここで｜授業・問題演習・模試が無料｜アオハルOS";
-const DESC = "小学校から高校まで、10分の「止まる授業」と図解レクチャー、単元模試、公立高校入試・共通テストの模試がスマホで。登録なしで始められ、無料登録で模試や作文の添削も。";
+const DESC = "小学校から高校まで、10分の「ちょっと待った授業」と図解レクチャー、単元模試、公立高校入試・共通テストの模試がスマホで。登録なしで始められ、無料登録で模試や作文の添削も。";
 
 export const metadata: Metadata = {
   title: TITLE,

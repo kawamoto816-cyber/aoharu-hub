@@ -7,7 +7,7 @@ import { oshieruAiHref } from "@/lib/oshieru/ai-lesson-home";
 import { UNITS as JUGYO_UNITS } from "@/lib/jugyo";
 import { lectureUnitInfo } from "@/lib/lecture";
 
-// /learn/oshieru-ai: オシエルAI（声で教える授業・試作）の入口。止まる授業がある単元を先に並べる（授業で聞く → 声で教える の順にためせる）。
+// /learn/oshieru-ai: オシエルAI（声で教える授業・試作）の入口。ちょっと待った授業がある単元を先に並べる（授業で聞く → 声で教える の順にためせる）。
 // 試作なので noindex・サイトマップに入れない。ほかの単元も /learn/oshieru-ai/<単元id> で開ける（オシエルのある835単元）。
 
 export const metadata: Metadata = {
@@ -27,7 +27,7 @@ export default function Page() {
         </div>
       </div>
       <p className="m-0 mb-4 mt-2 text-[14px] leading-relaxed text-[#3A3D55]">
-        止まる授業の教室で、こんどはあなたが先生。AIの生徒ハルが声で「わからない」を持ってきます。黒板の図を見せながら、声で教えて、ハルを「わかった！」にしよう。
+        ちょっと待った授業の教室で、こんどはあなたが先生。AIの生徒ハルが声で「わからない」を持ってきます。黒板の図を見せながら、声で教えて、ハルを「わかった！」にしよう。
       </p>
       <ul className="m-0 grid list-none gap-1.5 p-0">
         {units.map(({ unit, info }) => (

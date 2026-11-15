@@ -9,7 +9,7 @@ import { LEVELS } from "@/lib/school";
 
 // /learn/tokubetsu/shoin：特別授業「吉田松陰と松下村塾」(6講) の入口。
 // 大人も読める教養の読み物として、また、松下村塾の新しい塾生として順に受ける講義として。
-// 講の中身は図解授業 (lib/lecture/data/h-civ-shoin-*) と止まる授業 (lib/jugyo)。ここは案内・通い帳・卒業課題だけ。
+// 講の中身は図解授業 (lib/lecture/data/h-civ-shoin-*) とちょっと待った授業 (lib/jugyo)。ここは案内・通い帳・卒業課題だけ。
 
 const URL = "https://app.bluespring.co.jp/learn/tokubetsu/shoin";
 const TITLE = "特別授業　吉田松陰と松下村塾｜原文で読む、志の立て方｜アオハルラーン｜アオハルOS";
@@ -50,7 +50,7 @@ export default function ShoinPage() {
       <div className="mt-4 grid gap-2 sm:grid-cols-3">
         {[
           ["原文で読む", "引用は、複数の出どころで文字を照らし合わせた原文だけ。現代語訳は書き下ろしです。"],
-          ["塾生として受ける", "各講に、塾の世話役からの依頼と問い。止まる授業では、とちゅうで止まって考えます。"],
+          ["塾生として受ける", "各講に、塾の世話役からの依頼と問い。ちょっと待った授業では、とちゅうで止まって考えます。"],
           ["光と影の両方", "尊王攘夷や『幽囚録』の対外策、のちの歴史とのかかわりも、第6講で正面から扱います。"],
         ].map(([h, b]) => (
           <div key={h} className="rounded-[14px] bg-[#F7F6F1] p-3">

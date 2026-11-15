@@ -6,7 +6,7 @@ import type { EigaFilm, EigaLine, EigaMode, SubMode } from "@/lib/eiga/types";
 import { LinePanel } from "./LinePanel";
 import { MODE_NAME, RecordBar } from "./RecordBar";
 
-// 名作映画で学ぶ英語のプレイヤー（試作）。映画の再生そのものが「止まる授業」になる。
+// 名作映画で学ぶ英語のプレイヤー（試作）。映画の再生そのものが「ちょっと待った授業」になる。
 // ①鑑賞：字幕なし・止まらない ②完全解説：1行ごとに自動で止まり、英文・日本語訳・解説を出す（「次へ」で続き）
 // ③字幕で反復：英語／英日／日本語／なし を切りかえ。
 // ボタン：再生・一時停止、速さ 1／0.75／0.5、この行をくり返す（A-B ループ、回数つき）、前の行・次の行、このセリフを覚えた。

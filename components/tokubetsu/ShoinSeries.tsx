@@ -64,7 +64,7 @@ export function ShoinRoadmap({ lessons }: { lessons: ShoinLesson[] }) {
                     </Link>
                     {l.jugyoHref && (
                       <Link href={l.jugyoHref} className="inline-flex min-h-[40px] items-center rounded-full border-[1.5px] border-[#1533B8] bg-[#E6EAFB] px-3.5 text-[13px] font-black text-[#1533B8] no-underline">
-                        ▶ 止まる授業で受ける
+                        ▶ ちょっと待った授業で受ける
                       </Link>
                     )}
                   </div>

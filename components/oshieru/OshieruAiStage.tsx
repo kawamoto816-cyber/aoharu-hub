@@ -15,7 +15,7 @@ import { trackEvent } from "@/lib/analytics";
 import { Haru } from "./Haru";
 import { ResultView, SosPanel } from "./OshieruPlay";
 
-// オシエルAI（声で教える授業・試作）。止まる授業と同じ「黒板＋キャラ」の画面で、こんどは生徒が先生役。
+// オシエルAI（声で教える授業・試作）。ちょっと待った授業と同じ「黒板＋キャラ」の画面で、こんどは生徒が先生役。
 //   ハル（AIの生徒）が声で「わからない」を持ってくる → 生徒は黒板の図を切りかえながら、声（または文字）で説明する
 //   → ハルが聞き返す（声で）→ 納得したら「つまり…」と言い直す → 生徒が合格／おしいを判定 → 4観点で採点（オシエルと同じ API・同じ回数の数え方）。
 // 声：ハルの声はブラウザの読み上げ（ja-JP）。生徒の声はブラウザの音声認識（Web Speech API）で文字にしてから送る（音声そのものは送らない）。
@@ -408,7 +408,7 @@ export function OshieruAiStage({ unit, boards, mock, mockScript, jugyoHref }: { 
         <ResultView unit={unit} result={result} mock={mock} rejudgeUsed={rejudgeUsed} error={error} onRejudge={() => { setRejudgeUsed(true); void score(msgs, verdict, true); }} onRetry={start} />
         {jugyoHref && (
           <Link href={jugyoHref} className={`${btn} justify-between bg-white text-[#15172B]`}>
-            止まる授業でもう一度聞く <span aria-hidden="true">→</span>
+            ちょっと待った授業でもう一度聞く <span aria-hidden="true">→</span>
           </Link>
         )}
       </div>

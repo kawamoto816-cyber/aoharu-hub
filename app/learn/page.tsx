@@ -89,7 +89,7 @@ function pickerData(): PickerEntry[] {
   return out;
 }
 
-/** 使い方ツアーの例の単元 (日がわり)。図解・止まる授業・ツッコミ・単元模試・オシエル・物語・MISSION がそろう単元から */
+/** 使い方ツアーの例の単元 (日がわり)。図解・ちょっと待った授業・ツッコミ・単元模試・オシエル・物語・MISSION がそろう単元から */
 function tutorialUnit(): TutorialUnit {
   const pool = JUGYO_UNITS.filter((u) => hasTsukkomi(u) && hasUnitMoshi(u) && OSHIERU_UNITS.includes(u) && getLecture(u)?.story && getLecture(u)?.mission);
   const jst = new Date(Date.now() + 9 * 60 * 60 * 1000);

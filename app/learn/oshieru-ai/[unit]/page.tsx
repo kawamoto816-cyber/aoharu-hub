@@ -9,7 +9,7 @@ import { lessonBoards } from "@/lib/oshieru/lesson";
 import { toMockScript, toPublic } from "@/lib/oshieru/public";
 import { hasJugyo, jugyoHref } from "@/lib/jugyo";
 
-// /learn/oshieru-ai/<単元id>: オシエルAI（声で教える授業・試作）。止まる授業の「黒板＋キャラ」の画面で、生徒が先生役になり、
+// /learn/oshieru-ai/<単元id>: オシエルAI（声で教える授業・試作）。ちょっと待った授業の「黒板＋キャラ」の画面で、生徒が先生役になり、
 // AIの生徒ハルに声で教える。中身（誤解セット・採点・回数）は文字のオシエル（/learn/oshieru/<単元id>）と同じ。
 // 試作なので noindex・サイトマップに入れない。?mock=1 で台本モード（AIなし）。
 

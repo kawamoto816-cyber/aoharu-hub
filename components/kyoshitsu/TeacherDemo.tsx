@@ -125,7 +125,7 @@ function Progress({ units, cells }: { units: DemoUnit[]; cells: Cell[][] }) {
         </table>
       </div>
       <p className="m-0 mt-2 text-[12px] leading-relaxed text-[#5A5D73]">
-        数字＝模試の最高点（%）。濃い青 80以上・うすい青 60〜79・黄 60未満。「読」＝教科書を読んだ、♪＝止まる授業を聞いた。
+        数字＝模試の最高点（%）。濃い青 80以上・うすい青 60〜79・黄 60未満。「読」＝教科書を読んだ、♪＝ちょっと待った授業を聞いた。
       </p>
     </div>
   );
@@ -177,14 +177,14 @@ function Stuck({ units, cells }: { units: DemoUnit[]; cells: Cell[][] }) {
 
 interface Task {
   unit: string;
-  kind: "教科書" | "止まる授業" | "模試";
+  kind: "教科書" | "ちょっと待った授業" | "模試";
   due: string;
 }
 
 function Assign({ units, cells }: { units: DemoUnit[]; cells: Cell[][] }) {
   const [tasks, setTasks] = useState<Task[]>([{ unit: units[2]?.id ?? "", kind: "模試", due: "2026-11-20" }]);
   const [unit, setUnit] = useState(units[0]?.id ?? "");
-  const [kind, setKind] = useState<Task["kind"]>("止まる授業");
+  const [kind, setKind] = useState<Task["kind"]>("ちょっと待った授業");
   const [due, setDue] = useState("2026-11-27");
   const name = (id: string) => units.find((u) => u.id === id)?.name ?? id;
   const done = (t: Task) => {
@@ -192,7 +192,7 @@ function Assign({ units, cells }: { units: DemoUnit[]; cells: Cell[][] }) {
     return STUDENTS.filter((_, si) => {
       const c = cells[si][ui];
       if (!c) return false;
-      return t.kind === "模試" ? (c.best ?? 0) >= PASS : t.kind === "止まる授業" ? c.heard : c.read;
+      return t.kind === "模試" ? (c.best ?? 0) >= PASS : t.kind === "ちょっと待った授業" ? c.heard : c.read;
     }).length;
   };
   return (
@@ -218,7 +218,7 @@ function Assign({ units, cells }: { units: DemoUnit[]; cells: Cell[][] }) {
           種類
           <select value={kind} onChange={(e) => setKind(e.target.value as Task["kind"])} className="min-h-[38px] rounded-[8px] border border-[#15172B] px-2">
             <option>教科書</option>
-            <option>止まる授業</option>
+            <option>ちょっと待った授業</option>
             <option>模試</option>
           </select>
         </label>

@@ -15,7 +15,7 @@ import { cardInfo, deptLabel, getUzLecture } from "@/lib/unizeb";
 import { canReadLecture } from "@/lib/unizeb/access";
 import { serverPlan } from "@/lib/unizeb/server";
 
-// /learn/unizeb/jugyo/<カードid>：ゼロワンOSユース版の図解レクチャーを「止まる授業」で（台本は lib/jugyo/uz）。
+// /learn/unizeb/jugyo/<カードid>：ゼロワンOSユース版の図解レクチャーを「ちょっと待った授業」で（台本は lib/jugyo/uz）。
 // 見せる範囲はレクチャーと同じ（Lv1〜3 はだれでも、Lv4 以降は Pro・Max）。
 // 検索には Lv1〜3 だけを出す（2026-11-08 代表の判断）。Lv4 以降は Pro・Max 限定なので出さない。
 // 一覧（/learn/jugyo）と sitemap への追加は本体側（lib/jugyo/uz/lessons.ts の UZ_JUGYO_PUBLIC_IDS・uzJugyoPublicPaths を使う）。
@@ -32,7 +32,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const span = uzJugyoSpan(id);
   if (!c || !span) return {};
   return {
-    title: `${c.name}の授業（Lv${c.lv}）｜止まる授業｜ゼロワンOSユース版｜アオハルOS`,
+    title: `${c.name}の授業（Lv${c.lv}）｜ちょっと待った授業｜ゼロワンOSユース版｜アオハルOS`,
     description: `起業の教科書「${c.name}」を、2人のキャラが図を見ながら話す授業で。約${span.minutes}分・とちゅうで${span.stops}回止まって問題。`,
     robots: { index: c.lv <= 3, follow: true },
   };
@@ -45,7 +45,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
   const c = cardInfo(id);
   if (!lessons.length || !lec || !c) notFound();
   if (c.lv > 3 && !canReadLecture(await serverPlan(), c.lv))
-    return <UzLocked kicker={`止まる授業　Lv${c.lv}`} title={plain(lec.title)} lead={plain(lec.hook)} mid={{ href: "/learn/unizeb#lec", label: "図解レクチャー" }} plan="pro" />;
+    return <UzLocked kicker={`ちょっと待った授業　Lv${c.lv}`} title={plain(lec.title)} lead={plain(lec.hook)} mid={{ href: "/learn/unizeb#lec", label: "図解レクチャー" }} plan="pro" />;
   // このページはプランを見るため実行時に描く。関数には public/ を入れない（next.config.ts）ので、ファイルの有無は見ずに src を渡す。
   // 無い音声はプレイヤーが読み込みに失敗した時点でブラウザの仮の声に切りかえる
   const have = (key: string) => uzJugyoSrc(key);
@@ -79,7 +79,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
   return (
     <LearnShell crumbs={uzCrumbs(`${c.name}の授業`, { href: lecHref, label: c.name })}>
       <p className="m-0 text-xs font-black tracking-wider text-[#1533B8]">
-        止まる授業（試作）　Lv{c.lv}・{deptLabel(c.dept)}・{id.toUpperCase()}
+        ちょっと待った授業（試作）　Lv{c.lv}・{deptLabel(c.dept)}・{id.toUpperCase()}
       </p>
       <h1 className="m-0 mt-1 text-[24px] font-black leading-tight">{plain(c.name)}</h1>
       <div className="mt-4">

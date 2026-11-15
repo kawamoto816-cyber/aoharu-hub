@@ -21,7 +21,7 @@ import { reciteAudio } from "@/lib/tts/recite";
 import { voiceCredit } from "@/lib/tts/manzai";
 import { jugyoHref, jugyoSpan } from "@/lib/jugyo";
 
-// 図解レクチャーの1単元のページ本体：導入 →（止まる授業があれば、その入口）→ 図解つきの節 → よくあるまちがい → 確認 → 次にやる教材。
+// 図解レクチャーの1単元のページ本体：導入 →（ちょっと待った授業があれば、その入口）→ 図解つきの節 → よくあるまちがい → 確認 → 次にやる教材。
 
 export function LecturePage({ lec }: { lec: Lecture }) {
   const info = lectureUnitInfo(lec.unit);
@@ -73,7 +73,7 @@ export function LecturePage({ lec }: { lec: Lecture }) {
               <Rich text={kids ? "この単元《たんげん》を授業《じゅぎょう》で見《み》る" : "この単元を授業で見る"} />
             </span>
             <span className="block text-[12px] font-bold text-[#C9CEF2]">
-              <Rich text={kids ? `約《やく》${jugyo.minutes}分《ふん》・${jugyo.stops}回《かい》止《と》まる　止《と》まる授業《じゅぎょう》` : `約${jugyo.minutes}分・${jugyo.stops}回止まる　止まる授業`} />
+              <Rich text={kids ? `約《やく》${jugyo.minutes}分《ふん》・${jugyo.stops}回《かい》止《と》まる　ちょっと待《ま》った授業《じゅぎょう》` : `約${jugyo.minutes}分・${jugyo.stops}回止まる　ちょっと待った授業`} />
             </span>
           </span>
           <span aria-hidden="true" className="ml-auto flex-none text-[16px] font-black">→</span>

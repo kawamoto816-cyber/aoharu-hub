@@ -19,12 +19,12 @@ import { uzJugyoHref } from "@/lib/jugyo/uz";
 import { UZ_JUGYO_PUBLIC_IDS, uzJugyoSpan } from "@/lib/jugyo/uz/lessons";
 import { cardInfo } from "@/lib/unizeb";
 
-// /learn/jugyo：止まる授業の一覧。検索に載せ、sitemap にも入れる。
+// /learn/jugyo：ちょっと待った授業の一覧。検索に載せ、sitemap にも入れる。
 // 500本をこえたので、学校 → 教科のタブと単元名の検索で、いちどに1つの教科だけを出す (components/jugyo/JugyoIndex)。
 // キャラ (キャスト) の紹介は折りたたむ。どのキャストで見るかは単元のページでふり分け、授業の中でも変えられる。
 
 const URL = `https://app.bluespring.co.jp${JUGYO_HOME}`;
-const TITLE = "止まる授業｜AI時代のあたらしい授業｜アオハルラーン｜アオハルOS";
+const TITLE = "ちょっと待った授業｜AI時代のあたらしい授業｜アオハルラーン｜アオハルOS";
 const DESC = `2人のキャラが図を見ながら話す授業。とちゅうで本当に止まって「ここで問題」。答えてから続きへ。最後は、あなたが先生役。小学校・中学校・高校の${UNITS.length}単元を、1本10分以内で。登録なし・無料。`;
 
 export const metadata: Metadata = {
@@ -62,13 +62,13 @@ export default function Page() {
   return (
     <LearnShell
       narrow
-      crumbs={[{ href: "/learn", label: "まなぶ" }, { label: "止まる授業" }]}
+      crumbs={[{ href: "/learn", label: "まなぶ" }, { label: "ちょっと待った授業" }]}
     >
       <p className="m-0 text-xs font-black tracking-wider text-[#1533B8]">
         AI時代のあたらしい授業
       </p>
       <h1 className="m-0 mt-1 text-[26px] font-black leading-tight">
-        止まる授業
+        ちょっと待った授業
       </h1>
       <p className="m-0 mt-2 text-[14.5px] leading-relaxed">
         聞くだけの授業ではありません。2人のキャラが、図を見ながら話します。とちゅうで本当に止まって「ここで問題」。答えてから続きへ。最後に謎が解けたら、こんどはあなたが先生役です。

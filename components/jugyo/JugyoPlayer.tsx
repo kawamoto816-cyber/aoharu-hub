@@ -10,7 +10,7 @@ import { LectureFigure } from "@/components/lecture/Figure";
 import { Rich } from "@/components/lecture/Rich";
 import { Avatar } from "./Avatar";
 
-// 止まる授業のプレイヤー（動画のような 16:9 のステージ。スマホ縦では 4:5）。
+// ちょっと待った授業のプレイヤー（動画のような 16:9 のステージ。スマホ縦では 4:5）。
 // つかみ（依頼と謎）→ 節ごとに先生と生徒が話し、黒板に図解 → pause で本当に止まり、答えてから進む → 謎の答え合わせ → 先生役へ。
 // 声：public/audio/jugyo/<キー>.mp3 があればそれ（ページが、ある分だけ src を渡す）。無ければブラウザの speechSynthesis（ja-JP）の
 // 「仮の声」。それも使えなければ字幕だけで自動送り。
@@ -539,7 +539,7 @@ export function JugyoPlayer(p: PlayerProps) {
         {/* はじめの画面 */}
         {!started && (
           <div className="absolute inset-0 z-30 flex flex-col items-center justify-center gap-3 bg-[#15172B]/80 p-4 text-center text-white">
-            <p className="m-0 text-[12px] font-black text-[#FFE45C]">止まる授業</p>
+            <p className="m-0 text-[12px] font-black text-[#FFE45C]">ちょっと待った授業</p>
             <p className="m-0 max-w-[560px] text-[19px] font-black leading-snug sm:text-[22px]">
               <Rich text={p.title} />
             </p>
