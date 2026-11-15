@@ -15,13 +15,16 @@ export function LearnShell({ crumbs: rawCrumbs, children, narrow = false, homeHr
   return (
     <main className={`${zen.className} ${paper} min-h-screen flex-1 text-[#15172B]`}>
       <header className="border-b border-[#E4E2D8] bg-[#F7F6F1]/95">
-        <div className="mx-auto flex max-w-[1100px] items-center gap-3 px-4 py-3 sm:px-6 sm:pr-[230px]">
+        <div className="mx-auto flex max-w-[1100px] items-center gap-2 px-4 py-3 sm:gap-3 sm:px-6 sm:pr-[230px]">
           <Link href="/" className="flex items-center gap-2 text-[#15172B] no-underline">
             <span className="flex h-[30px] w-[30px] items-center justify-center rounded-[9px] bg-[#1533B8] text-base font-black text-white">ア</span>
-            <span className="text-lg font-black">アオハルOS</span>
+            <span className="whitespace-nowrap text-lg font-black">アオハルOS</span>
           </Link>
-          <Link href={homeHref} className="rounded-full border-[1.5px] border-[#15172B] bg-[#FFE45C] px-3 py-1 text-sm font-black text-[#15172B] no-underline">
+          <Link href={homeHref} className="whitespace-nowrap rounded-full border-[1.5px] border-[#15172B] bg-[#FFE45C] px-3 py-1 text-sm font-black text-[#15172B] no-underline">
             まなぶ
+          </Link>
+          <Link href="/start" className="whitespace-nowrap py-2 text-[12.5px] font-bold text-[#1533B8] max-[359px]:hidden sm:text-[13px] underline-offset-2 hover:underline">
+            はじめての方へ
           </Link>
         </div>
       </header>

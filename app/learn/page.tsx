@@ -172,6 +172,16 @@ export default function LearnHub() {
           </p>
         </section>
 
+        {/* 1.5 はじめての方へ (/start の ABC テストの入口) */}
+        <Link
+          href="/start"
+          className="mt-4 flex min-h-[56px] items-center gap-3 rounded-[16px] border-[1.5px] border-[#15172B] bg-[#FFE45C] px-4 py-3 text-[#15172B] no-underline shadow-[0_3px_0_#15172B]"
+        >
+          <span className="rounded-full bg-[#15172B] px-2.5 py-1 text-[11.5px] font-black text-[#FFE45C]">はじめての方へ</span>
+          <span className="min-w-0 flex-1 text-[14px] font-black leading-snug">授業・問題演習・模試まで、ここで何ができるか</span>
+          <Arrow className="shrink-0" />
+        </Link>
+
         {/* 2. AIの生徒との会話の例（準備中） */}
         <section aria-label="AIの生徒との会話の例" className="mt-8 flex flex-col gap-3 rounded-[18px] border-[1.5px] border-[#15172B] bg-white p-4 shadow-[4px_4px_0_#15172B]">
           <div className="flex items-center gap-2.5">
