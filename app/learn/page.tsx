@@ -399,6 +399,18 @@ export default function LearnHub() {
           </ul>
         </section>
 
+        {/* 6.4 特別授業 */}
+        <section aria-labelledby="tokubetsu-heading" className="mt-12">
+          <Link href="/learn/tokubetsu/shoin" className="flex flex-col gap-2 rounded-[18px] border-[1.5px] border-[#15172B] bg-[#FFFBE6] p-[18px] text-[#15172B] no-underline shadow-[4px_4px_0_#B42318]">
+            <span className="text-[12px] font-black tracking-[0.1em] text-[#B42318]">特別授業・大人の教養にも</span>
+            <span id="tokubetsu-heading" className="flex items-center justify-between gap-2 text-[19px] font-black leading-[1.4]">
+              吉田松陰と松下村塾
+              <Arrow className="shrink-0" />
+            </span>
+            <span className="text-[13px] leading-[1.75] text-[#3A3D55]">『士規七則』『留魂録』を原文で読み、新しい塾生として6講を受ける。志の立て方から、光と影まで。</span>
+          </Link>
+        </section>
+
         {/* 6.5 模試 */}
         <section aria-labelledby="moshi-heading" className="mt-12">
           <h2 id="moshi-heading" className="m-0 text-[20px] font-black">
