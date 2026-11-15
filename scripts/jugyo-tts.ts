@@ -28,6 +28,8 @@ import { LESSONS as MAIN, UZ_LESSONS } from "../lib/jugyo";
 import { UZ_AUDIO_DIR } from "../lib/jugyo/uz";
 import { jugyoAudio, jugyoPauseAudio } from "../lib/jugyo/audio";
 import { VV, checkYomi, registerUserDict, type AudioQuery } from "./vv-yomi";
+import { smoothQuery } from "./vv-smooth";
+import { homedir } from "node:os";
 
 /** label = 字幕（ルビは親字・{{ }} を外す）。scripts/jugyo-yomi.json の "text" と同じ形 */
 type Job = { dir: string; key: string; text: string; voice: string; rate: number; unit: string; cast: string; label: string; scene: number };
@@ -138,14 +140,17 @@ async function finalCheck(list: Job[]): Promise<Map<string, AudioQuery>> {
 
 let QUERIES = new Map<string, AudioQuery>();
 
-async function synth(j: Job): Promise<Buffer> {
+/** 息つぎ（scripts/vv-smooth.ts）を直すか。--sample の「前」だけ false */
+async function synth(j: Job, smooth = true): Promise<Buffer> {
   const id = await speakerId(j);
-  let query = QUERIES.get(j.key) as Record<string, unknown> | undefined;
-  if (!query) {
+  let full = QUERIES.get(j.key);
+  if (!full) {
     const q = await fetch(`${VV}/audio_query?speaker=${id}&text=${encodeURIComponent(j.text)}`, { method: "POST" });
     if (!q.ok) throw new Error(`audio_query ${q.status}`);
-    query = (await q.json()) as Record<string, unknown>;
+    full = (await q.json()) as AudioQuery;
   }
+  // 1文の中で何度も切れないように、間を減らす（読みは full と同じものだけ使う）
+  const query = { ...(smooth ? (await smoothQuery(id, j.text, full)).query : full) } as Record<string, unknown>;
   // 授業の声：漫才より抑揚をおさえ、文の前後に少し間をとる
   query.speedScale = j.rate;
   query.intonationScale = 1.12;
@@ -154,8 +159,9 @@ async function synth(j: Job): Promise<Buffer> {
   if ("pauseLengthScale" in query) query.pauseLengthScale = 1.05;
   const w = await fetch(`${VV}/synthesis?speaker=${id}`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(query) });
   if (!w.ok) throw new Error(`synthesis ${w.status}`);
-  const tmp = join(tmpdir(), `jg-${j.key}.wav`);
-  const out = join(tmpdir(), `jg-${j.key}.mp3`);
+  const tag = smooth ? "" : "-raw";
+  const tmp = join(tmpdir(), `jg-${j.key}${tag}.wav`);
+  const out = join(tmpdir(), `jg-${j.key}${tag}.mp3`);
   writeFileSync(tmp, Buffer.from(await w.arrayBuffer()));
   execFileSync(FFMPEG, ["-y", "-loglevel", "error", "-i", tmp, "-ac", "1", "-b:a", "64k", out]);
   const buf = readFileSync(out);
@@ -178,6 +184,7 @@ async function main() {
   const stale = [DIR, UZ_AUDIO_DIR].flatMap((d) => (existsSync(d) ? readdirSync(d).filter((f) => f.endsWith(".mp3")).map((f) => `${d}/${f}`) : [])).filter((f) => !used.has(f));
   if (stale.length) console.log(`使われなくなった古い音声 ${stale.length} 個${process.argv.includes("--count") || process.argv.includes("--check") ? "（消すのは本番の実行時）" : "を消します"}`);
   if (process.argv.includes("--count")) return;
+  if (process.argv.includes("--sample")) return sample(jobs);
   if (process.argv.includes("--check")) {
     await vvSpeakers();
     await finalCheck(jobs);
@@ -218,6 +225,35 @@ async function main() {
   console.log(`できました: ${done - failed.length} 個${failed.length ? `・失敗 ${failed.length} 個` : ""}`);
   for (const f of failed) console.log("  ×", f);
   if (failed.length) process.exit(1);
+}
+
+/**
+ * 聞きくらべ用：「、」の多いせりふを数本、いまの作り方（前）と息つぎを直した作り方（後）で作り、
+ * ダウンロードの「aoharu-koe-sample」に置く。public/audio は変えない。
+ *   npx tsx scripts/jugyo-tts.ts --sample
+ */
+async function sample(jobs: Job[]) {
+  checkFfmpeg();
+  await vvSpeakers();
+  await registerUserDict();
+  const commas = (j: Job) => (j.text.match(/、/g) ?? []).length;
+  const pick: Job[] = [];
+  for (const j of [...jobs].sort((a, b) => commas(b) - commas(a) || a.key.localeCompare(b.key)))
+    if (j.text.length <= 120 && !pick.some((p) => p.unit === j.unit || p.voice === j.voice)) {
+      pick.push(j);
+      if (pick.length >= 4) break;
+    }
+  const dir = join(homedir(), "Downloads", "aoharu-koe-sample");
+  mkdirSync(dir, { recursive: true });
+  const notes: string[] = [];
+  for (const [i, j] of pick.entries()) {
+    const n = String(i + 1).padStart(2, "0");
+    writeFileSync(join(dir, `${n}-前.mp3`), await synth(j, false));
+    writeFileSync(join(dir, `${n}-後.mp3`), await synth(j, true));
+    notes.push(`${n}  ${j.voice.slice(3)}（${j.unit}）\n    ${j.text}`);
+  }
+  writeFileSync(join(dir, "せりふ.txt"), notes.join("\n\n") + "\n");
+  console.log(`聞きくらべ用の音声を ${dir} に置きました（${pick.length} 本 × 前・後）`);
 }
 
 main();
