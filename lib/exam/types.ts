@@ -77,6 +77,8 @@ export interface ModeSubject {
   name: string;
   /** 準備中の枠 (まだ問題がほとんどない) */
   note?: string;
+  /** 一覧の見出し (共通テスト型: 国語・数学・英語・情報／理科／地理歴史・公民) */
+  category?: string;
 }
 
 /** モードの説明 (一覧・選ぶ画面) */

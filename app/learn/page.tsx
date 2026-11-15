@@ -408,7 +408,7 @@ export default function LearnHub() {
           <ul className="m-0 mt-3 grid list-none gap-3 p-0 sm:grid-cols-2">
             {[
               { href: "/learn/koko-moshi", tag: "中3向け", name: "公立高校入試模試", desc: "国語・数学・英語・理科・社会。各50分・100点で、第1回〜第6回" },
-              { href: "/learn/kyotsu-moshi", tag: "高校向け", name: "共通テスト模試", desc: "国語・数学Ⅰ・A・数学Ⅱ・B・C・英語リーディング・リスニング・情報Ⅰ" },
+              { href: "/learn/kyotsu-moshi", tag: "高校向け", name: "共通テスト模試", desc: "国語・数学・英語（リーディング・リスニング）・情報Ⅰ・理科・地理歴史・公民" },
             ].map((x) => (
               <li key={x.href}>
                 <Link href={x.href} className="flex h-full flex-col gap-1.5 rounded-[16px] border-[1.5px] border-[#15172B] bg-white p-4 text-[#15172B] no-underline shadow-[3px_3px_0_#15172B]">

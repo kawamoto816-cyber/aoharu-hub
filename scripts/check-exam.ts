@@ -46,7 +46,7 @@ for (const { mode, choice } of cases) {
     continue;
   }
   const where = spec.title + (choice.units ? `（${choice.units.length}単元・${spec.minutes}分）` : "");
-  if (spec.total !== (spec.id === "kyotsu:kokugo" ? 200 : 100)) err(where, `満点が ${spec.total}`);
+  if (spec.total !== (spec.id === "kyotsu:kokugo" ? 200 : /^kyotsu:(phyb|chemb|biob|earthb)$/.test(spec.id) ? 50 : 100)) err(where, `満点が ${spec.total}`);
   if (!MODES.some((m) => m.id === mode)) err(where, "モードがない");
   for (const ds of spec.sections) if (scopeUnits(spec.scope, ds.from).length === 0) err(where, `大問「${ds.title}」の出題元の単元が範囲にない`);
   let shortOnce = false;

@@ -11,7 +11,7 @@ export function seriesSubjects(id: Series["id"]): BoardSubject[] {
   const m = getMode(s.mode)!;
   return m.subjects.map((x) => {
     const spec = examSpec(s.mode, { subject: x.key })!;
-    return { key: x.key, name: x.name, minutes: spec.minutes, total: spec.total, sections: spec.sections.map((d) => d.title), ok: assemble(spec, s.seedOf(1)).ok };
+    return { key: x.key, name: x.name, category: x.category, minutes: spec.minutes, total: spec.total, sections: spec.sections.map((d) => d.title), ok: assemble(spec, s.seedOf(1)).ok };
   });
 }
 
