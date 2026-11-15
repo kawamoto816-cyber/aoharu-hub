@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { isAdminUser } from "@/lib/metrics/admin-auth";
 import { buildMetricsReport, FUNNEL_EVENTS, type MetricsReport } from "@/lib/metrics/sources";
+import { START_TEST_START, START_VARIANTS } from "@/lib/start/ab";
+import { startCounts } from "@/lib/start/counter";
 
 // /admin: 社内向けダッシュボード (@bluespring.co.jp でログインした人だけ)。
 // GA4 / Search Console / Supabase / Stripe を1画面にまとめる。
@@ -183,6 +185,8 @@ export default async function AdminPage({
         <Tile label={`検索クリック（${days}日）`} value={gsc ? fmt(totalClicks) : "—"} sub="Search Console（2日遅れ）" />
       </section>
 
+      <StartAbSection counts={await startCounts().catch(() => null)} />
+
       <div className="mt-4 space-y-3">
         {!report.ga4.ok && <SourceError name="GA4" error={report.ga4.error} />}
         {!report.searchConsole.ok && <SourceError name="Search Console" error={report.searchConsole.error} />}
@@ -306,5 +310,47 @@ export default async function AdminPage({
         新規登録＝アオハルOSにログインして subscriptions 行が作られたユーザー数。結果まで到達＝テンサクン採点・メンサツ評価レポート・しぼりゆ構成案の完走回数。
       </footer>
     </main>
+  );
+}
+
+// 入口ページ (/start) の ABC テスト (lib/start/ab.ts)。表示・ボタン・登録の完了の数と、表示あたりの割合
+const START_LABEL: Record<string, string> = { a: "A　塾に行く前に、まずここで", b: "B　きょうの時間割", c: "C　月謝ゼロで、どこまで" };
+function StartAbSection({ counts }: { counts: Awaited<ReturnType<typeof startCounts>> | null }) {
+  const pct = (a: number, b: number) => (b ? `${((a / b) * 100).toFixed(1)}%` : "—");
+  return (
+    <section className="mt-10">
+      <h2 className="text-sm font-bold text-slate-900">
+        入口ページ /start の ABC テスト（{START_TEST_START}〜・累計）
+      </h2>
+      {!counts ? (
+        <p className="mt-2 text-xs text-slate-500">数を読めませんでした。</p>
+      ) : (
+        <div className="mt-3 overflow-x-auto rounded-lg border border-slate-200 bg-white">
+          <table className="w-full text-sm">
+            <thead className="bg-slate-50 text-xs text-slate-500">
+              <tr>
+                <th className="px-3 py-2 text-left">案</th>
+                <th className="px-3 py-2 text-right">表示</th>
+                <th className="px-3 py-2 text-right">ボタン</th>
+                <th className="px-3 py-2 text-right">登録の完了</th>
+                <th className="px-3 py-2 text-right">登録率（表示あたり）</th>
+              </tr>
+            </thead>
+            <tbody>
+              {START_VARIANTS.map((v) => (
+                <tr key={v} className="border-t border-slate-100">
+                  <td className="px-3 py-1.5">{START_LABEL[v]}</td>
+                  <td className="px-3 py-1.5 text-right">{fmt(counts[v].view)}</td>
+                  <td className="px-3 py-1.5 text-right">{fmt(counts[v].cta)}</td>
+                  <td className="px-3 py-1.5 text-right">{fmt(counts[v].signup)}</td>
+                  <td className="px-3 py-1.5 text-right font-bold">{pct(counts[v].signup, counts[v].view)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <p className="px-3 py-2 text-xs text-slate-500">確認用の表示（?v=a など）は数えません。登録の完了は、14日以内に /start を見た端末での登録です。案ごとに表示が数百ずつになるまでは、差は偶然の範囲のことが多いです。</p>
+        </div>
+      )}
+    </section>
   );
 }
