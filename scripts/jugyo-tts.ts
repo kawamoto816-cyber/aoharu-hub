@@ -28,7 +28,7 @@ import { LESSONS as MAIN, UZ_LESSONS } from "../lib/jugyo";
 import { UZ_AUDIO_DIR } from "../lib/jugyo/uz";
 import { jugyoAudio, jugyoPauseAudio } from "../lib/jugyo/audio";
 import { VV, checkYomi, registerUserDict, type AudioQuery } from "./vv-yomi";
-import { smoothQuery } from "./vv-smooth";
+import { displayPauses } from "./vv-smooth";
 import { homedir } from "node:os";
 
 /** label = 字幕（ルビは親字・{{ }} を外す）。scripts/jugyo-yomi.json の "text" と同じ形 */
@@ -140,7 +140,7 @@ async function finalCheck(list: Job[]): Promise<Map<string, AudioQuery>> {
 
 let QUERIES = new Map<string, AudioQuery>();
 
-/** 息つぎ（scripts/vv-smooth.ts）を直すか。--sample の「前」だけ false */
+/** 間を字幕に合わせるか（scripts/vv-smooth.ts）。--sample の「前」だけ false */
 async function synth(j: Job, smooth = true): Promise<Buffer> {
   const id = await speakerId(j);
   let full = QUERIES.get(j.key);
@@ -149,8 +149,8 @@ async function synth(j: Job, smooth = true): Promise<Buffer> {
     if (!q.ok) throw new Error(`audio_query ${q.status}`);
     full = (await q.json()) as AudioQuery;
   }
-  // 1文の中で何度も切れないように、間を減らす（読みは full と同じものだけ使う）
-  const query = { ...(smooth ? (await smoothQuery(id, j.text, full)).query : full) } as Record<string, unknown>;
+  // 間は字幕の文（j.label）の「、」・かっこの終わり・文の終わりに合わせる（読みは full のまま。scripts/vv-smooth.ts）
+  const query = { ...(smooth ? (await displayPauses(id, j.text, j.label, full)).query : full) } as Record<string, unknown>;
   // 授業の声：漫才より抑揚をおさえ、文の前後に少し間をとる
   query.speedScale = j.rate;
   query.intonationScale = 1.12;
@@ -228,7 +228,7 @@ async function main() {
 }
 
 /**
- * 聞きくらべ用：「、」の多いせりふを数本、いまの作り方（前）と息つぎを直した作り方（後）で作り、
+ * 聞きくらべ用：「、」の多いせりふを数本、もとの作り方（前）と間を字幕に合わせた作り方（後）で作り、
  * ダウンロードの「aoharu-koe-sample」に置く。public/audio は変えない。
  *   npx tsx scripts/jugyo-tts.ts --sample
  */
@@ -250,7 +250,7 @@ async function sample(jobs: Job[]) {
     const n = String(i + 1).padStart(2, "0");
     writeFileSync(join(dir, `${n}-前.mp3`), await synth(j, false));
     writeFileSync(join(dir, `${n}-後.mp3`), await synth(j, true));
-    notes.push(`${n}  ${j.voice.slice(3)}（${j.unit}）\n    ${j.text}`);
+    notes.push(`${n}  ${j.voice.slice(3)}（${j.unit}）\n    字幕　${j.label}\n    読む文　${j.text}`);
   }
   writeFileSync(join(dir, "せりふ.txt"), notes.join("\n\n") + "\n");
   console.log(`聞きくらべ用の音声を ${dir} に置きました（${pick.length} 本 × 前・後）`);
