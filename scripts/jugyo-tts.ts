@@ -15,6 +15,7 @@
 //     作るせりふを VOICEVOX 本体に読ませて、確定した正しい読み（scripts/jugyo-yomi.json）とくらべる。
 //     食いちがい・正しい読みが未登録の行があれば一覧を出して止まる。まちがいでなければ  --force  をつけて続ける。
 //   読みだけ点検する（全せりふ・音声は作らない）:  npx tsx scripts/jugyo-tts.ts --check
+//   分けて作る:      npx tsx scripts/jugyo-tts.ts --part=1/8（作り直しが 12000 個をこえるときは、分けないと止まる。--all で止めない）
 //
 //   ゼロワンOSユース版（lib/jugyo/uz の UZ_LESSONS）もいっしょに作る。置き場所は public/audio/jugyo/uz/、
 //   読みは scripts/jugyo-yomi.uz.json、辞書は scripts/voicevox-dict.uz.json（vv-yomi.ts が本体の辞書と合わせて登録する）。
@@ -172,7 +173,24 @@ async function synth(j: Job, smooth = true): Promise<Buffer> {
 
 async function main() {
   const jobs = collect();
-  const todo = jobs.filter((j) => !existsSync(`${j.dir}/${j.key}.mp3`));
+  // --part=2/8：単元ごとに8つに分けた2つめだけを作る（全部の作り直しを、何回かに分けて作り・push するため）。古い音声は消さない
+  const pm = process.argv.find((a) => a.startsWith("--part="))?.match(/^--part=(\d+)\/(\d+)$/);
+  const part = pm ? { i: Number(pm[1]), n: Number(pm[2]) } : null;
+  let todo = jobs.filter((j) => !existsSync(`${j.dir}/${j.key}.mp3`));
+  if (part) {
+    const units = [...new Set(jobs.map((j) => j.unit))].sort();
+    const per = new Map<string, number>();
+    for (const j of jobs) per.set(j.unit, (per.get(j.unit) ?? 0) + 1);
+    const mine = new Set<string>();
+    let acc = 0;
+    for (const u of units) {
+      const k = Math.min(part.n, Math.floor((acc / jobs.length) * part.n) + 1);
+      if (k === part.i) mine.add(u);
+      acc += per.get(u)!;
+    }
+    todo = todo.filter((j) => mine.has(j.unit));
+    console.log(`第${part.i}部（${part.n}部のうち）：単元 ${mine.size} 個`);
+  }
   const chars = todo.reduce((n, j) => n + j.text.length, 0);
   console.log(`授業 ${LESSONS.length} 本（単元 × キャスト）・${jobs.length} せりふ`);
   for (const l of LESSONS) {
@@ -185,6 +203,12 @@ async function main() {
   if (stale.length) console.log(`使われなくなった古い音声 ${stale.length} 個${process.argv.includes("--count") || process.argv.includes("--check") ? "（消すのは本番の実行時）" : "を消します"}`);
   if (process.argv.includes("--count")) return;
   if (process.argv.includes("--sample")) return sample(jobs);
+  // 一度に作る数が多すぎると、何時間もかかり、push も大きすぎて通らない（GitHub は1回 2GB まで）
+  if (!part && todo.length > 12000 && !process.argv.includes("--all")) {
+    console.log(`作るせりふが ${todo.length} 個と多いので、ここでは作りません。`);
+    console.log("ターミナルで  bash ~/Downloads/aoharu-koe-redo.sh  を動かしてください（8回に分けて作り、1回ずつ push します）。");
+    process.exit(1);
+  }
   if (process.argv.includes("--check")) {
     await vvSpeakers();
     await finalCheck(jobs);
@@ -196,7 +220,7 @@ async function main() {
     // 古い音声を消す前・作る前に、VOICEVOX 本体の読みで点検する
     QUERIES = await finalCheck(todo);
   }
-  for (const f of stale) unlinkSync(f);
+  if (!part) for (const f of stale) unlinkSync(f);
   for (const d of [DIR, UZ_AUDIO_DIR]) mkdirSync(d, { recursive: true });
   let next = 0;
   let done = 0;

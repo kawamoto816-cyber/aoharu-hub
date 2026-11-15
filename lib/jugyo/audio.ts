@@ -15,11 +15,17 @@ export const castCredit = (cast: Cast) =>
 
 export const jugyoSrc = (key: string) => `/audio/jugyo/${key}.mp3`;
 
+/**
+ * 声の作り方の版。キーに入れるので、変えると全部のせりふが作り直しになる（scripts/jugyo-tts.ts の --part で分けて作る）。
+ * 間2（2026-11-15）：間を字幕の「、」・かっこの終わり・文の終わりに合わせる（scripts/vv-smooth.ts の displayPauses）。
+ */
+export const JUGYO_VOICE_STYLE = "間2|";
+
 /** 1せりふの音声（読む文・キー・ファイルの場所） */
 export function jugyoAudio(t: Pick<TalkScene, "who" | "text" | "say">, cast: Cast) {
   const v = cast.members[t.who];
   const text = manzaiSpeech(t);
-  const key = jaKey(v.voice, v.rate, text);
+  const key = jaKey(v.voice, v.rate, JUGYO_VOICE_STYLE + text);
   return { key, text, voice: v.voice, rate: v.rate, src: jugyoSrc(key) };
 }
 
@@ -46,7 +52,7 @@ export function jugyoPauseAudio(q: PauseScene, cast: Cast) {
   const v = cast.members.sensei;
   const clip = (display: string, base: string) => {
     const text = manzaiSpeech({ text: base });
-    const key = jaKey(v.voice, v.rate, text);
+    const key = jaKey(v.voice, v.rate, JUGYO_VOICE_STYLE + text);
     return { display, text, key, voice: v.voice, rate: v.rate, src: jugyoSrc(key) };
   };
   const idx = q.choices ? choiceOrder(q.choices.map((_, n) => n), q.question) : undefined;
