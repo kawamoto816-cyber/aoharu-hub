@@ -28,6 +28,42 @@ const card = "rounded-[18px] border-[1.5px] border-[#15172B] bg-white p-5 shadow
 const yellowBtn = "flex min-h-[56px] w-full items-center justify-center rounded-[14px] border-[1.5px] border-[#15172B] bg-[#FFE45C] px-4 text-[17px] font-black text-[#15172B] no-underline shadow-[0_4px_0_#15172B]";
 const blueBtn = "flex min-h-[56px] w-full items-center justify-center rounded-[14px] bg-[#1533B8] px-4 text-[17px] font-black text-white no-underline shadow-[0_4px_0_#0B1F7A]";
 
+/** 模試の2本柱。どの案にも同じ位置 (ボタンのすぐ下) に入れる (案どうしの比べ方を崩さないように) */
+function MoshiPair({ v }: { v: StartVariant }) {
+  const items = [
+    { href: "/learn/koko-moshi", tag: "中3向け", name: "公立高校入試模試", body: "国語・数学・英語・理科・社会。各50分・100点の本番の形で、第1〜6回。5教科の合計も出ます。" },
+    { href: "/learn/kyotsu-moshi", tag: "高校生向け", name: "共通テスト模試", body: "国語・数学・英語（リスニングつき）・情報Ⅰ・理科・地理歴史・公民の19の型。マーク式で時間を計って。" },
+  ];
+  return (
+    <section aria-labelledby="moshi-h" className="mt-7 rounded-[20px] border-[1.5px] border-[#15172B] bg-[#15172B] p-4 text-white shadow-[4px_4px_0_#B42318] sm:p-5">
+      <p className="m-0 text-[12px] font-black tracking-[0.1em] text-[#FFE45C]">いまの力が、点数でわかる</p>
+      <h2 id="moshi-h" className="m-0 mt-1 text-[21px] font-black leading-snug">入試の形の模試が、スマホで受けられます</h2>
+      <p className="m-0 mt-1.5 text-[13px] leading-relaxed text-[#C9CEF2]">時間になると自動で提出。大問ごと・単元ごとの点数と、弱い単元の解説まで。登録なしで1回、無料登録で月2回。</p>
+      <ul className="m-0 mt-3 grid list-none gap-2.5 p-0 sm:grid-cols-2">
+        {items.map((x) => (
+          <li key={x.href}>
+            <Link
+              href={x.href}
+              onClick={() => {
+                sendStartEvent(v, "cta");
+                trackEvent("start_cta", { variant: v, what: x.href });
+              }}
+              className="flex h-full flex-col gap-1.5 rounded-[14px] bg-white p-3.5 text-[#15172B] no-underline"
+            >
+              <span className="w-fit rounded-full bg-[#FFE45C] px-2 py-0.5 text-[11.5px] font-black">{x.tag}</span>
+              <span className="flex items-center justify-between gap-2 text-[18px] font-black">
+                {x.name}
+                <span aria-hidden="true">→</span>
+              </span>
+              <span className="text-[12.5px] leading-relaxed text-[#3A3D55]">{x.body}</span>
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
 function FreeTable() {
   const rows: [string, string, string][] = [
     ["止まる授業・図解レクチャー・ドリル・単元模試", "◯ 何本でも", "◯"],
@@ -126,6 +162,7 @@ function VariantA({ d, v }: { d: StartData; v: StartVariant }) {
       <h1 className="m-0 mt-1 text-[30px] font-black leading-tight sm:text-[38px]">塾に行く前に、まずここで。</h1>
       <p className="m-0 mt-3 text-[15.5px] leading-[1.9]">授業・問題演習・模試まで、スマホひとつで。小学校から高校まで、登録なしで始められます。</p>
       <Ctas v={v} sample={d.sample} />
+      <MoshiPair v={v} />
       <ol className="m-0 mt-8 grid list-none gap-3 p-0 sm:grid-cols-3">
         {[
           ["授業を受ける", `止まる授業 ${d.jugyo}本・図解レクチャー ${d.lectures}単元。とちゅうで止まって「ここで問題」。`, "/learn/jugyo"],
@@ -193,6 +230,7 @@ function VariantB({ d, v }: { d: StartData; v: StartVariant }) {
       </ol>
       <p className="m-0 mt-2 text-[12px] text-[#5A5D73]">時間割は毎日かわります。登録すると、自分の学年で時間割を組めます。</p>
       <Ctas v={v} sample={list[0]?.href ?? d.sample} first="1時間目" />
+      <MoshiPair v={v} />
       <ul className="m-0 mt-8 grid list-none gap-2 p-0 text-[14px] sm:grid-cols-2">
         {["決まった時間割", "授業のとちゅうの小テスト", "模試と成績表（大問別・単元別）", "先生役になって教える"].map((t) => (
           <li key={t} className="rounded-[12px] bg-[#F7F6F1] px-3 py-2.5 font-bold">
@@ -213,6 +251,7 @@ function VariantC({ d, v }: { d: StartData; v: StartVariant }) {
       <p className="m-0 mt-3 text-[15.5px] leading-[1.9]">塾でしてもらうことを、ひとつずつくらべてみました。できないことも、正直に書いています。</p>
       <Compare />
       <Ctas v={v} sample={d.sample} />
+      <MoshiPair v={v} />
       <p className="m-0 mt-6 text-[14px] leading-relaxed">
         止まる授業 <b>{d.jugyo}本</b>・図解レクチャー <b>{d.lectures}単元</b>・公立高校入試模試と共通テスト模試。登録なしで、いますぐ使えます。
       </p>
