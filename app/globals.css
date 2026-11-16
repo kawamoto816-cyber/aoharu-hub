@@ -23,4 +23,9 @@ body {
   .season-banner ~ .account-corner {
     top: 72px;
   }
+  /* ヘッダーの中にアバターを出したページ (components/HeaderAccount) では、右上の固定の枠を出さない。
+     スマホでヘッダーの「まなぶ」「はじめての方へ」と本文に重なり、押せなかったため (2026-11-16) */
+  body:has([data-header-account]) .account-corner {
+    display: none;
+  }
 }

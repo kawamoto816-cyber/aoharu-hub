@@ -7,27 +7,34 @@
 
 import { useState } from "react";
 
+/** Stripe のお支払い管理ページを開く (スマホのヘッダーのアバターのメニューからも使う) */
+export async function openBillingPortal() {
+  try {
+    const res = await fetch("/api/billing/portal", { method: "POST" });
+    const data = await res.json().catch(() => ({}));
+
+    if (!res.ok || !data?.url) {
+      if (data?.reason === "no_plan") {
+        alert("現在ご契約中の有料プランはありません(無料プランでご利用中です)。");
+      } else {
+        alert(`お支払い管理ページを開けませんでした。\n詳細: ${data?.error || res.status}`);
+      }
+      return;
+    }
+
+    window.location.href = data.url;
+  } catch (err) {
+    alert(`お支払い管理ページを開けませんでした。\n詳細: ${err instanceof Error ? err.message : String(err)}`);
+  }
+}
+
 export function BillingPortalLink() {
   const [loading, setLoading] = useState(false);
 
   const handleClick = async () => {
     setLoading(true);
     try {
-      const res = await fetch("/api/billing/portal", { method: "POST" });
-      const data = await res.json().catch(() => ({}));
-
-      if (!res.ok || !data?.url) {
-        if (data?.reason === "no_plan") {
-          alert("現在ご契約中の有料プランはありません(無料プランでご利用中です)。");
-        } else {
-          alert(`お支払い管理ページを開けませんでした。\n詳細: ${data?.error || res.status}`);
-        }
-        return;
-      }
-
-      window.location.href = data.url;
-    } catch (err: any) {
-      alert(`お支払い管理ページを開けませんでした。\n詳細: ${err.message}`);
+      await openBillingPortal();
     } finally {
       setLoading(false);
     }

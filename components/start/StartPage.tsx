@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useAuth } from "@clerk/nextjs";
 import { SmartSignUpButton } from "@/components/SmartSignUpButton";
 import { trackEvent } from "@/lib/analytics";
 import { assignVariant, isVariant, sendStartEvent, setStartCounting, type StartVariant } from "@/lib/start/ab";
@@ -37,7 +38,11 @@ function MoshiPair({ v }: { v: StartVariant }) {
   return (
     <section aria-labelledby="moshi-h" className="mt-7 rounded-[20px] border-[1.5px] border-[#15172B] bg-[#15172B] p-4 text-white shadow-[4px_4px_0_#B42318] sm:p-5">
       <p className="m-0 text-[12px] font-black tracking-[0.1em] text-[#FFE45C]">いまの力が、点数でわかる</p>
-      <h2 id="moshi-h" className="m-0 mt-1 text-[21px] font-black leading-snug">入試の形の模試が、スマホで受けられます</h2>
+      <h2 id="moshi-h" className="m-0 mt-1 text-[21px] font-black leading-snug">
+        <span className="whitespace-nowrap">入試の形の模試が、</span>
+        <wbr />
+        <span className="whitespace-nowrap">スマホで受けられます</span>
+      </h2>
       <p className="m-0 mt-1.5 text-[13px] leading-relaxed text-[#C9CEF2]">時間になると自動で提出。大問ごと・単元ごとの点数と、弱い単元の解説まで。登録なしで1回、無料登録で月2回。</p>
       <ul className="m-0 mt-3 grid list-none gap-2.5 p-0 sm:grid-cols-2">
         {items.map((x) => (
@@ -137,6 +142,8 @@ function Compare() {
 }
 
 function Ctas({ v, sample, first = "授業" }: { v: StartVariant; sample: string; first?: string }) {
+  // ログイン中は登録ボタンを押しても何も起きないので、「まなぶ」のトップへの入口に変える (A・B・C 共通)
+  const { isSignedIn } = useAuth();
   const click = (what: string) => {
     sendStartEvent(v, "cta");
     trackEvent("start_cta", { variant: v, what });
@@ -146,11 +153,17 @@ function Ctas({ v, sample, first = "授業" }: { v: StartVariant; sample: string
       <Link href={sample} onClick={() => click("sample")} className={yellowBtn}>
         登録なしで{first}を見てみる
       </Link>
-      <div onClickCapture={() => click("signup")}>
-        <SmartSignUpButton analyticsLocation={`start_${v}`} redirectUrl="/learn" className={blueBtn}>
-          無料で登録する（メールだけ）
-        </SmartSignUpButton>
-      </div>
+      {isSignedIn ? (
+        <Link href="/learn" onClick={() => click("learn_top")} className={blueBtn}>
+          まなぶのトップへ
+        </Link>
+      ) : (
+        <div onClickCapture={() => click("signup")}>
+          <SmartSignUpButton analyticsLocation={`start_${v}`} redirectUrl="/learn" className={blueBtn}>
+            無料で登録する（メールだけ）
+          </SmartSignUpButton>
+        </div>
+      )}
     </div>
   );
 }
@@ -159,7 +172,11 @@ function VariantA({ d, v }: { d: StartData; v: StartVariant }) {
   return (
     <>
       <p className="m-0 text-xs font-black tracking-wider text-[#1533B8]">小学生・中学生・高校生と保護者の方へ</p>
-      <h1 className="m-0 mt-1 text-[30px] font-black leading-tight sm:text-[38px]">塾に行く前に、まずここで。</h1>
+      <h1 className="m-0 mt-1 text-[30px] font-black leading-tight sm:text-[38px]">
+        <span className="whitespace-nowrap">塾に行く前に、</span>
+        <wbr />
+        <span className="whitespace-nowrap">まずここで。</span>
+      </h1>
       <p className="m-0 mt-3 text-[15.5px] leading-[1.9]">授業・問題演習・模試まで、スマホひとつで。小学校から高校まで、登録なしで始められます。</p>
       <Ctas v={v} sample={d.sample} />
       <MoshiPair v={v} />
@@ -192,11 +209,16 @@ function VariantA({ d, v }: { d: StartData; v: StartVariant }) {
 
 function VariantB({ d, v }: { d: StartData; v: StartVariant }) {
   const [lv, setLv] = useState<keyof StartData["today"]>("中学校");
+  const { isSignedIn } = useAuth();
   const list = d.today[lv];
   return (
     <>
       <p className="m-0 text-xs font-black tracking-wider text-[#1533B8]">放課後の、もうひとつの学校</p>
-      <h1 className="m-0 mt-1 text-[30px] font-black leading-tight sm:text-[38px]">きょうの時間割、もう組んであります。</h1>
+      <h1 className="m-0 mt-1 text-[30px] font-black leading-tight sm:text-[38px]">
+        <span className="whitespace-nowrap">きょうの時間割、</span>
+        <wbr />
+        <span className="whitespace-nowrap">もう組んであります。</span>
+      </h1>
       <p className="m-0 mt-3 text-[15.5px] leading-[1.9]">1コマ10分の授業と、とちゅうの「ここで問題」。終わったら、こんどはあなたが先生役。登録なしで1コマ目から受けられます。</p>
       <div role="tablist" aria-label="学校" className="mt-5 grid grid-cols-3 gap-1.5">
         {(["小学校", "中学校", "高校"] as const).map((l) => (
@@ -228,7 +250,7 @@ function VariantB({ d, v }: { d: StartData; v: StartVariant }) {
           </li>
         ))}
       </ol>
-      <p className="m-0 mt-2 text-[12px] text-[#5A5D73]">時間割は毎日かわります。登録すると、自分の学年で時間割を組めます。</p>
+      <p className="m-0 mt-2 text-[12px] text-[#5A5D73]">時間割は毎日かわります。{!isSignedIn && "登録すると、自分の学年で時間割を組めます。"}</p>
       <Ctas v={v} sample={list[0]?.href ?? d.sample} first="1時間目" />
       <MoshiPair v={v} />
       <ul className="m-0 mt-8 grid list-none gap-2 p-0 text-[14px] sm:grid-cols-2">
@@ -247,7 +269,11 @@ function VariantC({ d, v }: { d: StartData; v: StartVariant }) {
   return (
     <>
       <p className="m-0 text-xs font-black tracking-wider text-[#1533B8]">小・中・高の授業と模試</p>
-      <h1 className="m-0 mt-1 text-[30px] font-black leading-tight sm:text-[38px]">月謝ゼロで、どこまでできる？</h1>
+      <h1 className="m-0 mt-1 text-[30px] font-black leading-tight sm:text-[38px]">
+        <span className="whitespace-nowrap">月謝ゼロで、</span>
+        <wbr />
+        <span className="whitespace-nowrap">どこまでできる？</span>
+      </h1>
       <p className="m-0 mt-3 text-[15.5px] leading-[1.9]">塾でしてもらうことを、ひとつずつくらべてみました。できないことも、正直に書いています。</p>
       <Compare />
       <Ctas v={v} sample={d.sample} />

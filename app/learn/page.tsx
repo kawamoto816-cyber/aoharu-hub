@@ -138,11 +138,11 @@ export default function LearnHub() {
         >
           <p className="m-0 text-[12px] font-bold tracking-[0.14em] text-[#FFE45C]">AOHARU LEARN　AI時代の新しい教科書</p>
           <h1 id="hero-heading" className="m-0 font-serif text-[36px] font-extrabold leading-[1.3] sm:text-[48px]">
-            勉強は、
+            <span className="whitespace-nowrap">勉強は、</span>
             <br />
-            こんなに
+            <span className="whitespace-nowrap">こんなに</span>
             <br className="sm:hidden" />
-            面白かった。
+            <span className="whitespace-nowrap">面白かった。</span>
           </h1>
           <p className="m-0 max-w-[560px] text-[14px] leading-[1.9] text-[#DDE3FA] sm:text-[15px]">
             図解と物語で、わかる。ツッコんで、身につく。そして、だれかに教えたとき、知識はほんとうに自分のものになる。

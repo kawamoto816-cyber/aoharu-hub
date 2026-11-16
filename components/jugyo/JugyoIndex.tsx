@@ -21,6 +21,16 @@ export interface JugyoEntry {
   stops: string | number;
 }
 
+/** 起業の教科書 (ゼロワンOSユース版) の授業。検索中は同じことばで絞りこむ */
+export interface UzJugyoEntry {
+  id: string;
+  href: string;
+  lv: number | string;
+  name: string;
+  minutes: string | number;
+  stops: string | number;
+}
+
 const KEY = "aoharu.jugyo.index.v1";
 const ALL = "すべて";
 
@@ -71,9 +81,11 @@ const gradeRank = (g: string) => {
 export function JugyoIndex({
   entries,
   levels,
+  uz = [],
 }: {
   entries: JugyoEntry[];
   /** 学校の並び */ levels: string[];
+  /** 起業の教科書の授業 (一覧の下に出す) */ uz?: UzJugyoEntry[];
 }) {
   const [level, setLevel] = useState(levels[0]);
   const [subject, setSubject] = useState("");
@@ -122,6 +134,16 @@ export function JugyoIndex({
         order.get(x)! - order.get(y)!,
     );
   }, [entries, level, sub, query, levels]);
+
+  const uzShown = useMemo(
+    () =>
+      query
+        ? uz.filter((u) =>
+            norm(`${u.name}${u.id}lv${u.lv}起業の教科書ゼロワンosユース版`).includes(query),
+          )
+        : uz,
+    [uz, query],
+  );
 
   // 見出し: 検索中は「学校・教科」、ふだんは「学年・科目」(教科が「すべて」なら教科も)
   const groups = useMemo(() => {
@@ -209,7 +231,7 @@ export function JugyoIndex({
             type="search"
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            placeholder="単元名でさがす（例：割合、鎌倉、関係代名詞）"
+            placeholder="例：割合、鎌倉、関係代名詞"
             className="min-h-[44px] w-full min-w-0 bg-transparent text-[15px] outline-none"
           />
         </label>
@@ -220,11 +242,11 @@ export function JugyoIndex({
         aria-live="polite"
       >
         {query
-          ? `「${q}」をふくむ授業 ${shown.length}本`
+          ? `「${q}」をふくむ授業 ${shown.length + uzShown.length}本`
           : `${level}${sub === ALL ? "" : `・${sub}`}　${shown.length}本`}
       </p>
 
-      {groups.length === 0 && (
+      {groups.length === 0 && uzShown.length === 0 && (
         <p className="m-0 mt-4 rounded-[12px] bg-white p-4 text-[14px]">
           見つかりませんでした。ことばを短くしてみてください。
         </p>
@@ -269,6 +291,51 @@ export function JugyoIndex({
           </ul>
         </section>
       ))}
+
+      {uzShown.length > 0 && (
+        <section aria-labelledby="jugyo-uz" className="mt-9">
+          <h2 id="jugyo-uz" className="m-0 text-[17px] font-black">
+            起業の教科書の授業（ゼロワンOSユース版）
+            {query && (
+              <span className="ml-1.5 text-[11.5px] font-bold text-[#5A5D73]">
+                {uzShown.length}本
+              </span>
+            )}
+          </h2>
+          <p className="m-0 mt-1 text-[12.5px] leading-relaxed text-[#3A3D55]">
+            高校のキャラで。Lv1〜3 はだれでも見られます。
+          </p>
+          <ul className="m-0 mt-2 grid list-none gap-px overflow-hidden rounded-[14px] border-[1.5px] border-[#15172B] bg-[#15172B]/15 p-0 grid-cols-[minmax(0,1fr)] sm:grid-cols-[repeat(2,minmax(0,1fr))]">
+            {uzShown.map((u) => (
+              <li key={u.id} className="bg-white sm:last:odd:col-span-2">
+                <Link
+                  href={u.href}
+                  className="flex min-h-[56px] items-center gap-3 px-3.5 py-2.5 text-[#15172B] no-underline hover:bg-[#FFFBE6]"
+                >
+                  <span className="min-w-0 flex-1">
+                    <span className="block text-[11.5px] font-black text-[#1533B8]">
+                      Lv{u.lv}・{u.id.toUpperCase()}
+                    </span>
+                    <span className="block text-[15px] font-black leading-snug">
+                      {u.name}
+                    </span>
+                  </span>
+                  <span className="shrink-0 text-right text-[11.5px] font-bold leading-tight text-[#3A3D55]">
+                    約{u.minutes}分
+                    <span className="block">{u.stops}回止まる</span>
+                  </span>
+                  <span
+                    aria-hidden="true"
+                    className="shrink-0 text-[13px] font-black text-[#1533B8]"
+                  >
+                    ▶
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
     </div>
   );
 }

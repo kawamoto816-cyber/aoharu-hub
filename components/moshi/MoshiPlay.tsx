@@ -24,6 +24,7 @@ import { summarize } from "@/lib/moshi/summary";
 import { recordMoshiResult, type MoshiUnitRecord } from "@/lib/moshi/results";
 import { freshSeed } from "@/lib/moshi/rng";
 import { recordExamResult, type ExamAttempt } from "@/lib/exam/results";
+import { daimonNo } from "@/lib/exam/daimon-no";
 import { recordStumbles } from "@/lib/zukan/store";
 import { dayNo, mdLabel, type NewMistake } from "@/lib/zukan/schedule";
 import { ZUKAN_HREF } from "@/lib/zukan/words";
@@ -690,7 +691,7 @@ export function MoshiPlay({
           {daimon.map((d, i) => (
             <li key={d.id} className="flex items-baseline justify-between gap-2 rounded-[10px] bg-[#F7F6F1] px-3 py-2 text-[14px] font-bold">
               <span className="min-w-0">
-                <span className="mr-1.5 font-black">{i + 1}</span>
+                {daimonNo(d.title, i) && <span className="mr-1.5 font-black">{daimonNo(d.title, i)}</span>}
                 <Rich text={d.title} />
                 <span className="ml-1.5 text-[12px] text-[#5A5D73]">（{d.items.length}{kids ? "もん" : "問"}）</span>
               </span>
@@ -944,7 +945,7 @@ export function MoshiPlay({
           </h3>
           <ul className="m-0 mt-2 grid list-none gap-2.5 p-0">
             {daimon.map((d, i) => (
-              <Bar key={d.id} label={`${i + 1}　${plain(d.title)}`} score={d.items.reduce((s, it) => s + (results[keyOf(d, it)]?.score ?? 0), 0)} total={d.points} />
+              <Bar key={d.id} label={[daimonNo(d.title, i), plain(d.title)].filter(Boolean).join("　")} score={d.items.reduce((s, it) => s + (results[keyOf(d, it)]?.score ?? 0), 0)} total={d.points} />
             ))}
           </ul>
         </section>

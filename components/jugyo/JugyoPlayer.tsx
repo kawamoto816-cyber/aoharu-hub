@@ -164,6 +164,10 @@ export function JugyoPlayer(p: PlayerProps) {
   const [readDone, setReadDone] = useState<string | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const boardRef = useRef<HTMLDivElement>(null);
+  // 字幕の帯の高さ。スマホでは字幕が4行・ルビつきになると帯が高くなり、黒板の下を覆っていたので、
+  // 黒板の下の余白を帯の高さに合わせる（いちばん高かったときに合わせ、せりふごとに黒板の大きさが変わらないようにする）
+  const subRef = useRef<HTMLDivElement>(null);
+  const [subH, setSubH] = useState(0);
   const jaVoice = useRef<SpeechSynthesisVoice | null>(null);
   // 速さは途中で変えても、いまのせりふを最初から読み直さない（mp3 はその場で、仮の声は次の文から）
   const speedRef = useRef<number>(speed);
@@ -177,6 +181,23 @@ export function JugyoPlayer(p: PlayerProps) {
   useEffect(() => {
     iRef.current = i;
   }, [i]);
+  useEffect(() => {
+    const el = subRef.current;
+    if (!el || typeof ResizeObserver === "undefined") return;
+    let max = 0;
+    const ro = new ResizeObserver(() => {
+      const h = Math.ceil(el.getBoundingClientRect().height);
+      if (h > max) {
+        max = h;
+        setSubH(h);
+      }
+    });
+    ro.observe(el);
+    return () => {
+      ro.disconnect();
+      setSubH(0);
+    };
+  }, [subs]);
 
   // シークバー：1せりふの長さを字数から見積もる（1分300字）
   const { starts, total, chapters } = useMemo(() => {
@@ -442,16 +463,17 @@ export function JugyoPlayer(p: PlayerProps) {
       <div className="relative mx-auto aspect-[4/5] w-full max-w-[960px] overflow-hidden rounded-[18px] border-[1.5px] border-[#15172B] bg-[#1E5A46] shadow-[4px_4px_0_#15172B] sm:aspect-video">
         {/* 上の帯：チャプター・声の種類 */}
         <div className="absolute inset-x-0 top-0 z-10 flex items-center gap-2 px-3 py-2 text-[12px] font-black text-white/90">
-          <span className="truncate">{chapterNow ? chapterNow.title : ""}</span>
+          <span className="min-w-0 flex-1 truncate">{chapterNow ? chapterNow.title : ""}</span>
+          {/* 声のクレジットは、スマホではチャプター名を押し出して切ってしまうので、ステージの下に出す */}
           <span className="ml-auto flex-none">
             {started && !ended && mode === "tts" && <span className="rounded-full bg-white/15 px-2 py-0.5">仮の声で再生中</span>}
             {started && !ended && mode === "text" && <span className="rounded-full bg-white/15 px-2 py-0.5">字幕だけで自動送り</span>}
-            {started && !ended && mode === "file" && <span className="rounded-full bg-white/15 px-2 py-0.5">{p.credit}</span>}
+            {started && !ended && mode === "file" && <span className="hidden rounded-full bg-white/15 px-2 py-0.5 sm:inline">{p.credit}</span>}
           </span>
         </div>
 
         {/* 黒板（図解） */}
-        <div ref={boardRef} className={`jugyo-board absolute inset-x-2 top-9 overflow-y-auto rounded-[12px] bg-[#F7F6F1] p-3 sm:inset-x-4 sm:p-4 ${subs ? "bottom-[118px] sm:bottom-[104px]" : "bottom-[64px]"}`}>
+        <div ref={boardRef} className={`jugyo-board absolute inset-x-2 top-9 overflow-y-auto rounded-[12px] bg-[#F7F6F1] p-3 sm:inset-x-4 sm:p-4 ${subs ? "bottom-[118px] sm:bottom-[104px]" : "bottom-[64px]"}`} style={subH > 0 ? { bottom: subH + 8 } : undefined}>
           {"card" in board ? (
             board.card === "mystery" ? (
               <div className="mx-auto max-w-[640px]">
@@ -508,7 +530,7 @@ export function JugyoPlayer(p: PlayerProps) {
         </div>
 
         {/* 字幕と話し手 */}
-        <div className="absolute inset-x-0 bottom-0 z-10 flex items-end gap-2.5 bg-[#15172B]/92 px-3 py-2.5 sm:px-4">
+        <div ref={subRef} className="absolute inset-x-0 bottom-0 z-10 flex items-end gap-2.5 bg-[#15172B]/92 px-3 py-2.5 sm:px-4">
           <Avatar look={p.cast.members[pauseClip ? "sensei" : speaker].look} talking={(playing && !!talk) || reading} size={44} />
           <div className="min-w-0 flex-1">
             <p className="m-0 text-[11px] font-black text-[#FFE45C]">{p.cast.members[pauseClip ? "sensei" : speaker].name}</p>
@@ -664,6 +686,7 @@ export function JugyoPlayer(p: PlayerProps) {
             </li>
           ))}
         </ol>
+        {started && !ended && mode === "file" && <p className="m-0 mt-2 text-[11px] font-bold text-[#3A3D55] sm:hidden">{p.credit}</p>}
         {ttsOk === false && started && <p className="m-0 mt-2 text-[12px] text-[#3A3D55]">このブラウザでは声が使えないので、字幕だけで自動で進みます。</p>}
       </div>
     </div>

@@ -6,10 +6,14 @@ import { SERIES, type Series } from "@/lib/exam/series";
 
 // 「公立高校入試模試」「共通テスト模試」のページの中身 (サーバー側)。教科ごとの仕様を読み、第1回のシードで組めるかを見る。
 
+// 公立高校入試模試は、ページの説明 (国語・数学・英語・理科・社会) と同じ順に並べる
+const KOKO_ORDER = ["kokugo", "math", "eigo", "rika", "shakai"];
+
 export function seriesSubjects(id: Series["id"]): BoardSubject[] {
   const s = SERIES[id];
   const m = getMode(s.mode)!;
-  return m.subjects.map((x) => {
+  const rank = (k: string) => (id === "koko" && KOKO_ORDER.includes(k) ? KOKO_ORDER.indexOf(k) : 99);
+  return [...m.subjects].sort((a, b) => rank(a.key) - rank(b.key)).map((x) => {
     const spec = examSpec(s.mode, { subject: x.key })!;
     return { key: x.key, name: x.name, category: x.category, minutes: spec.minutes, total: spec.total, sections: spec.sections.map((d) => d.title), ok: assemble(spec, s.seedOf(1)).ok };
   });

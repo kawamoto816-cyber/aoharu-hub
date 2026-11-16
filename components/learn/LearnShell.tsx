@@ -2,9 +2,10 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { zen } from "@/components/landing/fonts";
 import { SUPERVISION } from "@/lib/learn/types";
+import { HeaderAccount } from "@/components/HeaderAccount";
 
 // 「まなぶ」各ページの外枠 (方眼紙の背景・ヘッダー・パンくず・監修表記)。
-// 右上はレイアウト共通の「無料登録」ボタンが重なるので空けておく。
+// 右上はレイアウト共通の「無料登録」ボタンが重なるので空けておく (sm 以上)。スマホでログイン中は、ヘッダーの中にアバターを出す (HeaderAccount)。
 
 const paper =
   "bg-[#F7F6F1] [background-image:linear-gradient(#E4E2D8_1px,transparent_1px),linear-gradient(90deg,#E4E2D8_1px,transparent_1px)] [background-size:28px_28px]";
@@ -26,6 +27,7 @@ export function LearnShell({ crumbs: rawCrumbs, children, narrow = false, homeHr
           <Link href="/start" className="whitespace-nowrap py-2 text-[12.5px] font-bold text-[#1533B8] max-[359px]:hidden sm:text-[13px] underline-offset-2 hover:underline">
             はじめての方へ
           </Link>
+          <HeaderAccount />
         </div>
       </header>
       <div className={`mx-auto px-4 pb-16 pt-5 sm:px-6 ${narrow ? "max-w-[560px]" : "max-w-[1100px]"}`}>

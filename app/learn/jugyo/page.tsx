@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { LearnShell } from "@/components/learn/LearnShell";
 import { Avatar } from "@/components/jugyo/Avatar";
-import { JugyoIndex, type JugyoEntry } from "@/components/jugyo/JugyoIndex";
+import { JugyoIndex, type JugyoEntry, type UzJugyoEntry } from "@/components/jugyo/JugyoIndex";
 import { plain } from "@/components/lecture/Rich";
 import {
   JUGYO_HOME,
@@ -53,6 +52,18 @@ function entries(): JugyoEntry[] {
       minutes: span.minutes,
       stops: span.stops,
     });
+  }
+  return out;
+}
+
+// 起業の教科書の授業。検索中は授業の一覧と同じことばで絞りこむので、一覧 (JugyoIndex) の中に出す
+function uzEntries(): UzJugyoEntry[] {
+  const out: UzJugyoEntry[] = [];
+  for (const id of UZ_JUGYO_PUBLIC_IDS) {
+    const c = cardInfo(id);
+    const span = uzJugyoSpan(id);
+    if (!c || !span) continue;
+    out.push({ id, href: uzJugyoHref(id), lv: c.lv, name: plain(c.name), minutes: span.minutes, stops: span.stops });
   }
   return out;
 }
@@ -127,52 +138,7 @@ export default function Page() {
         </div>
       </details>
 
-      <JugyoIndex entries={list} levels={LEVELS} />
-
-      {UZ_JUGYO_PUBLIC_IDS.length > 0 && (
-        <section aria-labelledby="jugyo-uz" className="mt-9">
-          <h2 id="jugyo-uz" className="m-0 text-[17px] font-black">
-            起業の教科書の授業（ゼロワンOSユース版）
-          </h2>
-          <p className="m-0 mt-1 text-[12.5px] leading-relaxed text-[#3A3D55]">
-            高校のキャラで。Lv1〜3 はだれでも見られます。
-          </p>
-          <ul className="m-0 mt-2 grid list-none gap-px overflow-hidden rounded-[14px] border-[1.5px] border-[#15172B] bg-[#15172B]/15 p-0 grid-cols-[minmax(0,1fr)] sm:grid-cols-[repeat(2,minmax(0,1fr))]">
-            {UZ_JUGYO_PUBLIC_IDS.map((id) => {
-              const c = cardInfo(id);
-              const span = uzJugyoSpan(id);
-              if (!c || !span) return null;
-              return (
-                <li key={id} className="bg-white sm:last:odd:col-span-2">
-                  <Link
-                    href={uzJugyoHref(id)}
-                    className="flex min-h-[56px] items-center gap-3 px-3.5 py-2.5 text-[#15172B] no-underline hover:bg-[#FFFBE6]"
-                  >
-                    <span className="min-w-0 flex-1">
-                      <span className="block text-[11.5px] font-black text-[#1533B8]">
-                        Lv{c.lv}・{id.toUpperCase()}
-                      </span>
-                      <span className="block text-[15px] font-black leading-snug">
-                        {plain(c.name)}
-                      </span>
-                    </span>
-                    <span className="shrink-0 text-right text-[11.5px] font-bold leading-tight text-[#3A3D55]">
-                      約{span.minutes}分
-                      <span className="block">{span.stops}回止まる</span>
-                    </span>
-                    <span
-                      aria-hidden="true"
-                      className="shrink-0 text-[13px] font-black text-[#1533B8]"
-                    >
-                      ▶
-                    </span>
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-        </section>
-      )}
+      <JugyoIndex entries={list} levels={LEVELS} uz={uzEntries()} />
     </LearnShell>
   );
 }

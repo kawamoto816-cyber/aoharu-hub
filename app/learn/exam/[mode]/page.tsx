@@ -5,6 +5,7 @@ import { LearnShell } from "@/components/learn/LearnShell";
 import { ExamSetup, type SetupTree } from "@/components/exam/ExamSetup";
 import { LEVELS } from "@/lib/school";
 import { assemble, CHU_SUBJECTS, EXAM_HOME, examPlayHref, examSpec, getMode, MODES, NOTICE_COMMON, questionCountByUnit, subjectOf, teikiCount, type ModeId } from "@/lib/exam";
+import { daimonNo } from "@/lib/exam/daimon-no";
 
 // /learn/exam/<mode>: 試験モードの「えらぶ」画面。
 //   公立高校入試型・共通テスト型 … 教科 (型) ごとの大問構成と、いまの問題数で組めるか (組めなければ「まだ問題が少ない」)
@@ -76,7 +77,7 @@ export default async function ExamModePage({ params }: { params: Promise<{ mode:
                 return (
                   <li key={d.title} className="flex items-baseline justify-between gap-2 rounded-[10px] bg-[#F7F6F1] px-3 py-2 text-[13.5px] font-bold">
                     <span className="min-w-0">
-                      <span className="mr-1.5 font-black">{i + 1}</span>
+                      {daimonNo(d.title, i) && <span className="mr-1.5 font-black">{daimonNo(d.title, i)}</span>}
                       {d.title}
                       {short && <span className="ml-1.5 text-[12px] font-black text-[#B54708]">（{short.have}/{short.need}問）</span>}
                     </span>

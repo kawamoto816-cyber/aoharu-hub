@@ -7,6 +7,7 @@ import { BeforeAfter } from "@/components/landing/BeforeAfter";
 import { DemoButton } from "@/components/landing/DemoButton";
 import { zen, klee } from "@/components/landing/fonts";
 import { TUTORIALS, TUTORIAL_ORDER, type TutorialKey } from "@/lib/tutorials";
+import { HeaderAccount } from "@/components/HeaderAccount";
 
 // /tutorial/[app]: Pro プランの3アプリの紹介ページ。
 // いちばん伝えたいのは「使うと書類・答えがどう変わるか」。見本の使う前／使った後を最初に見せ、
@@ -50,6 +51,7 @@ export default async function TutorialPage({ params }: { params: Promise<{ app: 
             <span className="flex h-[34px] w-[34px] items-center justify-center rounded-[10px] bg-[#1533B8] text-lg font-black text-white">ア</span>
             <span className="text-xl font-black tracking-wide">アオハルOS</span>
           </Link>
+          <HeaderAccount />
           <nav aria-label="アプリ" className="flex flex-wrap gap-2 text-sm font-bold">
             {TUTORIAL_ORDER.map((k) => (
               <Link

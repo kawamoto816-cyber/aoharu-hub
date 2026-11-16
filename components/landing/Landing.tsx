@@ -6,6 +6,7 @@ import { APP_URLS } from "@/lib/segments";
 import { LoopVideo } from "./LoopVideo";
 import { DemoButton } from "./DemoButton";
 import { zen, klee } from "./fonts";
+import { HeaderAccount } from "@/components/HeaderAccount";
 
 const VIDEO_BASE = "https://bluespring.co.jp/videos";
 
@@ -41,6 +42,7 @@ export function Landing() {
           <TrackedLink href="/learn" event="learn_entry_click" params={{ location: "lp_nav" }} className="rounded-full border-[1.5px] border-[#15172B] bg-[#FFE45C] px-3.5 py-1 text-sm font-black text-[#15172B] no-underline hover:bg-[#FFD92E]">
             まなぶ
           </TrackedLink>
+          <HeaderAccount />
           <nav aria-label="対象別" className="hidden flex-wrap gap-5 text-sm font-medium md:flex">
             <TrackedLink href="/try?for=highschool" event="segment_click" params={{ segment: "highschool", location: "lp_nav" }} className="text-[#15172B] hover:text-[#1533B8]">高校生</TrackedLink>
             <TrackedLink href="/try?for=student" event="segment_click" params={{ segment: "student", location: "lp_nav" }} className="text-[#15172B] hover:text-[#1533B8]">大学生（就活）</TrackedLink>

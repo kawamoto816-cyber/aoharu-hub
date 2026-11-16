@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { card } from "@/components/drill/DrillPlay";
 import { canSeeTimeAnalysis, PRICING_HREF } from "@/lib/exam/access";
+import { daimonNo } from "@/lib/exam/daimon-no";
 import { useExamPlan } from "./plan-context";
 
 // 試験モードの結果に足す部分: 時間配分 (大問ごとに画面に出していた時間と、配点から見た目安)・弱い単元 (レクチャーと単元模試へ)・これまでの記録。
@@ -55,7 +56,7 @@ export function ExamResultPanel({ data }: { data: ExamResultData }) {
                   <li key={i} className="grid gap-1">
                     <span className="flex items-baseline justify-between gap-2 text-[13.5px] font-bold">
                       <span className="min-w-0 [overflow-wrap:anywhere]">
-                        {i + 1}　{p.title}
+                        {[daimonNo(p.title, i), p.title].filter(Boolean).join("　")}
                       </span>
                       <span className="shrink-0 font-black tabular-nums">
                         {ms(spent)}
