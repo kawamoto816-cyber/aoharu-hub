@@ -268,7 +268,7 @@ export const E_SEITAKAKKEI5_E_POP: CastScript = {
       kind: "talk",
       who: "sensei",
       text: "ちょっと待《ま》ったー！　かけるのは何《なに》だっけ？　問題《もんだい》！",
-      say: "ちょっと待ったー！　かけるのわ何だっけ？　問題！",
+      say: "ちょっと待ったー！　かけるのわなんだっけ？　問題！",
     },
     { kind: "pause", ref: "mistake:1" },
     {
