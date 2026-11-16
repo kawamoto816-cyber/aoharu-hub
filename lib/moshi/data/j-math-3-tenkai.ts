@@ -21,7 +21,7 @@ export const J_MATH_3_TENKAI: Daimon[] = [
       {
         id: "1",
         no: "(1)",
-        prompt: "−3a(2a − 5b)",
+        prompt: "次の計算をしなさい。\n−3a(2a − 5b)",
         points: 3,
         skill: "知識・技能",
         level: 1,
@@ -39,7 +39,7 @@ export const J_MATH_3_TENKAI: Daimon[] = [
       {
         id: "2",
         no: "(2)",
-        prompt: "(6x²y − 9xy²) ÷ 3xy",
+        prompt: "次の計算をしなさい。\n(6x²y − 9xy²) ÷ 3xy",
         points: 3,
         skill: "知識・技能",
         level: 1,
@@ -57,7 +57,7 @@ export const J_MATH_3_TENKAI: Daimon[] = [
       {
         id: "3",
         no: "(3)",
-        prompt: "(x − 4)(x + 7)",
+        prompt: "次の計算をしなさい。\n(x − 4)(x + 7)",
         points: 4,
         skill: "知識・技能",
         level: 1,
@@ -79,7 +79,7 @@ export const J_MATH_3_TENKAI: Daimon[] = [
       {
         id: "4",
         no: "(4)",
-        prompt: "(3x + 2y)²",
+        prompt: "次の計算をしなさい。\n(3x + 2y)²",
         points: 4,
         skill: "知識・技能",
         level: 2,
@@ -104,7 +104,7 @@ export const J_MATH_3_TENKAI: Daimon[] = [
       {
         id: "5",
         no: "(5)",
-        prompt: "(2a + 5)(2a − 5)",
+        prompt: "次の計算をしなさい。\n(2a + 5)(2a − 5)",
         points: 3,
         skill: "知識・技能",
         level: 1,
@@ -166,7 +166,7 @@ export const J_MATH_3_TENKAI: Daimon[] = [
       {
         id: "1",
         no: "(1)",
-        prompt: "4ab − 6b",
+        prompt: "次の式を因数分解しなさい。\n4ab − 6b",
         points: 3,
         skill: "知識・技能",
         level: 1,
@@ -184,7 +184,7 @@ export const J_MATH_3_TENKAI: Daimon[] = [
       {
         id: "2",
         no: "(2)",
-        prompt: "x² + 9x + 20",
+        prompt: "次の式を因数分解しなさい。\nx² + 9x + 20",
         points: 3,
         skill: "知識・技能",
         level: 1,
@@ -201,7 +201,7 @@ export const J_MATH_3_TENKAI: Daimon[] = [
       {
         id: "3",
         no: "(3)",
-        prompt: "x² − x − 30",
+        prompt: "次の式を因数分解しなさい。\nx² − x − 30",
         points: 4,
         skill: "知識・技能",
         level: 2,
@@ -222,7 +222,7 @@ export const J_MATH_3_TENKAI: Daimon[] = [
       {
         id: "4",
         no: "(4)",
-        prompt: "a² − 14a + 49",
+        prompt: "次の式を因数分解しなさい。\na² − 14a + 49",
         points: 3,
         skill: "知識・技能",
         level: 2,
@@ -239,7 +239,7 @@ export const J_MATH_3_TENKAI: Daimon[] = [
       {
         id: "5",
         no: "(5)",
-        prompt: "3x² − 48",
+        prompt: "次の式を因数分解しなさい。\n3x² − 48",
         points: 4,
         skill: "知識・技能",
         level: 2,

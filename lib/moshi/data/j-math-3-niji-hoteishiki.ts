@@ -21,7 +21,7 @@ export const J_MATH_3_NIJI_HOTEISHIKI: Daimon[] = [
       {
         id: "1",
         no: "(1)",
-        prompt: "3x² = 48",
+        prompt: "次の二次方程式を解きなさい。\n3x² = 48",
         points: 4,
         skill: "知識・技能",
         level: 1,
@@ -39,7 +39,7 @@ export const J_MATH_3_NIJI_HOTEISHIKI: Daimon[] = [
       {
         id: "2",
         no: "(2)",
-        prompt: "(x + 3)² = 7",
+        prompt: "次の二次方程式を解きなさい。\n(x + 3)² = 7",
         points: 4,
         skill: "知識・技能",
         level: 1,
@@ -57,7 +57,7 @@ export const J_MATH_3_NIJI_HOTEISHIKI: Daimon[] = [
       {
         id: "3",
         no: "(3)",
-        prompt: "x² + 2x − 24 = 0",
+        prompt: "次の二次方程式を解きなさい。\nx² + 2x − 24 = 0",
         points: 4,
         skill: "知識・技能",
         level: 1,
@@ -75,7 +75,7 @@ export const J_MATH_3_NIJI_HOTEISHIKI: Daimon[] = [
       {
         id: "4",
         no: "(4)",
-        prompt: "x² − 10x + 25 = 0",
+        prompt: "次の二次方程式を解きなさい。\nx² − 10x + 25 = 0",
         points: 4,
         skill: "知識・技能",
         level: 2,
@@ -92,7 +92,7 @@ export const J_MATH_3_NIJI_HOTEISHIKI: Daimon[] = [
       {
         id: "5",
         no: "(5)",
-        prompt: "x² = 6x",
+        prompt: "次の二次方程式を解きなさい。\nx² = 6x",
         points: 4,
         skill: "知識・技能",
         level: 2,

@@ -126,6 +126,8 @@ export interface Item {
   /** 問題文 (改行可) */
   prompt: string;
   figure?: FigureOrRef;
+  /** この小問の直前に出す資料 (試験モードで組みなおすとき、その小問だけ・その小問から先で使う資料をここに置く) */
+  material?: Material[];
   points: number;
   skill: Skill;
   /** この小問が主に使う単元 (大問の units[0] と同じなら省略) */
@@ -199,6 +201,8 @@ export interface QuestionBody {
   /** 問題文 (改行可・{{ }} で強調・漢字《かんじ》でルビ) */
   prompt: string;
   figure?: FigureOrRef;
+  /** この小問の直前に出す資料 (Item.material) */
+  material?: Material[];
   answer: Answer;
   /** 解き方 1〜4 ステップ */
   steps: SolutionStep[];

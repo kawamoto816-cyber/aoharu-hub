@@ -34,7 +34,7 @@ const POOL: QuestionB[] = [
   },
   {
     ...base("why-dont-we", 1),
-    prompt: "A: Why don't we go to the new aquarium this Saturday?\nB: (　　)",
+    prompt: "A: Why don't we go to the new aquarium this Saturday?\nB: (　　)\n空所に入る最も適切なものはどれですか。",
     answer: {
       kind: "choice",
       options: ["That sounds great.", "Because it's Saturday.", "No, we don't.", "You're welcome."],
@@ -51,7 +51,7 @@ const POOL: QuestionB[] = [
   },
   {
     ...base("thanks-reply", 1),
-    prompt: "A: Thank you for helping me with my homework.\nB: (　　)",
+    prompt: "A: Thank you for helping me with my homework.\nB: (　　)\n空所に入る最も適切なものはどれですか。",
     answer: {
       kind: "choice",
       options: ["My pleasure.", "Thank you.", "That's too bad.", "Here you are."],
@@ -76,7 +76,7 @@ const POOL: QuestionB[] = [
   // ---- 標準 ----
   {
     ...base("lost-ticket", 2, "思考・判断・表現"),
-    prompt: "A: Oh no, I can't find my train ticket.\nB: (　　)\nA: Good idea. I'll go and ask there.",
+    prompt: "A: Oh no, I can't find my train ticket.\nB: (　　)\nA: Good idea. I'll go and ask there.\n空所に入る最も適切なものはどれですか。",
     answer: {
       kind: "choice",
       options: [
@@ -101,7 +101,7 @@ const POOL: QuestionB[] = [
   },
   {
     ...base("take-message", 2),
-    prompt: "（電話で）\nA: Hello. May I speak to Mr. Sato?\nB: I'm sorry, he's out right now. (　　)\nA: Yes, please tell him that Emi called.",
+    prompt: "（電話で）\nA: Hello. May I speak to Mr. Sato?\nB: I'm sorry, he's out right now. (　　)\nA: Yes, please tell him that Emi called.\n空所に入る最も適切なものはどれですか。",
     answer: {
       kind: "choice",
       options: ["Can I take a message?", "Who's speaking?", "Hold on, please.", "You have the wrong number."],
@@ -138,7 +138,7 @@ const POOL: QuestionB[] = [
   },
   {
     ...base("borrow-pen", 2),
-    prompt: "A: Could I borrow your pen for a minute?\nB: (　　)\nA: Thanks. I'll give it back soon.",
+    prompt: "A: Could I borrow your pen for a minute?\nB: (　　)\nA: Thanks. I'll give it back soon.\n空所に入る最も適切なものはどれですか。",
     answer: {
       kind: "choice",
       options: ["Sure, here you are.", "No, thank you.", "Yes, I could.", "You're welcome."],
@@ -178,7 +178,7 @@ const POOL: QuestionB[] = [
   },
   {
     ...base("can-manage", 3, "思考・判断・表現"),
-    prompt: "A: Your bag looks heavy. Shall I carry it for you?\nB: (　　)\nA: OK. Just let me know if you need help.",
+    prompt: "A: Your bag looks heavy. Shall I carry it for you?\nB: (　　)\nA: OK. Just let me know if you need help.\n空所に入る最も適切なものはどれですか。",
     answer: {
       kind: "choice",
       options: ["Thanks, but I can manage.", "Yes, please. Thank you.", "No, I didn't.", "Yes, it is."],

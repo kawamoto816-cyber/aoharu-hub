@@ -144,6 +144,7 @@ function resolveItem(it: Item): Item {
   return {
     ...it,
     figure: resolveFigure(it.figure),
+    material: it.material?.map(resolveMaterial).filter((m): m is Material => m !== null),
     steps: it.steps.map((s) => ({ ...s, figure: resolveFigure(s.figure) })),
   };
 }

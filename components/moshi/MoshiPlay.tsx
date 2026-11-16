@@ -456,6 +456,9 @@ function figureNumbers(daimon: Daimon[]) {
       if (m.kind === "figure") exam[`${di}-${k}`] = ++e;
     });
     for (const it of d.items) {
+      it.material?.forEach((m, k) => {
+        if (m.kind === "figure") exam[`${keyOf(d, it)}@${k}`] = ++e;
+      });
       if (it.figure) exam[keyOf(d, it)] = ++e;
       steps[keyOf(d, it)] = st;
       st += it.steps.filter((x) => x.figure).length;
@@ -626,7 +629,8 @@ export function MoshiPlay({
       const u = units[unitId];
       const meta: MistakeMeta = { unitId, unitName: u?.name ?? unitId, href: u?.href || u?.lecture || "", subject: `テスト模試・${u?.subject ?? ""}`, kids: u?.kids };
       const needMat = /上の|表|資料|本文|グラフ/.test(it.prompt);
-      const q = noteText(`【${d.title} ${it.no}】${needMat ? `\n${materialAsText(d.material)}\n` : ""}${it.prompt}`);
+      const mat = materialAsText([...(needMat ? (d.material ?? []) : []), ...(it.material ?? [])]);
+      const q = noteText(`【${d.title} ${it.no}】${mat ? `\n${mat}\n` : ""}${it.prompt}`);
       const ex = [plain(it.point), ...it.steps.map((s) => `${plain(s.title)}：${plain(s.body)}`)].join("\n");
       if (res.score >= it.points) {
         recordRight(unitId, q);
@@ -745,6 +749,11 @@ export function MoshiPlay({
                 const label = `${di + 1}${it.no}の答え`;
                 return (
                   <li key={key} className="border-t border-dashed border-[#C9C6B4] pt-4">
+                    {it.material?.map((m, k) => (
+                      <div key={k} className="mb-3">
+                        <MaterialView m={m} figNo={figNos.exam[`${key}@${k}`] ?? 0} />
+                      </div>
+                    ))}
                     <p className="m-0 whitespace-pre-line text-[15.5px] leading-relaxed [overflow-wrap:anywhere]">
                       <span className="mr-1.5 font-black text-[#1533B8]">{it.no}</span>
                       <ListenRich text={it.prompt} />
@@ -1002,6 +1011,13 @@ export function MoshiPlay({
                       {res.score}/{it.points}
                     </span>
                   </summary>
+                  {it.material?.map((m, k) =>
+                    (m.kind === "text" || m.kind === "passage") && hasListen(m.body) ? (
+                      <p key={k} className="m-0 mt-2 whitespace-pre-line text-[14px] leading-relaxed">
+                        <ListenRich text={m.body} reveal />
+                      </p>
+                    ) : null,
+                  )}
                   <p className="m-0 mt-2 whitespace-pre-line text-[14px] leading-relaxed text-[#3A3D55] [overflow-wrap:anywhere]"><ListenRich text={it.prompt} reveal /></p>
                   {it.dependsOn && (
                     <p className="m-0 mt-1 text-[12.5px] font-bold text-[#5A5D73]">

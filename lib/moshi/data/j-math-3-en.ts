@@ -183,7 +183,7 @@ export const J_MATH_3_EN: Daimon[] = [
       {
         id: "1",
         no: "(1)",
-        prompt: "円 O の周上に3点 A、B、C があり、C は短いほうの弧 AB 上にない点です。∠ACB＝50° のとき、∠OAB の大きさ。",
+        prompt: "円 O の周上に3点 A、B、C があり、C は短いほうの弧 AB 上にない点です。∠ACB＝50° のとき、∠OAB の大きさを求めなさい。",
         points: 4,
         skill: "知識・技能",
         level: 2,
@@ -204,7 +204,7 @@ export const J_MATH_3_EN: Daimon[] = [
       {
         id: "2",
         no: "(2)",
-        prompt: "円周上に4点 A、B、C、D がこの順にあり、線分 AC と BD の交点を P とします。∠BAC＝32°、∠BPC＝78° のとき、∠ACD の大きさ。",
+        prompt: "円周上に4点 A、B、C、D がこの順にあり、線分 AC と BD の交点を P とします。∠BAC＝32°、∠BPC＝78° のとき、∠ACD の大きさを求めなさい。",
         points: 5,
         skill: "思考・判断・表現",
         level: 2,
@@ -226,7 +226,7 @@ export const J_MATH_3_EN: Daimon[] = [
       {
         id: "3",
         no: "(3)",
-        prompt: "線分 AB を直径とする円の周上に点 C、D があり、C と D は直線 AB について反対側にあります。∠BCD＝58° のとき、∠ABD の大きさ。",
+        prompt: "線分 AB を直径とする円の周上に点 C、D があり、C と D は直線 AB について反対側にあります。∠BCD＝58° のとき、∠ABD の大きさを求めなさい。",
         points: 5,
         skill: "思考・判断・表現",
         level: 2,
@@ -248,7 +248,7 @@ export const J_MATH_3_EN: Daimon[] = [
       {
         id: "4",
         no: "(4)",
-        prompt: "円周上の3点 A、B、C で、弧 AB:弧 BC:弧 CA＝3:4:5 です（どの弧も残りの1点をふくまない）。∠ACB の大きさ。",
+        prompt: "円周上の3点 A、B、C で、弧 AB:弧 BC:弧 CA＝3:4:5 です（どの弧も残りの1点をふくまない）。∠ACB の大きさを求めなさい。",
         points: 5,
         skill: "思考・判断・表現",
         level: 2,
@@ -271,7 +271,7 @@ export const J_MATH_3_EN: Daimon[] = [
       {
         id: "5",
         no: "(5)",
-        prompt: "円 O の外の点 P から円に2本の接線をひき、接点を A、B とします。∠APB＝64° で、点 C は A、B を両端とする弧のうち長いほうの弧の上にあります。∠ACB の大きさ。",
+        prompt: "円 O の外の点 P から円に2本の接線をひき、接点を A、B とします。∠APB＝64° で、点 C は A、B を両端とする弧のうち長いほうの弧の上にあります。∠ACB の大きさを求めなさい。",
         points: 5,
         skill: "思考・判断・表現",
         level: 3,

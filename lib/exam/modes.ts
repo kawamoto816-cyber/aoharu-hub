@@ -50,6 +50,17 @@ const STD: [number, number, number] = [0.3, 0.5, 0.2];
 const HARD: [number, number, number] = [0, 0.4, 0.6];
 
 const sec = (title: string, lead: string, points: number, count: [number, number], mix: [number, number, number], from?: DaimonSpec["from"], extra: Partial<DaimonSpec> = {}): DaimonSpec => ({ title, lead, points, count, mix, from, ...extra });
+/**
+ * 題に分野の名前を並べる大問 (「平面図形・空間図形」)。題は、じっさいに出た小問の分野だけで作る (lib/exam/build.ts の daimonTitle)。
+ * template の {t} に分野の名前を「・」でつないで入れる。title (一覧・選ぶ画面に出す題) は全分野を入れたもの。
+ * same を渡すと、分野の単元をあわせたものが same と同じか確かめる (単元のまとまりと書きわすれがないように)
+ */
+function tsec(template: string, lead: string, points: number, count: [number, number], mix: [number, number, number], topics: [string, string[]][], extra: Partial<DaimonSpec> = {}, same?: string[]): DaimonSpec {
+  const units = topics.flatMap(([, us]) => us);
+  if (same && (same.length !== units.length || same.some((u) => !units.includes(u)))) throw new Error(`tsec「${template}」: 分野の単元が ${same.join(",")} と合わない`);
+  const ts = topics.map(([label, us]) => ({ label, units: us }));
+  return { ...sec(template.replace("{t}", ts.map((t) => t.label).join("・")), lead, points, count, mix, { units }, extra), topics: ts, titleTemplate: template };
+}
 const ASK = "次の問いに答えなさい。";
 
 // ---- 中学の5教科 (地図の教科 key → 模試の教科) ----
@@ -66,10 +77,10 @@ export const CHU_SUBJECTS: { key: string; subject: Subject; name: string }[] = [
 const KORITSU: Record<string, DaimonSpec[]> = {
   math: [
     sec("小問集合（計算・基本）", ASK, 24, [8, 10], BASIC, { units: M_KAZU }, { prefer: "single" }),
-    sec("方程式と数の性質", ASK, 14, [3, 6], STD, { units: M_KAZU }),
+    tsec("{t}", ASK, 14, [3, 6], STD, [["式の計算", ["j-math-1-seifu", "j-math-1-moji", "j-math-2-shiki", "j-math-3-tenkai"]], ["平方根", ["j-math-3-heihokon"]], ["方程式", ["j-math-1-hoteishiki", "j-math-2-renritsu", "j-math-3-niji-hoteishiki"]]], {}, M_KAZU),
     sec("関数", ASK, 18, [3, 6], STD, { units: M_KANSU }),
-    sec("平面図形・空間図形", ASK, 18, [3, 6], STD, { units: M_ZUKEI }),
-    sec("データの活用と確率", ASK, 14, [3, 6], STD, { units: M_DATA }),
+    tsec("{t}", ASK, 18, [3, 6], STD, [["平面図形", ["j-math-1-heimen", "j-math-2-heiko-godo", "j-math-2-sankaku-shikaku", "j-math-3-sojii", "j-math-3-en"]], ["三平方の定理", ["j-math-3-sanheiho"]], ["空間図形", ["j-math-1-kukan"]]], {}, M_ZUKEI),
+    tsec("{t}", ASK, 14, [3, 6], STD, [["データの活用", ["j-math-1-data", "j-math-2-hakohige"]], ["確率", ["j-math-2-kakuritsu"]], ["標本調査", ["j-math-3-hyohon"]]], {}, M_DATA),
     sec("総合問題", ASK, 12, [2, 5], HARD),
   ],
   rika: [
@@ -80,15 +91,15 @@ const KORITSU: Record<string, DaimonSpec[]> = {
     sec("地球（地学分野）", ASK, 20, [4, 7], STD, { units: S_CHIGAKU }),
   ],
   eigo: [
-    sec("語い・文法", ASK, 24, [8, 10], BASIC, { units: [...E_GOI, ...E_BUNPO] }, { prefer: "single" }),
+    tsec("{t}", ASK, 24, [8, 10], BASIC, [["語い", E_GOI], ["文法", E_BUNPO]], { prefer: "single" }),
     sec("語順・文の組み立て", "次の語句を並べかえて、正しい英文にしなさい。", 16, [3, 5], STD, { units: E_BUNPO }, { kinds: ["order", "term"] }),
     sec("対話文・資料の読み取り", ASK, 20, [3, 6], STD, { units: [...E_DOKKAI, ...E_BUNPO] }, { prefer: "material" }),
     sec("長文読解", "次の英文を読んで、あとの問いに答えなさい。", 25, [4, 7], STD, { units: E_DOKKAI }, { prefer: "material" }),
     sec("英作文", ASK, 15, [1, 3], STD, { units: E_SAKUBUN }, { kinds: ["written"] }),
   ],
   kokugo: [
-    sec("漢字・語句", ASK, 20, [6, 10], BASIC, { units: J_KANJI }, { prefer: "single" }),
-    sec("文法・敬語", ASK, 12, [3, 5], STD, { units: J_BUNPO }),
+    tsec("{t}", ASK, 20, [6, 10], BASIC, [["漢字", ["j-ja-1-kanji", "j-ja-2-kanji", "j-ja-3-kanji"]], ["語句", ["j-ja-1-goi", "j-ja-2-goi", "j-ja-3-goi"]]], { prefer: "single" }, J_KANJI),
+    tsec("{t}", ASK, 12, [3, 5], STD, [["文法", ["j-ja-1-bunpo-tani", "j-ja-1-bunpo-seibun", "j-ja-1-bunpo-hinshi", "j-ja-2-bunpo-yogen", "j-ja-2-bunpo-fuzoku", "j-ja-3-bunpo"]], ["敬語", ["j-ja-2-keigo"]]], {}, J_BUNPO),
     sec("説明的な文章", "次の文章を読んで、あとの問いに答えなさい。", 26, [4, 7], STD, { units: J_SETSUMEI }, { prefer: "material" }),
     sec("文学的な文章", "次の文章を読んで、あとの問いに答えなさい。", 24, [4, 7], STD, { units: J_BUNGAKU }, { prefer: "material" }),
     sec("古典", "次の文章を読んで、あとの問いに答えなさい。", 18, [3, 6], STD, { units: J_KOTEN }, { prefer: "material" }),
@@ -113,7 +124,7 @@ const KYOTSU: Record<string, { name: string; scopeLabel: string; subjectKey: str
     minutes: 90,
     sections: [
       sec("第1問　論理的な文章（評論）", "次の文章を読んで、後の問いに答えよ。", 45, [4, 6], STD, { units: ["h-jpn-ronri-hyoron", "h-jpn-ronri-kozo", "h-jpn-ronri-yoyaku", "h-jpn-gen-ronri", "h-jpn-bungaku-hyoron", "h-jpn-ronri-yogo", "h-jpn-gen-goi", "h-jpn-gen-kanji"] }, { kinds: MARK, prefer: "material" }),
-      sec("第2問　文学的な文章（小説・詩歌）", "次の文章を読んで、後の問いに答えよ。", 45, [4, 6], STD, { units: ["h-jpn-bungaku-shosetsu", "h-jpn-bungaku-shi", "h-jpn-bungaku-tanka", "h-jpn-bungaku-hyogen", "h-jpn-bunka-kindai", "h-jpn-bunka-shiika"] }, { kinds: MARK, prefer: "material" }),
+      tsec("第2問　文学的な文章（{t}）", "次の文章を読んで、後の問いに答えよ。", 45, [4, 6], STD, [["小説", ["h-jpn-bungaku-shosetsu", "h-jpn-bungaku-hyogen", "h-jpn-bunka-kindai"]], ["詩歌", ["h-jpn-bungaku-shi", "h-jpn-bungaku-tanka", "h-jpn-bunka-shiika"]]], { kinds: MARK, prefer: "material" }),
       sec("第3問　実用的な文章・資料", "次の資料を読んで、後の問いに答えよ。", 20, [2, 4], STD, { units: ["h-jpn-ronri-shiryo", "h-jpn-gen-jitsuyo", "h-jpn-gen-hokoku", "h-jpn-gen-iken", "h-jpn-gen-hanasu"] }, { kinds: MARK, prefer: "material" }),
       sec("第4問　古文", "次の文章を読んで、後の問いに答えよ。", 45, [4, 6], STD, { units: ["h-jpn-koten-monogatari", "h-jpn-koten-nikki", "h-jpn-koten-waka", "h-jpn-koten-keigo", "h-jpn-koten-joshi", "h-jpn-koten-joshiki", "h-jpn-koten-shikibetsu", "h-jpn-bunka-kobun-dokkai", "h-jpn-bunka-kobun-tango", "h-jpn-bunka-jodoshi", "h-jpn-bunka-yogen"] }, { kinds: MARK, prefer: "material" }),
       sec("第5問　漢文", "次の文章を読んで、後の問いに答えよ。", 45, [4, 6], STD, { units: ["h-jpn-koten-shiso", "h-jpn-koten-gentei", "h-jpn-koten-gimon", "h-jpn-koten-hikaku", "h-jpn-koten-hitei", "h-jpn-koten-shieki", "h-jpn-bunka-kanshi", "h-jpn-bunka-kundoku", "h-jpn-bunka-saidoku", "h-jpn-bunka-koji"] }, { kinds: MARK, prefer: "material" }),
@@ -127,10 +138,10 @@ const KYOTSU: Record<string, { name: string; scopeLabel: string; subjectKey: str
     minutes: 70,
     groups: ["数学Ⅰ", "数学A"],
     sections: [
-      sec("第1問　数と式・図形と計量", "次の問いに答えよ。", 30, [4, 8], STD, { units: ["h-math-1-shiki", "h-math-1-jissu", "h-math-1-futoshiki", "h-math-1-shugo", "h-math-1-sankakuhi", "h-math-1-teiri", "h-math-1-keiryo"] }, { kinds: MARK }),
-      sec("第2問　二次関数・データの分析", "次の問いに答えよ。", 30, [4, 8], STD, { units: ["h-math-1-nijikansu", "h-math-1-saidai", "h-math-1-nijihoteishiki", "h-math-1-data"] }, { kinds: MARK, prefer: "material" }),
+      tsec("第1問　{t}", "次の問いに答えよ。", 30, [4, 8], STD, [["数と式", ["h-math-1-shiki", "h-math-1-jissu", "h-math-1-futoshiki", "h-math-1-shugo"]], ["図形と計量", ["h-math-1-sankakuhi", "h-math-1-teiri", "h-math-1-keiryo"]]], { kinds: MARK }),
+      tsec("第2問　{t}", "次の問いに答えよ。", 30, [4, 8], STD, [["二次関数", ["h-math-1-nijikansu", "h-math-1-saidai", "h-math-1-nijihoteishiki"]], ["データの分析", ["h-math-1-data"]]], { kinds: MARK, prefer: "material" }),
       sec("第3問　図形の性質", "次の問いに答えよ。", 20, [3, 6], STD, { units: ["h-math-a-sankakukei", "h-math-a-en", "h-math-a-kukan"] }, { kinds: MARK }),
-      sec("第4問　場合の数と確率", "次の問いに答えよ。", 20, [3, 6], STD, { units: ["h-math-a-baai", "h-math-a-kakuritsu", "h-math-a-joken", "h-math-a-yakusu", "h-math-a-gojo", "h-math-a-nshin"] }, { kinds: MARK }),
+      tsec("第4問　{t}", "次の問いに答えよ。", 20, [3, 6], STD, [["場合の数と確率", ["h-math-a-baai", "h-math-a-kakuritsu", "h-math-a-joken"]], ["整数の性質", ["h-math-a-yakusu", "h-math-a-gojo", "h-math-a-nshin"]]], { kinds: MARK }),
     ],
   },
   "math2bc": {
@@ -141,12 +152,12 @@ const KYOTSU: Record<string, { name: string; scopeLabel: string; subjectKey: str
     minutes: 70,
     groups: ["数学Ⅱ", "数学B", "数学C"],
     sections: [
-      sec("第1問　三角関数・指数関数・対数関数", "次の問いに答えよ。", 15, [3, 5], STD, { units: ["h-math-2-sankaku", "h-math-2-kahou", "h-math-2-shisu", "h-math-2-taisu"] }, { kinds: MARK }),
-      sec("第2問　微分法・積分法", "次の問いに答えよ。", 15, [3, 5], STD, { units: ["h-math-2-bibun", "h-math-2-sekibun"] }, { kinds: MARK }),
-      sec("第3問　図形と方程式・式と証明・複素数", "次の問いに答えよ。", 22, [3, 6], STD, { units: ["h-math-2-chokusen", "h-math-2-en", "h-math-2-kiseki", "h-math-2-shomei", "h-math-2-koji", "h-math-2-fukuso"] }, { kinds: MARK }),
+      tsec("第1問　{t}", "次の問いに答えよ。", 15, [3, 5], STD, [["三角関数", ["h-math-2-sankaku", "h-math-2-kahou"]], ["指数関数", ["h-math-2-shisu"]], ["対数関数", ["h-math-2-taisu"]]], { kinds: MARK }),
+      tsec("第2問　{t}", "次の問いに答えよ。", 15, [3, 5], STD, [["微分法", ["h-math-2-bibun"]], ["積分法", ["h-math-2-sekibun"]]], { kinds: MARK }),
+      tsec("第3問　{t}", "次の問いに答えよ。", 22, [3, 6], STD, [["図形と方程式", ["h-math-2-chokusen", "h-math-2-en", "h-math-2-kiseki"]], ["式と証明", ["h-math-2-shomei"]], ["複素数と方程式", ["h-math-2-fukuso", "h-math-2-koji"]]], { kinds: MARK }),
       sec("第4問　数列", "次の問いに答えよ。", 16, [3, 5], STD, { units: ["h-math-b-tosa", "h-math-b-sigma", "h-math-b-zenka", "h-math-b-kino"] }, { kinds: MARK }),
       sec("第5問　統計的な推測", "次の問いに答えよ。", 16, [3, 5], STD, { units: ["h-math-b-bunpu", "h-math-b-nikou", "h-math-b-suitei", "h-math-b-kentei"] }, { kinds: MARK }),
-      sec("第6問　ベクトル・平面上の曲線と複素数平面", "次の問いに答えよ。", 16, [3, 5], STD, { units: ["h-math-c-heimen", "h-math-c-kukan", "h-math-c-baikai", "h-math-c-zukei", "h-math-c-nijikyokusen", "h-math-c-fukuso"] }, { kinds: MARK }),
+      tsec("第6問　{t}", "次の問いに答えよ。", 16, [3, 5], STD, [["ベクトル", ["h-math-c-heimen", "h-math-c-kukan", "h-math-c-zukei"]], ["平面上の曲線", ["h-math-c-nijikyokusen", "h-math-c-baikai"]], ["複素数平面", ["h-math-c-fukuso"]]], { kinds: MARK }),
     ],
   },
   "eng-r": {
@@ -185,7 +196,7 @@ const KYOTSU: Record<string, { name: string; scopeLabel: string; subjectKey: str
     minutes: 60,
     sections: [
       sec("第1問　小問集合（情報社会・デジタル・ネットワーク）", "次の問いに答えよ。", 20, [4, 6], BASIC, { units: ["h-info-1-media", "h-info-1-moral", "h-info-1-chizai", "h-info-1-digital", "h-info-1-assyuku", "h-info-1-network", "h-info-1-computer"] }, { kinds: MARK, prefer: "single" }),
-      sec("第2問　情報デザイン・モデル化とシミュレーション", "次の問いに答えよ。", 30, [3, 6], STD, { units: ["h-info-1-design", "h-info-1-hyogen", "h-info-1-model", "h-info-1-system"] }, { kinds: MARK }),
+      tsec("第2問　{t}", "次の問いに答えよ。", 30, [3, 6], STD, [["情報デザイン", ["h-info-1-design", "h-info-1-hyogen"]], ["モデル化とシミュレーション", ["h-info-1-model", "h-info-1-system"]]], { kinds: MARK }),
       sec("第3問　アルゴリズムとプログラミング", "次の問いに答えよ。", 25, [3, 5], STD, { units: ["h-info-1-algorithm", "h-info-1-program"] }, { kinds: MARK }),
       sec("第4問　データの活用", "次の問いに答えよ。", 25, [3, 5], STD, { units: ["h-info-1-data"] }, { kinds: MARK }),
     ],
@@ -200,7 +211,7 @@ const KYOTSU: Record<string, { name: string; scopeLabel: string; subjectKey: str
     groups: ["物理基礎"],
     sections: [
       sec("第1問　運動とエネルギー", "次の問いに答えよ。", 25, [4, 6], STD, { units: ["h-sci-phyb-undo", "h-sci-phyb-hosoku", "h-sci-phyb-energy", "h-sci-phyb-netsu"] }, { kinds: MARK }),
-      sec("第2問　波・電気", "次の問いに答えよ。", 25, [4, 6], STD, { units: ["h-sci-phyb-nami", "h-sci-phyb-oto", "h-sci-phyb-denryu", "h-sci-phyb-koryu", "h-sci-phyb-riyo"] }, { kinds: MARK }),
+      tsec("第2問　{t}", "次の問いに答えよ。", 25, [4, 6], STD, [["波", ["h-sci-phyb-nami", "h-sci-phyb-oto"]], ["電気", ["h-sci-phyb-denryu", "h-sci-phyb-koryu", "h-sci-phyb-riyo"]]], { kinds: MARK }),
     ],
   },
   "chemb": {
@@ -225,8 +236,8 @@ const KYOTSU: Record<string, { name: string; scopeLabel: string; subjectKey: str
     category: "理科",
     groups: ["生物基礎"],
     sections: [
-      sec("第1問　生物の特徴と遺伝子", "次の問いに答えよ。", 25, [4, 6], STD, { units: ["h-sci-biob-tayosei", "h-sci-biob-saibo", "h-sci-biob-taisha", "h-sci-biob-dna", "h-sci-biob-bunretsu", "h-sci-biob-hatsugen"] }, { kinds: MARK }),
-      sec("第2問　体内環境・植生と生態系", "次の問いに答えよ。", 25, [4, 6], STD, { units: ["h-sci-biob-taieki", "h-sci-biob-shinkei", "h-sci-biob-meneki", "h-sci-biob-sento", "h-sci-biob-biome", "h-sci-biob-seitaikei", "h-sci-biob-hozen"] }, { kinds: MARK }),
+      tsec("第1問　{t}", "次の問いに答えよ。", 25, [4, 6], STD, [["生物の特徴", ["h-sci-biob-tayosei", "h-sci-biob-saibo", "h-sci-biob-taisha"]], ["遺伝子とそのはたらき", ["h-sci-biob-dna", "h-sci-biob-bunretsu", "h-sci-biob-hatsugen"]]], { kinds: MARK }),
+      tsec("第2問　{t}", "次の問いに答えよ。", 25, [4, 6], STD, [["体内環境", ["h-sci-biob-taieki", "h-sci-biob-shinkei", "h-sci-biob-meneki"]], ["植生と生態系", ["h-sci-biob-sento", "h-sci-biob-biome", "h-sci-biob-seitaikei", "h-sci-biob-hozen"]]], { kinds: MARK }),
     ],
   },
   "earthb": {
@@ -238,8 +249,8 @@ const KYOTSU: Record<string, { name: string; scopeLabel: string; subjectKey: str
     category: "理科",
     groups: ["地学基礎"],
     sections: [
-      sec("第1問　固体地球と地球の歴史", "次の問いに答えよ。", 25, [4, 6], STD, { units: ["h-sci-earthb-katachi", "h-sci-earthb-naibu", "h-sci-earthb-plate", "h-sci-earthb-jishin", "h-sci-earthb-kazan", "h-sci-earthb-chiso", "h-sci-earthb-rekishi"] }, { kinds: MARK }),
-      sec("第2問　大気・海洋・宇宙と自然災害", "次の問いに答えよ。", 25, [4, 6], STD, { units: ["h-sci-earthb-taiki", "h-sci-earthb-junkan", "h-sci-earthb-uchu", "h-sci-earthb-taiyokei", "h-sci-earthb-saigai"] }, { kinds: MARK }),
+      tsec("第1問　{t}", "次の問いに答えよ。", 25, [4, 6], STD, [["固体地球", ["h-sci-earthb-katachi", "h-sci-earthb-naibu", "h-sci-earthb-plate", "h-sci-earthb-jishin", "h-sci-earthb-kazan"]], ["地球の歴史", ["h-sci-earthb-chiso", "h-sci-earthb-rekishi"]]], { kinds: MARK }),
+      tsec("第2問　{t}", "次の問いに答えよ。", 25, [4, 6], STD, [["大気と海洋", ["h-sci-earthb-taiki", "h-sci-earthb-junkan"]], ["宇宙", ["h-sci-earthb-uchu", "h-sci-earthb-taiyokei"]], ["自然災害", ["h-sci-earthb-saigai"]]], { kinds: MARK }),
     ],
   },
   "phy": {
@@ -253,8 +264,8 @@ const KYOTSU: Record<string, { name: string; scopeLabel: string; subjectKey: str
     sections: [
       sec("第1問　小問集合", "次の問いに答えよ。", 25, [4, 6], BASIC, { units: ["h-sci-phy-hoshabutsu", "h-sci-phy-goutai", "h-sci-phy-undoryo", "h-sci-phy-enundo", "h-sci-phy-tanshindo", "h-sci-phy-baninryoku", "h-sci-phy-kitai", "h-sci-phy-netsurikigaku", "h-sci-phy-hado", "h-sci-phy-doppler", "h-sci-phy-hikari", "h-sci-phy-denba", "h-sci-phy-condenser", "h-sci-phy-chokuryu", "h-sci-phy-jiba", "h-sci-phy-yudo", "h-sci-phy-koryu", "h-sci-phy-denshi", "h-sci-phy-genshi"] }, { kinds: MARK, prefer: "single" }),
       sec("第2問　力学", "次の問いに答えよ。", 25, [4, 6], STD, { units: ["h-sci-phy-hoshabutsu", "h-sci-phy-goutai", "h-sci-phy-undoryo", "h-sci-phy-enundo", "h-sci-phy-tanshindo", "h-sci-phy-baninryoku"] }, { kinds: MARK }),
-      sec("第3問　熱と波", "次の問いに答えよ。", 25, [4, 6], STD, { units: ["h-sci-phy-kitai", "h-sci-phy-netsurikigaku", "h-sci-phy-hado", "h-sci-phy-doppler", "h-sci-phy-hikari"] }, { kinds: MARK }),
-      sec("第4問　電磁気と原子", "次の問いに答えよ。", 25, [4, 6], STD, { units: ["h-sci-phy-denba", "h-sci-phy-condenser", "h-sci-phy-chokuryu", "h-sci-phy-jiba", "h-sci-phy-yudo", "h-sci-phy-koryu", "h-sci-phy-denshi", "h-sci-phy-genshi"] }, { kinds: MARK }),
+      tsec("第3問　{t}", "次の問いに答えよ。", 25, [4, 6], STD, [["熱", ["h-sci-phy-kitai", "h-sci-phy-netsurikigaku"]], ["波", ["h-sci-phy-hado", "h-sci-phy-doppler", "h-sci-phy-hikari"]]], { kinds: MARK }),
+      tsec("第4問　{t}", "次の問いに答えよ。", 25, [4, 6], STD, [["電磁気", ["h-sci-phy-denba", "h-sci-phy-condenser", "h-sci-phy-chokuryu", "h-sci-phy-jiba", "h-sci-phy-yudo", "h-sci-phy-koryu"]], ["原子", ["h-sci-phy-denshi", "h-sci-phy-genshi"]]], { kinds: MARK }),
     ],
   },
   "chem": {
@@ -267,9 +278,9 @@ const KYOTSU: Record<string, { name: string; scopeLabel: string; subjectKey: str
     groups: ["化学"],
     sections: [
       sec("第1問　物質の状態", "次の問いに答えよ。", 20, [3, 5], STD, { units: ["h-sci-chem-jotai", "h-sci-chem-kitai", "h-sci-chem-yoeki", "h-sci-chem-kesho"] }, { kinds: MARK }),
-      sec("第2問　反応とエネルギー・平衡", "次の問いに答えよ。", 25, [4, 6], STD, { units: ["h-sci-chem-energy", "h-sci-chem-denchi", "h-sci-chem-denki", "h-sci-chem-sokudo", "h-sci-chem-heiko", "h-sci-chem-denri"] }, { kinds: MARK }),
+      tsec("第2問　{t}", "次の問いに答えよ。", 25, [4, 6], STD, [["反応とエネルギー", ["h-sci-chem-energy", "h-sci-chem-denchi", "h-sci-chem-denki"]], ["反応の速さと平衡", ["h-sci-chem-sokudo", "h-sci-chem-heiko", "h-sci-chem-denri"]]], { kinds: MARK }),
       sec("第3問　無機物質", "次の問いに答えよ。", 20, [3, 5], STD, { units: ["h-sci-chem-hikinzoku", "h-sci-chem-kinzoku"] }, { kinds: MARK }),
-      sec("第4問　有機化合物と高分子", "次の問いに答えよ。", 25, [4, 6], STD, { units: ["h-sci-chem-yuki", "h-sci-chem-shibo", "h-sci-chem-hokozoku", "h-sci-chem-tennen", "h-sci-chem-gosei"] }, { kinds: MARK }),
+      tsec("第4問　{t}", "次の問いに答えよ。", 25, [4, 6], STD, [["有機化合物", ["h-sci-chem-yuki", "h-sci-chem-shibo", "h-sci-chem-hokozoku"]], ["高分子化合物", ["h-sci-chem-tennen", "h-sci-chem-gosei"]]], { kinds: MARK }),
       sec("第5問　総合問題", "次の問いに答えよ。", 10, [2, 3], HARD, { units: ["h-sci-chem-jotai", "h-sci-chem-kitai", "h-sci-chem-yoeki", "h-sci-chem-kesho", "h-sci-chem-energy", "h-sci-chem-denchi", "h-sci-chem-denki", "h-sci-chem-sokudo", "h-sci-chem-heiko", "h-sci-chem-denri", "h-sci-chem-hikinzoku", "h-sci-chem-kinzoku", "h-sci-chem-yuki", "h-sci-chem-shibo", "h-sci-chem-hokozoku", "h-sci-chem-tennen", "h-sci-chem-gosei"] }, { kinds: MARK }),
     ],
   },
@@ -282,7 +293,7 @@ const KYOTSU: Record<string, { name: string; scopeLabel: string; subjectKey: str
     category: "理科",
     groups: ["生物"],
     sections: [
-      sec("第1問　生命の起源と進化・系統", "次の問いに答えよ。", 15, [3, 4], STD, { units: ["h-sci-bio-shinka", "h-sci-bio-keito"] }, { kinds: MARK }),
+      tsec("第1問　{t}", "次の問いに答えよ。", 15, [3, 4], STD, [["生命の起源と進化", ["h-sci-bio-shinka"]], ["系統", ["h-sci-bio-keito"]]], { kinds: MARK }),
       sec("第2問　細胞と代謝", "次の問いに答えよ。", 20, [3, 5], STD, { units: ["h-sci-bio-tanpaku", "h-sci-bio-kokyu", "h-sci-bio-kogosei"] }, { kinds: MARK }),
       sec("第3問　遺伝情報とその発現", "次の問いに答えよ。", 20, [3, 5], STD, { units: ["h-sci-bio-chosetsu", "h-sci-bio-biotech", "h-sci-bio-genbun"] }, { kinds: MARK }),
       sec("第4問　発生", "次の問いに答えよ。", 15, [3, 4], STD, { units: ["h-sci-bio-dobutsu-hassei", "h-sci-bio-shokubutsu-hassei"] }, { kinds: MARK }),
@@ -300,8 +311,8 @@ const KYOTSU: Record<string, { name: string; scopeLabel: string; subjectKey: str
     groups: ["地学"],
     sections: [
       sec("第1問　固体地球", "次の問いに答えよ。", 25, [4, 6], STD, { units: ["h-sci-earth-kozo", "h-sci-earth-plate", "h-sci-earth-henseki", "h-sci-earth-kobutsu"] }, { kinds: MARK }),
-      sec("第2問　地質と地球の歴史", "次の問いに答えよ。", 20, [3, 5], STD, { units: ["h-sci-earth-chishi", "h-sci-earth-koseibutsu"] }, { kinds: MARK }),
-      sec("第3問　大気と海洋", "次の問いに答えよ。", 30, [4, 7], STD, { units: ["h-sci-earth-taiki", "h-sci-earth-kisho", "h-sci-earth-kaiyo"] }, { kinds: MARK }),
+      tsec("第2問　{t}", "次の問いに答えよ。", 20, [3, 5], STD, [["地質", ["h-sci-earth-chishi"]], ["地球の歴史", ["h-sci-earth-koseibutsu"]]], { kinds: MARK }),
+      tsec("第3問　{t}", "次の問いに答えよ。", 30, [4, 7], STD, [["大気", ["h-sci-earth-taiki", "h-sci-earth-kisho"]], ["海洋", ["h-sci-earth-kaiyo"]]], { kinds: MARK }),
       sec("第4問　宇宙", "次の問いに答えよ。", 25, [4, 6], STD, { units: ["h-sci-earth-wakusei", "h-sci-earth-kosei", "h-sci-earth-ginga"] }, { kinds: MARK }),
     ],
   },
@@ -314,11 +325,11 @@ const KYOTSU: Record<string, { name: string; scopeLabel: string; subjectKey: str
     category: "地理歴史・公民",
     groups: ["地理総合", "地理探究"],
     sections: [
-      sec("第1問　自然環境と防災", "次の問いに答えよ。", 20, [3, 5], STD, { units: ["h-geo-sogo-chikei", "h-geo-sogo-kiko", "h-geo-tankyu-chikei", "h-geo-tankyu-kiko", "h-geo-sogo-bosai", "h-geo-sogo-kankyo"] }, { kinds: MARK }),
+      tsec("第1問　{t}", "次の問いに答えよ。", 20, [3, 5], STD, [["自然環境", ["h-geo-sogo-chikei", "h-geo-sogo-kiko", "h-geo-tankyu-chikei", "h-geo-tankyu-kiko", "h-geo-sogo-kankyo"]], ["防災", ["h-geo-sogo-bosai"]]], { kinds: MARK }),
       sec("第2問　資源と産業", "次の問いに答えよ。", 20, [3, 5], STD, { units: ["h-geo-tankyu-nogyo", "h-geo-tankyu-shigen", "h-geo-tankyu-kogyo", "h-geo-tankyu-kotsu", "h-geo-sogo-shigen"] }, { kinds: MARK }),
-      sec("第3問　人口・都市・生活文化", "次の問いに答えよ。", 20, [3, 5], STD, { units: ["h-geo-sogo-jinko", "h-geo-sogo-toshi", "h-geo-sogo-shukyo", "h-geo-tankyu-jinko", "h-geo-tankyu-toshi", "h-geo-tankyu-minzoku", "h-geo-tankyu-kokka"] }, { kinds: MARK }),
+      tsec("第3問　{t}", "次の問いに答えよ。", 20, [3, 5], STD, [["人口", ["h-geo-sogo-jinko", "h-geo-tankyu-jinko"]], ["都市", ["h-geo-sogo-toshi", "h-geo-tankyu-toshi"]], ["生活文化", ["h-geo-sogo-shukyo", "h-geo-tankyu-minzoku", "h-geo-tankyu-kokka"]]], { kinds: MARK }),
       sec("第4問　世界の地誌", "次の問いに答えよ。", 20, [3, 5], STD, { units: ["h-geo-tankyu-higashiasia", "h-geo-tankyu-minamiasia", "h-geo-tankyu-nishiasia", "h-geo-tankyu-europe", "h-geo-tankyu-russia", "h-geo-tankyu-america", "h-geo-tankyu-oceania"] }, { kinds: MARK }),
-      sec("第5問　地図・地域調査と日本", "次の問いに答えよ。", 20, [3, 5], STD, { units: ["h-geo-sogo-gis", "h-geo-sogo-jisa", "h-geo-sogo-musubi", "h-geo-sogo-chosa", "h-geo-tankyu-nihon"] }, { kinds: MARK }),
+      tsec("第5問　{t}", "次の問いに答えよ。", 20, [3, 5], STD, [["地図", ["h-geo-sogo-gis", "h-geo-sogo-jisa", "h-geo-sogo-musubi"]], ["地域調査", ["h-geo-sogo-chosa"]], ["日本", ["h-geo-tankyu-nihon"]]], { kinds: MARK }),
     ],
   },
   "nihonshi": {
@@ -334,7 +345,7 @@ const KYOTSU: Record<string, { name: string; scopeLabel: string; subjectKey: str
       sec("第2問　古代", "次の問いに答えよ。", 20, [3, 5], STD, { units: ["h-hist-jp-genshi", "h-hist-jp-kofun", "h-hist-jp-asuka", "h-hist-jp-nara", "h-hist-jp-heian"] }, { kinds: MARK }),
       sec("第3問　中世", "次の問いに答えよ。", 15, [3, 4], STD, { units: ["h-hist-jp-insei", "h-hist-jp-kamakura", "h-hist-jp-muromachi", "h-hist-jp-shokuho"] }, { kinds: MARK }),
       sec("第4問　近世", "次の問いに答えよ。", 15, [3, 4], STD, { units: ["h-hist-jp-edo-seiritsu", "h-hist-jp-edo-keizai", "h-hist-jp-edo-doyo"] }, { kinds: MARK }),
-      sec("第5問　近代・現代", "次の問いに答えよ。", 25, [4, 6], STD, { units: ["h-hist-jp-bakumatsu", "h-hist-jp-meiji", "h-hist-jp-nichiro", "h-hist-jp-taisho", "h-hist-jp-senso", "h-hist-jp-senryo", "h-hist-jp-kodo", "h-hist-jp-gendai"] }, { kinds: MARK }),
+      tsec("第5問　{t}", "次の問いに答えよ。", 25, [4, 6], STD, [["近代", ["h-hist-jp-bakumatsu", "h-hist-jp-meiji", "h-hist-jp-nichiro", "h-hist-jp-taisho", "h-hist-jp-senso"]], ["現代", ["h-hist-jp-senryo", "h-hist-jp-kodo", "h-hist-jp-gendai"]]], { kinds: MARK }),
     ],
   },
   "sekaishi": {
@@ -349,7 +360,7 @@ const KYOTSU: Record<string, { name: string; scopeLabel: string; subjectKey: str
       sec("第1問　歴史総合（近現代の世界と日本）", "次の問いに答えよ。", 25, [4, 6], STD, { units: ["h-hist-sogo-18c", "h-hist-sogo-sangyo", "h-hist-sogo-kakumei", "h-hist-sogo-meiji", "h-hist-sogo-teikoku", "h-hist-sogo-nisshin", "h-hist-sogo-ww1", "h-hist-sogo-taishu", "h-hist-sogo-kyoko", "h-hist-sogo-ww2", "h-hist-sogo-sengo", "h-hist-sogo-reisen", "h-hist-sogo-datsu", "h-hist-sogo-kodo", "h-hist-sogo-global"] }, { kinds: MARK }),
       sec("第2問　古代の世界", "次の問いに答えよ。", 20, [3, 5], STD, { units: ["h-hist-w-orient", "h-hist-w-greece", "h-hist-w-india", "h-hist-w-china-kodai"] }, { kinds: MARK }),
       sec("第3問　中世のアジアとヨーロッパ", "次の問いに答えよ。", 20, [3, 5], STD, { units: ["h-hist-w-tou", "h-hist-w-yuboku", "h-hist-w-islam", "h-hist-w-chusei", "h-hist-w-sougen", "h-hist-w-minshin", "h-hist-w-teikoku"] }, { kinds: MARK }),
-      sec("第4問　近世・近代の世界", "次の問いに答えよ。", 20, [3, 5], STD, { units: ["h-hist-w-daikokai", "h-hist-w-shuken", "h-hist-w-kakumei", "h-hist-w-19c", "h-hist-w-teikokushugi"] }, { kinds: MARK }),
+      tsec("第4問　{t}の世界", "次の問いに答えよ。", 20, [3, 5], STD, [["近世", ["h-hist-w-daikokai", "h-hist-w-shuken"]], ["近代", ["h-hist-w-kakumei", "h-hist-w-19c", "h-hist-w-teikokushugi"]]], { kinds: MARK }),
       sec("第5問　現代の世界", "次の問いに答えよ。", 15, [3, 4], STD, { units: ["h-hist-w-taisen", "h-hist-w-reisen", "h-hist-w-gendai"] }, { kinds: MARK }),
     ],
   },
@@ -363,7 +374,7 @@ const KYOTSU: Record<string, { name: string; scopeLabel: string; subjectKey: str
     groups: ["公共", "倫理"],
     sections: [
       sec("第1問　公共", "次の問いに答えよ。", 25, [4, 6], STD, { units: ["h-civ-kokyo-seinen", "h-civ-kokyo-shiso", "h-civ-kokyo-kenpo", "h-civ-kokyo-jinken", "h-civ-kokyo-tosei", "h-civ-kokyo-chiho", "h-civ-kokyo-senkyo", "h-civ-kokyo-keiyaku", "h-civ-kokyo-shijo", "h-civ-kokyo-kinyu", "h-civ-kokyo-rodo", "h-civ-kokyo-kokusai-seiji", "h-civ-kokyo-kokusai-keizai", "h-civ-kokyo-jizoku"] }, { kinds: MARK }),
-      sec("第2問　源流思想（ギリシア・宗教・中国）", "次の問いに答えよ。", 20, [3, 5], STD, { units: ["h-civ-rinri-greece", "h-civ-rinri-christ", "h-civ-rinri-islam", "h-civ-rinri-bukkyo", "h-civ-rinri-china"] }, { kinds: MARK }),
+      tsec("第2問　源流思想（{t}）", "次の問いに答えよ。", 20, [3, 5], STD, [["ギリシア", ["h-civ-rinri-greece"]], ["宗教", ["h-civ-rinri-christ", "h-civ-rinri-islam", "h-civ-rinri-bukkyo"]], ["中国", ["h-civ-rinri-china"]]], { kinds: MARK }),
       sec("第3問　日本の思想", "次の問いに答えよ。", 15, [3, 4], STD, { units: ["h-civ-rinri-nihon", "h-civ-rinri-kindai-nihon"] }, { kinds: MARK }),
       sec("第4問　西洋近現代の思想", "次の問いに答えよ。", 25, [4, 6], STD, { units: ["h-civ-rinri-renaissance", "h-civ-rinri-keiken", "h-civ-rinri-keiyaku", "h-civ-rinri-kant", "h-civ-rinri-kori", "h-civ-rinri-jitsuzon", "h-civ-rinri-pragma", "h-civ-rinri-gendai"] }, { kinds: MARK }),
       sec("第5問　現代の課題と倫理", "次の問いに答えよ。", 15, [3, 4], STD, { units: ["h-civ-rinri-seinen", "h-civ-rinri-seimei", "h-civ-rinri-kankyo", "h-civ-rinri-joho"] }, { kinds: MARK }),
@@ -382,7 +393,7 @@ const KYOTSU: Record<string, { name: string; scopeLabel: string; subjectKey: str
       sec("第2問　民主政治と日本国憲法", "次の問いに答えよ。", 25, [4, 6], STD, { units: ["h-civ-seikei-genri", "h-civ-seikei-kenpo", "h-civ-seikei-jinken", "h-civ-seikei-kokkai", "h-civ-seikei-saiban", "h-civ-seikei-chiho", "h-civ-seikei-senkyo"] }, { kinds: MARK }),
       sec("第3問　国際政治", "次の問いに答えよ。", 10, [2, 3], STD, { units: ["h-civ-seikei-kokuren", "h-civ-seikei-heiwa"] }, { kinds: MARK }),
       sec("第4問　経済のしくみ", "次の問いに答えよ。", 25, [4, 6], STD, { units: ["h-civ-seikei-taisei", "h-civ-seikei-shijo", "h-civ-seikei-shotoku", "h-civ-seikei-kinyu", "h-civ-seikei-zaisei", "h-civ-seikei-nihon"] }, { kinds: MARK }),
-      sec("第5問　労働・社会保障・国際経済", "次の問いに答えよ。", 15, [3, 4], STD, { units: ["h-civ-seikei-rodo", "h-civ-seikei-shakaihosho", "h-civ-seikei-boeki", "h-civ-seikei-togo"] }, { kinds: MARK }),
+      tsec("第5問　{t}", "次の問いに答えよ。", 15, [3, 4], STD, [["労働", ["h-civ-seikei-rodo"]], ["社会保障", ["h-civ-seikei-shakaihosho"]], ["国際経済", ["h-civ-seikei-boeki", "h-civ-seikei-togo"]]], { kinds: MARK }),
     ],
   },
 };

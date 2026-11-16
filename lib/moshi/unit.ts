@@ -84,7 +84,7 @@ function shuffleChoice(a: ChoiceQ, seed: number): ChoiceQ {
 export function materialize(q: Question, seed: number, unit: string): QuestionBody {
   const s = questionSeed(seed, unit, q.id);
   if (q.type === "A") return q.generate(makeRng(s));
-  const body: QuestionBody = { prompt: q.prompt, figure: q.figure, answer: q.answer, steps: q.steps, point: q.point };
+  const body: QuestionBody = { prompt: q.prompt, figure: q.figure, material: q.material, answer: q.answer, steps: q.steps, point: q.point };
   if (q.type === "B" && !q.keepOrder && q.answer.kind === "choice") return { ...body, answer: shuffleChoice(q.answer, s) as Answer };
   return body;
 }
@@ -143,6 +143,7 @@ export function buildRound(spec: RoundSpec, seed: number): Round {
         no: q.no ?? `(${k + 1})`,
         prompt: body.prompt,
         figure: body.figure,
+        material: body.material,
         points: q.points,
         skill: q.skill,
         unit: q.unit && q.unit !== unit ? q.unit : undefined,

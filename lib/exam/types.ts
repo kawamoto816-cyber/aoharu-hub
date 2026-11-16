@@ -38,6 +38,10 @@ export interface DaimonSpec {
   prefer?: "material" | "single";
   /** 試験モードだけの問題 (lib/exam/pool) のうち、この tag のものだけから組む */
   poolTag?: string;
+  /** 題に並べる分野 (modes.ts の tsec)。出た小問の単元がふくまれる分野だけを題に入れる */
+  topics?: { label: string; units: string[] }[];
+  /** 分野つきの題のひな形 ({t} に分野の名前を「・」でつないで入れる) */
+  titleTemplate?: string;
 }
 
 /** 1回分の仕様 (モード × えらんだ範囲) */

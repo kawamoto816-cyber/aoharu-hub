@@ -189,7 +189,7 @@ export const J_MATH_3_HEIHOKON: Daimon[] = [
       {
         id: "2",
         no: "(2)",
-        prompt: "√6 × √15",
+        prompt: "次の計算をしなさい。\n√6 × √15",
         points: 3,
         skill: "知識・技能",
         level: 1,
@@ -206,7 +206,7 @@ export const J_MATH_3_HEIHOKON: Daimon[] = [
       {
         id: "3",
         no: "(3)",
-        prompt: "14 / √7",
+        prompt: "次の計算をしなさい。\n14 / √7",
         points: 3,
         skill: "知識・技能",
         level: 2,
@@ -224,7 +224,7 @@ export const J_MATH_3_HEIHOKON: Daimon[] = [
       {
         id: "4",
         no: "(4)",
-        prompt: "√75 − √12 + √3",
+        prompt: "次の計算をしなさい。\n√75 − √12 + √3",
         points: 4,
         skill: "知識・技能",
         level: 2,
@@ -242,7 +242,7 @@ export const J_MATH_3_HEIHOKON: Daimon[] = [
       {
         id: "5",
         no: "(5)",
-        prompt: "√18 + 4/√2",
+        prompt: "次の計算をしなさい。\n√18 + 4/√2",
         points: 4,
         skill: "知識・技能",
         level: 2,
@@ -258,7 +258,7 @@ export const J_MATH_3_HEIHOKON: Daimon[] = [
       {
         id: "6",
         no: "(6)",
-        prompt: "(√6 − 2)(√6 + 3)",
+        prompt: "次の計算をしなさい。\n(√6 − 2)(√6 + 3)",
         points: 4,
         skill: "知識・技能",
         level: 2,
