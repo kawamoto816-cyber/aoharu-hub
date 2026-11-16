@@ -129,7 +129,7 @@ export const H_SOGO_SANGYO_H_NEKKETSU: CastScript = {
       kind: "talk",
       who: "sensei",
       text: "怒りの向け先は機械だった！　でも、こわしても、しくみは変わらない。では社会はどう動いたか！",
-      say: "怒りの向け先は機械だった！　でも、こわしても、しくみは変わらない。では社会はどう動いたか！",
+      say: "いかりの向け先は機械だった！　でも、こわしても、しくみは変わらない。では社会はどう動いたか！",
     },
     { kind: "talk", who: "sensei", text: "待った！　向きを確かめろ！　問題！" },
     { kind: "pause", ref: "mistake:2" },

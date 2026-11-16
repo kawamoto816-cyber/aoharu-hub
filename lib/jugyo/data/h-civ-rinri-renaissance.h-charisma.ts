@@ -122,7 +122,7 @@ export const H_RINRI_RENAISSANCE_H_CHARISMA: CastScript = {
       kind: "talk",
       who: "seito",
       text: "決まってるなら、あとは善い行いを積めば、救われる側に入れる、ってことですよね。",
-      say: "決まってるなら、あとは、よいおこないを積めば、救われる側に入れる、ってことですよね。",
+      say: "決まってるなら、あとは、よいおこないを積めば、救われる側にはいれる、ってことですよね。",
     },
     { kind: "talk", who: "sensei", text: "よくある取りちがえ。問題。" },
     { kind: "pause", ref: "mistake:1" },
