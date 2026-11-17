@@ -110,7 +110,7 @@ export const H_SANKAKU2_H_KYOJU: CastScript = {
       text: "cos²θ＝16/25 だから、cosθ＝4/5！",
       say: "コサインにじょうシータは、にじゅうごぶんの、じゅうろく、だから、コサインシータは、ごぶんのよん！",
     },
-    { kind: "talk", who: "sensei", text: "では、勝負だ。問題。", say: "では、勝ふだ。問題。" },
+    { kind: "talk", who: "sensei", text: "では、勝負だ。問題。", say: "では、かちふだ。問題。" },
     { kind: "pause", ref: "mistake:0" },
     {
       kind: "talk",
