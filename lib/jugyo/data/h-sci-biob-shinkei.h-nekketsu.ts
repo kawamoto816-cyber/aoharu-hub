@@ -25,6 +25,7 @@ export const H_BIOB_SHINKEI_H_NEKKETSU: CastScript = {
       kind: "talk",
       who: "sensei",
       text: "関係大ありだ！　カギをにぎるのは、からだの2つの連絡網。すばやい神経と、長く効くホルモンだ！",
+      say: "関係おおありだ！　カギをにぎるのは、からだの2つの連絡網。すばやい神経と、長く効くホルモンだ！",
     },
 
     { kind: "chapter", title: "1. 2つの連絡網" },
