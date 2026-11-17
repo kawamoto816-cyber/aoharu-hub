@@ -3,7 +3,7 @@ import type { CastScript } from "../types";
 // 止まる授業：帝国主義（高校・世界史探究）× 熱血エンタメ講義（ダイチ・カエデ）。事実・年・人名・数は lib/lecture/data/h-hist-w-teikokushugi.ts の本文だけ。
 // 画面の前のきみに語りかける。支配や戦争そのものを「熱い」とは言わず、どの国にも肩入れしない。年・「清」・「米西」・「〜人」など読みまちがう語は say で開く。問題は data/h-hist-w-teikokushugi.ts から引く。
 
-export const H_W_TEIKOKU_H_NEKKETSU: CastScript = {
+export const H_W_TEIKOKUSHUGI_H_NEKKETSU: CastScript = {
   unitId: "h-hist-w-teikokushugi",
   castId: "h-nekketsu",
   title: "豪華な開通式から13年で占領！？　帝国主義の「借金のわな」を追え！",

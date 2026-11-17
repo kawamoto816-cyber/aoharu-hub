@@ -9,7 +9,7 @@ import type { UnitBase } from "../types";
 // せりふはキャストごと：h-hist-w-teikokushugi.h-charisma.ts（カリスマ講師）・.h-kyoju.ts（名物教授）・.h-nekketsu.ts（熱血エンタメ講義）。
 // 答え（answer）は lecture の文のまま、読みは say.answer で直す。
 
-export const H_W_TEIKOKU_BASE: UnitBase = {
+export const H_W_TEIKOKUSHUGI_BASE: UnitBase = {
   unitId: "h-hist-w-teikokushugi",
   pauses: {
     "mistake:1": {

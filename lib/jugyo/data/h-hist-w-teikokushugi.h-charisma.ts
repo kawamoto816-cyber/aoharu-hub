@@ -3,7 +3,7 @@ import type { CastScript } from "../types";
 // 止まる授業：帝国主義（高校・世界史探究）× カリスマ講師（カナメ先生・ユウキ）。事実・年・人名・数は lib/lecture/data/h-hist-w-teikokushugi.ts の本文だけ。
 // 要点をしぼって言い切る。どの国にも肩入れしない。年・「清」・「米西」・「〜人」など読みまちがう語は say で開く。問題は data/h-hist-w-teikokushugi.ts から引く。
 
-export const H_W_TEIKOKU_H_CHARISMA: CastScript = {
+export const H_W_TEIKOKUSHUGI_H_CHARISMA: CastScript = {
   unitId: "h-hist-w-teikokushugi",
   castId: "h-charisma",
   title: "運河を開いた国が、なぜ占領された？　帝国主義を一本の線で言い切る",

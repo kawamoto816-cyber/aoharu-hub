@@ -3,7 +3,7 @@ import type { CastScript } from "../types";
 // 止まる授業：帝国主義（高校・世界史探究）× 名物教授（チグサ教授・ミオ）。事実・年・人名・数は lib/lecture/data/h-hist-w-teikokushugi.ts の本文だけ。
 // 答えをすぐ言わず、問いで考えさせる。どの国にも肩入れしない。年・「清」・「米西」・「〜人」など読みまちがう語は say で開く。問題は data/h-hist-w-teikokushugi.ts から引く。
 
-export const H_W_TEIKOKU_H_KYOJU: CastScript = {
+export const H_W_TEIKOKUSHUGI_H_KYOJU: CastScript = {
   unitId: "h-hist-w-teikokushugi",
   castId: "h-kyoju",
   title: "改革した国が、なぜ支配を招いたのか：チグサ教授と読む帝国主義",
