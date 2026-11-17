@@ -21,7 +21,7 @@ export const H_KAHOU_H_NEKKETSU: CastScript = {
       kind: "talk",
       who: "sensei",
       text: "大ありだ！　カギは加法定理。最後に、うなりの正体をあばくぞ！",
-      say: "大ありだ！　カギは、加法定理。最後に、うなりの正体を、あばくぞ！",
+      say: "おおありだ！　カギは、加法定理。最後に、うなりの正体を、あばくぞ！",
     },
 
     { kind: "chapter", title: "1. sin75° への挑戦" },
