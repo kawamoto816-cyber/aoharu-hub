@@ -1,5 +1,5 @@
 import type { Subject } from "@/lib/moshi/types";
-import { UNIV_EXAMS, getUnivExam } from "./univ";
+import { KAMOKU_SCOPE, UNIV_EXAMS, getUnivExam } from "./univ";
 import type { DaimonSpec, ExamChoice, ExamScope, ExamSpec, ModeId, ModeInfo } from "./types";
 
 // 試験モードの定義。ここに書くのは「範囲・大問の数・各大問の出題元と配点・時間」だけ。
@@ -428,8 +428,8 @@ export const MODES: ModeInfo[] = [
     id: "daigaku",
     name: "大学別型",
     target: "高校向け",
-    catch: "早慶上智・MARCH・国公立の出題形式に寄せて、日本史・世界史を",
-    lead: "大学ごとの大問の数・時間・問い方（正誤判定・史料・記述・論述）に寄せた練習です。解くたびに問題の組み合わせが変わり、まちがえた単元は次の回に多めに出せます。",
+    catch: "早慶上智・MARCH・国公立の出題形式に寄せて、英語・国語・日本史・世界史を",
+    lead: "大学ごとの大問の数・時間・問い方（長文読解・英作文・現代文・古文・漢文・正誤判定・史料・記述・論述）に寄せた練習です。解くたびに問題の組み合わせが変わり、まちがえた単元は次の回に多めに出せます。",
     notice: "各大学の公式の問題・形式ではありません。公表・報道されている出題の傾向を参考にした練習用の「〜大学型」で、学部・年度によって実際の形式はちがいます。志望学部の過去問と募集要項で必ず確かめてください。",
     pick: "subject",
     subjects: UNIV_EXAMS.map((x) => ({ key: x.key, name: `${x.univ}型　${x.kamoku}`, category: x.tier })),
@@ -499,7 +499,7 @@ export function examSpecOf(mode: ModeId, c: ExamChoice, subjectName: (level: Exa
   if (mode === "daigaku") {
     const u = c.subject ? getUnivExam(c.subject) : undefined;
     if (!u) return null;
-    return { id: `daigaku:${u.key}`, mode, title: `${u.univ}型　${u.kamoku}`, target: "高校", subject: "soc", subjectName: u.kamoku, scope: { level: "ko", subjectKey: "geohist", groups: u.groups }, scopeLabel: u.groups.join("・"), minutes: u.minutes, total: sum(u.sections), sections: u.sections };
+    return { id: `daigaku:${u.key}`, mode, title: `${u.univ}型　${u.kamoku}`, target: "高校", subject: KAMOKU_SCOPE[u.kamoku].subject, subjectName: u.kamoku, scope: { level: "ko", subjectKey: KAMOKU_SCOPE[u.kamoku].subjectKey, groups: u.groups }, scopeLabel: u.groups.join("・"), minutes: u.minutes, total: sum(u.sections), sections: u.sections };
   }
   if (mode === "shiritsu") {
     const s = CHU_SUBJECTS.find((x) => x.key === c.subject);

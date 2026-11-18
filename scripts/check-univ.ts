@@ -66,7 +66,7 @@ for (const key of keys) {
       if (a.kind === "term") {
         if (!a.accept.length) err(qw, "accept が空");
         const ans = norm(a.accept[0]);
-        if (ans.length >= 2 && matText.includes(ans)) err(qw, `答え「${a.accept[0]}」が節の本文・資料に出ている`);
+        if (!a.chars && ans.length >= 2 && matText.includes(ans)) err(qw, `答え「${a.accept[0]}」が節の本文・資料に出ている`);
         for (const o of sec.questions as Question[]) {
           if (o === q || o.type === "A") continue;
           const ob = o as unknown as QuestionBody;

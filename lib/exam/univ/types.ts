@@ -8,13 +8,22 @@ import type { ExamPoolSection } from "../pool/types";
 // pick で毎回ちがう組み合わせになるようにする (同じ回は同じ問題・おまかせは毎回ちがう)。
 
 export type UnivTier = "早慶上智" | "MARCH" | "国公立";
+export type UnivKamoku = "英語" | "国語" | "日本史" | "世界史";
+
+/** 科目 → 範囲 (lib/school 高校の教科 key) と模試の教科 */
+export const KAMOKU_SCOPE: Record<UnivKamoku, { subjectKey: string; subject: "eng" | "ja" | "soc" }> = {
+  英語: { subjectKey: "english", subject: "eng" },
+  国語: { subjectKey: "kokugo", subject: "ja" },
+  日本史: { subjectKey: "geohist", subject: "soc" },
+  世界史: { subjectKey: "geohist", subject: "soc" },
+};
 
 export interface UnivExam {
   /** "waseda-nihonshi" */
   key: string;
   /** "早稲田大学" */
   univ: string;
-  kamoku: "日本史" | "世界史";
+  kamoku: UnivKamoku;
   tier: UnivTier;
   /** 一覧の並び (小さいほど先。偏差値の高い順) */
   order: number;
@@ -23,7 +32,7 @@ export interface UnivExam {
   /** 形式のひとこと (画面に出す。60字くらい) */
   format: string;
   minutes: number;
-  /** 範囲 (高校 地理歴史の見出し: "歴史総合" "日本史探究" "世界史探究") */
+  /** 範囲 (高校の見出し。地歴: "歴史総合" "日本史探究" "世界史探究"／英語: "語彙" "文法" "技能"／国語: "現代の国語" "言語文化" "論理国語" "文学国語" "古典探究") */
   groups: string[];
   sections: DaimonSpec[];
   pool: ExamPoolSection[];
