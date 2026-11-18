@@ -278,7 +278,19 @@ function origNo(q: Question, list: Question[]): number {
   return i + 1;
 }
 
-export function assemble(spec: ExamSpec, seed: number): ExamBuild {
+/** 苦手な単元を多めに出す指定 (さかのぼりの習熟度から。結果画面の「苦手に合わせて次の回を作る」→ URL の ?w=) */
+export interface ExamWeights {
+  /** 苦手な単元 (範囲外の単元はもともと出ない) */
+  weak: string[];
+  /** 大問ごとに、苦手な単元の小問をこの割合まで増やす (既定 0.4) */
+  share?: number;
+}
+
+export const WEAK_SHARE = 0.4;
+
+export function assemble(spec: ExamSpec, seed: number, weights?: ExamWeights): ExamBuild {
+  const weakSet = new Set(weights?.weak ?? []);
+  const weakShare = weights?.share ?? WEAK_SHARE;
   const used = new Set<string>();
   const unitUse = new Map<string, number>();
   const shortages: Shortage[] = [];
@@ -314,6 +326,11 @@ export function assemble(spec: ExamSpec, seed: number): ExamBuild {
     const need = apportion(lo, ds.mix.map((m) => m / msum), [0, 0, 0]);
     const chosen: { c: Cand; take: Prep[] }[] = [];
     let n = 0;
+    // 苦手な単元: この大問の範囲に入っていれば、小問の数の約4割になるまで、その単元のまとまりを先に選ぶ
+    const weakHere = [...weakSet].some((u) => allowed.has(u));
+    const weakTarget = weakHere ? Math.ceil(lo * weakShare) : 0;
+    let weakN = 0;
+    const isWeakQ = (q: Question) => weakSet.has(q.unit!);
     const pref = (c: Cand) => (ds.prefer === "material" ? (c.b.material?.length ? 0 : 1) : ds.prefer === "single" ? (c.b.linked ? 1 : 0) : 0);
     const takeOf = <T,>(c: Cand, list: T[]): T[] | null => {
       const take = list.slice(0, hi - n);
@@ -329,7 +346,10 @@ export function assemble(spec: ExamSpec, seed: number): ExamBuild {
         const fit = take.filter((p) => need[p.q.difficulty - 1] > 0).length;
         const spread = (unitUse.get(take[0].q.unit!) ?? 0) * 2;
         const over = Math.max(0, n + take.length - lo);
-        scored.push({ c, score: pref(c) * 100 - fit * 10 + spread + over * 3 });
+        // 苦手の小問: 目標に届くまでは先に (目標を大きくこえるまとまりは弱めに)、届いたあとは控えめに (約4割にとどめる)
+        const wk = weakTarget ? take.filter((p) => isWeakQ(p.q)).length : 0;
+        const weakBoost = !wk ? 0 : weakN < weakTarget ? (weakN + wk <= weakTarget + 1 ? 60 : weakN === 0 && wk <= Math.ceil(lo * 0.6) ? 30 : 0) : 0;
+        scored.push({ c, score: pref(c) * 100 - fit * 10 + spread + over * 3 - weakBoost });
       }
       scored.sort((x, y) => x.score - y.score);
       let best: { c: Cand; take: Prep[] } | null = null;
@@ -347,6 +367,7 @@ export function assemble(spec: ExamSpec, seed: number): ExamBuild {
       for (const p of best.take) {
         need[p.q.difficulty - 1] -= 1;
         unitUse.set(p.q.unit!, (unitUse.get(p.q.unit!) ?? 0) + 1);
+        if (isWeakQ(p.q)) weakN += 1;
       }
       n += best.take.length;
     }
@@ -454,10 +475,10 @@ function withMaterialText(m: Material, t: string): Material {
 const avgDiff = (qs: Question[]) => qs.reduce((a, q) => a + q.difficulty, 0) / Math.max(1, qs.length);
 
 /** えらんだもの → 仕様 → 1回分。仕様が作れなければ null */
-export function buildExamRound(mode: ModeId, choice: ExamChoice, seed: number): ExamBuild | null {
+export function buildExamRound(mode: ModeId, choice: ExamChoice, seed: number, weights?: ExamWeights): ExamBuild | null {
   const spec = examSpecOf(mode, choice, subjectNameOf);
   if (!spec) return null;
-  return assemble(spec, seed);
+  return assemble(spec, seed, weights?.weak.length ? weights : undefined);
 }
 
 export const examSpec = (mode: ModeId, choice: ExamChoice) => examSpecOf(mode, choice, subjectNameOf);

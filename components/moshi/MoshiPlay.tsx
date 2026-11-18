@@ -30,6 +30,9 @@ import { dayNo, mdLabel, type NewMistake } from "@/lib/zukan/schedule";
 import { ZUKAN_HREF } from "@/lib/zukan/words";
 import { ExamResultPanel, type ExamResultData } from "@/components/exam/ExamResult";
 import { hasListen, ListenRich, listenPlain } from "./Listen";
+import { mistakeOfChoice, readMastery, recordMastery, weakUnits, type MasteryAnswer } from "@/lib/sakanobori/mastery";
+import { encodeWrong, lectureUnitOfHref, type WrongItem } from "@/lib/sakanobori/diagnose";
+import { RootFinderLink, sakanoboriHref } from "@/components/sakanobori/RootFinderLink";
 
 // 定期テスト模試の本体: 表紙 → 試験 (解説なし・残り時間の目安・答えはページ内 state) → 採点 (自動＋記述の自己採点) → 結果 → 解き方 → まちがいノート。
 
@@ -55,6 +58,8 @@ export interface MoshiExamMode {
   setupHref: string;
   /** 「はじめる」を押したとき、始める前に呼ぶ (回数の門。components/exam/ExamGate)。false なら始めない */
   beforeStart?: () => Promise<boolean>;
+  /** この回で多めに出した苦手な単元 (URL の ?w=)。結果で「苦手が直ったら、ふつうの出題にもどる」を伝える */
+  weighted?: string[];
 }
 
 type Phase = "cover" | "exam" | "self" | "result";
@@ -525,6 +530,8 @@ export function MoshiPlay({
   const [examRes, setExamRes] = useState<ExamResultData | null>(null);
   /** 弱点の処方箋 (図鑑に入れたカード。次の復習日はみな同じ「あした」) */
   const [rx, setRx] = useState<{ heads: string[]; n: number; again: number; due: number } | null>(null);
+  /** さかのぼり (/learn/sakanobori) へ渡す、まちがえた小問の手がかり */
+  const [wrongs, setWrongs] = useState<WrongItem[]>([]);
   const top = useRef<HTMLDivElement>(null);
   /** 大問ごとに画面に出していた秒数 (試験中、画面のまんなかにある大問に1秒ずつ足す) */
   const secTime = useRef<number[]>([]);
@@ -597,6 +604,7 @@ export function MoshiPlay({
     setRecord(null);
     setExamRes(null);
     setRx(null);
+    setWrongs([]);
     setConfirm(false);
     secTime.current = daimon.map(() => 0);
     timedOut.current = false;
@@ -622,10 +630,19 @@ export function MoshiPlay({
     // まちがいノートへ: 満点でない小問を入れる。満点の小問は、ノートにあれば1つ進める
     let n = 0;
     const stumbles: NewMistake[] = [];
+    // 習熟度 (さかのぼり) へ: 小問ごとに正解か・選んだ選択肢のまちがいの番号
+    const answers: MasteryAnswer[] = [];
+    const wrongList: WrongItem[] = [];
     for (const { d, it, key } of all) {
       const res = results[key];
       const r = resp[key];
       const unitId = it.unit ?? d.units[0];
+      const mistake = it.answer.kind === "choice" && r.kind === "choice" ? mistakeOfChoice(it.answer, r.picked) : null;
+      answers.push({ unit: unitId, ok: res.score >= it.points, mistake });
+      if (res.score < it.points) {
+        const backs = [...new Set(it.steps.flatMap((s) => (s.back ?? []).map((b) => lectureUnitOfHref(b.href)).filter((x): x is string => !!x && x !== unitId)))];
+        wrongList.push({ unit: unitId, ...(mistake !== null ? { mistake } : {}), ...(backs.length ? { backs } : {}) });
+      }
       const u = units[unitId];
       const meta: MistakeMeta = { unitId, unitName: u?.name ?? unitId, href: u?.href || u?.lecture || "", subject: `テスト模試・${u?.subject ?? ""}`, kids: u?.kids };
       const needMat = /上の|表|資料|本文|グラフ/.test(it.prompt);
@@ -650,6 +667,8 @@ export function MoshiPlay({
       } else recordMistakeText(meta, { q, model: noteText(modelText(it)), ex, source: "moshi" }, noteText(mineText(it, r)));
     }
     setSaved(n);
+    const mastery = recordMastery(answers) ?? readMastery();
+    setWrongs(wrongList);
     if (stumbles.length) {
       const put = recordStumbles(stumbles);
       // 「あした」の3問: つまずきの多い順 → まちがえた順 (sort は同じ値なら元の順のまま)
@@ -671,7 +690,22 @@ export function MoshiPlay({
         .map(([u, t]) => ({ unit: u, name: units[u]?.name ?? u, score: t.score, total: t.total, pct: t.total ? Math.round((t.score / t.total) * 100) : 0, lecture: units[u]?.lecture, moshi: units[u]?.moshi }))
         .filter((x) => x.pct < 60)
         .sort((a, b) => a.pct - b.pct || b.total - a.total);
-      setExamRes({ parts, usedSec, minutes: exam.minutes, timeout: timedOut.current, weak, count: rec?.count ?? null, prevBest: rec?.prevBest ?? null, total: exam.total });
+      // 苦手に合わせた次の回: この回に出た単元のうち、習熟度の低いもの (直れば出ない＝ふつうの出題にもどる)
+      const weakNow = weakUnits(mastery, [...new Set(all.map(({ d, it }) => it.unit ?? d.units[0]))]).slice(0, 8);
+      const sep = examMode.retryBase.includes("?") ? "&" : "?";
+      setExamRes({
+        parts,
+        usedSec,
+        minutes: exam.minutes,
+        timeout: timedOut.current,
+        weak,
+        count: rec?.count ?? null,
+        prevBest: rec?.prevBest ?? null,
+        total: exam.total,
+        roots: wrongList.length ? sakanoboriHref({ w: encodeWrong(wrongList) }) : undefined,
+        retune: weakNow.length ? { href: `${examMode.retryBase}${sep}w=${weakNow.join(",")}&seed=${freshSeed()}`, names: weakNow.map((u) => units[u]?.name ?? u) } : undefined,
+        recovered: !!examMode.weighted?.length && weakNow.length === 0,
+      });
     }
     trackEvent("moshi_finish", { exam: exam.id, score: total, total: exam.total });
     setPhase("result");
@@ -907,6 +941,8 @@ export function MoshiPlay({
       </section>
 
       {examRes && <ExamResultPanel data={examRes} />}
+
+      {!examMode && wrongs.length > 0 && <RootFinderLink href={sakanoboriHref({ u: unitPage?.unit, w: encodeWrong(wrongs) })} kids={kids} n={wrongs.length} />}
 
       {rx && (
         <section aria-labelledby="mo-rx" className="mt-4 rounded-[14px] border-[1.5px] border-[#15172B] bg-[#E3E8FF] px-4 py-3 shadow-[3px_3px_0_#15172B]">

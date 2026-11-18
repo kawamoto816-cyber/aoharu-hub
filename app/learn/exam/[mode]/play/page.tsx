@@ -11,6 +11,7 @@ import { freshSeed, parseSeed } from "@/lib/moshi/rng";
 
 // /learn/exam/<mode>/play?s=教科&l=学校&u=単元,単元&m=分&seed=123: 試験モードの本番画面。
 // 組み立て (lib/exam/build.ts) はサーバー側、解く・採点・時間切れの自動提出・結果の保存はクライアント (MoshiPlay の examMode)。
+// ?w=単元,単元: 苦手な単元 (結果画面の「苦手に合わせて次の回を作る」。端末の習熟度から)。範囲の中なら、大問ごとに約4割まで多めに出す (lib/exam/build.ts)。
 // 回数の門 (登録なし1回・無料登録 月2回・Pro・Max 無制限。lib/exam/access.ts) は ExamGate が「はじめる」の前に見る。
 
 export const metadata: Metadata = {
@@ -40,7 +41,8 @@ export default async function ExamPlayPage({ params, searchParams }: { params: P
   const mode = m.id as ModeId;
   const setupHref = `${EXAM_HOME}/${mode}`;
   const crumbs = [{ href: "/learn", label: "まなぶ" }, { href: EXAM_HOME, label: "入試モード" }, { href: setupHref, label: m.name }, { label: "解く" }];
-  const b = buildExamRound(mode, choice, seed);
+  const weak = (one(sp.w) ?? "").split(",").map((s) => s.trim()).filter((s) => /^[a-z0-9-]{1,80}$/.test(s)).slice(0, 12);
+  const b = buildExamRound(mode, choice, seed, weak.length ? { weak } : undefined);
 
   if (!b || !b.ok)
     return (
@@ -69,6 +71,7 @@ export default async function ExamPlayPage({ params, searchParams }: { params: P
   const units: Record<string, MoshiUnit> = {};
   for (const u of round.exam.units) units[u] = { ...unitView(u), moshi: hasUnitMoshi(u) ? unitMoshiHref(u) : undefined };
   const kids = round.exam.units.every((u) => units[u]?.kids);
+  const weighted = weak.filter((u) => round.exam.units.includes(u));
   return (
     <LearnShell narrow crumbs={crumbs}>
       <p className="m-0 text-xs font-black tracking-wider text-[#1533B8]">入試モード・{m.target}</p>
@@ -76,6 +79,11 @@ export default async function ExamPlayPage({ params, searchParams }: { params: P
       <p className="m-0 mb-1 mt-1 text-[13px] font-bold text-[#3A3D55]">
         範囲：{spec.subjectName}（{spec.scopeLabel}）・問題番号 {seed}
       </p>
+      {weighted.length > 0 && (
+        <p className="m-0 mt-1 rounded-[12px] bg-[#FFFBE6] px-3 py-2 text-[13px] font-bold leading-relaxed text-[#15172B]">
+          苦手に合わせた回：{weighted.map((u) => units[u]?.name ?? u).join("・")} の問題を多めに出しています。
+        </p>
+      )}
       <p className="m-0 mb-4 text-[11.5px] leading-relaxed text-[#5A5D73]">{NOTICE_COMMON}</p>
       {/* 定期テスト型は学校の勉強なので、回数を数えず分析も全部見せる（教科書・ドリル・単元模試と同じく無料） */}
       {mode === "teiki" ? (
@@ -86,7 +94,7 @@ export default async function ExamPlayPage({ params, searchParams }: { params: P
           units={units}
           kids={kids}
           homeHref={setupHref}
-          examMode={{ mode, specId: spec.id, seed, retryBase: examPlayHref(mode, choice), setupHref }}
+          examMode={{ mode, specId: spec.id, seed, retryBase: examPlayHref(mode, choice), setupHref, weighted }}
         />
       ) : (
       <ExamGate
@@ -96,7 +104,7 @@ export default async function ExamPlayPage({ params, searchParams }: { params: P
         units={units}
         kids={kids}
         homeHref={setupHref}
-        examMode={{ mode, specId: spec.id, seed, retryBase: examPlayHref(mode, choice), setupHref }}
+        examMode={{ mode, specId: spec.id, seed, retryBase: examPlayHref(mode, choice), setupHref, weighted }}
       />
       )}
     </LearnShell>

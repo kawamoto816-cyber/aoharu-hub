@@ -5,6 +5,7 @@ import { card } from "@/components/drill/DrillPlay";
 import { canSeeTimeAnalysis, PRICING_HREF } from "@/lib/exam/access";
 import { daimonNo } from "@/lib/exam/daimon-no";
 import { useExamPlan } from "./plan-context";
+import { RootFinderLink } from "@/components/sakanobori/RootFinderLink";
 
 // 試験モードの結果に足す部分: 時間配分 (大問ごとに画面に出していた時間と、配点から見た目安)・弱い単元 (レクチャーと単元模試へ)・これまでの記録。
 // MoshiPlay の結果画面から使う (examMode のときだけ)。
@@ -20,6 +21,12 @@ export interface ExamResultData {
   /** この仕様を解いた回数 (今回をふくむ)・これまでの最高の得点率。保存できなければ null */
   count: number | null;
   prevBest: number | null;
+  /** さかのぼり (/learn/sakanobori) へ、まちがえた小問の手がかりを渡すリンク。まちがいがなければ undefined */
+  roots?: string;
+  /** 苦手に合わせた次の回 (苦手な単元を URL の ?w= で渡して組み直す)。苦手がなければ undefined */
+  retune?: { href: string; names: string[] };
+  /** 前の回は苦手に合わせて組んだが、苦手が直った (次はふつうの出題) */
+  recovered?: boolean;
 }
 
 const ms = (sec: number) => `${Math.floor(sec / 60)}分${String(Math.round(sec % 60)).padStart(2, "0")}秒`;
@@ -123,7 +130,31 @@ export function ExamResultPanel({ data }: { data: ExamResultData }) {
             </ul>
           </>
         )}
+        {data.roots && <RootFinderLink href={data.roots} compact />}
       </section>
+
+      {(data.retune || data.recovered) && (
+        <section aria-labelledby="ex-retune" className={`${card} min-w-0`}>
+          <h3 id="ex-retune" className="m-0 text-[15px] font-black">
+            苦手に合わせた次の回
+          </h3>
+          {data.retune ? (
+            <>
+              <p className="m-0 mt-1 text-[13px] font-bold leading-relaxed text-[#3A3D55]">
+                これまでの答えから、まだ身についていない単元（{data.retune.names.join("・")}）の問題を、全体の約4割まで増やした回を作ります。できるようになれば、ふつうの出題にもどります。
+              </p>
+              <Link
+                href={data.retune.href}
+                className="mt-3 flex min-h-[52px] w-full items-center justify-center rounded-[14px] border-[1.5px] border-[#15172B] bg-[#FFE45C] px-3 text-[16px] font-black text-[#15172B] no-underline shadow-[0_3px_0_#15172B]"
+              >
+                苦手に合わせて次の回を作る →
+              </Link>
+            </>
+          ) : (
+            <p className="m-0 mt-1 text-[13.5px] font-bold leading-relaxed text-[#1533B8]">苦手だった単元ができるようになりました。次の回は、ふつうの出題にもどります。</p>
+          )}
+        </section>
+      )}
     </div>
   );
 }
