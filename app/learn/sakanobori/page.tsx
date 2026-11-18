@@ -13,6 +13,8 @@ import { freshSeed, parseSeed } from "@/lib/moshi/rng";
 import { hasPrereq, needsOf, prereqUnits, SAKANOBORI_HOME } from "@/lib/sakanobori";
 import { candidates, decodeResults, decodeWrong, DEFAULT_GRAPH, diagnose, encodeResults, encodeWrong, passed, prescribe, type DiagnoseState, type PathNode, type PrereqGraph } from "@/lib/sakanobori/diagnose";
 import { checkItems } from "@/lib/sakanobori/check";
+import { buildMap, type MapState } from "@/lib/sakanobori/map";
+import { RootMap } from "@/components/sakanobori/RootMap";
 
 // /learn/sakanobori: さかのぼり（学年をこえて、つまずきの根っこまで戻る）。
 //   ?u=元の単元 &w=まちがえた小問の手がかり (diagnose の encodeWrong) &r=チェックの結果 (encodeResults) &seed=チェック問題のシード
@@ -171,6 +173,15 @@ function Trail({ path, rootUnit, current }: { path: PathNode[]; rootUnit?: strin
   );
 }
 
+/** さかのぼった道 → つまずきマップ (学年の段に並べた盤面) */
+function TrailMap({ path, rootUnit, current, climb }: { path: PathNode[]; rootUnit?: string; current?: string; climb?: string[] }) {
+  const states: Record<string, MapState> = {};
+  for (const p of path) states[p.unit] = p.depth === 0 ? "start" : p.unit === rootUnit ? "root" : p.unit === current ? "current" : p.result ? (passed(p.result) ? "ok" : "ng") : "skip";
+  if (rootUnit && path[0]?.unit === rootUnit) states[rootUnit] = "root";
+  const map = buildMap({ origin: path[0].unit, path: path.map((p) => p.unit), states, climb, clean: plain });
+  return <RootMap map={map} caption={rootUnit ? "上ほど新しい学年・下ほど前の学年" : "いまの位置と、たどってきた道"} />;
+}
+
 function CheckStep({ state, origin, seed, results, wStr, kids }: { state: Extract<DiagnoseState, { kind: "check" }>; origin: string; seed: number; results: ReturnType<typeof decodeResults>; wStr: string; kids: boolean }) {
   const items = checkItems(state.unit, seed);
   const prev = encodeResults(results);
@@ -183,6 +194,7 @@ function CheckStep({ state, origin, seed, results, wStr, kids }: { state: Extrac
           <Num n={2} />
           いま、ここをたしかめているよ
         </h2>
+        <TrailMap path={state.path} current={state.unit} />
         <Trail path={state.path} current={state.unit} />
         {okBefore.length > 0 && (
           <p className="m-0 text-[12.5px] font-bold text-[#3A3D55]">
@@ -222,6 +234,7 @@ function Done({ state, origin }: { state: Extract<DiagnoseState, { kind: "done" 
             : `根っこは ${gradeLabel(state.root)}「${unitName(state.root)}」。ここから学びなおすと、上の学年の単元もわかるようになるよ。`}
         </p>
         {state.capped && <p className="m-0 mt-1 text-[12.5px] font-bold text-[#5A5D73]">たしかめる単元が多くなったので、ここまでの結果で決めました。</p>}
+        <TrailMap path={state.path} rootUnit={state.root} climb={state.climb} />
         <Trail path={state.path} rootUnit={state.root} />
         {tried.filter((r) => passed(r) && !state.path.some((p) => p.unit === r.unit)).length > 0 && (
           <p className="m-0 text-[12.5px] font-bold text-[#3A3D55]">

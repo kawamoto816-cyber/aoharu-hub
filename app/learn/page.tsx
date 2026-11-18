@@ -17,7 +17,7 @@ import { LECTURES, getLecture, lectureHref, lectureUnitInfo } from "@/lib/lectur
 import type { Lecture, Recitation } from "@/lib/lecture/types";
 
 // /learn: アオハルラーンの入口（A案）。「勉強は、こんなに面白かった。」を表紙に、上から
-//   1. 表紙 (学んだら、教えよう／きょうの1単元)・はじめての方へ  2. 使い方ツアー (1単元を7ステップで。components/learn/LearnTutorial)
+//   1. 表紙 (学んだら、教えよう／きょうの1単元)・はじめての方へ  2. 使い方ツアー (AIのオーダーメイド＋1単元を8ステップで。components/learn/LearnTutorial)
 //   3. 学び方は、3ステップ (1 覚える・2 鍛える・3 教える)  4. 1単元に、4つの楽しみ方 (実在する単元の朗読・名演説・漫才・謎)
 //   5. この教科書のなかみ (LECTURES から数える)  6. 教科から選ぶ  7. あたらしいがっこう (/learn/gakko) への入口
 // のあとに「もっと学ぶ」として、もとの 3×3 の表 (components/learn/LearnMoreMap) を置く。
