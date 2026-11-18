@@ -6,7 +6,7 @@ import type { ModeId } from "./types";
 // クライアントからも読む (記録の照合) ので、ここには組み立て (build.ts) を import しない。
 
 export interface Series {
-  id: "koko" | "kyotsu";
+  id: "koko" | "kyotsu" | "daigaku";
   mode: ModeId;
   path: string;
   name: string;
@@ -20,6 +20,7 @@ export interface Series {
 export const SERIES: Record<Series["id"], Series> = {
   koko: { id: "koko", mode: "koritsu", path: "/learn/koko-moshi", name: "公立高校入試模試", target: "中3向け", rounds: 6, seedOf: (n) => 202700 + n },
   kyotsu: { id: "kyotsu", mode: "kyotsu", path: "/learn/kyotsu-moshi", name: "共通テスト模試", target: "高校向け", rounds: 6, seedOf: (n) => 302700 + n },
+  daigaku: { id: "daigaku", mode: "daigaku", path: "/learn/daigaku-moshi", name: "大学別模試", target: "高校向け", rounds: 6, seedOf: (n) => 402700 + n },
 };
 
 /** 記録 (ExamAttempt の spec・seed) → 何回目か。どの回でもなければ null */

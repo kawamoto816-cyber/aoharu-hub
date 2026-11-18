@@ -5,7 +5,7 @@
 
 import type { QKind, QType, Subject } from "@/lib/moshi/types";
 
-export type ModeId = "koritsu" | "kyotsu" | "shiritsu" | "teiki";
+export type ModeId = "koritsu" | "kyotsu" | "shiritsu" | "teiki" | "daigaku";
 
 /** 学校の地図の場所で決める範囲 (lib/school の LEVELS)。groups=学年・科目の見出し、units=単元id。両方省略＝その教科ぜんぶ */
 export interface ExamScope {

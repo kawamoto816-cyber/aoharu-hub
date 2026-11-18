@@ -48,6 +48,10 @@ export default function ExamHome() {
         <Link href="/learn/kyotsu-moshi" className="text-[#1533B8]">
           共通テスト模試
         </Link>
+        ・
+        <Link href="/learn/daigaku-moshi" className="text-[#1533B8]">
+          大学別模試
+        </Link>
         から。
       </p>
       <aside aria-label="ご注意" className="mt-6 max-w-[720px] rounded-[14px] border-[1.5px] border-dashed border-[#15172B] bg-[#FFFBE6] p-4 text-[13px] leading-relaxed text-[#3A3D55]">
