@@ -81,7 +81,7 @@ function S(n: number, id: string, unit: string, title: string, lead: string, pas
 
 const READ = "次の英文を読み、問いに答えよ。";
 const CLEAD = "次の会話文を読み、空所に入る最も適切なものを選べ。";
-const GLEAD = "次の各問いに答えよ。";
+const GLEAD = "次の各英文の空所に入る最も適切なもの、または誤りを含む下線部を、それぞれ1つ選べ。";
 const OLEAD = "日本文の意味になるように、与えられた語句を並べかえて英文を完成させよ。";
 
 // =====================================================================
