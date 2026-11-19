@@ -7,7 +7,7 @@ import { MyStatus } from "@/components/station/MyStatus";
 const ROOMS = [
   { href: "/learn", name: "自習ホーム", price: "無料", lines: ["授業・演習・模試", "さかのぼりで根っこへ", "AIコーチが伴走"], paid: false },
   { href: "/station/circle", name: "ラーニングサークル", price: "会員権　月額2,980円（案）", lines: ["4〜6人で週に1回", "学んだことをシェア", "問いと拍手で返す"], paid: true },
-  { href: "/station/stage", name: "教壇", price: "登壇権　月額＋3,980円（案）", lines: ["生徒が先生になる", "年下や仲間に授業", "AIが採点し星がつく"], paid: true },
+  { href: "/station/stage", name: "教壇", price: "登壇権　月額＋3,980円（案）", lines: ["生徒が先生になる", "書いて、または声で授業", "AIが採点し星がつく"], paid: true },
 ];
 
 export default function Page() {
@@ -18,6 +18,12 @@ export default function Page() {
       <p className="m-0 mt-2 max-w-[720px] text-[14px] leading-relaxed text-[#3A3D55]">
         ひとりで学んだら、仲間とシェアする。わかったら、こんどは教える。わからない人は教えてもらい、覚えた人は教える。教科の学びは無料のまま、仲間と学び合う場に入るときだけ会費をいただきます。
       </p>
+
+      <Link href="/station/guide" className="mt-4 flex items-center gap-3 rounded-[14px] border-[2px] border-[#15172B] bg-[#FFE45C] px-4 py-3 text-[#15172B] no-underline">
+        <span className="text-[13px] font-black">はじめての方へ</span>
+        <span className="text-[16px] font-black">使い方ツアー：10のステップで駅をひとまわり</span>
+        <span aria-hidden="true" className="ml-auto font-black">→</span>
+      </Link>
 
       <div className="mt-5 grid gap-3 sm:grid-cols-3">
         {ROOMS.map((r, i) => (

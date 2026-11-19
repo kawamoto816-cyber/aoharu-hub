@@ -2,7 +2,7 @@
 
 import { getLecture, lectureUnitInfo } from "@/lib/lecture";
 import { plain } from "@/lib/oshieru";
-import { checkPlan } from "@/lib/station/plan-check";
+import { checkPlan, checkVoice } from "@/lib/station/plan-check";
 import type { LessonPlan, PlanCheck } from "@/lib/station/types";
 
 // ラーニングステーション（試作）の授業案の点検。保存はしない・AIも呼ばない（lib/station/plan-check.ts の決まった基準）。
@@ -22,6 +22,14 @@ export async function checkLessonPlan(raw: LessonPlan): Promise<PlanCheck> {
   };
   const info = lectureUnitInfo(plan.unit);
   return checkPlan(plan, getLecture(plan.unit), plain(info?.name ?? "（単元が選ばれていません）"));
+}
+
+/** 声の授業の点検。送られてくるのはブラウザで起こした文字だけ（音声は受けとらない） */
+export async function checkVoiceLesson(unit: string, title: string, transcript: string, seconds: number): Promise<PlanCheck> {
+  const u = cut(unit, 80);
+  const info = lectureUnitInfo(u);
+  const secs = typeof seconds === "number" && Number.isFinite(seconds) ? Math.max(0, Math.min(1500, seconds)) : 0;
+  return checkVoice(cut(transcript, 12000), secs, getLecture(u), plain(info?.name ?? "（単元が選ばれていません）"), cut(title, 80));
 }
 
 /** 授業づくりの手がかり：教材の確かめの問いと、よくあるまちがい（授業案に入れるとよいもの） */

@@ -11,6 +11,7 @@ const ROOMS = [
   { href: "/station/stage", label: "教壇" },
   { href: "/station/ranking", label: "格付け" },
   { href: "/station/shelf", label: "自分の棚" },
+  { href: "/station/guide", label: "使い方" },
 ];
 
 export function StationNav() {

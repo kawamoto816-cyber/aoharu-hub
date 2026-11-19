@@ -1,4 +1,4 @@
-import type { Lesson, Rating, ShareCard, Slot } from "./types";
+import type { Lesson, Rating, ShareCard, Slot, TeachRequest } from "./types";
 
 // ラーニングステーション（試作）の見本のデータ。登場するのは架空のニックネームの生徒。
 // 画面には「見本のデータ」と書いて出す。本番ではサーバーの記録に置きかえる。
@@ -118,3 +118,12 @@ export const SHARES: ShareCard[] = [
 
 /** 次のボーナス期（年2回）。報酬・景品のしくみは法律の確認が済むまで動かさない */
 export const BONUS_SEASONS = ["2027年3月", "2027年9月"];
+
+/** 掲示板の「教えて」リクエストの見本 */
+export const REQUESTS: TeachRequest[] = [
+  { id: "r1", by: "ヒナタ", at: "2026-11-18T21:10", unitName: "三角比", text: "sin・cos・tan のどれを使えばいいのか、図を見ても決められません", metoo: 6 },
+  { id: "r2", by: "カイ", at: "2026-11-18T19:40", unitName: "平方根", text: "√8 を 2√2 にする理由がわからない。そのままじゃだめ？", metoo: 4, taker: "ソラ" },
+  { id: "r3", by: "ユイ", at: "2026-11-17T22:05", unitName: "化学反応式", text: "係数が分数になったときの直し方を教えてほしいです", metoo: 3 },
+  { id: "r4", by: "アオイ", at: "2026-11-17T20:30", unitName: "仮定法", text: "If I were の were がなぜ was じゃないのか", metoo: 5, taker: "コハル" },
+  { id: "r5", by: "ミナト", at: "2026-11-16T18:20", unitName: "古文の敬語", text: "尊敬と謙譲が同じ文に出てくると、だれが主語かわからなくなる", metoo: 2 },
+];

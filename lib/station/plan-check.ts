@@ -80,3 +80,49 @@ export function checkPlan(plan: LessonPlan, lecture: Lecture | undefined, unitNa
   const score = Math.round(items.reduce((a, it) => a + weight[it.key] * rate[it.grade], 0));
   return { score, items, wrongFound, unitName };
 }
+
+// 声の授業の点検（試作）。話した言葉（ブラウザの文字起こし）を授業案の形に分けてから、上と同じ基準で点検し、
+// 話し方の2つ（話す速さ・問いかけ）を足す。音声そのものは使わない（サーバーにも送らない）。
+//   つかみ … 最初の2文 / たとえ・例 … 「たとえば」「例えば」「みたいに」などを含む文 / 確かめの1問 … 問いかけの文のうち最後のもの
+const ASK = /[？?]|でしょう|ますか|かな[。、]?|どう思う|わかるかな|どっち|なんで[だでし]/;
+const EXAMPLE = /たとえば|例えば|例として|みたいに|のように|でいうと|に似て/;
+
+export function checkVoice(transcript: string, seconds: number, lecture: Lecture | undefined, unitName: string, title: string): PlanCheck {
+  const ss = transcript
+    .split(/(?<=[。！？!?])|\n/)
+    .map((x) => x.trim())
+    .filter(Boolean);
+  const asks = ss.filter((x) => ASK.test(x));
+  const lastAsk = asks.at(-1) ?? "";
+  const after = lastAsk ? ss.slice(ss.indexOf(lastAsk) + 1).join("") : "";
+  const plan: LessonPlan = {
+    unit: "",
+    title,
+    hook: ss.slice(0, 2).join(""),
+    explain: transcript,
+    example: ss.filter((x) => EXAMPLE.test(x)).join(""),
+    checkQ: lastAsk,
+    checkA: after,
+  };
+  const base = checkPlan(plan, lecture, unitName);
+  const chars = clean(transcript).length;
+  const perMinute = seconds > 0 ? Math.round(chars / (seconds / 60)) : 0;
+  const speed: CheckGrade = perMinute >= 200 && perMinute <= 380 ? "A" : perMinute >= 120 && perMinute <= 480 ? "B" : "C";
+  const ask: CheckGrade = asks.length >= 3 ? "A" : asks.length >= 1 ? "B" : "C";
+  const items: PlanCheck["items"] = [
+    ...base.items.map((it) =>
+      it.key === "check" && it.grade !== "A" ? { ...it, note: "最後に「では、これはどうなるでしょう？」と1問出して、答えも言いましょう" } : it,
+    ),
+    {
+      key: "speed",
+      label: "話す速さ",
+      grade: speed,
+      note: speed === "A" ? `1分に約${perMinute}字。聞きとりやすい速さです` : perMinute > 380 ? `1分に約${perMinute}字。少し速いので、区切って話しましょう` : `1分に約${perMinute}字。止まらずに話せるよう練習しましょう`,
+    },
+    { key: "ask", label: "問いかけ", grade: ask, note: ask === "A" ? `問いかけが${asks.length}回。聞く人が考えながら聞けます` : "聞く人に問いかけると、考えながら聞いてもらえます" },
+  ];
+  const weight: Record<string, number> = { accuracy: 30, prepared: 15, hook: 5, explain: 15, example: 10, check: 10, speed: 7.5, ask: 7.5 };
+  const rate: Record<CheckGrade, number> = { A: 1, B: 0.5, C: 0 };
+  const score = Math.round(items.reduce((a, it) => a + (weight[it.key] ?? 0) * rate[it.grade], 0));
+  return { ...base, items, score, voice: { seconds: Math.round(seconds), chars, perMinute, asks: asks.length } };
+}

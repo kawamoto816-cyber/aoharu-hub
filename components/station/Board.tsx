@@ -22,7 +22,8 @@ export function Board() {
   const visits = s.booked.filter((id) => SLOTS.find((x) => x.id === id)?.kind === "share" && !s.member).length;
   const days = [...new Set(SLOTS.map((x) => x.at.slice(0, 10)))];
   return (
-    <div className="mt-4 grid gap-4">
+    <div className="mt-6 grid gap-4">
+      <h2 className="m-0 text-[18px] font-black">時間割</h2>
       {days.map((d) => (
         <section key={d}>
           <h2 className="m-0 mb-2 text-[15px] font-black">{day(d)}</h2>
@@ -32,6 +33,7 @@ export function Board() {
               const mine = x.kind === "share" && x.host.includes("あさひ");
               const full = !booked && x.taken >= x.seats;
               const visitBlocked = x.kind === "share" && !s.member && !booked && visits >= 1;
+              const needMember = x.kind !== "share" && !s.member && !booked;
               const attended = x.lessonId ? s.attended.includes(x.lessonId) : false;
               return (
                 <li key={x.id} className="rounded-[12px] border-[1.5px] border-[#15172B] bg-white p-3">
@@ -46,8 +48,8 @@ export function Board() {
                   <p className="m-0 mt-1 text-[15px] font-black">{x.title}</p>
                   {x.unitName && <p className="m-0 text-[12px] text-[#5A5D73]">単元：{x.unitName}</p>}
                   <div className="mt-2 flex flex-wrap gap-2">
-                    {mine && !s.member ? (
-                      <span className="text-[12px] font-bold text-[#5A5D73]">サークルに入ると参加できます（入口の「会員権」）</span>
+                    {(mine || needMember) && !s.member ? (
+                      <span className="text-[12px] font-bold text-[#5A5D73]">{mine ? "サークルに入ると参加できます" : "ラーニングサークル会員なら受けられます"}（入口の「会員権」）</span>
                     ) : (
                       <button
                         type="button"

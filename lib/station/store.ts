@@ -1,7 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import type { CoinEntry, LessonPlan, PlanCheck, Rating, ShareCard } from "./types";
+import type { CoinEntry, LessonPlan, PlanCheck, Rating, ShareCard, TeachRequest } from "./types";
 
 // ラーニングステーション（試作）の、その人の操作の記録。サーバーには送らず、このブラウザにだけ残す。
 // 保存できないとき（プライベートブラウズなど）も、画面はそのまま動く（記録が残らないだけ）。
@@ -11,6 +11,10 @@ export interface MyLesson {
   at: string;
   plan: LessonPlan;
   check: PlanCheck;
+  /** 声で授業したか */
+  voice?: boolean;
+  /** 「教えて」リクエストに応えた授業なら、その id */
+  requestId?: string;
 }
 
 export interface StationState {
@@ -28,6 +32,12 @@ export interface StationState {
   oshieruPassed: string[];
   myLessons: MyLesson[];
   learnedDays: string[];
+  /** 自分が出した「教えて」リクエスト */
+  myRequests: TeachRequest[];
+  /** 「わたしも知りたい」を押したリクエスト */
+  metoo: string[];
+  /** 自分が「教えます」と手をあげたリクエスト */
+  taken: string[];
 }
 
 const KEY = "aoharu-station-v1";
@@ -48,6 +58,9 @@ const INITIAL: StationState = {
   oshieruPassed: [],
   myLessons: [],
   learnedDays: [],
+  myRequests: [],
+  metoo: [],
+  taken: [],
 };
 
 let state: StationState = INITIAL;

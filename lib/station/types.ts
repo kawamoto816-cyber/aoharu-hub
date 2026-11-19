@@ -83,6 +83,8 @@ export interface PlanCheck {
   /** 授業案の中に見つかった「よくあるまちがい」 */
   wrongFound: { wrong: string; right: string }[];
   unitName: string;
+  /** 声で授業したときだけ */
+  voice?: VoiceStats;
 }
 
 /** ブルーコインの出入り */
@@ -90,4 +92,26 @@ export interface CoinEntry {
   at: string;
   delta: number;
   reason: string;
+}
+
+/** 「教えて」リクエスト（わからないことを掲示板に出し、教えてくれる先生役を待つ） */
+export interface TeachRequest {
+  id: string;
+  by: string;
+  at: string;
+  /** 単元 id（えらんだとき） */
+  unit?: string;
+  unitName: string;
+  text: string;
+  metoo: number;
+  /** 先生役が「教えます」と手をあげたら、そのニックネーム */
+  taker?: string;
+}
+
+/** 声の授業の話し方の数字 */
+export interface VoiceStats {
+  seconds: number;
+  chars: number;
+  perMinute: number;
+  asks: number;
 }

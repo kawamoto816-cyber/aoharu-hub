@@ -87,8 +87,8 @@ export const RATING_SCALE = ["ざんねん", "ふつう", "よかった", "す�
 
 // 会員の段
 export const RANKS: { rank: Rank; name: string; can: string; need: string; product: string }[] = [
-  { rank: 1, name: "学ぶ人", can: "自習ホームのすべて。学生の授業を受ける。サークルを月に1回見学", need: "無料登録", product: "無料" },
-  { rank: 2, name: "シェアする人", can: "サークルに入り、週に1回シェア。仲間のシェアに問いを返す", need: "保護者の同意と会員権", product: "ラーニングサークル会員権" },
+  { rank: 1, name: "学ぶ人", can: "自習ホームのすべて。サークルを月に1回見学", need: "無料登録", product: "無料" },
+  { rank: 2, name: "シェアする人", can: "サークルに入り、週に1回シェア。学生の授業を受ける・「教えて」を出す", need: "保護者の同意と会員権", product: "ラーニングサークル会員権" },
   { rank: 3, name: "つなぐ人", can: "シェア会の司会・サークル長", need: "シェア4回", product: "会員権のまま" },
   { rank: 4, name: "教える人", can: "教壇で授業をする", need: "シェア4回＋教える単元をオシエルで合格＋登壇権", product: "ティーチング登壇権" },
   { rank: 5, name: "先輩", can: "新しいサークルの世話役、新しい先生の相談役", need: "授業4回と運営の推薦", product: "登壇権" },
