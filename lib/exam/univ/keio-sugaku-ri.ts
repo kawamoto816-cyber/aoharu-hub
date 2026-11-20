@@ -133,7 +133,7 @@ const S1: ExamPoolSection[] = [
       id: "p2",
       u: "h-math-a-kakuritsu",
       d: 1,
-      p: "(1) p₂＝□ である。",
+      p: "p₂＝□ である。",
       a: { answerKind: "num", answer: ["5/9"], calc: "(2/3)^2+(1/3)^2" },
       pt: "表0回か表2回",
       st: [["場合分け", "表0回 (2/3)²＝4/9、表2回 (1/3)²＝1/9。和は {{5/9}}。"]],
@@ -143,7 +143,7 @@ const S1: ExamPoolSection[] = [
       u: "h-math-b-zenka",
       d: 2,
       dep: "p2",
-      p: "(2) pₙ₊₁ を pₙ で表すと pₙ₊₁＝(1/3)pₙ＋□ となる。これを用いると p₃＝14/27 である。空欄の数を答えよ。",
+      p: "pₙ₊₁ を pₙ で表すと pₙ₊₁＝(1/3)pₙ＋□ となる。これを用いると p₃＝14/27 である。空欄の数を答えよ。",
       a: { answerKind: "num", answer: ["1/3"], calc: "1/3" },
       pt: "n回目まで偶数→裏、奇数→表",
       st: [
@@ -156,7 +156,7 @@ const S1: ExamPoolSection[] = [
       u: "h-math-b-zenka",
       d: 3,
       dep: "p3",
-      p: "(3) pₙ−1/2＜1/1000 となる最小の正の整数 n は □ である。",
+      p: "pₙ−1/2＜1/1000 となる最小の正の整数 n は □ である。",
       a: { answerKind: "num", answer: ["6"], labels: ["n ="], calc: "6" },
       pt: "pₙ−1/2＝(1/2)(1/3)ⁿ",
       st: [
@@ -170,7 +170,7 @@ const S1: ExamPoolSection[] = [
       id: "x1",
       u: "h-math-a-gojo",
       d: 1,
-      p: "(1) 17x＋23y＝1 を満たす整数の組 (x, y) のうち、x が最小の正の整数であるものは x＝□ である。",
+      p: "17x＋23y＝1 を満たす整数の組 (x, y) のうち、x が最小の正の整数であるものは x＝□ である。",
       a: { answerKind: "num", answer: ["19"], labels: ["x ="], equations: ["17*x-23*14=1"] },
       pt: "互除法で 17x≡1 (mod 23) を解く",
       st: [
@@ -183,7 +183,7 @@ const S1: ExamPoolSection[] = [
       u: "h-math-a-gojo",
       d: 2,
       dep: "x1",
-      p: "(2) 17x＋23y＝1000 を満たす正の整数の組 (x, y) は □ 組ある。",
+      p: "17x＋23y＝1000 を満たす正の整数の組 (x, y) は □ 組ある。",
       a: { answerKind: "num", answer: ["3"], unit: "組", calc: "3" },
       pt: "1つの解を見つけ、x＝x₀＋23k の形で数える",
       st: [
@@ -196,7 +196,7 @@ const S1: ExamPoolSection[] = [
       u: "h-math-a-gojo",
       d: 3,
       dep: "kosu",
-      p: "(3) (2) の正の整数の組のうち、積 xy の最大値は □ である。",
+      p: "(2) の正の整数の組のうち、積 xy の最大値は □ である。",
       a: { answerKind: "num", answer: ["625"], calc: "25*25" },
       pt: "3組の積を比べる",
       st: [["比べる", "2·42＝84、25·25＝{{625}}、48·8＝384。", "x＋y が最大の組とは別。"]],
@@ -207,7 +207,7 @@ const S1: ExamPoolSection[] = [
       id: "x2",
       u: "h-math-a-kakuritsu",
       d: 1,
-      p: "(1) X＝2 である確率は □ である。",
+      p: "X＝2 である確率は □ である。",
       a: { answerKind: "num", answer: ["1/10"], calc: "(2/5)*(1/4)" },
       pt: "1回目・2回目ともに赤",
       st: [["計算", "(2/5)·(1/4)＝{{1/10}}。"]],
@@ -217,7 +217,7 @@ const S1: ExamPoolSection[] = [
       u: "h-math-a-kakuritsu",
       d: 2,
       dep: "x2",
-      p: "(2) X＝4 である確率は □ である。",
+      p: "X＝4 である確率は □ である。",
       a: { answerKind: "num", answer: ["3/10"], calc: "3/10" },
       pt: "4回目が赤で、もう1個の赤は1〜3回目",
       st: [
@@ -230,7 +230,7 @@ const S1: ExamPoolSection[] = [
       u: "h-math-b-bunpu",
       d: 3,
       dep: "x4",
-      p: "(3) X の期待値は □ である。",
+      p: "X の期待値は □ である。",
       a: { answerKind: "num", answer: ["4"], calc: "(2*1+3*2+4*3+5*4)/10" },
       pt: "P(X＝k)＝(k−1)/10",
       st: [
@@ -251,7 +251,7 @@ const S2: ExamPoolSection[] = [
       id: "a3",
       u: "h-math-3-suretsu",
       d: 1,
-      p: "(1) a₃＝□ である。",
+      p: "a₃＝□ である。",
       a: { answerKind: "num", answer: ["7/5"], calc: "(3/2+2)/(3/2+1)" },
       pt: "a₂＝3/2 を代入",
       st: [["順に計算", "a₂＝3/2、a₃＝(7/2)/(5/2)＝{{7/5}}。"]],
@@ -261,7 +261,7 @@ const S2: ExamPoolSection[] = [
       u: "h-math-3-suretsu",
       d: 2,
       dep: "a3",
-      p: "(2) bₙ＝(aₙ−√2)/(aₙ＋√2) とおくと、{bₙ} は公比 □ の等比数列である。",
+      p: "bₙ＝(aₙ−√2)/(aₙ＋√2) とおくと、{bₙ} は公比 □ の等比数列である。",
       a: { answerKind: "surd", answer: ["-3+2√2"], equations: ["x^2+6x+1=0"] },
       pt: "aₙ₊₁∓√2 をそれぞれ aₙ∓√2 で表す",
       st: [
@@ -274,7 +274,7 @@ const S2: ExamPoolSection[] = [
       u: "h-math-3-suretsu",
       d: 3,
       dep: "hi",
-      p: "(3) lim_{n→∞} aₙ＝□ である。",
+      p: "lim[n→∞] aₙ＝□ である。",
       a: { answerKind: "surd", answer: ["√2"], equations: ["x^2=2"] },
       pt: "|公比|＜1 なので bₙ→0",
       st: [
@@ -283,12 +283,12 @@ const S2: ExamPoolSection[] = [
       ],
     }),
   ]),
-  sec(2, "kyusu", "h-math-3-suretsu", "部分分数分解と無限級数", LEAD1, "Sₙ＝Σ_{k=1}^{n} 1/{k(k＋1)(k＋2)} とする。", [
+  sec(2, "kyusu", "h-math-3-suretsu", "部分分数分解と無限級数", LEAD1, "Sₙ＝Σ[k=1→n] 1/{k(k＋1)(k＋2)} とする。", [
     nm({
       id: "s3",
       u: "h-math-b-sigma",
       d: 1,
-      p: "(1) S₃＝□ である。",
+      p: "S₃＝□ である。",
       a: { answerKind: "num", answer: ["9/40"], calc: "1/6+1/24+1/60" },
       pt: "1/6＋1/24＋1/60",
       st: [["通分", "1/6＋1/24＋1/60＝(20＋5＋2)/120＝{{9/40}}。"]],
@@ -298,7 +298,7 @@ const S2: ExamPoolSection[] = [
       u: "h-math-b-sigma",
       d: 2,
       dep: "s3",
-      p: "(2) S₁₀＝□ である。",
+      p: "S₁₀＝□ である。",
       a: { answerKind: "num", answer: ["65/264"], calc: "1/4-1/(2*11*12)" },
       pt: "隣り合う2項の積の逆数の差に分けて消し合う",
       st: [
@@ -311,7 +311,7 @@ const S2: ExamPoolSection[] = [
       u: "h-math-3-suretsu",
       d: 3,
       dep: "s10",
-      p: "(3) 無限級数 Σ_{k=1}^{∞} (2k＋1)/{k(k＋1)(k＋2)} の和は □ である。",
+      p: "無限級数 Σ[k=1→∞] (2k＋1)/{k(k＋1)(k＋2)} の和は □ である。",
       a: { answerKind: "num", answer: ["5/4"], calc: "2-3/4" },
       pt: "(2k＋1)＝2(k＋2)−3 として分ける",
       st: [
@@ -325,7 +325,7 @@ const S2: ExamPoolSection[] = [
       id: "sqrt",
       u: "h-math-3-kyokugen",
       d: 1,
-      p: "(1) lim_{x→∞} (√(x²＋6x)−x)＝□ である。",
+      p: "lim[x→∞] (√(x²＋6x)−x)＝□ である。",
       a: { answerKind: "num", answer: ["3"], calc: "6/2" },
       pt: "分子を有理化する",
       st: [["有理化", "6x/(√(x²＋6x)＋x)＝6/(√(1＋6/x)＋1) → {{3}}。", "∞−∞ を 0 としない。"]],
@@ -335,7 +335,7 @@ const S2: ExamPoolSection[] = [
       u: "h-math-3-kyokugen",
       d: 2,
       dep: "sqrt",
-      p: "(2) 正の定数 a と定数 b について lim_{x→0} {√(1＋ax)−1−bx}/x²＝−2 が成り立つとき、(a, b)＝□ である。",
+      p: "正の定数 a と定数 b について lim[x→0] {√(1＋ax)−1−bx}/x²＝−2 が成り立つとき、(a, b)＝□ である。",
       a: { answerKind: "pair", answer: ["4", "2"], labels: ["a =", "b ="], equations: ["a^2=16", "2*b-a=0"] },
       pt: "有理化して x の1次の項が消える条件",
       st: [
@@ -348,7 +348,7 @@ const S2: ExamPoolSection[] = [
       u: "h-math-3-kyokugen",
       d: 3,
       dep: "ab",
-      p: "(3) lim_{x→0} (x−sin x)/x³＝□ である。",
+      p: "lim[x→0] (x−sin x)/x³＝□ である。",
       a: { answerKind: "num", answer: ["1/6"], calc: "1/6" },
       pt: "sin 3x＝3sin x−4sin³x で x と 3x を比べる",
       st: [
@@ -369,7 +369,7 @@ const S3: ExamPoolSection[] = [
       id: "kyokuchi",
       u: "h-math-3-bibun-oyo",
       d: 1,
-      p: "(1) f(x) の極大値は □、極小値は □ である。",
+      p: "f(x) の極大値は □、極小値は □ である。",
       a: { answerKind: "pair", answer: ["-2", "6"], labels: ["極大値 =", "極小値 ="], equations: ["x+2=0", "y-6=0"] },
       pt: "f′(x)＝(x²−2x−3)/(x−1)²",
       st: [
@@ -382,7 +382,7 @@ const S3: ExamPoolSection[] = [
       u: "h-math-3-kansu",
       d: 2,
       dep: "kyokuchi",
-      p: "(2) 曲線 y＝f(x) の漸近線のうち、y 軸に平行でないものは y＝□ である。",
+      p: "曲線 y＝f(x) の漸近線のうち、y 軸に平行でないものは y＝□ である。",
       a: { answerKind: "expr", answer: ["x+1"], labels: ["y ="] },
       pt: "割り算して f(x)＝x＋1＋4/(x−1)",
       st: [["割り算", "x²＋3＝(x−1)(x＋1)＋4 より f(x)＝x＋1＋4/(x−1)。x→±∞ で {{y＝x＋1}} に近づく。"]],
@@ -392,7 +392,7 @@ const S3: ExamPoolSection[] = [
       u: "h-math-3-bibun-oyo",
       d: 3,
       dep: "zenkin",
-      p: "(3) 方程式 f(x)＝k が実数解をもたないような整数 k は □ 個ある。",
+      p: "方程式 f(x)＝k が実数解をもたないような整数 k は □ 個ある。",
       a: { answerKind: "num", answer: ["7"], unit: "個", calc: "5-(-1)+1" },
       pt: "グラフと直線 y＝k の共有点",
       st: [
@@ -406,7 +406,7 @@ const S3: ExamPoolSection[] = [
       id: "takasa",
       u: "h-math-3-bibun-oyo",
       d: 1,
-      p: "(1) 円柱の体積が最大になるとき、円柱の高さは □ である。",
+      p: "円柱の体積が最大になるとき、円柱の高さは □ である。",
       a: { answerKind: "num", answer: ["2"], calc: "2*1" },
       pt: "高さ 2h、半径 r で r²＋h²＝3",
       st: [
@@ -419,7 +419,7 @@ const S3: ExamPoolSection[] = [
       u: "h-math-3-bibun-oyo",
       d: 2,
       dep: "takasa",
-      p: "(2) そのときの円柱の底面の半径は □ である。",
+      p: "そのときの円柱の底面の半径は □ である。",
       a: { answerKind: "surd", answer: ["√2"], equations: ["x^2=2"] },
       pt: "r²＝3−h²",
       st: [["代入", "r²＝3−1＝2、r＝{{√2}}。"]],
@@ -429,7 +429,7 @@ const S3: ExamPoolSection[] = [
       u: "h-math-3-bibun-oyo",
       d: 3,
       dep: "hankei",
-      p: "(3) 円柱の体積の最大値は □π である。空欄の数を答えよ。",
+      p: "円柱の体積の最大値は □π である。空欄の数を答えよ。",
       a: { answerKind: "num", answer: ["4"], calc: "2*(3-1)" },
       pt: "V＝2π(3h−h³) に h＝1",
       st: [
@@ -443,7 +443,7 @@ const S3: ExamPoolSection[] = [
       id: "cos",
       u: "h-math-3-bibun",
       d: 1,
-      p: "(1) 0＜x＜π の範囲で f′(x)＝0 となる x について、cos x＝□ である。",
+      p: "0＜x＜π の範囲で f′(x)＝0 となる x について、cos x＝□ である。",
       a: { answerKind: "num", answer: ["1/2"], equations: ["2*x^2+x-1=0"] },
       pt: "f′(x)＝cos x＋cos 2x を cos x で因数分解",
       st: [
@@ -456,7 +456,7 @@ const S3: ExamPoolSection[] = [
       u: "h-math-3-bibun-oyo",
       d: 2,
       dep: "cos",
-      p: "(2) f(x) の最大値は □ である。",
+      p: "f(x) の最大値は □ である。",
       a: { answerKind: "surd", answer: ["3√3/4"], equations: ["x^2=27/16"] },
       pt: "x＝π/3 で最大",
       st: [
@@ -469,7 +469,7 @@ const S3: ExamPoolSection[] = [
       u: "h-math-3-sekibun-oyo",
       d: 3,
       dep: "max",
-      p: "(3) 曲線 y＝f(x) (0≦x≦π) と x 軸で囲まれた部分の面積は □ である。",
+      p: "曲線 y＝f(x) (0≦x≦π) と x 軸で囲まれた部分の面積は □ である。",
       a: { answerKind: "num", answer: ["2"], calc: "2+0" },
       pt: "f(x)＝sin x(1＋cos x)≧0",
       st: [
@@ -490,7 +490,7 @@ const S4: ExamPoolSection[] = [
       id: "seppen",
       u: "h-math-3-bibun",
       d: 1,
-      p: "(1) ℓ の方程式は y＝(1/4)x＋□ である。",
+      p: "ℓ の方程式は y＝(1/4)x＋□ である。",
       a: { answerKind: "num", answer: ["1"], calc: "2-4/4" },
       pt: "y′＝1/(2√x)、x＝4 で傾き 1/4",
       st: [["接線", "y−2＝(1/4)(x−4) より y＝(1/4)x＋{{1}}。", "傾きを 1/(2·4) としない。√4＝2 で 1/(2·2)。"]],
@@ -500,17 +500,17 @@ const S4: ExamPoolSection[] = [
       u: "h-math-3-sekibun-oyo",
       d: 2,
       dep: "seppen",
-      p: "(2) D の面積は □ である。",
+      p: "D の面積は □ である。",
       a: { answerKind: "num", answer: ["2/3"], calc: "16/8+4-(2/3)*8" },
       pt: "0≦x≦4 で ℓ が C の上にある",
-      st: [["積分", "∫₀⁴ {(1/4)x＋1−√x} dx＝2＋4−16/3＝{{2/3}}。", "4^{3/2}＝8 なので ∫₀⁴ √x dx＝(2/3)·8＝16/3。"]],
+      st: [["積分", "∫₀⁴ {(1/4)x＋1−√x} dx＝2＋4−16/3＝{{2/3}}。", "4^(3/2)＝8 なので ∫₀⁴ √x dx＝(2/3)·8＝16/3。"]],
     }),
     nm({
       id: "vy",
       u: "h-math-3-sekibun-oyo",
       d: 3,
       dep: "s",
-      p: "(3) D を y 軸のまわりに1回転してできる立体の体積は □π である。空欄の数を答えよ。",
+      p: "D を y 軸のまわりに1回転してできる立体の体積は □π である。空欄の数を答えよ。",
       a: { answerKind: "num", answer: ["16/15"], calc: "2*(64/12+8-(2/5)*32)" },
       pt: "バウムクーヘン型: V＝2π∫ x{(上)−(下)} dx",
       st: [
@@ -519,35 +519,35 @@ const S4: ExamPoolSection[] = [
       ],
     }),
   ]),
-  sec(4, "nagasa", "h-math-3-sekibun-oyo", "曲線 y＝(2/3)x^{3/2} の長さ", LEAD1, "曲線 C: y＝(2/3)x^{3/2} (x≧0) を考える。", [
+  sec(4, "nagasa", "h-math-3-sekibun-oyo", "曲線 y＝(2/3)x^(3/2) の長さ", LEAD1, "曲線 C: y＝(2/3)x^(3/2) (x≧0) を考える。", [
     nm({
       id: "l3",
       u: "h-math-3-sekibun-oyo",
       d: 1,
-      p: "(1) 0≦x≦3 の部分の C の長さは □ である。",
+      p: "0≦x≦3 の部分の C の長さは □ である。",
       a: { answerKind: "num", answer: ["14/3"], calc: "(2/3)*(8-1)" },
       pt: "1＋(y′)²＝1＋x",
-      st: [["積分", "y′＝√x より L＝∫₀³ √(1＋x) dx＝(2/3)[(1＋x)^{3/2}]₀³＝(2/3)(8−1)＝{{14/3}}。"]],
+      st: [["積分", "y′＝√x より L＝∫₀³ √(1＋x) dx＝(2/3)[(1＋x)^(3/2)]₀³＝(2/3)(8−1)＝{{14/3}}。"]],
     }),
     nm({
       id: "a",
       u: "h-math-3-sekibun-oyo",
       d: 2,
       dep: "l3",
-      p: "(2) 0≦x≦a の部分の C の長さが 52/3 となる正の数 a は □ である。",
+      p: "0≦x≦a の部分の C の長さが 52/3 となる正の数 a は □ である。",
       a: { answerKind: "num", answer: ["8"], labels: ["a ="], equations: ["(1+a)^3=729"] },
-      pt: "(2/3){(1＋a)^{3/2}−1}＝52/3",
-      st: [["解く", "(1＋a)^{3/2}＝27 より 1＋a＝9、{{a＝8}}。", "−1 を忘れて (1＋a)^{3/2}＝26 としない。"]],
+      pt: "(2/3){(1＋a)^(3/2)−1}＝52/3",
+      st: [["解く", "(1＋a)^(3/2)＝27 より 1＋a＝9、{{a＝8}}。", "−1 を忘れて (1＋a)^(3/2)＝26 としない。"]],
     }),
     nm({
       id: "men",
       u: "h-math-3-sekibun-oyo",
       d: 3,
       dep: "a",
-      p: "(3) C と x 軸と直線 x＝3 で囲まれた部分の面積は □ である。",
+      p: "C と x 軸と直線 x＝3 で囲まれた部分の面積は □ である。",
       a: { answerKind: "surd", answer: ["12√3/5"], equations: ["x^2=432/25"] },
-      pt: "∫₀³ (2/3)x^{3/2} dx",
-      st: [["積分", "(2/3)·(2/5)·3^{5/2}＝(4/15)·9√3＝{{12√3/5}}。", "3^{5/2}＝9√3。"]],
+      pt: "∫₀³ (2/3)x^(3/2) dx",
+      st: [["積分", "(2/3)·(2/5)·3^(5/2)＝(4/15)·9√3＝{{12√3/5}}。", "3^(5/2)＝9√3。"]],
     }),
   ]),
   sec(4, "dannmen", "h-math-3-sekibun-oyo", "断面が正三角形の立体と楔形", LEAD1, "座標空間で、xy 平面上の円板 x²＋y²≦1 を底面とし、x 軸に垂直な平面による切り口が、底面の弦を1辺とする正三角形である立体を K とする。", [
@@ -555,7 +555,7 @@ const S4: ExamPoolSection[] = [
       id: "s0",
       u: "h-math-3-sekibun-oyo",
       d: 1,
-      p: "(1) 平面 x＝0 による K の切り口の面積は □ である。",
+      p: "平面 x＝0 による K の切り口の面積は □ である。",
       a: { answerKind: "surd", answer: ["√3"], equations: ["x^2=3"] },
       pt: "1辺 2 の正三角形",
       st: [["面積", "弦の長さは 2√(1−x²)。x＝0 で1辺 2、面積 (√3/4)·4＝{{√3}}。"]],
@@ -565,7 +565,7 @@ const S4: ExamPoolSection[] = [
       u: "h-math-3-sekibun-oyo",
       d: 2,
       dep: "s0",
-      p: "(2) K の体積は □ である。",
+      p: "K の体積は □ である。",
       a: { answerKind: "surd", answer: ["4√3/3"], equations: ["x^2=16/3"] },
       pt: "S(x)＝√3(1−x²) を −1 から 1 まで",
       st: [["積分", "S(x)＝(√3/4)·4(1−x²)＝√3(1−x²)。V＝√3∫₋₁¹ (1−x²) dx＝√3·(4/3)＝{{4√3/3}}。"]],
@@ -575,7 +575,7 @@ const S4: ExamPoolSection[] = [
       u: "h-math-3-sekibun-oyo",
       d: 3,
       dep: "vk",
-      p: "(3) 円柱 x²＋y²≦1 のうち、y≧0 かつ 0≦z≦2y を満たす部分の体積は □ である。",
+      p: "円柱 x²＋y²≦1 のうち、y≧0 かつ 0≦z≦2y を満たす部分の体積は □ である。",
       a: { answerKind: "num", answer: ["4/3"], calc: "2*2/3" },
       pt: "x 軸に垂直な切り口は直角三角形",
       st: [
@@ -596,7 +596,7 @@ const S5: ExamPoolSection[] = [
       id: "hitsuyou",
       u: "h-math-c-fukuso",
       d: 1,
-      p: "(1) γ−α＝(β−α)(cos 60°＋i sin 60°) が成り立つとき、α²＋β²＋γ²−αβ−βγ−γα＝0 であることを示せ。",
+      p: "γ−α＝(β−α)(cos 60°＋i sin 60°) が成り立つとき、α²＋β²＋γ²−αβ−βγ−γα＝0 であることを示せ。",
       model:
         "ω＝cos 60°＋i sin 60° とおくと ω²−ω＋1＝0（ω＝(1＋√3i)/2 を代入して確かめられる）。u＝β−α とおくと γ−α＝ωu。α²＋β²＋γ²−αβ−βγ−γα＝(1/2){(α−β)²＋(β−γ)²＋(γ−α)²}。α−β＝−u、β−γ＝u−ωu＝(1−ω)u、γ−α＝ωu より、和は u²{1＋(1−ω)²＋ω²}＝u²(2ω²−2ω＋2)＝2u²(ω²−ω＋1)＝0。よって成り立つ。",
       rub: [
@@ -615,7 +615,7 @@ const S5: ExamPoolSection[] = [
       u: "h-math-c-fukuso",
       d: 2,
       dep: "hitsuyou",
-      p: "(2) α＝1、β＝3＋2i とする。三角形 ABC が正三角形で、A→B→C が反時計回りであるとき、γ を求めよ。",
+      p: "α＝1、β＝3＋2i とする。三角形 ABC が正三角形で、A→B→C が反時計回りであるとき、γ を求めよ。",
       model:
         "A→B→C が反時計回りなので、C は A を中心に B を 60° 回転した点。γ＝α＋(β−α)(cos 60°＋i sin 60°)＝1＋(2＋2i)(1/2＋(√3/2)i)＝1＋{1−√3＋(1＋√3)i}＝(2−√3)＋(1＋√3)i。",
       rub: [
@@ -634,7 +634,7 @@ const S5: ExamPoolSection[] = [
       u: "h-math-c-fukuso",
       d: 3,
       dep: "gamma",
-      p: "(3) 0, 1 と異なる複素数 z について、3点 z, z², z³ が正三角形の3頂点となるような z をすべて求めよ。ただし、相異なる3点 α, β, γ について「α²＋β²＋γ²−αβ−βγ−γα＝0 ならば3点は正三角形の頂点である」ことは用いてよい。",
+      p: "0, 1 と異なる複素数 z について、3点 z, z², z³ が正三角形の3頂点となるような z をすべて求めよ。ただし、相異なる3点 α, β, γ について「α²＋β²＋γ²−αβ−βγ−γα＝0 ならば3点は正三角形の頂点である」ことは用いてよい。",
       model:
         "3点が相異なる条件は z≠z²、z²≠z³、z≠z³ で、z≠0, 1 のもとでは z≠−1。α＝z, β＝z², γ＝z³ を代入すると z²＋z⁴＋z⁶−z³−z⁵−z⁴＝z²−z³−z⁵＋z⁶＝z²(1−z)−z⁵(1−z)＝z²(1−z)(1−z³)＝z²(1−z)²(1＋z＋z²)。z≠0, 1 なので、この式が 0 ⇔ z²＋z＋1＝0。正三角形ならば（向きが逆のときも cos60°−i sin60° が同じ ω²−ω＋1＝0 を満たすので (1) と同様に）式は 0、逆は仮定から成り立つ。z＝(−1±√3i)/2。このとき z³＝1 で、3点は z, z², 1（1の3乗根）となり、確かに相異なり正三角形である。",
       rub: [
@@ -654,7 +654,7 @@ const S5: ExamPoolSection[] = [
       id: "pf",
       u: "h-math-c-nijikyokusen",
       d: 1,
-      p: "(1) PF＝2x₀−1、PF′＝2x₀＋1 であることを示せ。",
+      p: "PF＝2x₀−1、PF′＝2x₀＋1 であることを示せ。",
       model:
         "y₀²＝3(x₀²−1) より PF²＝(x₀−2)²＋y₀²＝x₀²−4x₀＋4＋3x₀²−3＝4x₀²−4x₀＋1＝(2x₀−1)²。x₀≧1 なので 2x₀−1＞0、PF＝2x₀−1。同様に PF′²＝(x₀＋2)²＋y₀²＝4x₀²＋4x₀＋1＝(2x₀＋1)²、PF′＝2x₀＋1。",
       rub: [
@@ -670,7 +670,7 @@ const S5: ExamPoolSection[] = [
       u: "h-math-c-nijikyokusen",
       d: 2,
       dep: "pf",
-      p: "(2) P における H の接線と x 軸の交点を Q とする。QF : QF′＝PF : PF′ が成り立つことを示せ。",
+      p: "P における H の接線と x 軸の交点を Q とする。QF : QF′＝PF : PF′ が成り立つことを示せ。",
       model:
         "接線は x₀x−y₀y/3＝1。y＝0 とすると x＝1/x₀ で Q(1/x₀, 0)。0＜1/x₀≦1＜2 なので QF＝2−1/x₀＝(2x₀−1)/x₀、QF′＝2＋1/x₀＝(2x₀＋1)/x₀。よって QF : QF′＝(2x₀−1) : (2x₀＋1)＝PF : PF′（(1) より）。（したがって接線は ∠FPF′ の二等分線である。）",
       rub: [
@@ -689,7 +689,7 @@ const S5: ExamPoolSection[] = [
       u: "h-math-c-nijikyokusen",
       d: 3,
       dep: "q",
-      p: "(3) P(2, 3) のとき、三角形 PFF′ の内接円の半径 r を求めよ。また、その中心の x 座標を求めよ。",
+      p: "P(2, 3) のとき、三角形 PFF′ の内接円の半径 r を求めよ。また、その中心の x 座標を求めよ。",
       model:
         "P(2, 3) は H 上にある（4−9/3＝1）。(1) より PF＝3、PF′＝5、FF′＝4。面積は (1/2)·4·3＝6（PF は x 軸に垂直）。周の半分 s＝(3＋5＋4)/2＝6 より r＝6/6＝1。内接円は辺 FF′ と点 T で接し、F′T−FT＝PF′−PF＝2、F′T＋FT＝4 より FT＝1、T(1, 0)。中心は (1, 1) で x 座標は 1。",
       rub: [
@@ -711,7 +711,7 @@ const S5: ExamPoolSection[] = [
       id: "f",
       u: "h-math-3-bibun-oyo",
       d: 1,
-      p: "(1) x＞0 のとき、eˣ＞1＋x＋x²/2 であることを示せ。",
+      p: "x＞0 のとき、eˣ＞1＋x＋x²/2 であることを示せ。",
       model:
         "f(x)＝eˣ−1−x−x²/2 とおく。f′(x)＝eˣ−1−x、f″(x)＝eˣ−1。x＞0 で f″(x)＞0 なので f′(x) は x≧0 で増加し、f′(0)＝0 より x＞0 で f′(x)＞0。よって f(x) は x≧0 で増加し、f(0)＝0 より x＞0 で f(x)＞0。",
       rub: [
@@ -727,7 +727,7 @@ const S5: ExamPoolSection[] = [
       u: "h-math-3-bibun-oyo",
       d: 2,
       dep: "f",
-      p: "(2) (1) と同様の方法で、x＞0 のとき eˣ＞1＋x＋x²/2＋x³/6 を示し、これを用いて e＞8/3 であることを示せ。",
+      p: "(1) と同様の方法で、x＞0 のとき eˣ＞1＋x＋x²/2＋x³/6 を示し、これを用いて e＞8/3 であることを示せ。",
       model:
         "g(x)＝eˣ−1−x−x²/2−x³/6 とおくと g′(x)＝eˣ−1−x−x²/2。(1) より x＞0 で g′(x)＞0 なので g は x≧0 で増加し、g(0)＝0 より x＞0 で g(x)＞0。x＝1 を代入すると e＞1＋1＋1/2＋1/6＝8/3。",
       rub: [
@@ -746,9 +746,9 @@ const S5: ExamPoolSection[] = [
       u: "h-math-3-kyokugen",
       d: 3,
       dep: "e83",
-      p: "(3) lim_{x→∞} x²/eˣ＝0 であることを示せ。さらに、lim_{x→∞} x² e^{−x}·(x＋1)/x を求めよ。",
+      p: "lim[x→∞] x²/eˣ＝0 であることを示せ。さらに、lim[x→∞] x² e^(−x)·(x＋1)/x を求めよ。",
       model:
-        "(2) より x＞0 で eˣ＞x³/6。よって 0＜x²/eˣ＜x²/(x³/6)＝6/x。x→∞ で 6/x→0 なので、はさみうちの原理より lim x²/eˣ＝0。また x²e^{−x}·(x＋1)/x＝(x²/eˣ)·(1＋1/x) → 0·1＝0。",
+        "(2) より x＞0 で eˣ＞x³/6。よって 0＜x²/eˣ＜x²/(x³/6)＝6/x。x→∞ で 6/x→0 なので、はさみうちの原理より lim x²/eˣ＝0。また x²e^(−x)·(x＋1)/x＝(x²/eˣ)·(1＋1/x) → 0·1＝0。",
       rub: [
         { label: "eˣ＞x³/6 を (2) から導いている", points: 4, keywords: ["x³/6"] },
         { label: "0＜x²/eˣ＜6/x とはさんでいる", points: 4, keywords: ["6/x", "はさみうち"] },

@@ -78,7 +78,7 @@ const S1: ExamPoolSection[] = [
       id: "hani",
       u: "h-math-b-zenka",
       d: 1,
-      p: "(1) すべての自然数 n について 0≦aₙ＜3 が成り立つことを示せ。",
+      p: "すべての自然数 n について 0≦aₙ＜3 が成り立つことを示せ。",
       model:
         "数学的帰納法で示す。n＝1 のとき a₁＝0 より成り立つ。n＝k のとき 0≦aₖ＜3 と仮定すると、6≦aₖ + 6＜9 であるから √6≦aₖ₊₁＜3。とくに 0≦aₖ₊₁＜3 で、n＝k + 1 のときも成り立つ。よってすべての n で 0≦aₙ＜3。",
       rub: [
@@ -93,7 +93,7 @@ const S1: ExamPoolSection[] = [
       u: "h-math-3-kyokugen",
       d: 2,
       dep: "hani",
-      p: "(2) すべての自然数 n について 3 − aₙ₊₁≦(1/3)(3 − aₙ) が成り立つことを示せ。",
+      p: "すべての自然数 n について 3 − aₙ₊₁≦(1/3)(3 − aₙ) が成り立つことを示せ。",
       model:
         "3 − aₙ₊₁＝3 − √(aₙ + 6)＝(9 − (aₙ + 6))/(3 + √(aₙ + 6))＝(3 − aₙ)/(3 + √(aₙ + 6))。(1) より 3 − aₙ＞0、また 3 + √(aₙ + 6)≧3 であるから、3 − aₙ₊₁≦(3 − aₙ)/3。",
       rub: [
@@ -111,7 +111,7 @@ const S1: ExamPoolSection[] = [
       u: "h-math-3-kyokugen",
       d: 3,
       dep: "hyoka",
-      p: "(3) 極限 lim[n→∞] aₙ を求めよ。",
+      p: "極限 lim[n→∞] aₙ を求めよ。",
       model:
         "(2) をくり返し用いると 0＜3 − aₙ≦(1/3)ⁿ⁻¹(3 − a₁)＝3・(1/3)ⁿ⁻¹。n→∞ のとき 3・(1/3)ⁿ⁻¹→0 であるから、はさみうちの原理により lim(3 − aₙ)＝0。よって lim[n→∞] aₙ＝3。",
       rub: [
@@ -132,7 +132,7 @@ const S1: ExamPoolSection[] = [
       id: "tan",
       u: "h-math-3-sekibun",
       d: 1,
-      p: "(1) 定積分 ∫₀¹ 1/(1 + x²) dx を求めよ。",
+      p: "定積分 ∫₀¹ 1/(1 + x²) dx を求めよ。",
       model: "x＝tanθ とおくと dx＝dθ/cos²θ、x：0→1 のとき θ：0→π/4。1 + tan²θ＝1/cos²θ より、∫₀¹ 1/(1 + x²) dx＝∫₀^(π/4) cos²θ・(1/cos²θ) dθ＝∫₀^(π/4) dθ＝π/4。",
       rub: [
         { label: "x＝tanθ と置換し、積分区間を 0→π/4 に変えている", points: 8, keywords: ["tanθ", "π/4"] },
@@ -146,7 +146,7 @@ const S1: ExamPoolSection[] = [
       u: "h-math-3-sekibun-oyo",
       d: 2,
       dep: "tan",
-      p: "(2) lim[n→∞] Sₙ を求めよ。",
+      p: "lim[n→∞] Sₙ を求めよ。",
       model:
         "Sₙ＝Σ[k＝1 から n] n/(n² + k²)＝(1/n)Σ[k＝1 から n] 1/(1 + (k/n)²)。区分求積法により lim Sₙ＝∫₀¹ 1/(1 + x²) dx＝π/4（(1) による）。",
       rub: [
@@ -164,7 +164,7 @@ const S1: ExamPoolSection[] = [
       u: "h-math-3-sekibun-oyo",
       d: 3,
       dep: "sn",
-      p: "(3) lim[n→∞] Tₙ を求めよ。",
+      p: "lim[n→∞] Tₙ を求めよ。",
       model:
         "Tₙ＝(1/n)Σ[k＝1 から n] (k/n)/(1 + (k/n)²) であるから、区分求積法により lim Tₙ＝∫₀¹ x/(1 + x²) dx＝[(1/2)log(1 + x²)]₀¹＝(1/2)log 2。",
       rub: [
@@ -183,7 +183,7 @@ const S1: ExamPoolSection[] = [
       id: "zenka",
       u: "h-math-b-zenka",
       d: 1,
-      p: "(1) aₙ₊₁ を aₙ と n で表せ。また a₃ の値を求めよ。",
+      p: "aₙ₊₁ を aₙ と n で表せ。また a₃ の値を求めよ。",
       model: "aₙ₊₁ は aₙ の分子に 2n + 1、分母に 2n + 2 をかけたものであるから、aₙ₊₁＝((2n + 1)/(2n + 2))aₙ。よって a₃＝(5/6)a₂＝(5/6)・(3/8)＝5/16。",
       rub: [
         { label: "aₙ₊₁＝((2n + 1)/(2n + 2))aₙ", points: 8, keywords: ["(2n+1)/(2n+2)"] },
@@ -198,7 +198,7 @@ const S1: ExamPoolSection[] = [
       u: "h-math-b-kino",
       d: 2,
       dep: "zenka",
-      p: "(2) すべての自然数 n について、1/(2√n)≦aₙ≦1/√(3n + 1) が成り立つことを、数学的帰納法で示せ。",
+      p: "すべての自然数 n について、1/(2√n)≦aₙ≦1/√(3n + 1) が成り立つことを、数学的帰納法で示せ。",
       model:
         "n＝1 のとき a₁＝1/2、1/(2√1)＝1/2、1/√4＝1/2 で成り立つ。n＝k で成り立つと仮定する。【右側】aₖ₊₁＝((2k + 1)/(2k + 2))aₖ≦(2k + 1)/((2k + 2)√(3k + 1))。これが 1/√(3k + 4) 以下であることは (2k + 1)²(3k + 4)≦(2k + 2)²(3k + 1) と同値で、右辺 − 左辺＝(12k³ + 28k² + 20k + 4) − (12k³ + 28k² + 19k + 4)＝k＞0 より正しい。【左側】aₖ₊₁≧(2k + 1)/((2k + 2)・2√k)。これが 1/(2√(k + 1)) 以上であることは (2k + 1)²(k + 1)≧(2k + 2)²k と同値で、左辺 − 右辺＝(4k³ + 8k² + 5k + 1) − (4k³ + 8k² + 4k)＝k + 1＞0 より正しい。よって n＝k + 1 でも成り立ち、すべての n で成り立つ。",
       rub: [
@@ -217,7 +217,7 @@ const S1: ExamPoolSection[] = [
       u: "h-math-3-kyokugen",
       d: 3,
       dep: "futoshiki",
-      p: "(3) lim[n→∞] aₙ を求めよ。さらに、極限 lim[n→∞] (log aₙ)/(log n) を求めよ。",
+      p: "lim[n→∞] aₙ を求めよ。さらに、極限 lim[n→∞] (log aₙ)/(log n) を求めよ。",
       model:
         "(2) より 0＜aₙ≦1/√(3n + 1)→0 であるから、はさみうちの原理で lim aₙ＝0。次に (2) の各辺の対数をとると −log 2 − (1/2)log n≦log aₙ≦−(1/2)log(3n + 1)。n≧2 で log n＞0 であるから、log n で割って −(log 2)/(log n) − 1/2≦(log aₙ)/(log n)≦−(1/2)・log(3n + 1)/(log n)。ここで log(3n + 1)/(log n)＝(log n + log(3 + 1/n))/(log n)＝1 + log(3 + 1/n)/(log n)→1、(log 2)/(log n)→0 であるから、両端はともに −1/2 に近づく。はさみうちの原理により lim (log aₙ)/(log n)＝−1/2。",
       rub: [
@@ -245,7 +245,7 @@ const S2: ExamPoolSection[] = [
       id: "max",
       u: "h-math-3-bibun-oyo",
       d: 1,
-      p: "(1) f(x) の増減を調べ、最大値とそのときの x の値を求めよ。",
+      p: "f(x) の増減を調べ、最大値とそのときの x の値を求めよ。",
       model:
         "f′(x)＝((1/x)・x² − 2x log x)/x⁴＝(1 − 2log x)/x³。f′(x)＝0 となるのは log x＝1/2、すなわち x＝√e。0＜x＜√e で f′(x)＞0、x＞√e で f′(x)＜0 より、f(x) は x＝√e で最大となり、最大値は f(√e)＝(1/2)/e＝1/(2e)。",
       rub: [
@@ -263,7 +263,7 @@ const S2: ExamPoolSection[] = [
       u: "h-math-3-kyokugen",
       d: 2,
       dep: "max",
-      p: "(2) x＞0 で log x＜x が成り立つことを示し、それを用いて lim[x→∞] f(x)、lim[x→+0] f(x) を求めよ。",
+      p: "x＞0 で log x＜x が成り立つことを示し、それを用いて lim[x→∞] f(x)、lim[x→+0] f(x) を求めよ。",
       model:
         "g(x)＝x − log x とおくと g′(x)＝1 − 1/x。g は x＝1 で最小となり、最小値 g(1)＝1＞0。よって log x＜x。x＞1 では 0＜log x＜x より 0＜f(x)＜x/x²＝1/x→0 であるから、はさみうちの原理で lim[x→∞] f(x)＝0。また x→+0 のとき log x→−∞、1/x²→+∞ であるから lim[x→+0] f(x)＝−∞。",
       rub: [
@@ -282,7 +282,7 @@ const S2: ExamPoolSection[] = [
       u: "h-math-3-bibun-oyo",
       d: 3,
       dep: "kyokugen",
-      p: "(3) x の方程式 log x＝ax² の正の実数解の個数を、a の値によって分類して答えよ。",
+      p: "x の方程式 log x＝ax² の正の実数解の個数を、a の値によって分類して答えよ。",
       model:
         "x＞0 で log x＝ax² ⇔ f(x)＝a。よって解の個数は、曲線 y＝f(x) と直線 y＝a の共有点の個数。(1)(2) より f(x) は 0＜x≦√e で −∞ から 1/(2e) まで単調に増加し、x≧√e で 1/(2e) から 0 に近づきながら単調に減少する（x＞1 で f(x)＞0）。よって a＞1/(2e) のとき 0 個、a＝1/(2e) のとき 1 個、0＜a＜1/(2e) のとき 2 個、a≦0 のとき 1 個。",
       rub: [
@@ -303,7 +303,7 @@ const S2: ExamPoolSection[] = [
       id: "s-theta",
       u: "h-math-2-sankaku",
       d: 1,
-      p: "(1) S(θ) を θ の式で表せ。",
+      p: "S(θ) を θ の式で表せ。",
       model: "BC は x 軸に垂直な線分で、長さ 2sinθ（sinθ＞0）。A から直線 x＝cosθ までの距離は cosθ − (−1)＝1 + cosθ。よって S(θ)＝(1/2)・2sinθ・(1 + cosθ)＝sinθ(1 + cosθ)。",
       rub: [
         { label: "底辺 BC＝2sinθ、高さ 1 + cosθ", points: 8, keywords: ["2sinθ", "1+cosθ"] },
@@ -317,7 +317,7 @@ const S2: ExamPoolSection[] = [
       u: "h-math-3-bibun",
       d: 2,
       dep: "s-theta",
-      p: "(2) S′(θ) を cosθ の式で因数分解した形で表せ。",
+      p: "S′(θ) を cosθ の式で因数分解した形で表せ。",
       model: "S′(θ)＝cosθ(1 + cosθ) + sinθ・(−sinθ)＝cosθ + cos²θ − sin²θ＝cosθ + cos²θ − (1 − cos²θ)＝2cos²θ + cosθ − 1＝(2cosθ − 1)(cosθ + 1)。",
       rub: [
         { label: "積の微分で cosθ(1 + cosθ) − sin²θ", points: 8, keywords: ["積の微分", "−sin²θ"] },
@@ -334,7 +334,7 @@ const S2: ExamPoolSection[] = [
       u: "h-math-3-bibun-oyo",
       d: 3,
       dep: "bibun",
-      p: "(3) S(θ) の最大値と、そのときの θ の値を求めよ。",
+      p: "S(θ) の最大値と、そのときの θ の値を求めよ。",
       model:
         "0＜θ＜π で cosθ + 1＞0 であるから、S′(θ) の符号は 2cosθ − 1 の符号と同じ。0＜θ＜π/3 で S′(θ)＞0、π/3＜θ＜π で S′(θ)＜0。よって θ＝π/3 で最大となり、最大値は S(π/3)＝(√3/2)(1 + 1/2)＝3√3/4。（このとき三角形 ABC は正三角形。）",
       rub: [
@@ -355,7 +355,7 @@ const S2: ExamPoolSection[] = [
       id: "zogen",
       u: "h-math-3-sekibun",
       d: 1,
-      p: "(1) F′(x) を求め、F(x) の増減を調べよ。",
+      p: "F′(x) を求め、F(x) の増減を調べよ。",
       model: "微分積分学の基本定理より F′(x)＝eˣ sin x。eˣ＞0 であるから、F′(x) の符号は sin x の符号と同じ。0＜x＜π で F′(x)＞0、π＜x＜2π で F′(x)＜0。よって F(x) は 0≦x≦π で増加し、π≦x≦2π で減少する。",
       rub: [
         { label: "F′(x)＝eˣ sin x（積分の上端で微分）", points: 6, keywords: ["eˣ sin x", "基本定理"] },
@@ -369,7 +369,7 @@ const S2: ExamPoolSection[] = [
       u: "h-math-3-sekibun",
       d: 2,
       dep: "zogen",
-      p: "(2) F(x) を x の式で表せ（積分記号を使わずに）。",
+      p: "F(x) を x の式で表せ（積分記号を使わずに）。",
       model:
         "I＝∫eᵗ sin t dt とおく。部分積分を2回行うと I＝eᵗ sin t − ∫eᵗ cos t dt＝eᵗ sin t − (eᵗ cos t + ∫eᵗ sin t dt)＝eᵗ(sin t − cos t) − I。よって I＝(1/2)eᵗ(sin t − cos t) + C。したがって F(x)＝[(1/2)eᵗ(sin t − cos t)]₀ˣ＝(1/2)eˣ(sin x − cos x) − (1/2)(0 − 1)＝(eˣ(sin x − cos x) + 1)/2。",
       rub: [
@@ -388,7 +388,7 @@ const S2: ExamPoolSection[] = [
       u: "h-math-3-bibun-oyo",
       d: 3,
       dep: "keisan",
-      p: "(3) F(x)（0≦x≦2π）の最大値と最小値、およびそのときの x の値を求めよ。",
+      p: "F(x)（0≦x≦2π）の最大値と最小値、およびそのときの x の値を求めよ。",
       model:
         "(1) より F(x) は x＝π で最大となり、最大値は F(π)＝(e^π(0 − (−1)) + 1)/2＝(e^π + 1)/2。最小値の候補は両端 F(0)＝0 と F(2π)＝(e^(2π)(0 − 1) + 1)/2＝(1 − e^(2π))/2。e^(2π)＞1 より F(2π)＜0＝F(0) であるから、最小値は (1 − e^(2π))/2（x＝2π）。",
       rub: [
@@ -415,7 +415,7 @@ const S3: ExamPoolSection[] = [
       id: "kyoyu",
       u: "h-math-2-sankaku",
       d: 1,
-      p: "(1) C₁ と C₂ の共有点の x 座標をすべて求めよ。また、その間で C₁ と C₂ のどちらが上にあるか答えよ。",
+      p: "C₁ と C₂ の共有点の x 座標をすべて求めよ。また、その間で C₁ と C₂ のどちらが上にあるか答えよ。",
       model: "sin 2x＝sin x ⇔ 2sin x cos x − sin x＝0 ⇔ sin x(2cos x − 1)＝0。0≦x≦π/2 では sin x＝0 から x＝0、cos x＝1/2 から x＝π/3。0＜x＜π/3 では sin x＞0、2cos x − 1＞0 より sin 2x − sin x＞0 で、C₁ が上にある。",
       rub: [
         { label: "sin x(2cos x − 1)＝0 と因数分解", points: 6, keywords: ["2cos x−1"] },
@@ -429,7 +429,7 @@ const S3: ExamPoolSection[] = [
       u: "h-math-3-sekibun-oyo",
       d: 2,
       dep: "kyoyu",
-      p: "(2) C₁ と C₂ で囲まれた部分の面積 S を求めよ。",
+      p: "C₁ と C₂ で囲まれた部分の面積 S を求めよ。",
       model: "S＝∫₀^(π/3) (sin 2x − sin x) dx＝[−(1/2)cos 2x + cos x]₀^(π/3)＝(−(1/2)(−1/2) + 1/2) − (−1/2 + 1)＝3/4 − 1/2＝1/4。",
       rub: [
         { label: "S＝∫₀^(π/3) (sin 2x − sin x) dx と立式", points: 6, keywords: ["∫", "sin2x−sinx"] },
@@ -448,7 +448,7 @@ const S3: ExamPoolSection[] = [
       u: "h-math-3-sekibun-oyo",
       d: 3,
       dep: "menseki",
-      p: "(3) C₁ と C₂ で囲まれた部分を x 軸のまわりに1回転してできる立体の体積 V を求めよ。",
+      p: "C₁ と C₂ で囲まれた部分を x 軸のまわりに1回転してできる立体の体積 V を求めよ。",
       model:
         "0≦x≦π/3 で sin 2x≧sin x≧0 であるから、V＝π∫₀^(π/3) (sin²2x − sin²x) dx。sin²2x − sin²x＝(1 − cos 4x)/2 − (1 − cos 2x)/2＝(cos 2x − cos 4x)/2。よって V＝(π/2)[(1/2)sin 2x − (1/4)sin 4x]₀^(π/3)＝(π/2)((1/2)(√3/2) − (1/4)(−√3/2))＝(π/2)(3√3/8)＝3√3π/16。",
       rub: [
@@ -468,7 +468,7 @@ const S3: ExamPoolSection[] = [
       id: "gaikei",
       u: "h-math-c-baikai",
       d: 1,
-      p: "(1) y を x の式で表せ。また、y の最大値とそのときの点の座標を求めよ。",
+      p: "y を x の式で表せ。また、y の最大値とそのときの点の座標を求めよ。",
       model: "0≦t≦π/2 で cos t≧0 であるから cos t＝√(1 − sin²t)＝√(1 − x²)。よって y＝2sin t cos t＝2x√(1 − x²)（0≦x≦1）。y＝sin 2t は 2t＝π/2、すなわち t＝π/4 で最大値 1 をとり、そのとき x＝sin(π/4)＝√2/2。よって最大値 1、点 (√2/2, 1)。",
       rub: [
         { label: "cos t≧0 に注意して y＝2x√(1 − x²)", points: 7, keywords: ["2x√(1−x²)", "cos t≧0"] },
@@ -482,7 +482,7 @@ const S3: ExamPoolSection[] = [
       u: "h-math-3-sekibun-oyo",
       d: 2,
       dep: "gaikei",
-      p: "(2) D の面積 S を求めよ。",
+      p: "D の面積 S を求めよ。",
       model:
         "t：0→π/2 のとき x＝sin t は 0→1 と単調に増加し、y≧0。よって S＝∫₀¹ y dx＝∫₀^(π/2) sin 2t・cos t dt＝∫₀^(π/2) 2sin t cos²t dt。u＝cos t とおくと du＝−sin t dt で、S＝∫₁⁰ 2u²(−du)＝∫₀¹ 2u² du＝2/3。",
       rub: [
@@ -502,7 +502,7 @@ const S3: ExamPoolSection[] = [
       u: "h-math-3-sekibun-oyo",
       d: 3,
       dep: "menseki",
-      p: "(3) D を x 軸のまわりに1回転してできる立体の体積 V を求めよ。",
+      p: "D を x 軸のまわりに1回転してできる立体の体積 V を求めよ。",
       model:
         "V＝π∫₀¹ y² dx＝π∫₀^(π/2) sin²2t・cos t dt＝π∫₀^(π/2) 4sin²t cos²t・cos t dt＝4π∫₀^(π/2) sin²t(1 − sin²t)cos t dt。s＝sin t とおくと ds＝cos t dt、s：0→1 で、V＝4π∫₀¹ (s² − s⁴) ds＝4π(1/3 − 1/5)＝8π/15。（(1) の y＝2x√(1 − x²) から V＝π∫₀¹ 4x²(1 − x²) dx としても同じ。）",
       rub: [
@@ -522,7 +522,7 @@ const S3: ExamPoolSection[] = [
       id: "sokudo",
       u: "h-math-c-baikai",
       d: 1,
-      p: "(1) (dx/dt)² + (dy/dt)² を t の式で表せ。",
+      p: "(dx/dt)² + (dy/dt)² を t の式で表せ。",
       model:
         "dx/dt＝−e^(−t)cos t − e^(−t)sin t＝−e^(−t)(cos t + sin t)、dy/dt＝−e^(−t)sin t + e^(−t)cos t＝e^(−t)(cos t − sin t)。よって (dx/dt)² + (dy/dt)²＝e^(−2t)((cos t + sin t)² + (cos t − sin t)²)＝e^(−2t)・2＝2e^(−2t)。",
       rub: [
@@ -537,7 +537,7 @@ const S3: ExamPoolSection[] = [
       u: "h-math-3-sekibun-oyo",
       d: 2,
       dep: "sokudo",
-      p: "(2) L(T) を T の式で表せ。",
+      p: "L(T) を T の式で表せ。",
       model: "L(T)＝∫₀ᵀ √((dx/dt)² + (dy/dt)²) dt＝∫₀ᵀ √2 e^(−t) dt＝√2[−e^(−t)]₀ᵀ＝√2(1 − e^(−T))。",
       rub: [
         { label: "L(T)＝∫₀ᵀ √((dx/dt)²+(dy/dt)²) dt と立式", points: 8, keywords: ["∫₀ᵀ", "√"] },
@@ -551,7 +551,7 @@ const S3: ExamPoolSection[] = [
       u: "h-math-3-kyokugen",
       d: 3,
       dep: "nagasa",
-      p: "(3) lim[T→∞] L(T) を求めよ。また、T→∞ のとき点 P はどの点に近づくか答え、OP の長さと t の関係から、曲線がどのような形か説明せよ（O は原点）。",
+      p: "lim[T→∞] L(T) を求めよ。また、T→∞ のとき点 P はどの点に近づくか答え、OP の長さと t の関係から、曲線がどのような形か説明せよ（O は原点）。",
       model:
         "T→∞ のとき e^(−T)→0 であるから lim L(T)＝√2。また OP＝√(x² + y²)＝e^(−t)→0 であるから、P は原点 O に近づく。OP＝e^(−t) は t とともに減少し、偏角は t であるから、曲線は原点のまわりを反時計回りに無限に回りながら原点に近づくらせんである。無限に回るのに、長さは有限の √2 にとどまる。",
       rub: [
@@ -579,7 +579,7 @@ const S4: ExamPoolSection[] = [
       id: "suisen",
       u: "h-math-c-fukuso",
       d: 1,
-      p: "(1) g を z₁、z₂、z₃ で表せ。また、(h − z₁)/(z₂ − z₃) は純虚数または 0 であることを示し、H が三角形 ABC の垂心であることを説明せよ。",
+      p: "g を z₁、z₂、z₃ で表せ。また、(h − z₁)/(z₂ − z₃) は純虚数または 0 であることを示し、H が三角形 ABC の垂心であることを説明せよ。",
       model:
         "g＝(z₁ + z₂ + z₃)/3。|zₖ|＝1 より z̄ₖ＝1/zₖ（k＝1, 2, 3）。w＝(h − z₁)/(z₂ − z₃)＝(z₂ + z₃)/(z₂ − z₃) とおくと、w̄＝(1/z₂ + 1/z₃)/(1/z₂ − 1/z₃)＝(z₃ + z₂)/(z₃ − z₂)＝−w。よって w + w̄＝0 で、w の実部は 0、すなわち w は純虚数または 0。w が純虚数のとき AH⊥BC、w＝0 のとき H＝A である。同様に (h − z₂)/(z₃ − z₁) も純虚数または 0 だから BH⊥CA（または H＝B）。H は A を通り BC に垂直な直線と、B を通り CA に垂直な直線の上にあるので、H は三角形 ABC の垂心である。",
       rub: [
@@ -598,7 +598,7 @@ const S4: ExamPoolSection[] = [
       u: "h-math-c-fukuso",
       d: 2,
       dep: "suisen",
-      p: "(2) |h|²＝9 − (AB² + BC² + CA²) が成り立つことを示せ。また、AB² + BC² + CA²≦9 であり、等号が成り立つのは G が外心 O と一致するときに限ることを示せ。",
+      p: "|h|²＝9 − (AB² + BC² + CA²) が成り立つことを示せ。また、AB² + BC² + CA²≦9 であり、等号が成り立つのは G が外心 O と一致するときに限ることを示せ。",
       model:
         "|zₖ|²＝1 を用いる。|h|²＝(z₁ + z₂ + z₃)(z̄₁ + z̄₂ + z̄₃)＝3 + (z₁z̄₂ + z̄₁z₂) + (z₂z̄₃ + z̄₂z₃) + (z₃z̄₁ + z̄₃z₁)。一方 AB²＝|z₁ − z₂|²＝2 − (z₁z̄₂ + z̄₁z₂)、BC²＝2 − (z₂z̄₃ + z̄₂z₃)、CA²＝2 − (z₃z̄₁ + z̄₃z₁)。辺々たして |h|² + AB² + BC² + CA²＝3 + 6＝9。よって |h|²＝9 − (AB² + BC² + CA²)。|h|²≧0 より AB² + BC² + CA²≦9 で、等号は h＝0、すなわち g＝h/3＝0（G＝O）のときに限る。",
       rub: [
@@ -617,7 +617,7 @@ const S4: ExamPoolSection[] = [
       u: "h-math-c-fukuso",
       d: 3,
       dep: "kousiki",
-      p: "(3) z₁＝1、z₂＝i とし、点 C(z₃) が円 |z|＝1 上の A、B 以外の点を動くとする。|g| の最大値と、そのときの z₃ を求めよ。また、そのときの AB² + BC² + CA² の値を求めよ。",
+      p: "z₁＝1、z₂＝i とし、点 C(z₃) が円 |z|＝1 上の A、B 以外の点を動くとする。|g| の最大値と、そのときの z₃ を求めよ。また、そのときの AB² + BC² + CA² の値を求めよ。",
       model:
         "g＝(1 + i + z₃)/3 だから、G は中心 (1 + i)/3、半径 1/3 の円の上（A、B に対応する 2 点を除く）を動く。|g|≦|(1 + i)/3| + |z₃/3|＝√2/3 + 1/3 で、等号は z₃ が 1 + i と同じ向き、すなわち z₃＝(1 + i)/√2 のとき成り立つ（この点は A、B と異なる）。よって |g| の最大値は (1 + √2)/3（z₃＝(1 + i)/√2＝(√2/2)(1 + i)）。このとき |h|＝3|g|＝1 + √2 で、(2) より AB² + BC² + CA²＝9 − (1 + √2)²＝9 − (3 + 2√2)＝6 − 2√2。",
       rub: [
@@ -639,7 +639,7 @@ const S4: ExamPoolSection[] = [
       id: "seibun",
       u: "h-math-c-fukuso",
       d: 1,
-      p: "(1) u、v を t で表せ。また、t＝2 のときの w を求めよ。",
+      p: "u、v を t で表せ。また、t＝2 のときの w を求めよ。",
       model: "w＝(1 + ti)²＝1 + 2ti + t²i²＝(1 − t²) + 2ti。よって u＝1 − t²、v＝2t。t＝2 のとき w＝−3 + 4i。",
       rub: [
         { label: "u＝1 − t²、v＝2t", points: 8, keywords: ["1−t²", "2t"] },
@@ -653,7 +653,7 @@ const S4: ExamPoolSection[] = [
       u: "h-math-c-nijikyokusen",
       d: 2,
       dep: "seibun",
-      p: "(2) 点 w が描く図形の方程式を u、v で表せ。また、w が描く図形上のすべての点で |w|＝2 − u が成り立つことを示し、この図形が原点を焦点とする放物線であることを説明せよ。",
+      p: "点 w が描く図形の方程式を u、v で表せ。また、w が描く図形上のすべての点で |w|＝2 − u が成り立つことを示し、この図形が原点を焦点とする放物線であることを説明せよ。",
       model:
         "(1) より t＝v/2 を u＝1 − t² に代入して u＝1 − v²/4。t がすべての実数を動くと v＝2t もすべての実数を動くので、w はこの放物線全体を描く。また |w|＝|z|²＝1 + t²、2 − u＝2 − (1 − t²)＝1 + t² であるから |w|＝2 − u。左辺は点 w と原点の距離、右辺は点 w と直線 u＝2（Re w＝2）の距離（u≦1＜2 より 2 − u＞0）であるから、w の描く図形は原点を焦点、直線 Re w＝2 を準線とする放物線である。",
       rub: [
@@ -672,7 +672,7 @@ const S4: ExamPoolSection[] = [
       u: "h-math-2-sekibun",
       d: 3,
       dep: "houbutsusen",
-      p: "(3) w が描く放物線と虚軸で囲まれた部分の面積を求めよ。",
+      p: "w が描く放物線と虚軸で囲まれた部分の面積を求めよ。",
       model:
         "放物線 u＝1 − v²/4 と虚軸 u＝0 の交点は v²＝4 より v＝±2。−2≦v≦2 で 1 − v²/4≧0 であるから、面積は ∫₋₂² (1 − v²/4) dv＝2∫₀² (1 − v²/4) dv＝2[v − v³/12]₀²＝2(2 − 2/3)＝8/3。（z の言葉では、−1≦t≦1 に対応する部分である。）",
       rub: [
@@ -693,7 +693,7 @@ const S4: ExamPoolSection[] = [
       id: "kyoyaku",
       u: "h-math-c-fukuso",
       d: 1,
-      p: "(1) z̄＝1/z であることを示し、z + 1/z＝2cosθ を示せ。",
+      p: "z̄＝1/z であることを示し、z + 1/z＝2cosθ を示せ。",
       model: "|z|²＝zz̄＝1 より z̄＝1/z。よって z + 1/z＝z + z̄＝(cosθ + i sinθ) + (cosθ − i sinθ)＝2cosθ。",
       rub: [
         { label: "zz̄＝|z|²＝1 から z̄＝1/z", points: 7, keywords: ["zz̄=1"] },
@@ -707,7 +707,7 @@ const S4: ExamPoolSection[] = [
       u: "h-math-c-fukuso",
       d: 2,
       dep: "kyoyaku",
-      p: "(2) |z² + z + 1| を θ を用いて表し、その最大値を求めよ。",
+      p: "|z² + z + 1| を θ を用いて表し、その最大値を求めよ。",
       model: "z² + z + 1＝z(z + 1 + 1/z)＝z(2cosθ + 1)。|z|＝1 より |z² + z + 1|＝|2cosθ + 1|。−1≦cosθ≦1 より −1≦2cosθ + 1≦3 であるから、最大値は 3（θ＝0、すなわち z＝1 のとき）。",
       rub: [
         { label: "z をくくり出して z(2cosθ + 1) と変形", points: 8, keywords: ["z(z+1+1/z)", "2cosθ+1"] },
@@ -725,7 +725,7 @@ const S4: ExamPoolSection[] = [
       u: "h-math-c-fukuso",
       d: 3,
       dep: "zettai",
-      p: "(3) |z² + z + 1|＝1 を満たす z をすべて求めよ。また、それらを表す点を頂点とする図形の面積を求めよ。",
+      p: "|z² + z + 1|＝1 を満たす z をすべて求めよ。また、それらを表す点を頂点とする図形の面積を求めよ。",
       model:
         "(2) より |2cosθ + 1|＝1 ⇔ 2cosθ + 1＝±1 ⇔ cosθ＝0 または cosθ＝−1。0≦θ＜2π で θ＝π/2, π, 3π/2。よって z＝i, −1, −i。3点 i, −1, −i を頂点とする三角形は、底辺（i と −i を結ぶ線分）2、高さ 1 であるから面積 1。",
       rub: [
@@ -753,7 +753,7 @@ const S5: ExamPoolSection[] = [
       id: "x2",
       u: "h-math-a-kakuritsu",
       d: 1,
-      p: "(1) X₁ の確率分布を求めよ。また、X₂＝3 となる確率を求めよ。",
+      p: "X₁ の確率分布を求めよ。また、X₂＝3 となる確率を求めよ。",
       model:
         "1回目に赤玉を取り出す確率は 1/3 で、このとき X₁＝0。白玉を取り出す確率は 2/3 で、このとき X₁＝2。よって P(X₁＝0)＝1/3、P(X₁＝2)＝2/3。X₂＝3 となるのは、X₁＝2 で2回目に白玉（残り 1 個）を取り出すときであるから、P(X₂＝3)＝(2/3)・(1/3)＝2/9。",
       rub: [
@@ -769,7 +769,7 @@ const S5: ExamPoolSection[] = [
       u: "h-math-b-zenka",
       d: 2,
       dep: "x2",
-      p: "(2) Eₙ₊₁＝(1/3)Eₙ + 1 が成り立つことを示せ。",
+      p: "Eₙ₊₁＝(1/3)Eₙ + 1 が成り立つことを示せ。",
       model:
         "Xₙ＝k（k＝0, 1, 2, 3）のとき、次の操作で赤玉を取り出す確率は k/3 で赤玉は 1 個減り、白玉を取り出す確率は (3 − k)/3 で 1 個増える。よって Xₙ＝k のときの Xₙ₊₁ の期待値は (k − 1)・k/3 + (k + 1)・(3 − k)/3＝(k² − k + 3k + 3 − k² − k)/3＝(k + 3)/3＝k/3 + 1。したがって Eₙ₊₁＝Σ[k＝0 から 3] P(Xₙ＝k)(k/3 + 1)＝(1/3)Σ k P(Xₙ＝k) + Σ P(Xₙ＝k)＝(1/3)Eₙ + 1。",
       rub: [
@@ -787,7 +787,7 @@ const S5: ExamPoolSection[] = [
       u: "h-math-b-zenka",
       d: 3,
       dep: "zenka",
-      p: "(3) Eₙ を n の式で表し、E₃ の値と lim[n→∞] Eₙ を求めよ。",
+      p: "Eₙ を n の式で表し、E₃ の値と lim[n→∞] Eₙ を求めよ。",
       model:
         "Eₙ₊₁ − 3/2＝(1/3)(Eₙ − 3/2) と変形できる（3/2 は α＝α/3 + 1 の解）。E₀ − 3/2＝−1/2 であるから Eₙ − 3/2＝−(1/2)(1/3)ⁿ、すなわち Eₙ＝3/2 − (1/2)(1/3)ⁿ。E₃＝3/2 − 1/54＝40/27。また n→∞ で (1/3)ⁿ→0 より lim Eₙ＝3/2。",
       rub: [
@@ -808,7 +808,7 @@ const S5: ExamPoolSection[] = [
       id: "atai",
       u: "h-math-a-yakusu",
       d: 1,
-      p: "(1) F₂、F₃ を求め、F₀F₁F₂＝F₃ − 2 が成り立つことを確かめよ。",
+      p: "F₂、F₃ を求め、F₀F₁F₂＝F₃ − 2 が成り立つことを確かめよ。",
       model: "F₂＝2⁴ + 1＝17、F₃＝2⁸ + 1＝257。F₀F₁F₂＝3・5・17＝255＝257 − 2＝F₃ − 2。",
       rub: [
         { label: "F₂＝17、F₃＝257", points: 8, keywords: ["17", "257"] },
@@ -823,7 +823,7 @@ const S5: ExamPoolSection[] = [
       u: "h-math-b-kino",
       d: 2,
       dep: "atai",
-      p: "(2) すべての自然数 n について、F₀F₁⋯Fₙ₋₁＝Fₙ − 2 が成り立つことを、数学的帰納法で示せ。",
+      p: "すべての自然数 n について、F₀F₁⋯Fₙ₋₁＝Fₙ − 2 が成り立つことを、数学的帰納法で示せ。",
       model:
         "n＝1 のとき F₀＝3＝5 − 2＝F₁ − 2 で成り立つ。n＝k で F₀F₁⋯Fₖ₋₁＝Fₖ − 2 と仮定すると、F₀F₁⋯Fₖ＝(Fₖ − 2)Fₖ＝(2^(2ᵏ) − 1)(2^(2ᵏ) + 1)＝(2^(2ᵏ))² − 1＝2^(2ᵏ⁺¹) − 1＝Fₖ₊₁ − 2。よって n＝k + 1 でも成り立ち、すべての自然数 n で成り立つ。",
       rub: [
@@ -842,7 +842,7 @@ const S5: ExamPoolSection[] = [
       u: "h-math-a-yakusu",
       d: 3,
       dep: "kino",
-      p: "(3) m≠n のとき、Fₘ と Fₙ の最大公約数を求めよ。",
+      p: "m≠n のとき、Fₘ と Fₙ の最大公約数を求めよ。",
       model:
         "m＜n としてよい。(2) より F₀F₁⋯Fₙ₋₁＝Fₙ − 2 で、左辺は Fₘ を因数にもつ。Fₘ と Fₙ の公約数を d とすると、d は Fₙ と F₀F₁⋯Fₙ₋₁＝Fₙ − 2 の両方を割り切るので、差 Fₙ − (Fₙ − 2)＝2 を割り切る。よって d＝1 または 2。ところが Fₙ＝2^(2ⁿ) + 1 は（偶数）＋1 で奇数なので d≠2。したがって最大公約数は 1（Fₘ と Fₙ は互いに素）。",
       rub: [
@@ -863,7 +863,7 @@ const S5: ExamPoolSection[] = [
       id: "op2",
       u: "h-math-c-kukan",
       d: 1,
-      p: "(1) |OP→|² を t の式で表せ。",
+      p: "|OP→|² を t の式で表せ。",
       model: "OP→＝(1 + t, 2, t) であるから、|OP→|²＝(1 + t)² + 2² + t²＝2t² + 2t + 5。",
       rub: [
         { label: "OP→＝(1 + t, 2, t)", points: 6, keywords: ["(1+t,2,t)"] },
@@ -878,7 +878,7 @@ const S5: ExamPoolSection[] = [
       u: "h-math-c-kukan",
       d: 2,
       dep: "op2",
-      p: "(2) 原点 O と直線 ℓ の距離を求めよ。また、そのときの P は OP→⊥d→ を満たすことを確かめよ。",
+      p: "原点 O と直線 ℓ の距離を求めよ。また、そのときの P は OP→⊥d→ を満たすことを確かめよ。",
       model:
         "|OP→|²＝2(t + 1/2)² + 9/2 は t＝−1/2 で最小値 9/2 をとる。よって距離は √(9/2)＝3√2/2。このとき OP→＝(1/2, 2, −1/2) で、OP→・d→＝1/2 + 0 − 1/2＝0 であるから OP→⊥d→。",
       rub: [
@@ -898,7 +898,7 @@ const S5: ExamPoolSection[] = [
       u: "h-math-c-kukan",
       d: 3,
       dep: "kyori",
-      p: "(3) 原点を中心とする半径 √7 の球面と ℓ は2点で交わる。その2つの交点を結ぶ線分の長さを求めよ。",
+      p: "原点を中心とする半径 √7 の球面と ℓ は2点で交わる。その2つの交点を結ぶ線分の長さを求めよ。",
       model:
         "交点では |OP→|²＝7 であるから 2t² + 2t + 5＝7、すなわち t² + t − 1＝0。この2解を t₁、t₂ とすると t₁ + t₂＝−1、t₁t₂＝−1 より (t₁ − t₂)²＝(t₁ + t₂)² − 4t₁t₂＝5。2つの交点を結ぶ線分の長さは |t₁ − t₂|・|d→|＝√5・√2＝√10。（(2) から、半径 √7 と距離 3√2/2 で三平方の定理を使い、2√(7 − 9/2)＝√10 としてもよい。）",
       rub: [

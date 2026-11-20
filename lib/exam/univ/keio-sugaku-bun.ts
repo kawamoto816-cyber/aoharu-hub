@@ -104,7 +104,7 @@ const S1: ExamPoolSection[] = [
       id: "r100",
       u: "h-math-a-gojo",
       d: 1,
-      p: "(1) r₁₀₀＝□ である。",
+      p: "r₁₀₀＝□ である。",
       a: { answerKind: "num", answer: ["7"], calc: "16-9" },
       pt: "2⁶＝64≡1 (mod 9) で周期6",
       st: [
@@ -117,7 +117,7 @@ const S1: ExamPoolSection[] = [
       u: "h-math-a-gojo",
       d: 2,
       dep: "r100",
-      p: "(2) 1≦n≦100 のうち、rₙ＝1 となる n は □ 個ある。",
+      p: "1≦n≦100 のうち、rₙ＝1 となる n は □ 個ある。",
       a: { answerKind: "num", answer: ["16"], unit: "個", calc: "16" },
       pt: "rₙ＝1 ⇔ n が6の倍数",
       st: [
@@ -130,7 +130,7 @@ const S1: ExamPoolSection[] = [
       u: "h-math-a-gojo",
       d: 3,
       dep: "r-ichi",
-      p: "(3) r₁＋r₂＋…＋r₁₀₀＝□ である。",
+      p: "r₁＋r₂＋…＋r₁₀₀＝□ である。",
       a: { answerKind: "num", answer: ["453"], calc: "27*16+2+4+8+7" },
       pt: "1周期の和27を16回、残り4項を足す",
       st: [
@@ -144,7 +144,7 @@ const S1: ExamPoolSection[] = [
       id: "x4",
       u: "h-math-2-shomei",
       d: 1,
-      p: "(1) x⁴ の係数 ₁₀C₄ は □ である。",
+      p: "x⁴ の係数 ₁₀C₄ は □ である。",
       a: { answerKind: "num", answer: ["210"], calc: "10*9*8*7/(4*3*2*1)" },
       pt: "₁₀C₄＝(10·9·8·7)/(4·3·2·1)",
       st: [["計算", "₁₀C₄＝5040/24＝{{210}}。"]],
@@ -154,7 +154,7 @@ const S1: ExamPoolSection[] = [
       u: "h-math-2-shomei",
       d: 2,
       dep: "x4",
-      p: "(2) Σ_{k=0}^{10} k·₁₀Cₖ＝□ である。",
+      p: "Σ[k=0→10] k·₁₀Cₖ＝□ である。",
       a: { answerKind: "num", answer: ["5120"], calc: "10*2^9" },
       pt: "k·₁₀Cₖ＝10·₉Cₖ₋₁ と変形する",
       st: [
@@ -167,7 +167,7 @@ const S1: ExamPoolSection[] = [
       u: "h-math-2-shomei",
       d: 3,
       dep: "k-wa",
-      p: "(3) ₁₀C₀, ₁₀C₁, …, ₁₀C₁₀ の11個のうち、偶数であるものは □ 個ある。",
+      p: "₁₀C₀, ₁₀C₁, …, ₁₀C₁₀ の11個のうち、偶数であるものは □ 個ある。",
       a: { answerKind: "num", answer: ["7"], unit: "個", calc: "11-4" },
       pt: "パスカルの三角形を2で割った余りで書く",
       st: [
@@ -181,7 +181,7 @@ const S1: ExamPoolSection[] = [
       id: "kosu",
       u: "h-math-a-yakusu",
       d: 1,
-      p: "(1) 360 の正の約数は □ 個ある。",
+      p: "360 の正の約数は □ 個ある。",
       a: { answerKind: "num", answer: ["24"], unit: "個", calc: "4*3*2" },
       pt: "360＝2³·3²·5 の指数＋1 をかける",
       st: [["素因数分解", "360＝{{2³·3²·5}}。約数の個数は (3＋1)(2＋1)(1＋1)＝{{24}}。"]],
@@ -191,7 +191,7 @@ const S1: ExamPoolSection[] = [
       u: "h-math-a-yakusu",
       d: 2,
       dep: "kosu",
-      p: "(2) 360 の正の約数の総和は □ である。",
+      p: "360 の正の約数の総和は □ である。",
       a: { answerKind: "num", answer: ["1170"], calc: "(1+2+4+8)*(1+3+9)*(1+5)" },
       pt: "(1＋2＋4＋8)(1＋3＋9)(1＋5) を展開すると全約数の和",
       st: [["積の形", "{{(1＋2＋4＋8)(1＋3＋9)(1＋5)}}＝15·13·6＝{{1170}}。"]],
@@ -201,7 +201,7 @@ const S1: ExamPoolSection[] = [
       u: "h-math-a-yakusu",
       d: 3,
       dep: "sowa",
-      p: "(3) 360 の正の約数のうち平方数であるもの（1 も含む）の和は □ である。",
+      p: "360 の正の約数のうち平方数であるもの（1 も含む）の和は □ である。",
       a: { answerKind: "num", answer: ["50"], calc: "(1+4)*(1+9)" },
       pt: "各素因数の指数を偶数にしぼる",
       st: [
@@ -222,7 +222,7 @@ const S2: ExamPoolSection[] = [
       id: "tonari",
       u: "h-math-a-kakuritsu",
       d: 1,
-      p: "(1) 1 と 2 のカードが隣り合う確率は □ である。",
+      p: "1 と 2 のカードが隣り合う確率は □ である。",
       a: { answerKind: "num", answer: ["2/5"], calc: "2*24/120" },
       pt: "1と2をひとまとめにして4つを並べる",
       st: [["数える", "1・2 を1つと見て 4!＝24 通り、まとまりの中の順が2通り。48/120＝{{2/5}}。"]],
@@ -232,7 +232,7 @@ const S2: ExamPoolSection[] = [
       u: "h-math-a-kakuritsu",
       d: 2,
       dep: "tonari",
-      p: "(2) 左から k 番目のカードの数字が k に等しい (k＝1, 2, 3, 4, 5) ような位置が1つもない確率は □ である。",
+      p: "左から k 番目のカードの数字が k に等しい (k＝1, 2, 3, 4, 5) ような位置が1つもない確率は □ である。",
       a: { answerKind: "num", answer: ["11/30"], calc: "44/120" },
       pt: "完全順列（かく乱順列）の数 44",
       st: [
@@ -245,7 +245,7 @@ const S2: ExamPoolSection[] = [
       u: "h-math-a-kakuritsu",
       d: 3,
       dep: "icchi-nashi",
-      p: "(3) 左から k 番目のカードの数字が k に等しいような位置がちょうど2つである確率は □ である。",
+      p: "左から k 番目のカードの数字が k に等しいような位置がちょうど2つである確率は □ である。",
       a: { answerKind: "num", answer: ["1/6"], calc: "10*2/120" },
       pt: "一致する2か所を選び、残り3枚は完全順列",
       st: [
@@ -259,7 +259,7 @@ const S2: ExamPoolSection[] = [
       id: "hitori",
       u: "h-math-a-kakuritsu",
       d: 1,
-      p: "(1) 1回目のじゃんけんで勝者が1人に決まる確率は □ である。",
+      p: "1回目のじゃんけんで勝者が1人に決まる確率は □ である。",
       a: { answerKind: "num", answer: ["1/3"], calc: "3*3/27" },
       pt: "勝つ人（3通り）と勝つ手（3通り）を選ぶ",
       st: [["数える", "手の出し方は 3³＝27 通り。勝つ1人の選び方3、その人の手3（残り2人は負ける手に決まる）で 9 通り。9/27＝{{1/3}}。"]],
@@ -269,7 +269,7 @@ const S2: ExamPoolSection[] = [
       u: "h-math-a-kakuritsu",
       d: 2,
       dep: "hitori",
-      p: "(2) 2回目のじゃんけんが終わった時点で、ちょうど2人が残っている確率は □ である。",
+      p: "2回目のじゃんけんが終わった時点で、ちょうど2人が残っている確率は □ である。",
       a: { answerKind: "num", answer: ["2/9"], calc: "(1/3)*(1/3)+(1/3)*(1/3)" },
       pt: "1回目のあとに何人残るかで場合分け",
       st: [
@@ -282,7 +282,7 @@ const S2: ExamPoolSection[] = [
       u: "h-math-a-kakuritsu",
       d: 3,
       dep: "futari-nokoru",
-      p: "(3) 3回目のじゃんけんで初めて勝者が1人に決まる確率は □ である。",
+      p: "3回目のじゃんけんで初めて勝者が1人に決まる確率は □ である。",
       a: { answerKind: "num", answer: ["5/27"], calc: "(1/9)*(1/3)+(2/9)*(2/3)" },
       pt: "2回後に3人残る・2人残るの確率を使う",
       st: [
@@ -296,7 +296,7 @@ const S2: ExamPoolSection[] = [
       id: "a-yusho",
       u: "h-math-a-kakuritsu",
       d: 1,
-      p: "(1) A が優勝する確率は □ である。",
+      p: "A が優勝する確率は □ である。",
       a: { answerKind: "num", answer: ["4/9"], calc: "(2/3)^2" },
       pt: "A は組み分けによらず2勝すればよい",
       st: [["2連勝", "相手がだれでも A の勝つ確率は 2/3。(2/3)²＝{{4/9}}。"]],
@@ -306,7 +306,7 @@ const S2: ExamPoolSection[] = [
       u: "h-math-a-kakuritsu",
       d: 2,
       dep: "a-yusho",
-      p: "(2) B と C が対戦する確率は □ である。",
+      p: "B と C が対戦する確率は □ である。",
       a: { answerKind: "num", answer: ["4/9"], calc: "1/3+(2/3)*(1/6)" },
       pt: "1回戦で当たる場合と決勝で当たる場合",
       st: [
@@ -320,7 +320,7 @@ const S2: ExamPoolSection[] = [
       u: "h-math-a-kakuritsu",
       d: 3,
       dep: "bc-taisen",
-      p: "(3) B が優勝する確率は □ である。",
+      p: "B が優勝する確率は □ である。",
       a: { answerKind: "num", answer: ["5/27"], calc: "(1/3)*(1/3)*(1/2)+(2/3)*(1/2)*((2/3)*(1/3)+(1/3)*(1/2))" },
       pt: "1回戦の相手が A かどうかで分ける",
       st: [
@@ -342,7 +342,7 @@ const S3: ExamPoolSection[] = [
       id: "a50",
       u: "h-math-b-sigma",
       d: 1,
-      p: "(1) a₅₀＝□ である。",
+      p: "a₅₀＝□ である。",
       a: { answerKind: "num", answer: ["5"], calc: "50-45" },
       pt: "第 k 群の終わりは第 k(k＋1)/2 項",
       st: [["どの群か", "第9群の終わりが第45項。第50項は{{第10群の5番目}}なので 5。"]],
@@ -352,7 +352,7 @@ const S3: ExamPoolSection[] = [
       u: "h-math-b-sigma",
       d: 2,
       dep: "a50",
-      p: "(2) a₁＋a₂＋…＋a₅₀＝□ である。",
+      p: "a₁＋a₂＋…＋a₅₀＝□ である。",
       a: { answerKind: "num", answer: ["180"], calc: "9*10*11/6+15" },
       pt: "第 k 群の和は k(k＋1)/2",
       st: [
@@ -365,7 +365,7 @@ const S3: ExamPoolSection[] = [
       u: "h-math-b-sigma",
       d: 3,
       dep: "s50",
-      p: "(3) a₁＋a₂＋…＋aₙ が初めて 500 をこえるのは n＝□ のときである。",
+      p: "a₁＋a₂＋…＋aₙ が初めて 500 をこえるのは n＝□ のときである。",
       a: { answerKind: "num", answer: ["101"], labels: ["n ="], calc: "91+10" },
       pt: "群の和 m(m＋1)(m＋2)/6 で見当をつける",
       st: [
@@ -379,7 +379,7 @@ const S3: ExamPoolSection[] = [
       id: "a5",
       u: "h-math-b-zenka",
       d: 1,
-      p: "(1) a₅＝□ である。",
+      p: "a₅＝□ である。",
       a: { answerKind: "num", answer: ["42"], calc: "2*(2*(2*(2*1+1)+2)+3)+4" },
       pt: "順に代入する",
       st: [["代入", "a₂＝3、a₃＝8、a₄＝19、{{a₅＝42}}。"]],
@@ -389,7 +389,7 @@ const S3: ExamPoolSection[] = [
       u: "h-math-b-zenka",
       d: 2,
       dep: "a5",
-      p: "(2) bₙ＝aₙ＋n＋1 とおくと {bₙ} は等比数列になる。これを用いると a₁₀＝□ である。",
+      p: "bₙ＝aₙ＋n＋1 とおくと {bₙ} は等比数列になる。これを用いると a₁₀＝□ である。",
       a: { answerKind: "num", answer: ["1525"], calc: "3*2^9-11" },
       pt: "bₙ₊₁＝2bₙ、b₁＝3",
       st: [
@@ -402,7 +402,7 @@ const S3: ExamPoolSection[] = [
       u: "h-math-b-zenka",
       d: 3,
       dep: "a10",
-      p: "(3) a₁＋a₂＋…＋a₁₀＝□ である。",
+      p: "a₁＋a₂＋…＋a₁₀＝□ である。",
       a: { answerKind: "num", answer: ["3004"], calc: "3*(2^10-1)-55-10" },
       pt: "3·2ᵏ⁻¹ の和と (k＋1) の和に分ける",
       st: [
@@ -416,7 +416,7 @@ const S3: ExamPoolSection[] = [
       id: "chushin",
       u: "h-math-2-en",
       d: 1,
-      p: "(1) C の中心の座標は (□, □) である。",
+      p: "C の中心の座標は (□, □) である。",
       a: { answerKind: "pair", answer: ["3", "2"], labels: ["x =", "y ="], equations: ["x-3=0", "y-2=0"] },
       pt: "平方完成して (x−3)²＋(y−2)²＝4",
       st: [["平方完成", "(x−3)²＋(y−2)²＝4。中心 {{(3, 2)}}、半径 2。"]],
@@ -426,7 +426,7 @@ const S3: ExamPoolSection[] = [
       u: "h-math-2-en",
       d: 2,
       dep: "chushin",
-      p: "(2) 原点を通る直線 y＝mx が C に接するような m の値は、m＝□ と m＝□ である。",
+      p: "原点を通る直線 y＝mx が C に接するような m の値は、m＝□ と m＝□ である。",
       a: { answerKind: "roots", answer: ["0", "12/5"], labels: ["m ="], equations: ["5*m^2-12*m=0"] },
       pt: "中心と直線の距離＝半径",
       st: [
@@ -439,7 +439,7 @@ const S3: ExamPoolSection[] = [
       u: "h-math-2-en",
       d: 3,
       dep: "sessen",
-      p: "(3) 直線 y＝x が C によって切り取られる線分の長さは □ である。",
+      p: "直線 y＝x が C によって切り取られる線分の長さは □ である。",
       a: { answerKind: "surd", answer: ["√14"], equations: ["x^2=14"] },
       pt: "弦の半分²＝半径²−距離²",
       st: [
@@ -460,7 +460,7 @@ const S4: ExamPoolSection[] = [
       id: "t-chi",
       u: "h-math-2-bibun",
       d: 1,
-      p: "(1) ℓₜ が C₂ にも接するような t の値をすべて求めよ。",
+      p: "ℓₜ が C₂ にも接するような t の値をすべて求めよ。",
       model:
         "y′＝2x より ℓₜ: y＝2tx−t²。C₂ と連立して −x²＋4x−6＝2tx−t²、すなわち x²＋(2t−4)x＋6−t²＝0。これが重解をもつ条件は 判別式/4＝(t−2)²−(6−t²)＝2t²−4t−2＝0、t²−2t−1＝0。よって t＝1±√2。",
       rub: [
@@ -480,7 +480,7 @@ const S4: ExamPoolSection[] = [
       u: "h-math-2-bibun",
       d: 2,
       dep: "t-chi",
-      p: "(2) C₁ と C₂ の2本の共通接線の交点の座標を求めよ。",
+      p: "C₁ と C₂ の2本の共通接線の交点の座標を求めよ。",
       model:
         "t₁＝1＋√2、t₂＝1−√2 とする。ℓ: y＝2t₁x−t₁²、y＝2t₂x−t₂² を連立すると 2(t₁−t₂)x＝t₁²−t₂² より x＝(t₁＋t₂)/2＝1。y＝2t₁·1−t₁²＝t₁(2−t₁)＝t₁t₂＝(1＋√2)(1−√2)＝−1。よって交点は (1, −1)。",
       rub: [
@@ -499,7 +499,7 @@ const S4: ExamPoolSection[] = [
       u: "h-math-2-sekibun",
       d: 3,
       dep: "koten",
-      p: "(3) 2本の共通接線のうち傾きが正のものを ℓ とする。C₁、ℓ および y 軸で囲まれた部分の面積を求めよ。",
+      p: "2本の共通接線のうち傾きが正のものを ℓ とする。C₁、ℓ および y 軸で囲まれた部分の面積を求めよ。",
       model:
         "傾き 2t が正なのは t＝1＋√2 の方で、ℓ: y＝2tx−t²（t＝1＋√2）は C₁ と x＝t で接する。0≦x≦t で x²−(2tx−t²)＝(x−t)²≧0 なので、求める面積は ∫₀ᵗ (x−t)² dx＝[(x−t)³/3]₀ᵗ＝t³/3。t³＝(1＋√2)³＝1＋3√2＋6＋2√2＝7＋5√2 より、面積は (7＋5√2)/3。",
       rub: [
@@ -520,7 +520,7 @@ const S4: ExamPoolSection[] = [
       id: "s-zentai",
       u: "h-math-2-sekibun",
       d: 1,
-      p: "(1) C と x 軸で囲まれた部分の面積 S を求めよ。",
+      p: "C と x 軸で囲まれた部分の面積 S を求めよ。",
       model: "C は x＝0, 2 で x 軸と交わり、0≦x≦2 で y≧0。S＝∫₀² (−x²＋2x) dx＝[−x³/3＋x²]₀²＝−8/3＋4＝4/3。",
       rub: [
         { label: "交点 x＝0, 2 を求めて積分を立てている", points: 3, keywords: ["∫₀²"] },
@@ -535,9 +535,9 @@ const S4: ExamPoolSection[] = [
       u: "h-math-2-sekibun",
       d: 2,
       dep: "s-zentai",
-      p: "(2) C と ℓ で囲まれた部分の面積 T を m を用いて表せ。",
+      p: "C と ℓ で囲まれた部分の面積 T を m を用いて表せ。",
       model:
-        "−x²＋2x＝mx より x(x−(2−m))＝0、x＝0, 2−m（0＜m＜2 より 2−m＞0）。0≦x≦2−m で (−x²＋2x)−mx＝−x(x−(2−m))≧0。T＝∫₀^{2−m} −x(x−(2−m)) dx＝(2−m)³/6。",
+        "−x²＋2x＝mx より x(x−(2−m))＝0、x＝0, 2−m（0＜m＜2 より 2−m＞0）。0≦x≦2−m で (−x²＋2x)−mx＝−x(x−(2−m))≧0。T＝∫[0→2−m] −x(x−(2−m)) dx＝(2−m)³/6。",
       rub: [
         { label: "交点の x 座標 0, 2−m を求めている", points: 3, keywords: ["2−m"] },
         { label: "T＝(2−m)³/6 と答えている", points: 5, keywords: ["(2−m)³/6"] },
@@ -553,7 +553,7 @@ const S4: ExamPoolSection[] = [
       u: "h-math-2-sekibun",
       d: 3,
       dep: "t-m",
-      p: "(3) T が S の 1/8 となるような m の値を求めよ。また、そのとき C と ℓ で囲まれた部分と x 軸の間にある部分（C、ℓ、x 軸で囲まれ、ℓ より下にある部分）の面積を求めよ。",
+      p: "T が S の 1/8 となるような m の値を求めよ。また、そのとき C と ℓ で囲まれた部分と x 軸の間にある部分（C、ℓ、x 軸で囲まれ、ℓ より下にある部分）の面積を求めよ。",
       model:
         "T＝S/8 より (2−m)³/6＝(4/3)/8＝1/6、(2−m)³＝1、2−m＝1（実数）、m＝1。このとき ℓ より下で C と x 軸に囲まれた部分の面積は S−T＝4/3−1/6＝7/6。",
       rub: [
@@ -574,7 +574,7 @@ const S4: ExamPoolSection[] = [
       id: "kyokusho",
       u: "h-math-2-bibun",
       d: 1,
-      p: "(1) f(x) の極小値を a を用いて表せ。",
+      p: "f(x) の極小値を a を用いて表せ。",
       model: "f′(x)＝3x²−3a＝3(x−√a)(x＋√a)。a＞0 なので x＝−√a で極大、x＝√a で極小。極小値は f(√a)＝a√a−3a√a＝−2a√a。",
       rub: [
         { label: "f′(x)＝3(x−√a)(x＋√a) から増減を調べている", points: 3, keywords: ["f′(x)", "増減"] },
@@ -588,7 +588,7 @@ const S4: ExamPoolSection[] = [
       u: "h-math-2-bibun",
       d: 2,
       dep: "kyokusho",
-      p: "(2) 0≦x≦2 における f(x) の最小値 m(a) を求めよ。",
+      p: "0≦x≦2 における f(x) の最小値 m(a) を求めよ。",
       model:
         "(i) 0＜√a＜2、すなわち 0＜a＜4 のとき、0≦x≦√a で減少、√a≦x≦2 で増加するので m(a)＝f(√a)＝−2a√a。(ii) √a≧2、すなわち a≧4 のとき、0≦x≦2 で f′(x)≦0 より減少するので m(a)＝f(2)＝8−6a。",
       rub: [
@@ -607,7 +607,7 @@ const S4: ExamPoolSection[] = [
       u: "h-math-2-bibun",
       d: 3,
       dep: "saisho",
-      p: "(3) m(a)＝−2 となるような a の値を求めよ。",
+      p: "m(a)＝−2 となるような a の値を求めよ。",
       model:
         "(i) 0＜a＜4 のとき −2a√a＝−2 より a√a＝1、a³＝1、a＝1。これは 0＜a＜4 を満たす。(ii) a≧4 のとき 8−6a＝−2 より a＝5/3 で、a≧4 を満たさないので不適。以上より a＝1。",
       rub: [
@@ -635,7 +635,7 @@ const S5: ExamPoolSection[] = [
       id: "op",
       u: "h-math-c-zukei",
       d: 1,
-      p: "(1) OP→＝x a→＋y b→ と表すとき、x, y の値を求めよ。",
+      p: "OP→＝x a→＋y b→ と表すとき、x, y の値を求めよ。",
       model:
         "P は AD 上にあるので、実数 s を用いて OP→＝(1−s)a→＋(s/3)b→。P は BC 上にあるので、実数 u を用いて OP→＝(2u/3)a→＋(1−u)b→。a→, b→ は1次独立なので 1−s＝2u/3、s/3＝1−u。これを解いて s＝3/7、u＝6/7。よって OP→＝(4/7)a→＋(1/7)b→、x＝4/7、y＝1/7。",
       rub: [
@@ -655,7 +655,7 @@ const S5: ExamPoolSection[] = [
       u: "h-math-c-zukei",
       d: 2,
       dep: "op",
-      p: "(2) 直線 OP と辺 AB の交点を Q とする。AQ:QB と OP:PQ を求めよ。",
+      p: "直線 OP と辺 AB の交点を Q とする。AQ:QB と OP:PQ を求めよ。",
       model:
         "Q は直線 OP 上なので OQ→＝k OP→＝(4k/7)a→＋(k/7)b→。Q は AB 上なので係数の和が1：5k/7＝1、k＝7/5。OQ→＝(4/5)a→＋(1/5)b→ より AQ:QB＝1:4。また OQ＝(7/5)OP より OP:PQ＝5:2。",
       rub: [
@@ -674,7 +674,7 @@ const S5: ExamPoolSection[] = [
       u: "h-math-c-zukei",
       d: 3,
       dep: "q-hi",
-      p: "(3) |a→|＝3、|b→|＝4、∠AOB＝60° のとき、三角形 PAB の面積を求めよ。",
+      p: "|a→|＝3、|b→|＝4、∠AOB＝60° のとき、三角形 PAB の面積を求めよ。",
       model:
         "△OAB＝(1/2)·3·4·sin60°＝3√3。(2) より PQ:OQ＝2:7 なので、AB を底辺とすると高さの比から △PAB＝(2/7)△OAB＝(2/7)·3√3＝6√3/7。",
       rub: [
@@ -695,7 +695,7 @@ const S5: ExamPoolSection[] = [
       id: "taiseki",
       u: "h-math-c-kukan",
       d: 1,
-      p: "(1) 四面体 OABC の体積 V を求めよ。",
+      p: "四面体 OABC の体積 V を求めよ。",
       model: "OA、OB、OC は互いに垂直。底面 △OAB＝(1/2)·1·2＝1、高さ OC＝2 より V＝(1/3)·1·2＝2/3。",
       rub: [
         { label: "底面積と高さを正しくとっている", points: 4, keywords: ["底面", "高さ"] },
@@ -710,7 +710,7 @@ const S5: ExamPoolSection[] = [
       u: "h-math-c-kukan",
       d: 2,
       dep: "taiseki",
-      p: "(2) 三角形 ABC の面積を求めよ。",
+      p: "三角形 ABC の面積を求めよ。",
       model:
         "AB→＝(−1, 2, 0)、AC→＝(−1, 0, 2)。|AB→|²＝5、|AC→|²＝5、AB→·AC→＝1。△ABC＝(1/2)√(|AB→|²|AC→|²−(AB→·AC→)²)＝(1/2)√(25−1)＝(1/2)√24＝√6。",
       rub: [
@@ -730,7 +730,7 @@ const S5: ExamPoolSection[] = [
       u: "h-math-c-kukan",
       d: 3,
       dep: "abc",
-      p: "(3) 原点 O と平面 ABC の距離を求めよ。",
+      p: "原点 O と平面 ABC の距離を求めよ。",
       model: "求める距離を h とする。四面体 OABC の体積を、△ABC を底面として表すと V＝(1/3)·√6·h。V＝2/3 より h＝3V/√6＝2/√6＝√6/3。",
       rub: [
         { label: "△ABC を底面とする体積の式を立てている", points: 5, keywords: ["(1/3)·√6·h"] },
@@ -749,7 +749,7 @@ const S5: ExamPoolSection[] = [
       id: "ad",
       u: "h-math-c-heimen",
       d: 1,
-      p: "(1) AD→＝x a→＋y b→ と表すとき、x, y の値を求めよ。",
+      p: "AD→＝x a→＋y b→ と表すとき、x, y の値を求めよ。",
       model: "正六角形の中心を O とすると、ABOF はひし形なので AO→＝a→＋b→。D は A の O に関する対称点なので AD→＝2AO→＝2a→＋2b→。x＝2、y＝2。",
       rub: [
         { label: "中心 O について AO→＝a→＋b→ を示している", points: 4, keywords: ["AO→", "ひし形"] },
@@ -764,7 +764,7 @@ const S5: ExamPoolSection[] = [
       u: "h-math-c-heimen",
       d: 2,
       dep: "ad",
-      p: "(2) 内積 AC→·AE→ を求めよ。",
+      p: "内積 AC→·AE→ を求めよ。",
       model:
         "BC→＝AO→＝a→＋b→ なので AC→＝a→＋(a→＋b→)＝2a→＋b→。同様に FE→＝a→＋b→ で AE→＝a→＋2b→。a→·b→＝1·1·cos120°＝−1/2。AC→·AE→＝2|a→|²＋5a→·b→＋2|b→|²＝2−5/2＋2＝3/2。",
       rub: [
@@ -784,7 +784,7 @@ const S5: ExamPoolSection[] = [
       u: "h-math-c-heimen",
       d: 3,
       dep: "ac-ae",
-      p: "(3) 点 P が辺 DE 上を動くとき、内積 AP→·BP→ の最小値と、そのときの DP の長さを求めよ。",
+      p: "点 P が辺 DE 上を動くとき、内積 AP→·BP→ の最小値と、そのときの DP の長さを求めよ。",
       model:
         "DP＝t (0≦t≦1) とする。DE→＝−a→ なので AP→＝AD→＋tDE→＝(2−t)a→＋2b→、BP→＝AP→−a→＝(1−t)a→＋2b→。AP→·BP→＝(2−t)(1−t)＋{2(2−t)＋2(1−t)}a→·b→＋4｜b→｜²＝(2−t)(1−t)−(3−2t)＋4＝t²−t＋3＝(t−1/2)²＋11/4。0≦t≦1 より t＝1/2 のとき最小値 11/4。すなわち DP＝1/2 のとき最小値 11/4。",
       rub: [
@@ -812,7 +812,7 @@ const S6: ExamPoolSection[] = [
       id: "p2",
       u: "h-math-a-kakuritsu",
       d: 1,
-      p: "(1) p₁ と p₂ を求めよ。",
+      p: "p₁ と p₂ を求めよ。",
       model: "1回目は P 以外に渡るので p₁＝0。2回目は、ボールを持つ Q か R が P を選べばよいので p₂＝1/2。",
       rub: [
         { label: "p₁＝0", points: 3, keywords: ["p₁＝0"] },
@@ -827,7 +827,7 @@ const S6: ExamPoolSection[] = [
       u: "h-math-b-zenka",
       d: 2,
       dep: "p2",
-      p: "(2) pₙ₊₁ を pₙ を用いて表せ。",
+      p: "pₙ₊₁ を pₙ を用いて表せ。",
       model:
         "n＋1 回後に P が持つのは、n 回後に P 以外が持っていて（確率 1−pₙ）、その人が P を選ぶ（確率 1/2）ときに限る。n 回後に P が持っていると、次は必ず P 以外に渡る。よって pₙ₊₁＝(1/2)(1−pₙ)。",
       rub: [
@@ -842,7 +842,7 @@ const S6: ExamPoolSection[] = [
       u: "h-math-b-zenka",
       d: 3,
       dep: "zenka",
-      p: "(3) pₙ を n の式で表せ。また p₆ の値を求めよ。",
+      p: "pₙ を n の式で表せ。また p₆ の値を求めよ。",
       model:
         "α＝(1−α)/2 より α＝1/3。pₙ₊₁−1/3＝−(1/2)(pₙ−1/3)。p₀−1/3＝2/3 なので pₙ−1/3＝(2/3)(−1/2)ⁿ、pₙ＝1/3＋(2/3)(−1/2)ⁿ。p₆＝1/3＋(2/3)(1/64)＝1/3＋1/96＝11/32。",
       rub: [
@@ -863,7 +863,7 @@ const S6: ExamPoolSection[] = [
       id: "z30",
       u: "h-math-a-yakusu",
       d: 1,
-      p: "(1) Z(30) を求めよ。",
+      p: "Z(30) を求めよ。",
       model:
         "末尾の 0 の個数は、n! を割り切る 10ᵏ の最大の k。10＝2·5 で、n! に含まれる素因数 2 の個数は 5 の個数以上なので、Z(n) は素因数 5 の個数に等しい。30! で 5 の倍数は 6 個、25 の倍数は 1 個なので 5 の個数は 6＋1＝7。Z(30)＝7。",
       rub: [
@@ -879,7 +879,7 @@ const S6: ExamPoolSection[] = [
       u: "h-math-a-yakusu",
       d: 2,
       dep: "z30",
-      p: "(2) 30! が 2ᵏ で割り切れるような最大の整数 k を求めよ。",
+      p: "30! が 2ᵏ で割り切れるような最大の整数 k を求めよ。",
       model: "30 以下の 2 の倍数 15 個、4 の倍数 7 個、8 の倍数 3 個、16 の倍数 1 個。k＝15＋7＋3＋1＝26。",
       rub: [
         { label: "2, 4, 8, 16 の倍数の個数を足す方法をとっている", points: 4, keywords: ["4の倍数", "8の倍数"] },
@@ -894,7 +894,7 @@ const S6: ExamPoolSection[] = [
       u: "h-math-a-yakusu",
       d: 3,
       dep: "nibai",
-      p: "(3) Z(n)＝10 となる最小の正の整数 n を求めよ。",
+      p: "Z(n)＝10 となる最小の正の整数 n を求めよ。",
       model:
         "Z(n)＝[n/5]＋[n/25]＋…。Z(n) は n が 5 の倍数になるときだけ増える。Z(40)＝8＋1＝9、Z(45)＝9＋1＝10、41≦n≦44 では Z(n)＝9。よって最小の n は 45。",
       rub: [
@@ -910,12 +910,12 @@ const S6: ExamPoolSection[] = [
       ],
     }),
   ]),
-  sec(6, "wa", "h-math-b-sigma", "k·3ᵏ⁻¹ の和", LEAD2, "Sₙ＝Σ_{k=1}^{n} k·3ᵏ⁻¹＝1＋2·3＋3·3²＋…＋n·3ⁿ⁻¹ とする。", [
+  sec(6, "wa", "h-math-b-sigma", "k·3ᵏ⁻¹ の和", LEAD2, "Sₙ＝Σ[k=1→n] k·3ᵏ⁻¹＝1＋2·3＋3·3²＋…＋n·3ⁿ⁻¹ とする。", [
     wr({
       id: "s3",
       u: "h-math-b-sigma",
       d: 1,
-      p: "(1) S₃ を求めよ。",
+      p: "S₃ を求めよ。",
       model: "S₃＝1＋2·3＋3·9＝1＋6＋27＝34。",
       rub: [
         { label: "各項を正しく計算している", points: 3, keywords: ["1＋6＋27"] },
@@ -930,7 +930,7 @@ const S6: ExamPoolSection[] = [
       u: "h-math-b-sigma",
       d: 2,
       dep: "s3",
-      p: "(2) Sₙ を n の式で表せ。また S₅ の値を求めよ。",
+      p: "Sₙ を n の式で表せ。また S₅ の値を求めよ。",
       model:
         "Sₙ−3Sₙ＝1＋3＋3²＋…＋3ⁿ⁻¹−n·3ⁿ＝(3ⁿ−1)/2−n·3ⁿ。よって −2Sₙ＝(3ⁿ−1)/2−n·3ⁿ、Sₙ＝{(2n−1)·3ⁿ＋1}/4。S₅＝(9·243＋1)/4＝2188/4＝547。",
       rub: [
@@ -950,7 +950,7 @@ const S6: ExamPoolSection[] = [
       u: "h-math-b-sigma",
       d: 3,
       dep: "sn",
-      p: "(3) Sₙ＞10000 となる最小の正の整数 n を求めよ。",
+      p: "Sₙ＞10000 となる最小の正の整数 n を求めよ。",
       model:
         "Sₙ は n について増加する（各項が正）。S₇＝(13·2187＋1)/4＝28432/4＝7108、S₈＝(15·6561＋1)/4＝98416/4＝24604。S₇≦10000＜S₈ なので、最小の n は 8。",
       rub: [

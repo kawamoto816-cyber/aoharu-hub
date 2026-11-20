@@ -292,7 +292,7 @@ const S2: ExamPoolSection[] = [
         id: "hitori-kachi",
         u: "h-math-a-kakuritsu",
         d: 1,
-        p: "(1) 1回目のじゃんけんで、勝者がちょうど1人に決まる確率は □ である。",
+        p: "1回目のじゃんけんで、勝者がちょうど1人に決まる確率は □ である。",
         a: { answerKind: "num", answer: ["4/27"], calc: "4*3/3^4" },
         pt: "勝つ人4通り×勝つ手3通り",
         st: [["数える", "手の出し方は全部で 3⁴＝81 通り。勝つ人の選び方4通り、その人の手3通り（残りは負ける手に決まる）で12通り。{{12/81＝4/27}}。"]],
@@ -302,7 +302,7 @@ const S2: ExamPoolSection[] = [
         u: "h-math-a-kakuritsu",
         d: 2,
         dep: "hitori-kachi",
-        p: "(2) 1回目のじゃんけんが、あいこになる確率は □ である。",
+        p: "1回目のじゃんけんが、あいこになる確率は □ である。",
         a: { answerKind: "num", answer: ["13/27"], calc: "1-(12+18+12)/81" },
         pt: "勝負がつくのは手が2種類のときだけ",
         st: [
@@ -315,7 +315,7 @@ const S2: ExamPoolSection[] = [
         u: "h-math-a-kakuritsu",
         d: 3,
         dep: "aiko",
-        p: "(3) ちょうど2回目のじゃんけんで、はじめて勝者が1人に決まる確率は □ である。",
+        p: "ちょうど2回目のじゃんけんで、はじめて勝者が1人に決まる確率は □ である。",
         a: { answerKind: "num", answer: ["196/729"], calc: "13/27*4/27+4/27*1/3+2/9*2/3" },
         pt: "1回目の結果（あいこ・3人残る・2人残る）で分ける",
         st: [
@@ -338,7 +338,7 @@ const S2: ExamPoolSection[] = [
         id: "tonari",
         u: "h-math-a-baai",
         d: 1,
-        p: "(1) 1 と 2 のカードが隣り合う並べ方は □ 通りある。",
+        p: "1 と 2 のカードが隣り合う並べ方は □ 通りある。",
         a: { answerKind: "num", answer: ["48"], unit: "通り", calc: "4*3*2*1*2" },
         pt: "隣り合うものはひとまとめにする",
         st: [["まとめる", "1と2を1つと見て 4!＝24 通り、まとまりの中の並びが2通りで {{48}}通り。"]],
@@ -348,7 +348,7 @@ const S2: ExamPoolSection[] = [
         u: "h-math-a-baai",
         d: 2,
         dep: "tonari",
-        p: "(2) どの k（k＝1, 2, 3, 4, 5）についても、左から k 番目のカードが k でない並べ方は □ 通りある。",
+        p: "どの k（k＝1, 2, 3, 4, 5）についても、左から k 番目のカードが k でない並べ方は □ 通りある。",
         a: { answerKind: "num", answer: ["44"], unit: "通り", calc: "120-5*24+10*6-10*2+5*1-1" },
         pt: "包除原理（または完全順列の漸化式）",
         st: [
@@ -361,7 +361,7 @@ const S2: ExamPoolSection[] = [
         u: "h-math-a-kakuritsu",
         d: 3,
         dep: "kanzen",
-        p: "(3) 5枚を無作為に並べるとき、「そのカードより左にあるどのカードよりも大きい数」のカードを“記録”とよぶ（いちばん左のカードは記録とする）。記録の枚数の期待値は □ である。",
+        p: "5枚を無作為に並べるとき、「そのカードより左にあるどのカードよりも大きい数」のカードを“記録”とよぶ（いちばん左のカードは記録とする）。記録の枚数の期待値は □ である。",
         a: { answerKind: "num", answer: ["137/60"], calc: "1+1/2+1/3+1/4+1/5" },
         pt: "k 番目が記録になる確率は 1/k（左から k 枚の最大）",
         st: [
@@ -383,7 +383,7 @@ const S2: ExamPoolSection[] = [
         id: "yusho",
         u: "h-math-a-kakuritsu",
         d: 1,
-        p: "(1) A が優勝する確率は □ である。",
+        p: "A が優勝する確率は □ である。",
         a: { answerKind: "num", answer: ["1/8"], calc: "(1/2)^3" },
         pt: "3試合続けて勝つ",
         st: [["連勝", "1回戦・2回戦・決勝の3試合に勝つ。(1/2)³＝{{1/8}}。"]],
@@ -393,7 +393,7 @@ const S2: ExamPoolSection[] = [
         u: "h-math-a-kakuritsu",
         d: 2,
         dep: "yusho",
-        p: "(2) A と B が（どこかの回で）対戦する確率は □ である。",
+        p: "A と B が（どこかの回で）対戦する確率は □ である。",
         a: { answerKind: "num", answer: ["1/4"], calc: "7/28" },
         pt: "試合は全部で7つ、2人の組は28通りで対等",
         st: [
@@ -406,7 +406,7 @@ const S2: ExamPoolSection[] = [
         u: "h-math-a-kakuritsu",
         d: 3,
         dep: "taisen",
-        p: "(3) A と B が決勝で対戦する確率は □ である。",
+        p: "A と B が決勝で対戦する確率は □ である。",
         a: { answerKind: "num", answer: ["1/28"], calc: "4/7*(1/4)*(1/4)" },
         pt: "別の山に入り、2人とも2連勝",
         st: [
@@ -436,7 +436,7 @@ const S3: ExamPoolSection[] = [
         id: "koten",
         u: "h-math-2-bibun",
         d: 1,
-        p: "(1) C₁ と C₂ の交点の x 座標は □ である。",
+        p: "C₁ と C₂ の交点の x 座標は □ である。",
         a: { answerKind: "num", answer: ["2"], equations: ["x^2-(x^2-4x+8)=0"] },
         pt: "x² の項が消えて1次方程式",
         st: [["連立", "x²＝x²−4x＋8 より 4x＝8、{{x＝2}}。"]],
@@ -446,7 +446,7 @@ const S3: ExamPoolSection[] = [
         u: "h-math-2-bibun",
         d: 2,
         dep: "koten",
-        p: "(2) C₁ と C₂ の両方に接する直線の方程式は y＝□ である。",
+        p: "C₁ と C₂ の両方に接する直線の方程式は y＝□ である。",
         a: { answerKind: "expr", answer: ["2x-1"], labels: ["y ="] },
         pt: "C₁ の接線が C₂ に接する ⇔ 判別式＝0",
         st: [
@@ -459,7 +459,7 @@ const S3: ExamPoolSection[] = [
         u: "h-math-2-sekibun",
         d: 3,
         dep: "sessen",
-        p: "(3) C₁、C₂ と (2) の直線で囲まれた部分の面積は □ である。",
+        p: "C₁、C₂ と (2) の直線で囲まれた部分の面積は □ である。",
         a: { answerKind: "num", answer: ["2/3"], calc: "1/3+1/3" },
         pt: "接点 x＝1, 3 と交点 x＝2 で積分を分ける",
         st: [
@@ -481,7 +481,7 @@ const S3: ExamPoolSection[] = [
         id: "kyokusho",
         u: "h-math-2-bibun",
         d: 1,
-        p: "(1) f(x) が極小値をとるときの x の値は □ である。",
+        p: "f(x) が極小値をとるときの x の値は □ である。",
         a: { answerKind: "num", answer: ["3"], equations: ["3x^2-6x-9=0", "x-3=0"] },
         pt: "f′(x)＝3(x＋1)(x−3)",
         st: [["微分", "f′(x)＝3x²−6x−9＝3(x＋1)(x−3)。符号は ＋→−→＋ で、極小は {{x＝3}}。"]],
@@ -491,7 +491,7 @@ const S3: ExamPoolSection[] = [
         u: "h-math-2-bibun",
         d: 2,
         dep: "kyokusho",
-        p: "(2) 方程式 f(x)＝0 が異なる2つの実数解をもつような k の値のうち、大きいほうは k＝□ である。",
+        p: "方程式 f(x)＝0 が異なる2つの実数解をもつような k の値のうち、大きいほうは k＝□ である。",
         a: { answerKind: "num", answer: ["27"], labels: ["k ="], equations: ["k-27=0"] },
         pt: "極値のどちらかが0になるとき重解",
         st: [
@@ -504,7 +504,7 @@ const S3: ExamPoolSection[] = [
         u: "h-math-2-sekibun",
         d: 3,
         dep: "k-atai",
-        p: "(3) k が (2) の値のとき、曲線 y＝f(x) と x 軸で囲まれた部分の面積は □ である。",
+        p: "k が (2) の値のとき、曲線 y＝f(x) と x 軸で囲まれた部分の面積は □ である。",
         a: { answerKind: "num", answer: ["108"], calc: "6^4/12" },
         pt: "f(x)＝(x−3)²(x＋3)。−3≦x≦3 で f(x)≧0",
         st: [
@@ -526,7 +526,7 @@ const S3: ExamPoolSection[] = [
         id: "a-atai",
         u: "h-math-2-sekibun",
         d: 1,
-        p: "(1) ∫₀¹ f(t) dt＝□ である。",
+        p: "∫₀¹ f(t) dt＝□ である。",
         a: { answerKind: "num", answer: ["8/3"], labels: ["a ="], equations: ["a-(1/3+a/2+1)=0"] },
         pt: "定積分は定数なので a とおく",
         st: [
@@ -539,7 +539,7 @@ const S3: ExamPoolSection[] = [
         u: "h-math-1-saidai",
         d: 2,
         dep: "a-atai",
-        p: "(2) f(x) の最小値は □ である。",
+        p: "f(x) の最小値は □ である。",
         a: { answerKind: "num", answer: ["-7/9"], calc: "1-(4/3)^2" },
         pt: "f(x)＝(x＋4/3)²−7/9",
         st: [["平方完成", "f(x)＝x²＋(8/3)x＋1＝(x＋4/3)²＋1−16/9。最小値 {{−7/9}}。"]],
@@ -549,7 +549,7 @@ const S3: ExamPoolSection[] = [
         u: "h-math-2-sekibun",
         d: 3,
         dep: "saisho",
-        p: "(3) 放物線 y＝f(x) と x 軸で囲まれた部分の面積は □ である。",
+        p: "放物線 y＝f(x) と x 軸で囲まれた部分の面積は □ である。",
         a: { answerKind: "surd", answer: ["28√7/81"], equations: ["x^2=5488/6561"] },
         pt: "面積＝(β−α)³/6、β−α＝√(判別式)",
         st: [
@@ -578,7 +578,7 @@ const S4: ExamPoolSection[] = [
         id: "a4",
         u: "h-math-b-zenka",
         d: 1,
-        p: "(1) a₄＝□ である。",
+        p: "a₄＝□ である。",
         a: { answerKind: "num", answer: ["19"], calc: "2*(2*(2*1+1)+2)+3" },
         pt: "順に代入する",
         st: [["代入", "a₂＝2·1＋1＝3、a₃＝2·3＋2＝8、a₄＝2·8＋3＝{{19}}。", "足すのは n の値。a₄ を出すときは n＝3 を足す。"]],
@@ -588,7 +588,7 @@ const S4: ExamPoolSection[] = [
         u: "h-math-b-zenka",
         d: 2,
         dep: "a4",
-        p: "(2) bₙ＝aₙ＋pn＋q とおくと、数列 {bₙ} が公比2の等比数列になる。このとき定数 p, q の値は p＝□、q＝□ である。",
+        p: "bₙ＝aₙ＋pn＋q とおくと、数列 {bₙ} が公比2の等比数列になる。このとき定数 p, q の値は p＝□、q＝□ である。",
         a: { answerKind: "pair", answer: ["1", "1"], labels: ["p =", "q ="], equations: ["1-p=0", "p-q=0"] },
         pt: "bₙ₊₁＝2bₙ に代入して n について恒等式",
         st: [
@@ -601,7 +601,7 @@ const S4: ExamPoolSection[] = [
         u: "h-math-b-sigma",
         d: 3,
         dep: "pq",
-        p: "(3) a₁＋a₂＋…＋a₁₀＝□ である。",
+        p: "a₁＋a₂＋…＋a₁₀＝□ である。",
         a: { answerKind: "num", answer: ["3004"], calc: "3*(2^10-1)-55-10" },
         pt: "aₙ＝3·2ⁿ⁻¹−n−1 を k＝1〜10 で足す",
         st: [
@@ -623,7 +623,7 @@ const S4: ExamPoolSection[] = [
         id: "ab-naiseki",
         u: "h-math-c-heimen",
         d: 1,
-        p: "(1) 内積 a→·b→＝□ である。",
+        p: "内積 a→·b→＝□ である。",
         a: { answerKind: "num", answer: ["3"], calc: "2*3/2" },
         pt: "|a→||b→|cos60°",
         st: [["定義", "2×3×cos60°＝2×3×1/2＝{{3}}。"]],
@@ -633,7 +633,7 @@ const S4: ExamPoolSection[] = [
         u: "h-math-c-heimen",
         d: 2,
         dep: "ab-naiseki",
-        p: "(2) |OD→|＝□ である。",
+        p: "|OD→|＝□ である。",
         a: { answerKind: "surd", answer: ["6√3/5"], equations: ["x^2=108/25"] },
         pt: "AD:DB＝OA:OB＝2:3 で OD→＝(3a→＋2b→)/5",
         st: [
@@ -646,7 +646,7 @@ const S4: ExamPoolSection[] = [
         u: "h-math-c-heimen",
         d: 3,
         dep: "od-nagasa",
-        p: "(3) 線分 OD と線分 BM の交点を P とするとき、|OP→|＝□ である。",
+        p: "線分 OD と線分 BM の交点を P とするとき、|OP→|＝□ である。",
         a: { answerKind: "surd", answer: ["3√3/4"], equations: ["x^2=27/16"] },
         pt: "OP→ を2通りに表し係数を比べる",
         st: [
@@ -669,7 +669,7 @@ const S4: ExamPoolSection[] = [
         id: "taiseki",
         u: "h-math-c-kukan",
         d: 1,
-        p: "(1) 四面体 OABC の体積は □ である。",
+        p: "四面体 OABC の体積は □ である。",
         a: { answerKind: "num", answer: ["16/3"], calc: "(1/3)*(1/2)*2*4*4" },
         pt: "底面 OAB、高さ OC",
         st: [["体積", "(1/3)×(1/2·2·4)×4＝{{16/3}}。"]],
@@ -679,7 +679,7 @@ const S4: ExamPoolSection[] = [
         u: "h-math-c-kukan",
         d: 2,
         dep: "taiseki",
-        p: "(2) △ABC の面積は □ である。",
+        p: "△ABC の面積は □ である。",
         a: { answerKind: "surd", answer: ["4√6"], equations: ["x^2=96"] },
         pt: "(1/2)√(|AB→|²|AC→|²−(AB→·AC→)²)",
         st: [
@@ -692,7 +692,7 @@ const S4: ExamPoolSection[] = [
         u: "h-math-c-kukan",
         d: 3,
         dep: "abc-menseki",
-        p: "(3) 原点 O と平面 ABC の距離は □ である。",
+        p: "原点 O と平面 ABC の距離は □ である。",
         a: { answerKind: "surd", answer: ["2√6/3"], equations: ["x^2=8/3"] },
         pt: "体積を△ABCを底面として表す",
         st: [
@@ -721,7 +721,7 @@ const S5: ExamPoolSection[] = [
         id: "guki",
         u: "h-math-a-gojo",
         d: 1,
-        p: "(1) a, b の少なくとも一方は偶数であることを示せ。",
+        p: "a, b の少なくとも一方は偶数であることを示せ。",
         model:
           "a, b がともに奇数であると仮定する。奇数の2乗を4で割った余りは1であるから、a²＋b² を4で割った余りは2である。一方、整数 c について c² を4で割った余りは0か1であり、2にはならない。これは a²＋b²＝c² に矛盾する。よって a, b の少なくとも一方は偶数である。",
         rub: [
@@ -740,7 +740,7 @@ const S5: ExamPoolSection[] = [
         u: "h-math-a-gojo",
         d: 2,
         dep: "guki",
-        p: "(2) a, b の少なくとも一方は3の倍数であることを示せ。",
+        p: "a, b の少なくとも一方は3の倍数であることを示せ。",
         model:
           "整数 n について、n＝3m のとき n²＝9m²、n＝3m±1 のとき n²＝9m²±6m＋1 であるから、n² を3で割った余りは0か1である。a, b がともに3の倍数でないと仮定すると、a²≡1、b²≡1 (mod 3) より a²＋b²≡2 (mod 3)。しかし c²≡0 または 1 (mod 3) であるから a²＋b²＝c² に矛盾する。よって a, b の少なくとも一方は3の倍数である。",
         rub: [
@@ -760,7 +760,7 @@ const S5: ExamPoolSection[] = [
         d: 3,
         dep: "san-bai",
         sec: 500,
-        p: "(3) c＝25、a＜b となる組 (a, b) をすべて求めよ。",
+        p: "c＝25、a＜b となる組 (a, b) をすべて求めよ。",
         model:
           "a²＋b²＝625、a＜b より a²＜625/2、よって 1≦a≦17。(1)(2) より a, b の少なくとも一方は偶数、少なくとも一方は3の倍数である。b²＝625−a² が平方数となる a を調べると、a＝7 のとき b²＝576＝24²、a＝15 のとき b²＝400＝20²。他の a（1≦a≦17）では 625−a² は平方数にならない。（例: a＝12 で 481、a＝16 で 369 など）よって (a, b)＝(7, 24), (15, 20)。",
         rub: [
@@ -790,7 +790,7 @@ const S5: ExamPoolSection[] = [
         id: "keta",
         u: "h-math-2-taisu",
         d: 1,
-        p: "(1) 6²⁰ は何桁の整数か。",
+        p: "6²⁰ は何桁の整数か。",
         model: "log₁₀6²⁰＝20(log₁₀2＋log₁₀3)＝20×0.7781＝15.562。よって 10¹⁵＜6²⁰＜10¹⁶ であるから、6²⁰ は16桁の整数である。",
         rub: [
           { label: "log₁₀6²⁰＝15.562 を求めている", points: 4, keywords: ["15.562", "0.7781"] },
@@ -808,7 +808,7 @@ const S5: ExamPoolSection[] = [
         u: "h-math-2-taisu",
         d: 2,
         dep: "keta",
-        p: "(2) 6²⁰ の最高位の数字を求めよ。",
+        p: "6²⁰ の最高位の数字を求めよ。",
         model: "(1) より 6²⁰＝10¹⁵×10^0.562。log₁₀3＝0.4771＜0.562＜0.6020＝2log₁₀2＝log₁₀4 であるから、3＜10^0.562＜4。よって 3×10¹⁵＜6²⁰＜4×10¹⁵ となり、最高位の数字は3である。",
         rub: [
           { label: "小数部分 0.562 に注目している", points: 3, keywords: ["0.562"] },
@@ -818,7 +818,7 @@ const S5: ExamPoolSection[] = [
         auto: { answerKind: "num", answer: ["3"], calc: "3" },
         pt: "小数部分を log₁₀k (k＝1〜9) とくらべる",
         st: [
-          ["小数部分", "6²⁰＝10¹⁵×10^{{0.562}}。"],
+          ["小数部分", "6²⁰＝10¹⁵×10^({{0.562}})。"],
           ["はさむ", "log₁₀3＝0.4771、log₁₀4＝0.6020 の間なので {{3}}。", "log₁₀4＝2log₁₀2 を使う。log₁₀5＝1−log₁₀2 も使える。"],
         ],
       }),
@@ -828,7 +828,7 @@ const S5: ExamPoolSection[] = [
         d: 3,
         dep: "saikoi",
         sec: 500,
-        p: "(3) 6ⁿ が20桁以上の整数となるような最小の正の整数 n を求めよ。",
+        p: "6ⁿ が20桁以上の整数となるような最小の正の整数 n を求めよ。",
         model:
           "6ⁿ が20桁以上 ⇔ 6ⁿ≧10¹⁹ ⇔ n log₁₀6≧19 ⇔ 0.7781n≧19 ⇔ n≧19/0.7781＝24.4…。よって最小の n は 25。（確認: 24×0.7781＝18.67… で6²⁴ は19桁、25×0.7781＝19.45… で6²⁵ は20桁）",
         rub: [
@@ -857,7 +857,7 @@ const S5: ExamPoolSection[] = [
         id: "kihon",
         u: "h-math-2-shomei",
         d: 1,
-        p: "(1) x＞0 のとき、x＋4/x≧4 であることを証明せよ。また、等号が成り立つときの x の値を求めよ。",
+        p: "x＞0 のとき、x＋4/x≧4 であることを証明せよ。また、等号が成り立つときの x の値を求めよ。",
         model: "x＋4/x−4＝(x²−4x＋4)/x＝(x−2)²/x。x＞0 より (x−2)²/x≧0 であるから x＋4/x≧4。等号は (x−2)²＝0、すなわち x＝2 のとき成り立つ。（相加平均・相乗平均の関係 x＋4/x≧2√(x·4/x)＝4 を使ってもよい）",
         rub: [
           { label: "差をとって (x−2)²/x と変形する（または相加・相乗平均の関係を正しく使う）", points: 4, keywords: ["(x−2)²", "相加"] },
@@ -876,7 +876,7 @@ const S5: ExamPoolSection[] = [
         u: "h-math-2-shomei",
         d: 2,
         dep: "kihon",
-        p: "(2) x＞0 のとき、(x＋1)(x＋9)/x の最小値と、そのときの x の値を求めよ。",
+        p: "x＞0 のとき、(x＋1)(x＋9)/x の最小値と、そのときの x の値を求めよ。",
         model: "(x＋1)(x＋9)/x＝x＋10＋9/x。x＞0 より相加平均と相乗平均の関係から x＋9/x≧2√(x·9/x)＝6。よって (x＋1)(x＋9)/x≧16。等号は x＝9/x、すなわち x＝3 のとき成り立つ。よって最小値は16（x＝3 のとき）。",
         rub: [
           { label: "x＋10＋9/x と変形している", points: 3, keywords: ["x＋10＋9/x"] },
@@ -896,7 +896,7 @@ const S5: ExamPoolSection[] = [
         d: 3,
         dep: "saisho-1",
         sec: 500,
-        p: "(3) x＞0、y＞0、x＋2y＝1 のとき、1/x＋1/y の最小値を求めよ。",
+        p: "x＞0、y＞0、x＋2y＝1 のとき、1/x＋1/y の最小値を求めよ。",
         model:
           "x＋2y＝1 より 1/x＋1/y＝(1/x＋1/y)(x＋2y)＝1＋2y/x＋x/y＋2＝3＋(2y/x＋x/y)。x/y＞0, 2y/x＞0 より相加平均と相乗平均の関係から 2y/x＋x/y≧2√2。よって 1/x＋1/y≧3＋2√2。等号は x/y＝2y/x、すなわち x＝√2 y のときで、x＋2y＝1 と合わせて y＝1/(2＋√2)＝(2−√2)/2、x＝√2−1（ともに正）。よって最小値は 3＋2√2。",
         rub: [

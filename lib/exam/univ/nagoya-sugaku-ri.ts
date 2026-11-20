@@ -190,14 +190,14 @@ const S1: ExamPoolSection[] = [
       d: 1,
       p: "lim[x→0] (aˣ − 1)/x = log a であることを示せ。",
       model:
-        "a = 1 のときは aˣ − 1 = 0 で、両辺とも 0 となり成り立つ。\na ≠ 1 のとき log a ≠ 0。aˣ = e^{x log a} だから、h = x log a とおくと x → 0 のとき h → 0（h ≠ 0）で\n(aˣ − 1)/x = {(eʰ − 1)/h}·log a → 1·log a = log a。（証明終）",
+        "a = 1 のときは aˣ − 1 = 0 で、両辺とも 0 となり成り立つ。\na ≠ 1 のとき log a ≠ 0。aˣ = e^(x log a) だから、h = x log a とおくと x → 0 のとき h → 0（h ≠ 0）で\n(aˣ − 1)/x = {(eʰ − 1)/h}·log a → 1·log a = log a。（証明終）",
       rub: [
-        { label: "aˣ＝e^{x log a} と書きかえ、h＝x log a とおいている", points: 6, keywords: ["e^{x log a}", "h=x log a"] },
+        { label: "aˣ＝e^(x log a) と書きかえ、h＝x log a とおいている", points: 6, keywords: ["e^(x log a)", "h=x log a"] },
         { label: "与えられた極限を使って log a を導いている（a＝1 の扱いを含む）", points: 6, keywords: ["(eʰ−1)/h", "a=1"] },
       ],
-      pt: "aˣ＝e^{x log a} として与えられた極限の形に",
+      pt: "aˣ＝e^(x log a) として与えられた極限の形に",
       st: [
-        ["底を e に", "{{aˣ＝e^{x log a}}}。h＝x log a とおく。"],
+        ["底を e に", "{{aˣ＝e^(x log a)}}。h＝x log a とおく。"],
         ["極限", "(aˣ−1)/x＝{(eʰ−1)/h}·log a → {{log a}}。", "a＝1 のときは log a＝0 で h でわれない。別に扱う。"],
       ],
     }),
@@ -206,18 +206,18 @@ const S1: ExamPoolSection[] = [
       dep: "ax",
       u: "h-math-3-kyokugen",
       d: 2,
-      p: "cₙ = (a^{1/n} + b^{1/n})/2 − 1 とおく。lim[n→∞] n cₙ を a, b で表せ。",
+      p: "cₙ = (a^(1/n) + b^(1/n))/2 − 1 とおく。lim[n→∞] n cₙ を a, b で表せ。",
       model:
-        "n cₙ = (1/2){n(a^{1/n} − 1) + n(b^{1/n} − 1)}。\nx = 1/n とおくと n → ∞ のとき x → +0 で、(1) より n(a^{1/n} − 1) = (a^x − 1)/x → log a。同様に n(b^{1/n} − 1) → log b。\nよって lim[n→∞] n cₙ = (log a + log b)/2 = (1/2)log(ab)。",
+        "n cₙ = (1/2){n(a^(1/n) − 1) + n(b^(1/n) − 1)}。\nx = 1/n とおくと n → ∞ のとき x → +0 で、(1) より n(a^(1/n) − 1) = (a^x − 1)/x → log a。同様に n(b^(1/n) − 1) → log b。\nよって lim[n→∞] n cₙ = (log a + log b)/2 = (1/2)log(ab)。",
       rub: [
-        { label: "n cₙ を n(a^{1/n}−1) と n(b^{1/n}−1) の和に分けている", points: 6, keywords: ["n(a^{1/n}−1)"] },
+        { label: "n cₙ を n(a^(1/n)−1) と n(b^(1/n)−1) の和に分けている", points: 6, keywords: ["n(a^(1/n)−1)"] },
         { label: "x＝1/n として (1) を使い、それぞれ log a, log b に収束させている", points: 7, keywords: ["x=1/n", "log a"] },
         { label: "(1/2)log(ab)（＝(log a＋log b)/2）と答えている", points: 5, keywords: ["(1/2)log(ab)"] },
       ],
       pt: "1/n を x とおけば (1) そのもの",
       st: [
-        ["分ける", "n cₙ＝{{(1/2){n(a^{1/n}−1)＋n(b^{1/n}−1)}}}。"],
-        ["(1) を使う", "x＝1/n→+0 で {{n(a^{1/n}−1)→log a}}。答えは {{(1/2)log(ab)}}。", "a^{1/n}→1 だけ見て「0×∞」のまま止めない。1/n＝x と置きかえる。"],
+        ["分ける", "n cₙ＝{{(1/2){n(a^(1/n)−1)＋n(b^(1/n)−1)}}}。"],
+        ["(1) を使う", "x＝1/n→+0 で {{n(a^(1/n)−1)→log a}}。答えは {{(1/2)log(ab)}}。", "a^(1/n)→1 だけ見て「0×∞」のまま止めない。1/n＝x と置きかえる。"],
       ],
     }),
     wr({
@@ -225,9 +225,9 @@ const S1: ExamPoolSection[] = [
       dep: "heikin",
       u: "h-math-3-kyokugen",
       d: 3,
-      p: "lim[n→∞] {(a^{1/n} + b^{1/n})/2}ⁿ を a, b で表せ。また、a = 2, b = 8 のときの値を求めよ。",
+      p: "lim[n→∞] {(a^(1/n) + b^(1/n))/2}ⁿ を a, b で表せ。また、a = 2, b = 8 のときの値を求めよ。",
       model:
-        "a = b = 1 のときは値はつねに 1 で、√(ab) = 1 と一致する。以下 (a, b) ≠ (1, 1) とする。\n(2) の cₙ について cₙ → 0。また a^{1/n} + b^{1/n} = 2 となる n では cₙ = 0 で、そのとき log(1 + cₙ) = 0 = cₙ·1 と考える。cₙ ≠ 0 のとき u = log(1 + cₙ) とおくと cₙ = eᵘ − 1、cₙ → 0 で u → 0 となり\nlog(1 + cₙ)/cₙ = u/(eᵘ − 1) → 1。\n与えられた数列の対数は n log(1 + cₙ) = n cₙ·{log(1 + cₙ)/cₙ} → (1/2)log(ab)·1 = log√(ab)。\n指数関数の連続性より、極限は e^{log√(ab)} = √(ab)。\na = 2, b = 8 のとき √16 = 4。",
+        "a = b = 1 のときは値はつねに 1 で、√(ab) = 1 と一致する。以下 (a, b) ≠ (1, 1) とする。\n(2) の cₙ について cₙ → 0。また a^(1/n) + b^(1/n) = 2 となる n では cₙ = 0 で、そのとき log(1 + cₙ) = 0 = cₙ·1 と考える。cₙ ≠ 0 のとき u = log(1 + cₙ) とおくと cₙ = eᵘ − 1、cₙ → 0 で u → 0 となり\nlog(1 + cₙ)/cₙ = u/(eᵘ − 1) → 1。\n与えられた数列の対数は n log(1 + cₙ) = n cₙ·{log(1 + cₙ)/cₙ} → (1/2)log(ab)·1 = log√(ab)。\n指数関数の連続性より、極限は e^(log√(ab)) = √(ab)。\na = 2, b = 8 のとき √16 = 4。",
       rub: [
         { label: "対数をとり n log(1＋cₙ)＝n cₙ·log(1＋cₙ)/cₙ と変形している", points: 7, keywords: ["log(1+cₙ)/cₙ", "対数"] },
         { label: "u＝log(1＋cₙ) とおき、与えられた極限から log(1＋cₙ)/cₙ→1 を示している", points: 7, keywords: ["u/(eᵘ−1)", "→1"] },
@@ -744,7 +744,7 @@ const S4: ExamPoolSection[] = [
       ],
     }),
   ]),
-  sec(4, "sinm-cosn", "h-math-3-sekibun", "∫₀^{π/2} sinᵐx cosⁿx dx を置換で求める", "0 以上の整数 m, n に対して I(m, n) = ∫₀^{π/2} sinᵐx cosⁿx dx とおく。漸化式は用いずに答えること。", [
+  sec(4, "sinm-cosn", "h-math-3-sekibun", "∫[0→π/2] sinᵐx cosⁿx dx を置換で求める", "0 以上の整数 m, n に対して I(m, n) = ∫[0→π/2] sinᵐx cosⁿx dx とおく。漸化式は用いずに答えること。", [
     wr({
       id: "i32",
       u: "h-math-3-sekibun",
@@ -770,7 +770,7 @@ const S4: ExamPoolSection[] = [
       d: 2,
       p: "I(m, n) = I(n, m) であることを示せ。また、I(2, 2) を求めよ。",
       model:
-        "x = π/2 − u とおくと dx = −du、x: 0 → π/2 で u: π/2 → 0。sin x = cos u、cos x = sin u だから\nI(m, n) = ∫_{π/2}^{0} cosᵐu sinⁿu·(−du) = ∫₀^{π/2} sinⁿu cosᵐu du = I(n, m)。\nI(2, 2) = ∫₀^{π/2} (sin x cos x)² dx = (1/4)∫₀^{π/2} sin²2x dx = (1/4)∫₀^{π/2} (1 − cos 4x)/2 dx = (1/4)·(π/4) = π/16。",
+        "x = π/2 − u とおくと dx = −du、x: 0 → π/2 で u: π/2 → 0。sin x = cos u、cos x = sin u だから\nI(m, n) = ∫[π/2→0] cosᵐu sinⁿu·(−du) = ∫[0→π/2] sinⁿu cosᵐu du = I(n, m)。\nI(2, 2) = ∫[0→π/2] (sin x cos x)² dx = (1/4)∫[0→π/2] sin²2x dx = (1/4)∫[0→π/2] (1 − cos 4x)/2 dx = (1/4)·(π/4) = π/16。",
       rub: [
         { label: "x＝π/2−u の置換で sin と cos が入れかわることを示している", points: 7, keywords: ["π/2−u", "cos u"] },
         { label: "2倍角・半角の公式で sin²x cos²x＝(1−cos 4x)/8 にしている", points: 6, keywords: ["sin 2x", "cos 4x"] },
