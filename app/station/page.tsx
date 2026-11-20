@@ -6,6 +6,7 @@ import { MyStatus } from "@/components/station/MyStatus";
 
 const ROOMS = [
   { href: "/learn", name: "自習ホーム", price: "無料", lines: ["授業・演習・模試", "さかのぼりで根っこへ", "AIコーチが伴走"], paid: false },
+  { href: "/station/room", name: "アオハルーム", price: "無料", lines: ["みんなで黙って学ぶ部屋", "25分集中→ふり返り→休憩", "学びポイントで勉強王"], paid: false },
   { href: "/station/circle", name: "ラーニングサークル", price: "会員権　月額2,980円（案）", lines: ["4〜6人で週に1回", "学んだことをシェア", "問いと拍手で返す"], paid: true },
   { href: "/station/stage", name: "教壇", price: "登壇権　月額＋3,980円（案）", lines: ["生徒が先生になる", "書いて、または声で授業", "AIが採点し星がつく"], paid: true },
 ];
@@ -25,7 +26,7 @@ export default function Page() {
         <span aria-hidden="true" className="ml-auto font-black">→</span>
       </Link>
 
-      <div className="mt-5 grid gap-3 sm:grid-cols-3">
+      <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {ROOMS.map((r, i) => (
           <Link key={r.name} href={r.href} className={`relative block rounded-[14px] border-[1.5px] p-4 text-[#15172B] no-underline hover:-translate-y-0.5 ${r.paid ? "border-[#1533B8] bg-[#E6EAFB]" : "border-[#15172B] bg-white"}`}>
             <span className="text-[11px] font-black text-[#5A5D73]">部屋 {i + 1}</span>

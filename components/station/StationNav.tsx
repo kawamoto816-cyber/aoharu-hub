@@ -6,6 +6,7 @@ import { balance, useStation } from "@/lib/station/store";
 
 const ROOMS = [
   { href: "/station", label: "駅の入口" },
+  { href: "/station/room", label: "アオハルーム" },
   { href: "/station/board", label: "掲示板" },
   { href: "/station/circle", label: "サークル" },
   { href: "/station/stage", label: "教壇" },
