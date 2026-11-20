@@ -82,7 +82,7 @@ const S1: ExamPoolSection[] = [
         d: 1,
         pts: 6,
         p: "(1) 対角線 AC の長さは AC＝□ である。",
-        a: { answerKind: "num", answer: ["7"], labels: ["AC ="], calc: "25+9+15-42" },
+        a: { answerKind: "num", answer: ["7"], labels: ["AC ="], calc: "7" },
         pt: "余弦定理。cos120°＝−1/2 で符号に注意",
         st: [["余弦定理", "AC²＝5²＋3²−2·5·3·cos120°＝25＋9＋15＝49 より {{AC＝7}}。", "cos120° は負。−2·5·3·(−1/2) は ＋15。"]],
       }),

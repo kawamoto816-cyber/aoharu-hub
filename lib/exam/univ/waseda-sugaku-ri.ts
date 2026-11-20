@@ -464,7 +464,7 @@ const S2: ExamPoolSection[] = [
         pt: "1＋sin²x＝2−cos²x と直して v＝cos x",
         st: [
           ["King property", "J＝(π/2)∫₀^π {{sin x/(1＋sin²x)}} dx。"],
-          ["置換", "1＋sin²x＝2−cos²x、v＝cos x で ∫_(−1)^1 dv/(2−v²)。", "1＋sin²x のまま v＝cos x とおくと v が残らない形にならない。先に cos で書き直す。"],
+          ["置換", "1＋sin²x＝2−cos²x、v＝cos x で ∫_(−1)^1 dv/(2−v²)。", "1＋sin²x のまま v＝cos x とおくと、分母が v だけの式にならない。先に 2−cos²x と書き直す。"],
           ["部分分数", "(√2＋1)/(√2−1)＝(√2＋1)² → J＝{{(√2π/2) log(1＋√2)}}。"],
         ],
       }),
