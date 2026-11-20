@@ -48,6 +48,21 @@ import { U_HITOTSUBASHI_EIGO } from "./hitotsubashi-eigo";
 import { U_HITOTSUBASHI_KOKUGO } from "./hitotsubashi-kokugo";
 import { U_HANDAI_EIGO } from "./handai-eigo";
 import { U_HANDAI_KOKUGO } from "./handai-kokugo";
+import { U_WASEDA_SUGAKU_BUN } from "./waseda-sugaku-bun";
+import { U_KEIO_SUGAKU_BUN } from "./keio-sugaku-bun";
+import { U_SOPHIA_SUGAKU_BUN } from "./sophia-sugaku-bun";
+import { U_MEIJI_SUGAKU_BUN } from "./meiji-sugaku-bun";
+import { U_AOYAMA_SUGAKU_BUN } from "./aoyama-sugaku-bun";
+import { U_RIKKYO_SUGAKU_BUN } from "./rikkyo-sugaku-bun";
+import { U_CHUO_SUGAKU_BUN } from "./chuo-sugaku-bun";
+import { U_HOSEI_SUGAKU_BUN } from "./hosei-sugaku-bun";
+import { U_TODAI_SUGAKU_BUN } from "./todai-sugaku-bun";
+import { U_TODAI_SUGAKU_RI } from "./todai-sugaku-ri";
+import { U_KYODAI_SUGAKU_BUN } from "./kyodai-sugaku-bun";
+import { U_KYODAI_SUGAKU_RI } from "./kyodai-sugaku-ri";
+import { U_HITOTSUBASHI_SUGAKU_BUN } from "./hitotsubashi-sugaku-bun";
+import { U_HANDAI_SUGAKU_BUN } from "./handai-sugaku-bun";
+import { U_HANDAI_SUGAKU_RI } from "./handai-sugaku-ri";
 
 export type { UnivExam, UnivTier, UnivKamoku } from "./types";
 export { KAMOKU_SCOPE } from "./types";
@@ -55,9 +70,9 @@ export { KAMOKU_SCOPE } from "./types";
 // 大学別型の一覧 (準備中の null は外す)。並び: 早慶上智 → MARCH → 国公立、その中は大学 (偏差値の高い順) → 科目の順。
 const TIER_ORDER = ["早慶上智", "MARCH", "国公立"];
 const UNIV_ORDER = ["早稲田大学", "慶應義塾大学", "上智大学", "明治大学", "青山学院大学", "立教大学", "中央大学", "法政大学", "東京大学", "京都大学", "一橋大学", "大阪大学"];
-const KAMOKU_ORDER = ["英語", "国語", "日本史", "世界史"];
+const KAMOKU_ORDER = ["英語", "数学（文系）", "数学（理系）", "国語", "日本史", "世界史"];
 const rank = (xs: string[], x: string) => (xs.includes(x) ? xs.indexOf(x) : 99);
-export const UNIV_EXAMS: UnivExam[] = [U_WASEDA_NIHONSHI, U_WASEDA_SEKAISHI, U_KEIO_NIHONSHI, U_KEIO_SEKAISHI, U_SOPHIA_NIHONSHI, U_SOPHIA_SEKAISHI, U_MEIJI_NIHONSHI, U_MEIJI_SEKAISHI, U_AOYAMA_NIHONSHI, U_AOYAMA_SEKAISHI, U_RIKKYO_NIHONSHI, U_RIKKYO_SEKAISHI, U_CHUO_NIHONSHI, U_CHUO_SEKAISHI, U_HOSEI_NIHONSHI, U_HOSEI_SEKAISHI, U_TODAI_NIHONSHI, U_TODAI_SEKAISHI, U_KYODAI_NIHONSHI, U_KYODAI_SEKAISHI, U_HITOTSUBASHI_NIHONSHI, U_HITOTSUBASHI_SEKAISHI, U_HANDAI_NIHONSHI, U_HANDAI_SEKAISHI, U_WASEDA_EIGO, U_WASEDA_KOKUGO, U_KEIO_EIGO, U_KEIO_KOKUGO, U_SOPHIA_EIGO, U_SOPHIA_KOKUGO, U_MEIJI_EIGO, U_MEIJI_KOKUGO, U_AOYAMA_EIGO, U_AOYAMA_KOKUGO, U_RIKKYO_EIGO, U_RIKKYO_KOKUGO, U_CHUO_EIGO, U_CHUO_KOKUGO, U_HOSEI_EIGO, U_HOSEI_KOKUGO, U_TODAI_EIGO, U_TODAI_KOKUGO, U_KYODAI_EIGO, U_KYODAI_KOKUGO, U_HITOTSUBASHI_EIGO, U_HITOTSUBASHI_KOKUGO, U_HANDAI_EIGO, U_HANDAI_KOKUGO]
+export const UNIV_EXAMS: UnivExam[] = [U_WASEDA_NIHONSHI, U_WASEDA_SEKAISHI, U_KEIO_NIHONSHI, U_KEIO_SEKAISHI, U_SOPHIA_NIHONSHI, U_SOPHIA_SEKAISHI, U_MEIJI_NIHONSHI, U_MEIJI_SEKAISHI, U_AOYAMA_NIHONSHI, U_AOYAMA_SEKAISHI, U_RIKKYO_NIHONSHI, U_RIKKYO_SEKAISHI, U_CHUO_NIHONSHI, U_CHUO_SEKAISHI, U_HOSEI_NIHONSHI, U_HOSEI_SEKAISHI, U_TODAI_NIHONSHI, U_TODAI_SEKAISHI, U_KYODAI_NIHONSHI, U_KYODAI_SEKAISHI, U_HITOTSUBASHI_NIHONSHI, U_HITOTSUBASHI_SEKAISHI, U_HANDAI_NIHONSHI, U_HANDAI_SEKAISHI, U_WASEDA_EIGO, U_WASEDA_KOKUGO, U_KEIO_EIGO, U_KEIO_KOKUGO, U_SOPHIA_EIGO, U_SOPHIA_KOKUGO, U_MEIJI_EIGO, U_MEIJI_KOKUGO, U_AOYAMA_EIGO, U_AOYAMA_KOKUGO, U_RIKKYO_EIGO, U_RIKKYO_KOKUGO, U_CHUO_EIGO, U_CHUO_KOKUGO, U_HOSEI_EIGO, U_HOSEI_KOKUGO, U_TODAI_EIGO, U_TODAI_KOKUGO, U_KYODAI_EIGO, U_KYODAI_KOKUGO, U_HITOTSUBASHI_EIGO, U_HITOTSUBASHI_KOKUGO, U_HANDAI_EIGO, U_HANDAI_KOKUGO, U_WASEDA_SUGAKU_BUN, U_KEIO_SUGAKU_BUN, U_SOPHIA_SUGAKU_BUN, U_MEIJI_SUGAKU_BUN, U_AOYAMA_SUGAKU_BUN, U_RIKKYO_SUGAKU_BUN, U_CHUO_SUGAKU_BUN, U_HOSEI_SUGAKU_BUN, U_TODAI_SUGAKU_BUN, U_TODAI_SUGAKU_RI, U_KYODAI_SUGAKU_BUN, U_KYODAI_SUGAKU_RI, U_HITOTSUBASHI_SUGAKU_BUN, U_HANDAI_SUGAKU_BUN, U_HANDAI_SUGAKU_RI]
   .filter((x): x is UnivExam => x !== null)
   .sort((a, b) => rank(TIER_ORDER, a.tier) - rank(TIER_ORDER, b.tier) || rank(UNIV_ORDER, a.univ) - rank(UNIV_ORDER, b.univ) || rank(KAMOKU_ORDER, a.kamoku) - rank(KAMOKU_ORDER, b.kamoku) || a.order - b.order);
 

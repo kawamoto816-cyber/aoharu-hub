@@ -2,9 +2,13 @@
 //   npx tsx scripts/check-univ.ts <key>   (例: waseda-nihonshi。省略＝できているものすべて)
 // 調べること: 大問と pool の tag の対応・tag ごとの節の数 (2つ以上)・単元が範囲にある・選択肢と解説の数・
 // 正解の番号・語句の答えが同じ節の本文や他の問いにもれていない・論述の採点基準の合計・30回組んで組めるか・何通りの回になるか。
+// 数学の数値・式の答えは、模範解答で満点になるかと calc / equations の検算 (check-moshi と同じ)。
 import { assemble, examSpec, scopeUnits } from "@/lib/exam";
 import { UNIV_EXAMS, getUnivExam } from "@/lib/exam/univ";
-import type { Question, QuestionBody } from "@/lib/moshi/types";
+import type { NumQ, Question, QuestionBody } from "@/lib/moshi/types";
+import { judgeNum, toMathAnswer } from "@/lib/moshi/grade";
+import { tryParse } from "@/lib/math/parse";
+import { cIsZero, cKey, pConst, pSub, pSubst, type Coef } from "@/lib/math/value";
 
 const keys = process.argv[2] ? [process.argv[2]] : UNIV_EXAMS.map((u) => u.key);
 let errors = 0;
@@ -12,6 +16,52 @@ const err = (w: string, m: string) => {
   errors++;
   console.log(`✕ ${w}: ${m}`);
 };
+// 数学の数値・式の答え (scripts/check-moshi.ts と同じ点検): 模範解答で満点になるか・calc / equations の検算
+const coefOf = (s: string): Coef | null => {
+  const p = tryParse(s);
+  return p ? pConst(p) : null;
+};
+function holds(eq: string, vars: Record<string, Coef>): boolean | "unreadable" {
+  const [l, r, ...rest] = eq.split("=");
+  if (r === undefined || rest.length) return "unreadable";
+  const L = tryParse(l);
+  const R = tryParse(r);
+  if (!L || !R) return "unreadable";
+  const v = pConst(pSubst(pSub(L, R), vars));
+  return v !== null && cIsZero(v);
+}
+function checkNum(w: string, q: NumQ) {
+  try {
+    toMathAnswer(q);
+  } catch (e) {
+    return err(w, `答え ${JSON.stringify(q.answer)} を採点器が読めない (${(e as Error).message})`);
+  }
+  const two = q.answerKind === "pair" || q.answerKind === "roots";
+  if (q.answer.length !== (two ? 2 : 1)) err(w, `answerKind ${q.answerKind} なのに answer が ${q.answer.length} 個`);
+  const vs = judgeNum(q, q.answer);
+  if (vs.some((v) => v !== "ok")) err(w, `模範解答 ${JSON.stringify(q.answer)} が judge で ${vs.join(",")}（整理した形で書く）`);
+  if (!q.equations?.length && !q.calc && q.answerKind !== "expr" && q.answerKind !== "factor") err(w, "数値の小問には equations か calc を付ける（検算のため）");
+  if (q.equations?.length) {
+    const ls0 = (q.labels ?? []).map((l) => l.replace(/[=＝\s]/g, ""));
+    const ls = ls0.length >= 1 && ls0.every((l) => /^[a-z]$/.test(l)) ? ls0 : ["x", "y"];
+    const vals = q.answer.map(coefOf);
+    const sets: Record<string, Coef>[] =
+      q.answerKind === "pair" ? [{ [ls[0]]: vals[0]!, [ls[1]]: vals[1]! }] : q.answerKind === "roots" ? vals.map((v) => ({ [ls[0]]: v! })) : [{ [ls[0]]: vals[0]! }];
+    for (const eq of q.equations)
+      for (const vars of sets) {
+        const h = holds(eq, vars);
+        if (h === "unreadable") err(w, `検算の式「${eq}」が読めない`);
+        else if (!h) err(w, `答えを代入しても「${eq}」が成り立たない`);
+      }
+  }
+  if (q.calc) {
+    const c = coefOf(q.calc);
+    const a = coefOf(q.answer[0]);
+    if (!c) err(w, `calc「${q.calc}」が読めない`);
+    else if (!a || cKey(c) !== cKey(a)) err(w, `calc「${q.calc}」の値が答え ${q.answer[0]} と合わない`);
+  }
+}
+
 const norm = (s: string) => s.replace(/《[^》]*》/g, "").replace(/\s/g, "");
 
 for (const key of keys) {
@@ -77,7 +127,9 @@ for (const key of keys) {
       if (a.kind === "written") {
         const s = a.rubric.reduce((x, r) => x + r.points, 0);
         if (s !== q.points) err(qw, `採点基準の合計 ${s} と配点 ${q.points} がちがう`);
+        if (a.autoPart?.kind === "num") checkNum(`${qw}（autoPart）`, a.autoPart);
       }
+      if (a.kind === "num") checkNum(qw, a);
     }
   }
   // 30回組む
