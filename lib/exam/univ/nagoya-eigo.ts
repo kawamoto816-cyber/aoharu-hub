@@ -288,9 +288,9 @@ None of this suggests that each culture lives in a completely separate world of 
     title: "When Every Town Kept Its Own Time",
     body: `Today we take it for granted that everyone in a country, or at least in a large region, shares the same time. Two hundred years ago this was not the case. Each town set its clocks by the sun, declaring noon to be the moment when the sun stood highest in the sky. Because the sun reaches that point slightly later as one travels west, a town a hundred kilometres to the west of another kept a time several minutes behind it. {{(A) For most people this caused no difficulty at all, since few of them ever travelled far enough or fast enough for the difference to matter.}}
 
-The railway changed everything. ［ア］ A train that left one city at ten o'clock and arrived at another two hours later might, according to the local clocks, appear to have taken two hours and five minutes, or one hour and fifty-five. Timetables became extremely confusing, and some stations displayed two clocks side by side, one showing local time and the other showing the time used by the railway company. ［イ］ Passengers missed connections, and, more seriously, the risk of collisions increased when trains on the same line followed different times.
+The railway changed everything. ［ア］ A train that left one city at ten o'clock and arrived at another two hours later might, according to the local clocks, appear to have taken two hours and five minutes, or one hour and fifty-five. Timetables became extremely confusing, and some stations displayed two clocks side by side, one showing local time and the other showing the time used by the railway company. Passengers missed connections, and, more seriously, the risk of collisions increased when trains on the same line followed different times.
 
-The solution, adopted first by railway companies and later by governments, was to divide the land into zones, each sharing a single standard time. ［ウ］ This was not accepted everywhere without protest. In some towns, people complained that the clock no longer told the truth about the sun, and a few local clocks continued to show the old time for years. {{(B) To them, standard time seemed to replace something natural with something invented for the convenience of distant businesses.}}
+The solution, adopted first by railway companies and later by governments, was to divide the land into zones, each sharing a single standard time. ［イ］ This was not accepted everywhere without protest. In some towns, people complained that the clock no longer told the truth about the sun, and a few local clocks continued to show the old time for years. ［ウ］ {{(B) To them, standard time seemed to replace something natural with something invented for the convenience of distant businesses.}}
 
 Their complaint was not entirely unreasonable. Standard time is indeed a social agreement rather than a fact of nature. Its value lies precisely in the fact that it is shared: a clock is useful [ 1 ] it agrees with other clocks. ［エ］ Once millions of people organize their working days, school hours and broadcasts around the same numbers, the agreement becomes so deeply built into daily life that it begins to feel natural.
 
@@ -327,8 +327,8 @@ The story of standard time offers a lesson that applies to many modern systems, 
     ], K),
     C("insert", 2, U.chobun, "次の英文を本文に入れるとき、最も適切な位置を［ア］～［エ］から選べ。\nA clock that shows the 'true' time of one town but disagrees with every other clock is of little use to a traveller.", INSERT_OPTS, 3, [
       "［ア］の直後に鉄道の時刻の混乱の具体例が続き、ここで旅行者に役立たない時計を言うのは早すぎる。",
-      "［イ］は乗客が乗りかえに失敗する話の前で、つながらなくはないが、「ほかの時計と一致しない」ことの価値の話はまだ出ていない。",
-      "［ウ］は標準時が導入されたことと抗議の話の間で、合わない。",
+      "［イ］の直後の This は標準時の導入を指す。ここに入れると This の指す内容がくずれ、時計の価値は共有にあるという話もまだ出ていない。",
+      "［ウ］の直後の To them は抗議した町の人々を指す。旅行者（a traveller）の文をはさむと them の指す相手がわからなくなる。",
       "正解。直前の「時計はほかの時計と一致するときにだけ役に立つ」を、旅行者の例で具体的に言いかえている。",
     ], "挿入文が直前の一般論の具体化になる位置", [
       ["手がかり", "{{disagrees with every other clock}} is {{of little use}}：一致しない時計は役に立たない。"],
@@ -379,7 +379,7 @@ const P2: ExamPoolSection[] = [
 
 At first sight, the answer might seem obvious: if the machine was driving, the company that built it should pay. But the situation is rarely so clear. Most cars now on the road with automated features still require a human to watch the road and take over when the system asks. Studies in driving simulators have found that people who are told to monitor an automated car quickly lose concentration. When a warning finally sounds, it may take them several seconds to understand what is happening, by which time it may be too late to react. Researchers call this problem the "handover gap."
 
-The handover gap creates what some legal scholars describe as a "moral crumple zone." A crumple zone is the part of a car designed to absorb the force of a crash and protect the passengers. In the same way, the human behind the wheel may end up absorbing the blame for a failure that was largely the result of the system's design. The person is held responsible not because she had real control but because she was the nearest human being when the accident happened.
+The handover gap creates what some researchers describe as a "moral crumple zone." A crumple zone is the part of a car designed to absorb the force of a crash and protect the passengers. In the same way, the human behind the wheel may end up absorbing the blame for a failure that was largely the result of the system's design. The person is held responsible not because she had real control but because she was the nearest human being when the accident happened.
 
 Some experts argue that the only fair solution is to [ 1 ] the idea of a human supervisor altogether. In their view, a car should be driven either fully by a person or fully by a machine, and in the second case the manufacturer should accept responsibility for every accident. Others worry that placing all responsibility on companies could slow down the development of a technology that might, in the long run, save many lives, since human error plays a part in the great majority of road accidents.
 
@@ -401,7 +401,7 @@ A third approach looks less at blame and more at learning. In aviation, accident
       ]),
     T("term", 2, U.chobun, "第3段落で、実際には制御できなかったのに事故の責めを負わされてしまう人間の立場を、車の一部にたとえて表した語句を、本文中から英語3語で抜き出せ。",
       ["moral crumple zone"], "たとえの語句は引用符（\" \"）で示されることが多い", [
-        ["さがす", "第3段落の最初：what some legal scholars describe as a {{\"…\"}}。"],
+        ["さがす", "第3段落の最初：what some researchers describe as a {{\"…\"}}。"],
         ["たとえ", "crumple zone＝衝撃を吸収する部分 → 人間が{{責めを吸収する}}。"],
       ]),
     C("blank1", 2, U.vocab, "空所［ 1 ］に入る最も適切なものを選べ。", ["abandon", "strengthen", "introduce", "require"], 0, [
@@ -941,7 +941,7 @@ const P4: ExamPoolSection[] = [
     ],
   }], [
     TREND("trend", "表から読み取れる全体の傾向を述べ、その傾向にあてはまらない都市を一つ挙げて、そうなっている理由として考えられることを書け。",
-      "In general, cities with longer bicycle lanes have a higher percentage of people who cycle to work. City A, with 410 kilometers of lanes, has the highest rate, 38 percent. However, City E has 380 kilometers of lanes but only 6 percent cycle. This is probably because its winters are very cold and snowy, so cycling becomes dangerous for several months.",
+      "In general, cities with longer bicycle lanes have a higher percentage of people who cycle to work. City A, with 410 kilometers of lanes, has the highest rate, 38 percent. However, City E has 380 kilometers of lanes but only 6 percent of its commuters cycle. This is probably because its winters are very cold and snowy, so cycling becomes dangerous for several months.",
       ["longer", "higher percentage", "lanes"], ["City E", "cold"],
       "傾向→例外→理由の順に、数字を一つ二つ引く", [
         ["傾向", "専用道が{{長い}}ほど自転車通勤の割合が{{高い}}（A・B・C・D の順）。"],

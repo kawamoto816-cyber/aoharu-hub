@@ -510,7 +510,7 @@ Those who wish to preserve damaged buildings often point out that written record
 
 Yet buildings, too, can fail to pass on memory. A ruin without explanation may become merely a strange sight, photographed by tourists and then forgotten. What gives a preserved building its meaning is the stories attached to it, and stories need tellers. In several towns, survivors have become volunteer guides who walk visitors through the damaged sites and describe what they saw and what they did on that day. Many of them say that speaking is painful but that silence would be worse; they fear that if no one speaks, the lessons will {{(a) fade}} along with the people who learned them.
 
-As the generation that experienced the disaster grows old, a new problem appears. Children born afterwards have no memories of their own, and they may hear the guides' stories as something from a distant past. Some schools have responded by asking students not only to listen to the stories but to [ A ] them themselves: to interview survivors, write down their accounts and present them to younger children. In doing so, the students become a link in the chain rather than its end.
+As the generation that experienced the disaster grows old, a new problem appears. Children born afterwards have no memories of their own, and they may hear the guides' stories as something from a distant past. Some schools have responded by asking students not only to listen to the stories but to [ A ] those stories themselves: to interview survivors, write down their accounts and present them to younger children. In doing so, the students become a link in the chain rather than its end.
 
 There is no single right answer to whether a damaged building should stand or fall. But the debates themselves suggest something important. A community that argues seriously about how to remember is a community that has not yet forgotten, and the work of remembering, like the work of rebuilding, must be shared by those who come later.`,
     [
@@ -520,7 +520,7 @@ There is no single right answer to whether a damaged building should stand or fa
         "put off（延期する）では意味が通らない。",
         "turn down（断る）は逆の意味になる。",
       ], "not only A but B と、コロン以下の具体", [
-        ["前後の流れ", "not only to {{listen to}} the stories but to … them themselves：聞く側から{{伝える側}}へ。"],
+        ["前後の流れ", "not only to {{listen to}} the stories but to … those stories themselves：聞く側から{{伝える側}}へ。"],
         ["語を選ぶ", "コロン以下（聞き取る・書く・年下に発表する）＝ {{pass on}}（伝える）。"],
       ], K),
       C("syn-a", 2, U.vocab, "下線部(a) fade に最も意味が近いものを選べ。", ["gradually disappear", "suddenly appear", "become clearer", "be written down"], [
@@ -904,7 +904,7 @@ const P4: ExamPoolSection[] = [
   }, [
     ESS("q1", "外国から来た友人に紹介したい日本の家庭料理を一つ挙げ、その理由を英語で述べよ。",
       `I would like to introduce miso soup to my friend. It is eaten in most Japanese homes almost every day, and each family uses different ingredients, so it shows how ordinary Japanese people really live and eat.`,
-      esShort(["introduce", "because", "family"]), "料理名＋理由を一つ", [
+      esShort(["introduce", "every day", "family"]), "料理名＋理由を一つ", [
         ["構成", "① {{I would like to introduce}} A ② 理由（毎日の家庭の食事・家ごとの違い）。"],
         ["注意", "料理名は英語で説明しにくければ短く補う（{{a soup made from}} … など）。"],
       ]),
@@ -921,7 +921,7 @@ const P4: ExamPoolSection[] = [
   }, [
     ESS("q1", "あなたにとって思い出に残っている曲や音楽の経験を一つ挙げ、それがなぜ印象に残っているのかを英語で述べよ。",
       `I clearly remember a song my class sang together at our junior high school chorus contest. We practiced it every day after school for a month, so whenever I hear it now, I remember my classmates' faces.`,
-      esShort(["song", "remember", "because"]), "経験を一つ、なぜ残っているかを具体的に", [
+      esShort(["song", "remember", "practiced"]), "経験を一つ、なぜ残っているかを具体的に", [
         ["構成", "① どの曲・経験か ② なぜ印象に残るか（{{練習の日々}}・{{仲間}}など）。"],
         ["表現", "「〜を聞くたびに」＝ {{whenever I hear it}}。"],
       ]),

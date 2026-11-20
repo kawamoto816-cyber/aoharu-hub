@@ -143,7 +143,7 @@ The story of Kirinohama illustrates a problem that researchers who study disaste
 
 Why should this be so? One reason is that a warning carved in stone tells people what to do but not why. A child who reads "Do not build below this point" may obey out of respect for the adults who explain it to her, but her grandchildren, who have never seen the sea rise, are likely to treat the rule as an old superstition, especially when land near the harbour is cheaper and more convenient. {{(B) Knowledge that is not connected to anyone's experience is easily outweighed by the ordinary concerns of daily life.}}
 
-Some communities have tried to keep memories alive in other ways. In a town further along the coast, schoolchildren interview elderly residents every year and turn their stories into short plays, which are performed on the anniversary of the disaster. The children do not simply learn that a wave once came; they hear how a grandmother ran uphill carrying her younger brother, and which paths were blocked by fallen trees. {{(C) Because it is passed on as a story rather than as a rule, it is far more likely to be remembered, and acted upon, when it is needed.}}
+Some communities have tried to keep memories alive in other ways. In a town further along the coast, schoolchildren interview elderly residents every year and turn their stories into short plays, which are performed on the anniversary of the disaster. The children do not simply learn that a wave once came; they hear how a grandmother ran uphill carrying her younger brother, and which paths were blocked by fallen trees. What they gain is detailed knowledge of what happened and how people survived. {{(C) Because it is passed on as a story rather than as a rule, it is far more likely to be remembered, and acted upon, when it is needed.}}
 
 Such efforts matter because technology cannot do all the work. Modern warning systems can detect an earthquake within seconds and send messages to millions of phones. Yet a warning is useful only if people believe it and know where to go. Studies of past evacuations have found that many residents waited to see what their neighbours would do before moving, and that those who had heard vivid accounts of earlier disasters tended to leave sooner.
 
@@ -170,10 +170,10 @@ The stone in Kirinohama still stands. In recent years, the village has added a s
         ["具体例", "直前：grandchildren, who have never seen the sea rise, … treat the rule as an {{old superstition}}。"],
         ["日常の事情", "land near the harbour is {{cheaper and more convenient}} → 警告より優先される。"],
       ]),
-    WZ("tr-c", "(C)", "it", U.kandai, "災害についての知識は、規則としてではなく物語として受け継がれるので、必要なときに思い出され、そして実際の行動に生かされる可能性がはるかに高い。",
-      jz("it ＝ 災害（避難のしかた）についての知識・体験", ["知識", "体験", "災害"], "as A rather than as B・be far more likely to be remembered, and acted upon", ["ではなく", "はるかに", "行動"]),
-      "it は直前の段落の話題（老人の体験・知識）を受ける", [
-        ["指示語", "it は {{the knowledge of the disaster}}：祖母が坂を駆け上がった話・ふさがれた道などの体験。"],
+    WZ("tr-c", "(C)", "it", U.kandai, "何が起き、人々がどう生きのびたかについての詳しい知識は、規則としてではなく物語として受け継がれるので、必要なときに思い出され、そして実際の行動に生かされる可能性がはるかに高い。",
+      jz("it ＝ 何が起き、人々がどう生きのびたかについての詳しい知識", ["知識", "生きのび", "起き"], "as A rather than as B・be far more likely to be remembered, and acted upon", ["ではなく", "はるかに", "行動"]),
+      "it は直前の文の knowledge を受ける", [
+        ["指示語", "it ＝直前の {{detailed knowledge of what happened and how people survived}}：祖母が坂を駆け上がった話・ふさがれた道などから得る知識。"],
         ["構文", "{{as a story rather than as a rule}}「規則としてではなく物語として」。act upon は「〜にもとづいて行動する」。"],
       ]),
     WE("en", "Why does the writer think the school plays are more effective than the stone marker?",
@@ -670,7 +670,7 @@ Aya: Good idea. I'll send a message to the student office.`,
       ["直後", "Aya：practice might {{finish late}} → 活動に入ると{{困る}}。"],
     ]),
     ES("essay", "Aya と Leo の会話をふまえて、「大学1年生は一人暮らしよりも寮で暮らすほうがよい」という意見に賛成か反対か、理由を二つ挙げて書け。",
-      "I agree that first-year students should live in a dormitory. First, it is much cheaper than renting an apartment, and meals are often included, so students can focus on their studies. Second, living with other students is a quick way to make friends, which is important for someone who has just moved to a new city. Rules about time may be strict, but students can usually discuss them with the staff.",
+      "I agree that first-year students should live in a dormitory. First, it is much cheaper than renting an apartment, and meals are often included, so students can focus on their studies. Second, living with other students is a quick way to make friends, which is important for someone who has just moved to a new city. Rules about time may be strict, but students can discuss them with the staff.",
       ["I agree", "dormitory"], "反対側の論点（門限）に一言ふれて締める", [
         ["理由", "① {{費用}}と食事 ② {{友人}}ができやすい。会話の内容を自分のことばで使う。"],
         ["締め", "Leo の懸念（{{rules about time}}）に答えると、会話をふまえたことが伝わる。"],
