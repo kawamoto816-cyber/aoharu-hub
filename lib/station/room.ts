@@ -81,6 +81,10 @@ export interface RoomState {
   restUntil: number | null;
   cycles: Cycle[];
   stamps: number;
+  league?: LeagueState;
+  /** 音（rain・cafe・library。無音は null） */
+  sound?: string | null;
+  volume?: number;
 }
 
 const KEY = "aoharu-room-v1";
@@ -352,3 +356,91 @@ export function titles(all: Row[]): Title[] {
 }
 
 export const newCycleId = () => `c${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
+
+// ---------- 部屋の「いまいる人」（見本） ----------
+
+const hash = (s: string) => {
+  let h = 2166136261;
+  for (let i = 0; i < s.length; i++) h = Math.imul(h ^ s.charCodeAt(i), 16777619);
+  return h >>> 0;
+};
+const SUBJECTS = ["数学", "英語", "国語", "理科", "社会", "数学", "英語"];
+
+/** その時刻（10分ごと）に部屋にいるか。夕方〜夜は多め、深夜はだれもいない */
+export function presentAt(p: Peer, now: Date): string | undefined {
+  const h = now.getHours();
+  if (isNight(now)) return undefined;
+  const rate = h >= 19 ? 60 : h >= 16 ? 50 : h >= 8 && h < 12 ? 30 : h < 8 ? 20 : 35;
+  const slot = Math.floor(now.getTime() / 600_000);
+  const x = hash(`${p.nick}:${slot}`);
+  if (x % 100 >= rate) return undefined;
+  return p.grade === "小6" ? "算数" : SUBJECTS[(x >>> 8) % SUBJECTS.length];
+}
+
+// ---------- 週のリーグ（30人・上位5人が昇格、下位5人が降格） ----------
+
+export const LEAGUES = ["若葉リーグ", "若竹リーグ", "青空リーグ", "流星リーグ", "王者リーグ"];
+export const LEAGUE_SIZE = 30;
+export const MOVE = 5;
+const LEAGUE_BASE = [40, 90, 150, 230, 330];
+const NAME_A = ["あお", "そら", "みど", "ゆき", "はる", "なつ", "あき", "ふゆ", "ほし", "うみ", "かぜ", "もり", "つき", "ひか", "しお"];
+const NAME_B = ["まる", "りん", "すけ", "こ", "た", "の", "ぴ", "ぼう", "なみ", "ね", "ちゃん", "ろう"];
+
+export interface LeagueRow {
+  nick: string;
+  points: number;
+  me: boolean;
+}
+
+/** その週・そのリーグの仲間（見本）。progress は週の進み (0〜1) */
+export function leaguePeers(week: string, level: number, progress: number): LeagueRow[] {
+  const out: LeagueRow[] = [];
+  const used = new Set<string>();
+  for (let i = 0; out.length < LEAGUE_SIZE - 1; i++) {
+    const x = hash(`${week}:${level}:${i}`);
+    const nick = NAME_A[x % NAME_A.length] + NAME_B[(x >>> 5) % NAME_B.length];
+    if (used.has(nick)) continue;
+    used.add(nick);
+    const full = LEAGUE_BASE[level] * (0.35 + ((x >>> 10) % 1000) / 800);
+    const pace = 0.7 + ((x >>> 20) % 60) / 100;
+    out.push({ nick, points: Math.round(full * Math.min(1, progress * pace)), me: false });
+  }
+  return out;
+}
+
+/** 週の進み（月曜0時から日曜24時まで） */
+export function weekProgress(now: Date): number {
+  const d = (now.getDay() + 6) % 7;
+  return Math.min(1, (d * 24 + now.getHours() + now.getMinutes() / 60) / (7 * 24));
+}
+
+export function leagueTable(week: string, level: number, progress: number, me: { nick: string; points: number }): LeagueRow[] {
+  return [...leaguePeers(week, level, progress), { nick: me.nick, points: me.points, me: true }].sort((a, b) => b.points - a.points || Number(b.me) - Number(a.me));
+}
+
+/** 週の結果で、次の週のリーグを決める */
+export function nextLevel(level: number, rank: number): { level: number; moved: "up" | "down" | "stay" } {
+  if (rank <= MOVE && level < LEAGUES.length - 1) return { level: level + 1, moved: "up" };
+  if (rank > LEAGUE_SIZE - MOVE && level > 0) return { level: level - 1, moved: "down" };
+  return { level, moved: "stay" };
+}
+
+/** ある週の自分の学びポイント（夜をのぞく） */
+export const weekPoints = (cycles: Cycle[], week: string) => cycles.filter((c) => !c.night && weekKey(new Date(c.at)) === week).reduce((a, c) => a + c.points, 0);
+
+export interface LeagueState {
+  level: number;
+  week: string;
+  last?: { week: string; rank: number; moved: "up" | "down" | "stay"; from: number };
+}
+
+/** 週が変わっていたら、前の週の順位で昇格・降格を決める（純粋な関数） */
+export function rollLeague(l: LeagueState | undefined, cycles: Cycle[], nick: string, now: Date): LeagueState {
+  const wk = weekKey(now);
+  if (!l || !l.week) return { level: 0, week: wk };
+  if (l.week === wk) return l;
+  const table = leagueTable(l.week, l.level, 1, { nick, points: weekPoints(cycles, l.week) });
+  const rank = table.findIndex((r) => r.me) + 1;
+  const n = nextLevel(l.level, rank);
+  return { level: n.level, week: wk, last: { week: l.week, rank, moved: n.moved, from: l.level } };
+}

@@ -5,6 +5,14 @@ import { useEffect, useState } from "react";
 import {
   board,
   GRADES,
+  LEAGUES,
+  LEAGUE_SIZE,
+  MOVE,
+  leagueTable,
+  presentAt,
+  rollLeague,
+  weekPoints,
+  weekProgress,
   MODES,
   POINT_RULE,
   PEERS,
@@ -30,6 +38,7 @@ import {
   type Reflect,
   type RoomState,
 } from "@/lib/station/room";
+import { Ambience } from "./Ambience";
 
 // アオハルーム（勉強王自習室・試作）の画面。
 // タイマー（やること宣言 → 集中 → ふり返り → 休憩）・学びポイント・週のランキング・勉強王の称号・自分の記録。
@@ -67,6 +76,14 @@ export function AoharuRoom() {
     }
   }, [now, s.running, s.restUntil]);
 
+  // 週が変わったら、前の週の順位でリーグを上げ下げする
+  useEffect(() => {
+    if (!now) return;
+    const wk = weekKey(new Date(now));
+    if (s.league?.week === wk) return;
+    updateRoom((v) => ({ ...v, league: rollLeague(v.league, v.cycles, v.nick, new Date(now)) }));
+  }, [now, s.league?.week]);
+
   const date = new Date(now || 0);
   const st = myStats(s.cycles, date);
   const all = rows(s, st);
@@ -87,9 +104,11 @@ export function AoharuRoom() {
         <Timer s={s} now={now} />
         <Seats s={s} now={now} />
       </div>
+      <League s={s} now={now} />
       <Ranking all={all} grade={s.grade} />
       <Titles all={all} />
       <History s={s} now={now} />
+      <ParentReport s={s} now={now} />
       <Rules s={s} />
     </div>
   );
@@ -165,6 +184,9 @@ function Setup({ s }: { s: RoomState }) {
         集中をはじめる
       </button>
       {!ok && <p className="m-0 mt-1 text-[12px] text-[#5A5D73]">やることを4字以上書くと始められます</p>}
+      <div className="mt-3">
+        <Ambience />
+      </div>
       <p className="m-0 mt-3 text-[12.5px] leading-relaxed text-[#5A5D73]">
         はじめたら、この部屋は開いたままにして、別のタブで
         <Link href="/learn" target="_blank" className="font-bold text-[#1533B8]">
@@ -215,6 +237,9 @@ function Focus({ s, now }: { s: RoomState; now: number }) {
         >
           ここで終える
         </button>
+      </div>
+      <div className="mt-3">
+        <Ambience dark />
       </div>
       <p className="m-0 mt-2 text-[12px] leading-relaxed text-white/70">最後まで走りきって、1問でも解いていれば、完走ボーナス {POINT_RULE.cycle} ポイント。</p>
     </section>
@@ -278,7 +303,8 @@ function Look({ s }: { s: RoomState }) {
 
 function Rest({ s, now }: { s: RoomState; now: number }) {
   const [sent, setSent] = useState<string | null>(null);
-  const lit = PEERS.filter((p) => p.here);
+  const here = now ? PEERS.filter((p) => presentAt(p, new Date(now))) : [];
+  const lit = here.length ? here : PEERS.filter((p) => p.here);
   return (
     <section aria-labelledby="room-timer" className={`${box} bg-[#E9F7EF]`}>
       <h2 id="room-timer" className="m-0 text-[14px] font-black text-[#11643A]">
@@ -318,7 +344,7 @@ function Rest({ s, now }: { s: RoomState; now: number }) {
 // ---------- 部屋の座席（見本） ----------
 
 function Seats({ s, now }: { s: RoomState; now: number }) {
-  const seats = [{ nick: s.nick, here: s.running ? "集中中" : undefined, me: true }, ...PEERS.slice(0, 15).map((p) => ({ nick: p.nick, here: p.here, me: false }))];
+  const seats = [{ nick: s.nick, here: s.running ? "集中中" : undefined, me: true }, ...PEERS.slice(0, 15).map((p) => ({ nick: p.nick, here: now ? presentAt(p, new Date(now)) : undefined, me: false }))];
   const on = seats.filter((x) => x.here).length;
   return (
     <section aria-labelledby="room-seats" className={`${box} bg-[#22264A] text-white`}>
@@ -514,6 +540,137 @@ function Rules({ s }: { s: RoomState }) {
           この部屋の記録を消す（試作）
         </button>
       </div>
+    </section>
+  );
+}
+
+// ---------- 週のリーグ ----------
+
+function League({ s, now }: { s: RoomState; now: number }) {
+  if (!now || !s.league) return null;
+  const d = new Date(now);
+  const level = s.league.level;
+  const table = leagueTable(s.league.week, level, weekProgress(d), { nick: s.nick, points: weekPoints(s.cycles, s.league.week) });
+  const myRank = table.findIndex((r) => r.me) + 1;
+  const left = 7 - ((d.getDay() + 6) % 7);
+  const top = level < LEAGUES.length - 1;
+  const bottom = level > 0;
+  const last = s.league.last;
+  return (
+    <section aria-labelledby="room-league" className={`${box} mt-4 bg-white`}>
+      <div className="flex flex-wrap items-baseline gap-2">
+        <h2 id="room-league" className="m-0 text-[18px] font-black">
+          今週の{LEAGUES[level]}
+        </h2>
+        <span className="text-[12.5px] font-bold text-[#5A5D73]">
+          同じくらいの{LEAGUE_SIZE}人で競う・あと{left}日（日曜の夜まで）
+        </span>
+        <span className="ml-auto text-[14px] font-black">いま {myRank}位</span>
+      </div>
+      {last && (
+        <p role="status" className={`m-0 mt-2 rounded-[10px] px-3 py-2 text-[13px] font-bold ${last.moved === "up" ? "bg-[#E9F7EF] text-[#11643A]" : last.moved === "down" ? "bg-[#FDECEA] text-[#B42318]" : "bg-[#F7F6F1]"}`}>
+          先週は{LEAGUES[last.from]}で{last.rank}位。
+          {last.moved === "up" ? `${LEAGUES[level]}に昇格しました。` : last.moved === "down" ? `${LEAGUES[level]}で立て直しましょう。` : "同じリーグで続けます。"}
+        </p>
+      )}
+      <p className="m-0 mt-1 text-[12px] text-[#5A5D73]">
+        {top ? `上位${MOVE}人は次の週に${LEAGUES[level + 1]}へ昇格。` : "いちばん上のリーグです。"}
+        {bottom ? `下位${MOVE}人は${LEAGUES[level - 1]}へ。` : "このリーグに降格はありません。"}
+        {LEAGUES.join(" → ")}
+      </p>
+      <ol className="m-0 mt-2 grid list-none grid-cols-1 gap-x-3 gap-y-0.5 p-0 sm:grid-cols-2">
+        {table.map((r, i) => {
+          const zone = top && i < MOVE ? "up" : bottom && i >= LEAGUE_SIZE - MOVE ? "down" : "";
+          return (
+            <li
+              key={r.nick + (r.me ? "-me" : "")}
+              className={`flex items-center gap-2 rounded-[8px] px-2 py-1 text-[13px] ${r.me ? "border-[1.5px] border-[#1533B8] bg-[#E6EAFB] font-black" : zone === "up" ? "bg-[#E9F7EF]" : zone === "down" ? "bg-[#FDECEA]" : ""}`}
+            >
+              <span className="w-6 text-right font-black tabular-nums">{i + 1}</span>
+              <span className="min-w-0 flex-1 truncate">{r.me ? (r.nick === "あなた" ? "あなた" : `${r.nick}（あなた）`) : r.nick}</span>
+              {zone && <span className={`text-[10.5px] font-black ${zone === "up" ? "text-[#11643A]" : "text-[#B42318]"}`}>{zone === "up" ? "▲昇格圏" : "▼降格圏"}</span>}
+              <span className="w-[44px] text-right font-black tabular-nums">{r.points}</span>
+            </li>
+          );
+        })}
+      </ol>
+      <p className="m-0 mt-2 text-[11.5px] text-[#5A5D73]">リーグの仲間は見本（架空のニックネーム。週の進みに合わせてポイントが増えます）。</p>
+    </section>
+  );
+}
+
+// ---------- 保護者への週の報告（見本） ----------
+
+const WEEKDAYS = ["月", "火", "水", "木", "金", "土", "日"];
+
+function ParentReport({ s, now }: { s: RoomState; now: number }) {
+  const [open, setOpen] = useState(false);
+  if (!now) return null;
+  const d = new Date(now);
+  const wk = weekKey(d);
+  const list = s.cycles.filter((c) => weekKey(new Date(c.at)) === wk);
+  const st = myStats(s.cycles, d);
+  const solved = list.reduce((a, c) => a + c.gains.solved, 0);
+  const correct = list.reduce((a, c) => a + c.gains.correct, 0);
+  const done = list.filter((c) => c.completed).length;
+  const perDay = WEEKDAYS.map((_, i) => list.filter((c) => (new Date(c.at).getDay() + 6) % 7 === i).reduce((a, c) => a + c.focusSec / 60, 0));
+  const maxMin = Math.max(25, ...perDay);
+  const mon = new Date(wk + "T00:00:00");
+  const sun = new Date(mon);
+  sun.setDate(mon.getDate() + 6);
+  const md = (x: Date) => `${x.getMonth() + 1}月${x.getDate()}日`;
+  return (
+    <section aria-labelledby="room-parent" className="mt-4">
+      <button type="button" aria-expanded={open} onClick={() => setOpen(!open)} className={`${btn} bg-white`}>
+        {open ? "保護者への週の報告（見本）を閉じる" : "保護者への週の報告（見本）を見る"}
+      </button>
+      {open && (
+        <article aria-labelledby="room-parent" className="mt-2 rounded-[14px] border-[1.5px] border-[#15172B] bg-[#FFFDF5] p-4 text-[13.5px] leading-relaxed">
+          <h2 id="room-parent" className="m-0 text-[17px] font-black">
+            {s.nick === "あなた" ? "お子さま" : `${s.nick}さん`}の今週のアオハルーム（{md(mon)}〜{md(sun)}）
+          </h2>
+          <p className="m-0 mt-1 text-[12px] text-[#5A5D73]">アオハルラーンから、週に1回お届けする報告の見本です。点数や順位ではなく、続けた様子をお伝えします。</p>
+          <dl className="m-0 mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
+            {[
+              ["集中した時間", `${Math.floor(st.weekFocusMin / 60)}時間${st.weekFocusMin % 60}分`],
+              ["最後までやりきった回", `${done}回`],
+              ["解いた問題", `${solved}問（正解 ${correct}問）`],
+              ["続けている日数", `${st.streak}日`],
+            ].map(([k, v]) => (
+              <div key={k} className="rounded-[10px] bg-white px-3 py-2">
+                <dt className="text-[11.5px] font-bold text-[#5A5D73]">{k}</dt>
+                <dd className="m-0 text-[16px] font-black">{v}</dd>
+              </div>
+            ))}
+          </dl>
+          <h3 className="m-0 mt-3 text-[14px] font-black">曜日ごとの集中した時間</h3>
+          <div className="mt-1 flex h-[90px] items-end gap-2" role="img" aria-label={WEEKDAYS.map((w, i) => `${w}曜 ${Math.round(perDay[i])}分`).join("、")}>
+            {perDay.map((m, i) => (
+              <div key={i} className="flex flex-1 flex-col items-center gap-0.5">
+                <span className="text-[10.5px] tabular-nums text-[#5A5D73]">{m ? Math.round(m) : ""}</span>
+                <span className="w-full rounded-t-[4px] bg-[#1533B8]" style={{ height: `${Math.max(2, (m / maxMin) * 60)}px`, opacity: m ? 1 : 0.15 }} />
+                <span className="text-[11px] font-bold">{WEEKDAYS[i]}</span>
+              </div>
+            ))}
+          </div>
+          <h3 className="m-0 mt-3 text-[14px] font-black">本人が決めた「やること」とふり返り</h3>
+          {list.length === 0 ? (
+            <p className="m-0 mt-1 text-[#5A5D73]">今週はまだ記録がありません。</p>
+          ) : (
+            <ul className="m-0 mt-1 pl-5">
+              {list.slice(0, 8).map((c) => (
+                <li key={c.id}>
+                  {c.plan}（{c.reflect}）
+                </li>
+              ))}
+            </ul>
+          )}
+          <p className="m-0 mt-3 rounded-[10px] bg-white px-3 py-2 text-[12.5px]">
+            声のかけ方のヒント：結果より、決めたことをやりきった回をほめてください。「今週は{done}回やりきったね」の一言が、来週も続ける力になります。
+          </p>
+          <p className="m-0 mt-2 text-[11.5px] text-[#5A5D73]">本番では、保護者への共有ページに週1回出します（お子さまの同意のうえで）。ニックネーム以外の個人の情報は出しません。</p>
+        </article>
+      )}
     </section>
   );
 }
