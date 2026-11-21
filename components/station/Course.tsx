@@ -3,18 +3,28 @@
 import Link from "next/link";
 import { useMemo, useSyncExternalStore } from "react";
 import { EXAM_RESULTS_KEY, type ExamAttempt } from "@/lib/exam/results";
+import { CoursePaid } from "./CoursePaid";
 import { daysToZenki, firstWeek, HISTORY, latestBySpec, strategy, subjectsFor, type CourseUniv, type Line, type UnitInfo } from "@/lib/station/course";
 
-// 直前5週間コース（試作）の画面。① 志望校 ② 診断 ③ 作戦表 ④ 最初の週の計画 ⑤ 2週目から（有料の伴走・準備中）。
+// 直前5週間コース（試作）の画面。① 志望校 ② 診断 ③ 作戦表 ④ 最初の週の計画 ⑤ 2〜5週目（有料の伴走。試作は切りかえボタンで見られる。components/station/CoursePaid.tsx）。
 // えらんだ志望校・目標・チェックは、このブラウザにだけ残す。診断の結果は大学別模試の記録（この端末）から読む。
 
 const KEY = "aoharu-course-v1";
-interface CourseState {
+export interface CourseState {
   univ: string;
   line: Line;
   history: string;
   rate: number;
   checked: string[];
+  /** 試作：有料（伴走）の画面を見る */
+  paid?: boolean;
+  /** 週ごとのふり返り */
+  reviews?: Record<string, Review>;
+}
+export interface Review {
+  better: string;
+  worry: string;
+  hours: number;
 }
 const INITIAL: CourseState = { univ: "", line: "文系", history: "日本史", rate: 0.6, checked: [] };
 
@@ -272,17 +282,8 @@ export function Course({ univs, units }: { univs: CourseUniv[]; units: Record<st
             )}
           </section>
 
-          {/* ⑤ 2週目から */}
-          <section aria-label="2週目から" className="rounded-[14px] border-[2px] border-dashed border-[#1533B8] bg-[#F3F5FF] p-4">
-            {step(5, "2週目から5週目まで", "伴走（有料の予定・準備中）")}
-            <ul className="m-0 mt-2 grid gap-1 pl-5 text-[13.5px] leading-relaxed">
-              <li>毎週の診断で作戦表を作り直し、次の週の計画を並べなおす</li>
-              <li>やったこと・点の動きを見て、科目と単元の配分を変える（進み具合の管理）</li>
-              <li>保護者へ、週に1回「目標まであと何点」と続けた様子を報告する</li>
-              <li>最後の週は、本番と同じ時間割での通し練習と、当日の作戦</li>
-            </ul>
-            <p className="m-0 mt-2 text-[12px] text-[#5A5D73]">値段と申し込みはまだありません。試作の段階では、ここまでの画面だけ動きます。</p>
-          </section>
+          {/* ⑤ 2週目から：有料の伴走（試作は切りかえボタン） */}
+          <CoursePaid s={s} set={set} rows={rows} units={units} results={results} subjects={subjects} week1Total={plan.reduce((a, d) => a + d.tasks.length, 0)} />
         </>
       )}
     </div>

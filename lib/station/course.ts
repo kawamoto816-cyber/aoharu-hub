@@ -148,3 +148,93 @@ export function daysToZenki(now: Date): { date: Date; days: number } {
   const days = Math.ceil((date.getTime() - new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime()) / 86_400_000);
   return { date, days };
 }
+
+// ---------- 2週目から（有料の伴走・試作） ----------
+
+export interface WeekPlan {
+  week: number;
+  theme: string;
+  lead: string;
+  days: Day[];
+}
+
+const WEEK_THEMES = [
+  { theme: "大問演習：失点の大きい大問をつぶす", lead: "苦手に合わせた回で大問を1題ずつ。まちがえたら、結果画面の「つまずきの根っこを探す」から根っこの単元へ戻ってから、もう一度その大問へ。" },
+  { theme: "通し演習：全科目を本番の時間で1回ずつ", lead: "1日1科目を本番の時間で通す。終わったら大問ごとの時間配分を見て、どこで時間を使いすぎたかを確かめる。" },
+  { theme: "時間割どおりに解く・取りこぼしをなくす", lead: "本番と同じ順番・時間で解く日をつくる。部分点を取りにいく書き方（途中式・根拠）を、採点基準で確かめる。" },
+  { theme: "直前：量を減らして、仕上げと体調", lead: "新しいことは増やさず、まちがいノートと弱い単元の見直し。前日は早く寝る。" },
+];
+
+/** 苦手に合わせた回（?w=）のURL */
+const weakHref = (play: string, us: string[]) => {
+  const w = us.filter((u) => /^[a-z0-9-]{1,80}$/.test(u)).slice(0, 12);
+  return w.length ? `${play}${play.includes("?") ? "&" : "?"}w=${w.join(",")}` : play;
+};
+
+/** 2〜5週目の計画。その時点の最新の診断から作り直す（週が進むたびに結果が変われば計画も変わる） */
+export function laterWeeks(rows: Row[], units: Record<string, UnitInfo>): WeekPlan[] {
+  const done = rows.filter((r) => r.attempt);
+  if (!done.length) return [];
+  const bySubj = [...done].sort((a, b) => b.gap - a.gap || a.score / a.total - b.score / b.total);
+  const subjAt = (i: number) => bySubj[i % bySubj.length];
+  const unitName = (u: string) => units[u]?.name ?? u;
+  return WEEK_THEMES.map((t, wi) => {
+    const week = wi + 2;
+    const days: Day[] = [];
+    for (let d = 0; d < 7; d++) {
+      const id = (k: string) => `w${week}d${d + 1}-${k}`;
+      const r = subjAt(d + wi);
+      const s = r.subject;
+      const weak = r.units.map((u) => u.unit);
+      const tasks: Task[] = [];
+      if (d === 6) {
+        tasks.push({ id: id("r"), text: "週のふり返りを書く（下の「週のふり返り」）。作戦表を見て、来週の配分を決める", links: [] });
+      } else if (week === 2) {
+        const p = r.parts[d % Math.max(1, r.parts.length)];
+        tasks.push({
+          id: id("p"),
+          text: p ? `${s.kamoku}「${p.title}」と同じ形の大問を1題、時間を計って解く（苦手に合わせた回）` : `${s.kamoku}：苦手に合わせた回で大問を1題`,
+          links: [{ href: weakHref(s.play, weak), label: "苦手に合わせた回" }],
+        });
+        if (weak[d % Math.max(1, weak.length)]) {
+          const u = weak[d % weak.length];
+          tasks.push({ id: id("u"), text: `まちがえたら「${unitName(u)}」の根っこへ戻る`, links: [{ href: `/learn/sakanobori?u=${encodeURIComponent(u)}`, label: "さかのぼり" }] });
+        }
+      } else if (week === 3) {
+        tasks.push({ id: id("x"), text: `${s.kamoku}：大学別模試を1回分、本番の${s.minutes}分で通す`, links: [{ href: s.play, label: "大学別模試" }] });
+        tasks.push({ id: id("t"), text: "結果画面の「大問別の時間」を見て、使いすぎた大問をメモする", links: [] });
+      } else if (week === 4) {
+        if (d % 2 === 0) tasks.push({ id: id("x"), text: `${s.kamoku}：本番と同じ時刻に始めて、本番の${s.minutes}分で解く`, links: [{ href: s.play, label: "大学別模試" }] });
+        else tasks.push({ id: id("w"), text: `${s.kamoku}：記述の自己採点で落とした観点を、模範解答の書き方で書き直す`, links: [{ href: weakHref(s.play, weak), label: "苦手に合わせた回" }] });
+      } else {
+        const u = weak[d % Math.max(1, weak.length)];
+        tasks.push(
+          u
+            ? { id: id("n"), text: `まちがいノートと「${unitName(u)}」の見直し（新しい問題は増やさない）`, links: [{ href: `/learn/sakanobori?u=${encodeURIComponent(u)}`, label: "さかのぼり" }] }
+            : { id: id("n"), text: `${s.kamoku}：まちがいノートの見直し`, links: [] },
+        );
+        if (d === 1) tasks.push({ id: id("x"), text: "本番と同じ時間割で、全科目を1日で通す（最後の通し）", links: [{ href: bySubj[0].subject.play, label: "大学別模試" }] });
+      }
+      days.push({ no: d + 1, tasks });
+    }
+    return { week, theme: t.theme, lead: t.lead, days };
+  });
+}
+
+export interface Trend {
+  key: string;
+  kamoku: string;
+  points: { at: string; pct: number }[];
+}
+
+/** 科目ごとの得点率の動き（古い順） */
+export function trends(all: ExamAttempt[], subjects: CourseSubject[]): Trend[] {
+  return subjects.map((s) => ({
+    key: s.key,
+    kamoku: s.kamoku,
+    points: all
+      .filter((a) => a.spec === `daigaku:${s.key}` && a.total > 0)
+      .sort((a, b) => (a.at < b.at ? -1 : 1))
+      .map((a) => ({ at: a.at, pct: Math.round((a.score / a.total) * 100) })),
+  }));
+}
