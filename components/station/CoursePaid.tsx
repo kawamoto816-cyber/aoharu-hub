@@ -5,6 +5,7 @@ import { useState } from "react";
 import type { ExamAttempt } from "@/lib/exam/results";
 import { laterWeeks, trends, type CourseSubject, type Row, type UnitInfo } from "@/lib/station/course";
 import type { CourseState, Review } from "./Course";
+import { DayHead } from "./DayHead";
 
 // 直前5週間コースの有料部分（試作）：2〜5週目の計画・週のふり返り・進み具合・保護者への報告（見本）。
 // 無料と有料の境目を画面ではっきり見せる。試作では切りかえボタンで有料の画面を見られる（お金はかからない）。
@@ -21,11 +22,13 @@ export function CoursePaid({
   results,
   subjects,
   week1Total,
+  cur,
 }: {
   s: CourseState;
   set: (p: Partial<CourseState>) => void;
   rows: Row[];
   week1Total: number;
+  cur: { week: number; day: number } | null;
   units: Record<string, UnitInfo>;
   results: ExamAttempt[];
   subjects: CourseSubject[];
@@ -58,7 +61,7 @@ export function CoursePaid({
           <li>週のふり返りと、科目ごとの点の動き・やったことの割合（進み具合の管理）</li>
           <li>保護者へ、週に1回「目標まであと何点」と続けた様子を報告</li>
         </ul>
-        {!s.paid ? <Locked plans={plans} /> : plans.length === 0 ? <p className="m-0 mt-3 text-[13.5px] font-bold">②の診断を1科目でも終えると、2週目からの計画が出ます。</p> : <Paid s={s} set={set} rows={rows} plans={plans} results={results} subjects={subjects} week1Total={week1Total} />}
+        {!s.paid ? <Locked plans={plans} /> : plans.length === 0 ? <p className="m-0 mt-3 text-[13.5px] font-bold">②の診断を1科目でも終えると、2週目からの計画が出ます。</p> : <Paid s={s} set={set} rows={rows} plans={plans} results={results} subjects={subjects} week1Total={week1Total} cur={cur} />}
       </section>
     </>
   );
@@ -90,16 +93,18 @@ function Paid({
   results,
   subjects,
   week1Total,
+  cur,
 }: {
   s: CourseState;
   set: (p: Partial<CourseState>) => void;
   rows: Row[];
   week1Total: number;
+  cur: { week: number; day: number } | null;
   plans: ReturnType<typeof laterWeeks>;
   results: ExamAttempt[];
   subjects: CourseSubject[];
 }) {
-  const [week, setWeek] = useState(2);
+  const [week, setWeek] = useState(cur && cur.week >= 2 ? cur.week : 2);
   const plan = plans.find((p) => p.week === week)!;
   const ids = (w: number) => (w === 1 ? s.checked.filter((x) => /^d\d-/.test(x)) : s.checked.filter((x) => x.startsWith(`w${w}d`)));
   const totals = (w: number) => (w === 1 ? week1Total : plans.find((p) => p.week === w)!.days.reduce((a, d) => a + d.tasks.length, 0));
@@ -109,7 +114,7 @@ function Paid({
       <div role="tablist" aria-label="週" className="flex flex-wrap gap-1.5">
         {WEEKS.map((w) => (
           <button key={w} type="button" role="tab" aria-selected={week === w} onClick={() => setWeek(w)} className={`rounded-full border-[1.5px] border-[#15172B] px-3 py-1 text-[13px] font-black ${week === w ? "bg-[#15172B] text-white" : "bg-white"}`}>
-            {w}週目
+            {w}週目{cur?.week === w ? "（今週）" : ""}
           </button>
         ))}
       </div>
@@ -121,8 +126,8 @@ function Paid({
         <p className="m-0 mt-1 text-[13px] leading-relaxed text-[#3A3D55]">{plan.lead}</p>
         <ol className="m-0 mt-2 grid list-none gap-2 p-0">
           {plan.days.map((d) => (
-            <li key={d.no} className="rounded-[10px] bg-[#F7F6F1] p-2.5">
-              <p className="m-0 text-[12.5px] font-black text-[#1533B8]">{d.no}日目</p>
+            <li key={d.no} className={`rounded-[10px] p-2.5 ${cur?.week === week && cur.day === d.no ? "border-[1.5px] border-[#1533B8] bg-[#F3F5FF]" : "bg-[#F7F6F1]"}`}>
+              <DayHead no={d.no} isToday={cur?.week === week && cur.day === d.no} />
               <ul className="m-0 mt-1 grid list-none gap-1 p-0">
                 {d.tasks.map((t) => {
                   const on = s.checked.includes(t.id);

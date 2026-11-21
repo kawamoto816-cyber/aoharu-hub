@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
+import { checkCourseTask, TODAY_KEY, ymd, type TodayList } from "@/lib/station/course";
 import {
   board,
   GRADES,
@@ -183,6 +184,7 @@ function Setup({ s }: { s: RoomState }) {
       >
         集中をはじめる
       </button>
+      <FromCourse onPick={setPlan} />
       {!ok && <p className="m-0 mt-1 text-[12px] text-[#5A5D73]">やることを4字以上書くと始められます</p>}
       <div className="mt-3">
         <Ambience />
@@ -283,6 +285,8 @@ function Look({ s }: { s: RoomState }) {
         onClick={() => {
           const r = p.running;
           const rest = modeOf(r.mode).rest;
+          // 直前コースの今日のやることを「できた」なら、コースの計画にもチェックを入れる
+          if (reflect === "できた") checkCourseTask(r.plan);
           updateRoom((v) => ({
             ...v,
             pending: null,
@@ -672,5 +676,63 @@ function ParentReport({ s, now }: { s: RoomState; now: number }) {
         </article>
       )}
     </section>
+  );
+}
+
+// ---------- 直前コースの「今日のやること」から選ぶ ----------
+
+const sub = (l: () => void) => {
+  window.addEventListener("storage", l);
+  window.addEventListener("focus", l);
+  return () => {
+    window.removeEventListener("storage", l);
+    window.removeEventListener("focus", l);
+  };
+};
+const readToday = () => {
+  try {
+    return window.localStorage.getItem(TODAY_KEY) ?? "";
+  } catch {
+    return "";
+  }
+};
+
+function FromCourse({ onPick }: { onPick: (s: string) => void }) {
+  const raw = useSyncExternalStore(sub, readToday, () => "");
+  let v: TodayList | null = null;
+  try {
+    v = raw ? (JSON.parse(raw) as TodayList) : null;
+  } catch {
+    v = null;
+  }
+  if (!v || v.date !== ymd(new Date()) || !v.items.length) {
+    return (
+      <p className="m-0 mt-2 text-[12px] text-[#5A5D73]">
+        国公立の2次を受ける人は、
+        <Link href="/station/course" className="font-bold text-[#1533B8]">
+          直前5週間コース
+        </Link>
+        で計画を作ると、今日のやることをここから選べます。
+      </p>
+    );
+  }
+  return (
+    <div className="mt-2 rounded-[10px] bg-[#F3F5FF] p-2.5">
+      <p className="m-0 text-[12px] font-black text-[#1533B8]">
+        直前コース（{v.univ}）{v.week}週目{v.day}日目の、今日のやること
+        <Link href="/station/course" className="ml-2 font-bold">
+          コースを見る →
+        </Link>
+      </p>
+      <ul className="m-0 mt-1 grid list-none gap-1 p-0">
+        {v.items.map((x) => (
+          <li key={x}>
+            <button type="button" onClick={() => onPick(x.slice(0, 60))} className="w-full rounded-[8px] border border-[#15172B] bg-white px-2 py-1 text-left text-[12.5px] leading-snug">
+              {x}
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }

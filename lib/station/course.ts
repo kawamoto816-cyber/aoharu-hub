@@ -238,3 +238,48 @@ export function trends(all: ExamAttempt[], subjects: CourseSubject[]): Trend[] {
       .map((a) => ({ at: a.at, pct: Math.round((a.score / a.total) * 100) })),
   }));
 }
+
+// ---------- いまは何週目の何日目か ----------
+
+export const ymd = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+
+/** 始めた日（YYYY-MM-DD）から数えて、いまは何週目（1〜5）の何日目（1〜7）か。始める前なら null。5週を過ぎたら5週目の7日目 */
+export function courseDay(start: string | undefined, today: Date): { week: number; day: number } | null {
+  if (!start || !/^\d{4}-\d{2}-\d{2}$/.test(start)) return null;
+  const [y, m, d] = start.split("-").map(Number);
+  const s = new Date(y, m - 1, d);
+  const t = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+  const n = Math.round((t.getTime() - s.getTime()) / 86_400_000);
+  if (n < 0) return null;
+  if (n >= 35) return { week: 5, day: 7 };
+  return { week: Math.floor(n / 7) + 1, day: (n % 7) + 1 };
+}
+
+/** アオハルームに渡す「今日のやること」（このブラウザに置く） */
+export const TODAY_KEY = "aoharu-course-today";
+export interface TodayList {
+  date: string;
+  univ: string;
+  week: number;
+  day: number;
+  items: string[];
+  /** items と同じ順の、計画のチェックの id */
+  ids?: string[];
+}
+
+/** アオハルームで「できた」と記録したら、コースの計画の同じやることにチェックを入れる */
+export function checkCourseTask(plan: string) {
+  try {
+    const t = JSON.parse(window.localStorage.getItem(TODAY_KEY) ?? "null") as TodayList | null;
+    if (!t?.ids) return;
+    const i = t.items.findIndex((x) => x.slice(0, 60) === plan);
+    if (i < 0) return;
+    const raw = window.localStorage.getItem("aoharu-course-v1");
+    const s = raw ? (JSON.parse(raw) as { checked?: string[] }) : {};
+    const checked = s.checked ?? [];
+    if (checked.includes(t.ids[i])) return;
+    window.localStorage.setItem("aoharu-course-v1", JSON.stringify({ ...s, checked: [...checked, t.ids[i]] }));
+  } catch {
+    /* 読めない・書けないときは何もしない */
+  }
+}

@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useSyncExternalStore } from "react";
+import { useEffect, useMemo, useSyncExternalStore } from "react";
 import { EXAM_RESULTS_KEY, type ExamAttempt } from "@/lib/exam/results";
 import { CoursePaid } from "./CoursePaid";
-import { daysToZenki, firstWeek, HISTORY, latestBySpec, strategy, subjectsFor, type CourseUniv, type Line, type UnitInfo } from "@/lib/station/course";
+import { DayHead } from "./DayHead";
+import { courseDay, TODAY_KEY, ymd, type TodayList, daysToZenki, firstWeek, laterWeeks, HISTORY, latestBySpec, strategy, subjectsFor, type CourseUniv, type Line, type UnitInfo } from "@/lib/station/course";
 
 // 直前5週間コース（試作）の画面。① 志望校 ② 診断 ③ 作戦表 ④ 最初の週の計画 ⑤ 2〜5週目（有料の伴走。試作は切りかえボタンで見られる。components/station/CoursePaid.tsx）。
 // えらんだ志望校・目標・チェックは、このブラウザにだけ残す。診断の結果は大学別模試の記録（この端末）から読む。
@@ -16,6 +17,8 @@ export interface CourseState {
   history: string;
   rate: number;
   checked: string[];
+  /** コースを始めた日（YYYY-MM-DD） */
+  start?: string;
   /** 試作：有料（伴走）の画面を見る */
   paid?: boolean;
   /** 週ごとのふり返り */
@@ -91,6 +94,22 @@ export function Course({ univs, units }: { univs: CourseUniv[]; units: Record<st
   // 今日の日付はブラウザで決める（サーバーとブラウザで時刻帯がちがうため）
   const today = useSyncExternalStore(subscribe, () => new Date().toDateString(), () => "");
   const zenki = today ? daysToZenki(new Date(today)) : null;
+  const cur = today ? courseDay(s.start, new Date(today)) : null;
+  const plans = laterWeeks(rows, units);
+  const todayTasks = cur ? (cur.week === 1 ? plan : plans.find((p) => p.week === cur.week)?.days ?? []).find((d) => d.no === cur.day)?.tasks ?? [] : [];
+  const todayText = todayTasks.map((x) => x.text).join("\n");
+  const todayIds = todayTasks.map((x) => x.id).join("\n");
+
+  // アオハルームの「今日のやること」の候補として、このブラウザに置く
+  useEffect(() => {
+    if (!cur || !u) return;
+    const v: TodayList = { date: ymd(new Date()), univ: u.univ, week: cur.week, day: cur.day, items: todayText ? todayText.split("\n") : [], ids: todayIds ? todayIds.split("\n") : [] };
+    try {
+      window.localStorage.setItem(TODAY_KEY, JSON.stringify(v));
+    } catch {
+      /* 保存できなくても続ける */
+    }
+  }, [cur?.week, cur?.day, u?.univ, todayText, todayIds]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div className="flex min-w-0 flex-col gap-4">
@@ -236,13 +255,14 @@ export function Course({ univs, units }: { univs: CourseUniv[]; units: Record<st
           {/* ④ 最初の週 */}
           <section aria-label="最初の週の計画" className={card}>
             {step(4, "最初の週の計画", "ここまで無料")}
+            {plan.length > 0 && <StartDay s={s} set={set} cur={cur} today={today} />}
             {plan.length === 0 ? (
               <p className="m-0 mt-2 text-[13.5px] text-[#5A5D73]">診断の結果から、7日分のやることを並べます。</p>
             ) : (
               <ol className="m-0 mt-3 grid list-none gap-2 p-0">
                 {plan.map((d) => (
-                  <li key={d.no} className="rounded-[12px] border-[1.5px] border-[#C9C7BD] p-3">
-                    <p className="m-0 text-[13px] font-black text-[#1533B8]">{d.no}日目</p>
+                  <li key={d.no} className={`rounded-[12px] border-[1.5px] p-3 ${cur?.week === 1 && cur.day === d.no ? "border-[#1533B8] bg-[#F3F5FF]" : "border-[#C9C7BD]"}`}>
+                    <DayHead no={d.no} isToday={cur?.week === 1 && cur.day === d.no} />
                     <ul className="m-0 mt-1 grid list-none gap-1.5 p-0">
                       {d.tasks.map((t) => {
                         const on = s.checked.includes(t.id);
@@ -283,8 +303,35 @@ export function Course({ univs, units }: { univs: CourseUniv[]; units: Record<st
           </section>
 
           {/* ⑤ 2週目から：有料の伴走（試作は切りかえボタン） */}
-          <CoursePaid s={s} set={set} rows={rows} units={units} results={results} subjects={subjects} week1Total={plan.reduce((a, d) => a + d.tasks.length, 0)} />
+          <CoursePaid s={s} set={set} rows={rows} units={units} results={results} subjects={subjects} cur={cur} week1Total={plan.reduce((a, d) => a + d.tasks.length, 0)} />
         </>
+      )}
+    </div>
+  );
+}
+
+/** コースを始める日と、いまは何週目か */
+function StartDay({ s, set, cur, today }: { s: CourseState; set: (p: Partial<CourseState>) => void; cur: { week: number; day: number } | null; today: string }) {
+  return (
+    <div className="mt-2 flex flex-wrap items-center gap-2 rounded-[10px] bg-[#F7F6F1] px-3 py-2 text-[13px]">
+      <label className="flex items-center gap-1.5 font-bold">
+        コースを始める日
+        <input type="date" value={s.start ?? ""} onChange={(e) => set({ start: e.target.value || undefined })} className="rounded-[8px] border-[1.5px] border-[#15172B] bg-white px-2 py-1 text-[13px]" />
+      </label>
+      {!s.start && today && (
+        <button type="button" onClick={() => set({ start: ymd(new Date(today)) })} className="rounded-[8px] border-[1.5px] border-[#15172B] bg-[#FFE45C] px-3 py-1 text-[12.5px] font-black">
+          今日から始める
+        </button>
+      )}
+      {cur ? (
+        <span className="font-black text-[#1533B8]">
+          いまは{cur.week}週目の{cur.day}日目
+          {cur.week > 1 ? "（2週目からの計画は、下の伴走にあります）" : ""}
+        </span>
+      ) : s.start ? (
+        <span className="text-[#5A5D73]">始める日になると、その日のやることに印がつきます</span>
+      ) : (
+        <span className="text-[#5A5D73]">共通テストのあと（1月中旬〜）に始めると、前期日程にちょうど5週間です</span>
       )}
     </div>
   );
