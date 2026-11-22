@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { LearnShell } from "@/components/learn/LearnShell";
+import { BackUpArrow } from "@/components/start/BackUpArrow";
 import { SITE, TSUMAZUKI_HOME, TSUMAZUKI_UNITS, tsumazukiHref, tsumazukiIndex } from "@/lib/tsumazuki";
 
 // /learn/tsumazuki: つまずきの原因の一覧（学校段階 → 教科 → 学年ごと）。
@@ -28,21 +29,37 @@ export default function TsumazukiIndexPage() {
   return (
     <LearnShell crumbs={[{ href: "/learn", label: "まなぶ" }, { label: "つまずきの原因" }]}>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
-      <p className="m-0 text-xs font-black tracking-wider text-[#1533B8]">TSUMAZUKI　つまずきの原因</p>
-      <h1 className="m-0 mt-1 text-[26px] font-black leading-snug sm:text-[32px]">単元ごとの、つまずきの原因と戻る単元</h1>
-      <p className="mb-0 mt-2 max-w-[720px] text-[15px] leading-relaxed text-[#3A3D55]">
-        わからないのは、いまの単元のせいとは限りません。前の学年に原因があることがあります。{TSUMAZUKI_UNITS.length}単元それぞれの、よくあるまちがいと原因の単元・前に必要な単元を見られます。
-      </p>
+      <header className="rounded-[22px] border-[1.5px] border-[#15172B] bg-[#15172B] p-5 text-white shadow-[4px_4px_0_#1533B8] sm:p-7">
+        <div className="flex items-center gap-3">
+          <span className="flex-none rounded-[14px] bg-[#EEF1FF] px-2 py-1.5">
+            <BackUpArrow size={64} />
+          </span>
+          <p className="m-0 min-w-0 text-[17px] font-black leading-snug text-[#FFE45C] sm:text-[20px]">
+            <span className="whitespace-nowrap">どこでつまずいても、</span>
+            <wbr />
+            <span className="whitespace-nowrap">原因まで戻れる</span>
+          </p>
+        </div>
+        <p className="m-0 mt-3 text-xs font-black tracking-wider text-[#9AA3D6]">TSUMAZUKI　つまずきの原因</p>
+        <h1 className="m-0 mt-1 text-[26px] font-black leading-snug sm:text-[32px]">単元ごとの、つまずきの原因と戻る単元</h1>
+        <p className="mb-0 mt-2 max-w-[720px] text-[15px] leading-relaxed text-[#DCE0FA]">
+          わからないのは、いまの単元のせいとは限りません。前の学年に原因があることがあります。{TSUMAZUKI_UNITS.length}単元それぞれの、よくあるまちがいと原因の単元・前に必要な単元を見られます。
+        </p>
+      </header>
       {tree.map((l) => (
         <section key={l.key} aria-labelledby={`tz-${l.key}`} className="mt-7">
-          <h2 id={`tz-${l.key}`} className="m-0 text-[20px] font-black">
+          <h2 id={`tz-${l.key}`} className="m-0 flex items-center gap-2 text-[20px] font-black">
+            <span aria-hidden="true" className="h-5 w-1.5 rounded-full bg-[#1533B8]" />
             {l.name}
           </h2>
           <div className="mt-2 grid gap-2">
             {l.subjects.map((s) => (
-              <details key={s.key} className="rounded-[14px] border-[1.5px] border-[#15172B] bg-white px-4 py-1 shadow-[2px_2px_0_#15172B]">
-                <summary className="flex min-h-[48px] cursor-pointer items-center text-[16px] font-black">
-                  {s.name}
+              <details key={s.key} className="group rounded-[14px] border-[1.5px] border-[#15172B] bg-white px-4 py-1 shadow-[3px_3px_0_#15172B] open:bg-[#EEF1FF]">
+                <summary className="flex min-h-[48px] cursor-pointer list-none items-center justify-between gap-2 text-[16px] font-black [&::-webkit-details-marker]:hidden">
+                  <span>{s.name}</span>
+                  <span aria-hidden="true" className="flex h-7 w-7 flex-none items-center justify-center rounded-full border-[1.5px] border-[#15172B] bg-[#FFE45C] text-[13px] transition-transform group-open:rotate-90">
+                    →
+                  </span>
                 </summary>
                 {s.groups.map((g) => (
                   <div key={g.title} className="mb-3">
@@ -50,7 +67,7 @@ export default function TsumazukiIndexPage() {
                     <ul className="m-0 mt-1 grid list-none gap-1.5 p-0 sm:grid-cols-2 lg:grid-cols-3">
                       {g.units.map((u) => (
                         <li key={u.id} className="min-w-0">
-                          <Link href={tsumazukiHref(u.id)} className="flex min-h-[44px] items-center justify-between gap-2 rounded-[10px] bg-[#F7F6F1] px-3 py-1.5 text-[14px] font-bold text-[#15172B] no-underline">
+                          <Link href={tsumazukiHref(u.id)} className="flex min-h-[44px] items-center justify-between gap-2 rounded-[10px] border border-[#15172B]/15 bg-white px-3 py-1.5 text-[14px] font-bold text-[#15172B] no-underline">
                             <span className="min-w-0 [overflow-wrap:anywhere]">{u.name}</span>
                             <span aria-hidden="true">→</span>
                           </Link>

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { trackEvent } from "@/lib/analytics";
 import { sendStartEvent, type StartVariant } from "@/lib/start/ab";
+import { BackUpArrow } from "./BackUpArrow";
 
 // /start の A・B・C 共通の後半（案どうしの比べ方を崩さないよう、どの案にも同じ位置に同じものを置く）。
 // 2026-11-22 じゅんさんの依頼で「5つのレンズ」（docs: 届け方の切り口）を下敷きに組んだ：
@@ -15,17 +16,6 @@ import { sendStartEvent, type StartVariant } from "@/lib/start/ab";
 // 書くのは事実だけ（成績が上がる・No.1・合格率は書かない）。他社の名前は出さない。
 
 const card = "rounded-[18px] border-[1.5px] border-[#15172B] bg-white p-5 shadow-[4px_4px_0_#15172B]";
-
-/** 一度下がってから、右上へ上がる青い矢印（さかのぼりのしるし） */
-export function BackUpArrow({ size = 72 }: { size?: number }) {
-  return (
-    <svg width={size} height={size * 0.62} viewBox="0 0 116 72" aria-hidden="true" className="block">
-      <path d="M6 18 C 26 18, 30 58, 46 58 C 62 58, 72 30, 104 10" fill="none" stroke="#1533B8" strokeWidth="9" strokeLinecap="round" />
-      <path d="M90 6 L108 8 L100 24" fill="none" stroke="#1533B8" strokeWidth="9" strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx="46" cy="58" r="7" fill="#FFE45C" stroke="#15172B" strokeWidth="2.5" />
-    </svg>
-  );
-}
 
 const ROUTE = [
   { grade: "中2", unit: "一次関数", note: "ここでまちがえた", now: true },

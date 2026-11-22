@@ -1,7 +1,9 @@
 import { plain } from "@/components/lecture/Rich";
 import { LEVELS } from "@/lib/school";
 import { getLecture, hasLecture, LECTURES, lectureHref, lectureUnitInfo } from "@/lib/lecture";
-import { hasJugyo, jugyoHref } from "@/lib/jugyo";
+import { getLessons, hasJugyo, jugyoHref, jugyoSpan } from "@/lib/jugyo";
+import { choiceOrder } from "@/lib/jugyo/audio";
+import type { Look, TalkScene } from "@/lib/jugyo/types";
 import { hasUnitMoshi, unitMoshiHref } from "@/lib/moshi/unit";
 import { dependentsOf, mistakeRoot, needsOf, prereqChain, SAKANOBORI_HOME, stageOf } from "@/lib/sakanobori";
 
@@ -32,6 +34,26 @@ export interface MistakeItem {
   root?: UnitRef & { self: boolean; earlier: boolean; why: string };
 }
 
+/** ヒーローの「さかのぼりの道」の1行。now = この単元、mid = あいだの単元、root = 原因の単元、need = 前に必要な単元 */
+export type PathRow = UnitRef & { kind: "now" | "mid" | "root" | "need"; note: string };
+
+/** 授業のワンシーン（止まる授業の台本から：まちがいの問題の直前のせりふと、その問題） */
+export interface JugyoScene {
+  title: string;
+  castName: string;
+  /** せりふ（台本の順。ルビ・{{ }} はそのまま。画面では Rich で出す） */
+  lines: { who: TalkScene["who"]; name: string; look: Look; text: string }[];
+  sensei: { name: string; look: Look };
+  question: string;
+  /** 選択肢（授業の画面と同じ並び。lib/jugyo/audio の choiceOrder） */
+  choices?: string[];
+  answer: string;
+  why: string;
+  href: string;
+  minutes: string;
+  stops: string;
+}
+
 export interface TsumazukiPage {
   unit: string;
   name: string;
@@ -45,6 +67,9 @@ export interface TsumazukiPage {
   mistakes: MistakeItem[];
   needs: (UnitRef & { why: string })[];
   dependents: UnitRef[];
+  /** さかのぼりの道（root = 原因の単元までの道、needs = 前に必要な単元。どちらもなければ undefined） */
+  path?: { mode: "root" | "needs"; rows: PathRow[] };
+  scene?: JugyoScene;
   links: { jugyo?: string; moshi?: string; lecture?: string; sakanobori?: string };
   faq: { q: string; a: string }[];
   breadcrumb: { name: string; url: string }[];
@@ -100,6 +125,42 @@ export const tsumazukiExcluded = () => LECTURES.map((l) => l.unit).filter((u) =>
 
 function ref(unit: string): UnitRef {
   return { unit, name: unitName(unit), label: unitLabel(unit), href: hasTsumazuki(unit) ? tsumazukiHref(unit) : lectureHref(unit) };
+}
+
+/** 止まる授業（最初のキャスト）の、最初の「まちがい」の問題と、その直前の生徒・先生のせりふ1つずつ */
+function jugyoScene(unit: string): JugyoScene | undefined {
+  const lesson = getLessons(unit)[0];
+  const span = jugyoSpan(unit);
+  if (!lesson || !span) return undefined;
+  const at = lesson.scenes.findIndex((s) => s.kind === "pause" && s.source.startsWith("mistake:"));
+  if (at < 0) return undefined;
+  const q = lesson.scenes[at];
+  if (q.kind !== "pause") return undefined;
+  const last = (who: TalkScene["who"]) => {
+    for (let i = at - 1; i >= 0; i--) {
+      const s = lesson.scenes[i];
+      if (s.kind === "chapter") continue;
+      if (s.kind === "pause") break;
+      if (s.who === who) return { i, s };
+    }
+    return undefined;
+  };
+  const picked = [last("seito"), last("sensei")].filter((x) => !!x).sort((a, b) => a.i - b.i);
+  if (!picked.length) return undefined;
+  const m = lesson.cast.members;
+  return {
+    title: plain(lesson.title),
+    castName: lesson.cast.name,
+    lines: picked.map(({ s }) => ({ who: s.who, name: m[s.who].name, look: m[s.who].look, text: s.text })),
+    sensei: { name: m.sensei.name, look: m.sensei.look },
+    question: q.question,
+    choices: q.choices && choiceOrder(q.choices, q.question),
+    answer: q.answer,
+    why: q.why,
+    href: jugyoHref(unit),
+    minutes: span.minutes,
+    stops: span.stops,
+  };
 }
 
 /** 文字数で切る（120字前後の description 用） */
@@ -159,6 +220,27 @@ export function buildTsumazuki(unit: string): TsumazukiPage | undefined {
     ? `${head}「${cut(pick.wrong, Math.max(12, room))}」。原因は${cause}にあることがあります。${tail}`
     : `${label}「${name}」の前に必要な単元と、${tail}`;
 
+  // さかのぼりの道：前の学年の原因があればそこまで（あいだの単元を prereqChain から1つ）。なければ前に必要な単元
+  let path: TsumazukiPage["path"];
+  const far = rootsSorted.find((u) => isEarlierGrade(u, unit)) ?? main;
+  if (far) {
+    const nodes = new Map(prereqChain(unit, 8).map((c) => [c.unit, c]));
+    const between: string[] = [];
+    for (let u = nodes.get(far)?.via; u && u !== unit && !between.includes(u); u = nodes.get(u)?.via) between.unshift(u);
+    const known = between.filter((u) => lectureUnitInfo(u));
+    const mid = known[Math.floor((known.length - 1) / 2)];
+    path = {
+      mode: "root",
+      rows: [
+        { ...ref(unit), kind: "now", note: "ここでまちがえる" },
+        ...(mid ? [{ ...ref(mid), kind: "mid" as const, note: "あいだの単元" }] : []),
+        { ...ref(far), kind: "root", note: "ここが原因" },
+      ],
+    };
+  } else if (needs.length) {
+    path = { mode: "needs", rows: [{ ...ref(unit), kind: "now", note: "ここでつまずく" }, ...needs.slice(0, 3).map((n) => ({ ...ref(n.unit), kind: "need" as const, note: "前に必要" }))] };
+  }
+
   const links = {
     jugyo: hasJugyo(unit) ? jugyoHref(unit) : undefined,
     moshi: hasUnitMoshi(unit) ? unitMoshiHref(unit) : undefined,
@@ -188,6 +270,8 @@ export function buildTsumazuki(unit: string): TsumazukiPage | undefined {
     mistakes,
     needs,
     dependents,
+    path,
+    scene: jugyoScene(unit),
     links,
     faq,
     breadcrumb: [
