@@ -45,7 +45,7 @@ function MoshiPair({ v }: { v: StartVariant }) {
         <wbr />
         <span className="whitespace-nowrap">スマホで受けられます</span>
       </h2>
-      <p className="m-0 mt-1.5 text-[13px] leading-relaxed text-[#C9CEF2]">時間になると自動で提出。大問ごと・単元ごとの点数と、弱い単元の解説まで。登録なしで1回、無料登録で月2回。</p>
+      <p className="m-0 mt-1.5 text-[13px] leading-relaxed text-[#C9CEF2]">時間になると自動で提出。大問ごと・単元ごとの点数と、弱い単元の解説まで。登録なしで1回、無料登録すると何回でも。</p>
       <ul className="m-0 mt-3 grid list-none gap-2.5 p-0 sm:grid-cols-2">
         {items.map((x) => (
           <li key={x.href}>

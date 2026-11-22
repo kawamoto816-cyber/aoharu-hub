@@ -3,7 +3,7 @@ import { getCurrentUserId, getEntitlement } from "@/lib/aoharu-entitlements";
 import { getSupabaseAdmin } from "@/lib/aoharu-entitlements/supabase/client";
 import { EXAM_APP, EXAM_START_ACTION, examLimit, type ExamPlan, type ExamQuota } from "./access";
 
-// 入試モード・共通テストモードのサーバー側 (プランの判定と、無料登録の月2回の数え方)。
+// 入試モード・共通テストモードのサーバー側 (プランの判定と、回数の数え方。無料登録の上限は 2026-11-22 になくした)。
 // 回数の決まりは lib/exam/access.ts。
 
 export interface ExamViewer {

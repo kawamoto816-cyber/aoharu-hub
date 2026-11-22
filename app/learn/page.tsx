@@ -176,7 +176,7 @@ export default function LearnHub() {
           <h2 id="moshi-heading" className="m-0 mt-1 text-[21px] font-black">
             模試で、いまの力を測る
           </h2>
-          <p className="m-0 mt-1 text-[13px] leading-relaxed text-[#C9CEF2]">本番と同じ時間で解いて、大問別・単元別に弱いところがわかります。登録なしで1回、無料登録で月2回。</p>
+          <p className="m-0 mt-1 text-[13px] leading-relaxed text-[#C9CEF2]">本番と同じ時間で解いて、大問別・単元別に弱いところがわかります。登録なしで1回、無料登録すると何回でも。</p>
           <ul className="m-0 mt-3 grid list-none gap-3 p-0 sm:grid-cols-2">
             {[
               { href: "/learn/koko-moshi", tag: "中3向け", name: "公立高校入試模試", desc: "国語・数学・英語・理科・社会。各50分・100点で、第1回〜第6回" },

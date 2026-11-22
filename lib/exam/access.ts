@@ -1,6 +1,7 @@
-// 入試モード・共通テストモード (/learn/exam) の回数の決まり (2026-11-04 承認のプランの決まり)。画面とサーバーの両方から使う。
-//   登録なし   … 1回分の体験 (端末の localStorage で数える。EXAM_TRIAL_KEY)
-//   無料登録   … 月2回 (サーバーの usage_log app_key "exam"・action "start" で数える。日本時間の月)
+// 入試モード・共通テストモード (/learn/exam) の回数の決まり。画面とサーバーの両方から使う。
+// 2026-11-22 じゅんさん決定：無料登録の月2回の上限をなくした（「教科の勉強はすべて無料。有料は受験の書類と面接だけ」にそろえる）。
+//   登録なし   … 1回分の体験 (端末の localStorage で数える。EXAM_TRIAL_KEY)。続きは無料登録で
+//   無料登録   … 無制限 (回数は usage_log app_key "exam"・action "start" に記録だけする)
 //   Pro・Max  … 無制限 ＋ 時間配分の分析
 // 単元模試 (/learn/moshi)・教科書 (レクチャー) はこの決まりの外 (止めない)。
 
@@ -11,10 +12,9 @@ export const EXAM_START_ACTION = "start";
 export const EXAM_TRIAL_KEY = "aoharu.exam.trial.v1";
 export const PRICING_HREF = "/#pricing";
 
-/** 回数の上限。null＝無制限。guest は端末ごとの通算、free は月ごと */
+/** 回数の上限。null＝無制限。guest は端末ごとの通算 */
 export function examLimit(plan: ExamPlan): number | null {
   if (plan === "guest") return 1;
-  if (plan === "free") return 2;
   return null;
 }
 

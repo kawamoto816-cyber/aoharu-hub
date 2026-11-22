@@ -10,7 +10,7 @@ import { ExamPlanContext } from "./plan-context";
 // 入試モード・共通テストモードの本番画面の「回数の門」(2026-11-04 承認のプランの決まり。lib/exam/access.ts)。
 //   始める前に残りの回数を出し、使いきっていればやさしいお知らせ (料金とプランへ) に差しかえる。
 //   回数を数えるのは「はじめる」を押したとき (MoshiPlay の examMode.beforeStart)。
-//   登録なし＝端末で1回・無料登録＝サーバーで月2回・Pro・Max＝無制限。プランが判定できないときは止めない。
+//   登録なし＝端末で1回・無料登録から無制限（2026-11-22 から。時間配分の分析は Pro・Max）。プランが判定できないときは止めない。
 //   単元模試 (/learn/moshi)・教科書はこの部品を通らない。
 
 type PlayProps = Omit<ComponentProps<typeof MoshiPlay>, "examMode">;
@@ -119,8 +119,8 @@ export function ExamGate({ examMode, ...play }: PlayProps & { examMode: MoshiExa
 
 function QuotaLine({ st }: { st: GateState }) {
   let text: string | null = null;
-  if (st.plan === "guest") text = `登録なしで ${st.limit ?? 1}回分 体験できます（この端末であと${st.remaining ?? 0}回）。無料登録で月2回、Pro・Max なら何回でも解けます。`;
-  else if (st.plan === "free") text = st.remaining === null ? `無料登録は月${st.limit ?? 2}回まで解けます。` : `今月あと${st.remaining}回（無料登録は月${st.limit ?? 2}回）。「はじめる」を押すと1回分として数えます。`;
+  if (st.plan === "guest") text = `登録なしで ${st.limit ?? 1}回分 体験できます（この端末であと${st.remaining ?? 0}回）。無料登録（0円）すると何回でも解けます。`;
+  else if (st.plan === "free") text = st.limit === null ? "何回でも解けます。大問ごとの時間配分の分析は Pro・Max で見られます。" : st.remaining === null ? `無料登録は月${st.limit}回まで解けます。` : `今月あと${st.remaining}回（無料登録は月${st.limit}回）。「はじめる」を押すと1回分として数えます。`;
   else if (st.plan === "pro" || st.plan === "max") text = `${st.plan === "pro" ? "Pro" : "Max"} プラン：何回でも解けます。結果で時間配分の分析も見られます。`;
   if (!text) return null;
   return (
@@ -136,11 +136,11 @@ function ExamBlocked({ plan, limit }: { plan: "guest" | "free"; limit: number | 
       <p className="m-0 text-[17px] font-black">{plan === "guest" ? "体験の1回分を使いました" : `今月の${limit ?? 2}回を使いきりました`}</p>
       <p className="m-0 mt-2 text-[14px] leading-relaxed text-[#3A3D55]">
         {plan === "guest"
-          ? "ここまで解いてくれてありがとう。無料登録すると入試モード・共通テストモードを毎月2回、Pro・Max なら何回でも解けて、大問ごとの時間配分の分析も見られます。"
-          : "来月1日（日本時間）にまた2回解けるようになります。Pro・Max なら何回でも解けて、大問ごとの時間配分の分析も見られます。"}
+          ? "ここまで解いてくれてありがとう。無料登録（メールアドレスだけ・0円）すると、入試モード・共通テストモードを何回でも解けます。"
+          : "来月1日（日本時間）にまた解けるようになります。Pro・Max なら何回でも解けて、大問ごとの時間配分の分析も見られます。"}
       </p>
       <Link href={PRICING_HREF} className="mt-4 flex min-h-[56px] w-full items-center justify-center rounded-[14px] border-[1.5px] border-[#15172B] bg-[#1533B8] text-[17px] font-black text-white no-underline shadow-[0_4px_0_#0B1F7A]">
-        {plan === "guest" ? "無料登録・プランを見る →" : "Pro・Max を見る →"}
+        {plan === "guest" ? "無料登録して続ける →" : "Pro・Max を見る →"}
       </Link>
       <p className="m-0 mt-3 text-[13px] leading-relaxed text-[#3A3D55]">
         単元模試と教科書（図解レクチャー）は、いつでも何回でも使えます。

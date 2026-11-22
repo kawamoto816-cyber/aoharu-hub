@@ -20,6 +20,10 @@ export async function POST(req: Request) {
   }
   const v = await examViewer();
   const limit = examLimit(v.plan);
+  // 無料登録は上限なし（2026-11-22）。数は記録だけする（記録に失敗しても止めない）
+  if (v.plan === "free" && v.userId && limit === null) {
+    await logStart(v.userId, { spec: typeof body.spec === "string" ? body.spec.slice(0, 120) : null, mode: typeof body.mode === "string" ? body.mode.slice(0, 20) : null }).catch(() => {});
+  }
   if (v.plan !== "free" || !v.userId || limit === null) return NextResponse.json({ ok: true, plan: v.plan, limit, used: null, remaining: null }, { headers: NO_STORE });
 
   let used: number;

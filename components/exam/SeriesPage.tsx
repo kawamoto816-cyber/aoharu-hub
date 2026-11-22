@@ -43,7 +43,7 @@ export function SeriesPage({ id, lead, howto, sumLabel, extra }: { id: Series["i
         <p className="m-0 font-black text-[#15172B]">ご注意</p>
         <p className="m-0 mt-1">{m.notice}</p>
         <p className="m-0 mt-1">{NOTICE_COMMON}</p>
-        <p className="m-0 mt-1">登録なしでは1回分、無料登録で月2回まで解けます。結果はこの端末の中に保存します。</p>
+        <p className="m-0 mt-1">登録なしでは1回分、無料登録すると何回でも解けます。結果はこの端末の中に保存します。</p>
       </aside>
       <p className="m-0 mt-5 text-[13px] text-[#3A3D55]">
         範囲や時間を自分で決めて解くなら

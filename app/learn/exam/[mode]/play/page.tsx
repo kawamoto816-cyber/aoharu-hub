@@ -12,7 +12,7 @@ import { freshSeed, parseSeed } from "@/lib/moshi/rng";
 // /learn/exam/<mode>/play?s=教科&l=学校&u=単元,単元&m=分&seed=123: 試験モードの本番画面。
 // 組み立て (lib/exam/build.ts) はサーバー側、解く・採点・時間切れの自動提出・結果の保存はクライアント (MoshiPlay の examMode)。
 // ?w=単元,単元: 苦手な単元 (結果画面の「苦手に合わせて次の回を作る」。端末の習熟度から)。範囲の中なら、大問ごとに約4割まで多めに出す (lib/exam/build.ts)。
-// 回数の門 (登録なし1回・無料登録 月2回・Pro・Max 無制限。lib/exam/access.ts) は ExamGate が「はじめる」の前に見る。
+// 回数の門 (登録なし1回・無料登録から無制限。lib/exam/access.ts) は ExamGate が「はじめる」の前に見る。
 
 export const metadata: Metadata = {
   title: "入試モードを解く｜アオハルラーン｜アオハルOS",
