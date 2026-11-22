@@ -2,7 +2,7 @@
 #   順番の表（scripts/tsumazuki-video/order.txt）の上から、まだ作っていない単元を1日2本（TSUMAZUKI_PER_DAY）。
 #   止まる授業の台本と声（checkout した public/audio/jugyo）から、授業のプレイヤーを録画して作る。
 #   作った動画は Supabase Storage（shorts）に置き、/internal/shorts/done に source "tsumazuki" で記録する。
-#   管理画面の TikTok 投稿（/admin/social/tiktok）の候補にだけ並ぶ（Instagram・YouTube の自動投稿には出さない）。
+#   管理画面の TikTok 投稿（/admin/social/tiktok）の候補に並び、Instagram リールにも自動で投稿される（YouTube には出さない）。
 #   スケジュール: 16:10 JST（GitHub の定時実行は遅れることがある。作った単元は飛ばすので、手動で走らせても二重には作らない）。
 #   手動実行: unit を入れるとその単元だけ作る（作り直しにも使う）。
 #   必要な Secrets: CRON_SECRET, SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY

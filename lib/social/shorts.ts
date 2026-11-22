@@ -219,7 +219,7 @@ export async function shortsStats(): Promise<{
       count((q) => q.not("instagram_posted_at", "is", null)),
       count((q) => q.not("tiktok_posted_at", "is", null)),
       count((q) => q.is("youtube_posted_at", null).lt("youtube_attempts", 3).or(NOT_TSUMAZUKI)),
-      count((q) => q.is("instagram_posted_at", null).lt("instagram_attempts", 3).or(NOT_TSUMAZUKI)),
+      count((q) => q.is("instagram_posted_at", null).lt("instagram_attempts", 3)),
       last("youtube_posted_at"),
       last("instagram_posted_at"),
     ]);
@@ -228,8 +228,9 @@ export async function shortsStats(): Promise<{
 
 // ------------------------------------------------------------------
 // つまずき図鑑 (scripts/tsumazuki-video。source "tsumazuki"、slug "tsumazuki-<単元id>")
-// 止まる授業の画面を録画した TikTok 用の動画。TikTok の投稿画面 (/admin/social/tiktok) で人が選んで出すだけにし、
-// Instagram・YouTube の自動投稿の待ちからは外す (TikTok 向けの「コメントで答えて」の作りで、ほかの場所に向けた動画ではないため)。
+// 止まる授業の画面を録画した単元ごとの動画。TikTok (@aoharu_learn) には投稿画面 (/admin/social/tiktok) から出し、
+// Instagram リール (@aoharu_os) にも自動投稿する (2026-11-23 じゅんさん決定。「答えはコメントで」はリールでも通じる)。
+// YouTube の自動投稿の待ちからは外したまま (YouTube は受験書類の動画の置き場として続けるため)。
 // ------------------------------------------------------------------
 export const TSUMAZUKI_SOURCE = "tsumazuki";
 /** source が tsumazuki ではない (null をふくむ。neq だけだと null の行も外れる) */
@@ -295,8 +296,7 @@ export async function listPendingInstagramReels(limit = 1): Promise<PendingReel[
     .select("slug,title,description,video_url,instagram_attempts")
     .is("instagram_posted_at", null)
     .lt("instagram_attempts", 3)
-    // つまずき図鑑は TikTok だけに出す (上の TSUMAZUKI_SOURCE のコメント)
-    .or(NOT_TSUMAZUKI)
+    // つまずき図鑑もリールに出す (上の TSUMAZUKI_SOURCE のコメント)
     // 新しい動画から先に出す (古い順だと、生成ペースに投稿が追いつかない間は新作がいつまでも出なかった)
     .order("rendered_at", { ascending: false })
     .limit(limit);

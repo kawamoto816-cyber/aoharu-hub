@@ -2,7 +2,7 @@
 
 止まる授業（`lib/jugyo`）の1場面を録画して、単元ごとに約45〜55秒の縦動画（1080×1920・30fps）を作る。
 毎日 GitHub Actions（`.github/workflows/tsumazuki-video.yml`、16:10 JST）が2本ずつ作り、管理画面の TikTok 投稿（`/admin/social/tiktok`）の候補に並べる。
-Instagram・YouTube の自動投稿には出さない（`lib/social/shorts.ts` の `TSUMAZUKI_SOURCE`）。
+Instagram リール（@aoharu_os）にも自動で投稿する（/internal/shorts/publish。8〜21時台・90分以上あけて1本ずつ）。YouTube の自動投稿には出さない（`lib/social/shorts.ts` の `TSUMAZUKI_SOURCE`）。
 
 ## 1本の中身
 
