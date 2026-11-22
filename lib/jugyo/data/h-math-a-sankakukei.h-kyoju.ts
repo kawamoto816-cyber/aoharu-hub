@@ -74,7 +74,7 @@ export const H_MATH_A_SANKAKUKEI_H_KYOJU: CastScript = {
       kind: "talk",
       who: "sensei",
       text: "うむ。外角の二等分線でも同じ比が現れる。こちらは BC を{{外分}}する。AB＝8、AC＝6、BC＝7 なら EC＝21 だ。",
-      say: "うむ。外角の二等分線でも、同じ比が現れる。こちらは、ビーシーを、外分する。エービーが8、エーシーが6、ビーシーが7なら、イーシーは21だ。",
+      say: "うむ。がいかくの二等分線でも、同じ比が現れる。こちらは、ビーシーを、がいぶんする。エービーが8、エーシーが6、ビーシーが7なら、イーシーは21だ。",
     },
 
     { kind: "chapter", title: "2. 重心・外心・内心" },
@@ -89,7 +89,7 @@ export const H_MATH_A_SANKAKUKEI_H_KYOJU: CastScript = {
       kind: "talk",
       who: "seito",
       text: "仮説。じゃあ中線2本の交点を支えれば、どちらにも傾かない！",
-      say: "仮説。じゃあ、中線2本の交点を支えれば、どちらにも、傾かない！",
+      say: "仮説。じゃあ、中線2本の交点を支えれば、どちらにも、かたむかない！",
     },
     {
       kind: "talk",
