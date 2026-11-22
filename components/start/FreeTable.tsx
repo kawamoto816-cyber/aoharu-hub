@@ -2,7 +2,7 @@
 
 // 無料と有料の境目（2026-11-22 じゅんさんの依頼で「有料」の列を足して作り直し）。
 // 境目は1本（2026-11-22 じゅんさん決定で入試模試の上限をなくした）：教科の勉強と模試は無料。お金がかかるのは「受験の書類と面接」だけ（時間配分の分析は Pro のおまけ）。
-// 回数は lib/exam/access.ts（模試）・lib/tensaku/full.ts（添削 月2本）と合わせる。面接練習（メンサツ）の無料の範囲はアプリ側の決まり。
+// 回数は lib/exam/access.ts（模試）・lib/tensaku/full.ts（添削 月2本）と合わせる。面接練習（メンサツ）の無料は「1問体験（評価レポートつき）月1回」（2026-11-22 に interview.bluespring.co.jp の表示で確認）。
 type Cell = string | true;
 const TABLE: { group: string; note?: string; rows: [string, Cell, Cell, Cell][] }[] = [
   {
@@ -22,7 +22,7 @@ const TABLE: { group: string; note?: string; rows: [string, Cell, Cell, Cell][] 
     group: "受験の書類と面接（主に高校生）",
     rows: [
       ["志望理由書・小論文の添削（AI）", "—", "月2本（2本目は点数と指摘1つまで）", "何本でも"],
-      ["面接練習（AI）", "—", "お試し", "何回でも"],
+      ["面接練習（AI）", "—", "月1回（1問の体験と評価レポート）", "何回でも"],
     ],
   },
   {
