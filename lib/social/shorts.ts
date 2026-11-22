@@ -218,16 +218,26 @@ export async function shortsStats(): Promise<{
       count((q) => q.not("youtube_posted_at", "is", null)),
       count((q) => q.not("instagram_posted_at", "is", null)),
       count((q) => q.not("tiktok_posted_at", "is", null)),
-      count((q) => q.is("youtube_posted_at", null).lt("youtube_attempts", 3)),
-      count((q) => q.is("instagram_posted_at", null).lt("instagram_attempts", 3)),
+      count((q) => q.is("youtube_posted_at", null).lt("youtube_attempts", 3).or(NOT_TSUMAZUKI)),
+      count((q) => q.is("instagram_posted_at", null).lt("instagram_attempts", 3).or(NOT_TSUMAZUKI)),
       last("youtube_posted_at"),
       last("instagram_posted_at"),
     ]);
   return { total, youtubePosted, instagramPosted, tiktokPosted, youtubeWaiting, instagramWaiting, lastYoutubeAt, lastInstagramAt };
 }
 
-/** slug の末尾 (台本タイトルのハッシュ)。日付が違っても同じ台本なら同じ値になる */
+// ------------------------------------------------------------------
+// つまずき図鑑 (scripts/tsumazuki-video。source "tsumazuki"、slug "tsumazuki-<単元id>")
+// 止まる授業の画面を録画した TikTok 用の動画。TikTok の投稿画面 (/admin/social/tiktok) で人が選んで出すだけにし、
+// Instagram・YouTube の自動投稿の待ちからは外す (TikTok 向けの「コメントで答えて」の作りで、ほかの場所に向けた動画ではないため)。
+// ------------------------------------------------------------------
+export const TSUMAZUKI_SOURCE = "tsumazuki";
+/** source が tsumazuki ではない (null をふくむ。neq だけだと null の行も外れる) */
+const NOT_TSUMAZUKI = `source.is.null,source.neq.${TSUMAZUKI_SOURCE}`;
+
+/** slug の末尾 (台本タイトルのハッシュ)。日付が違っても同じ台本なら同じ値になる。つまずき図鑑は単元ごとに1本なので slug そのもの */
 export function scriptHash(slug: string): string {
+  if (slug.startsWith("tsumazuki-")) return slug;
   return slug.slice(slug.lastIndexOf("-") + 1);
 }
 
@@ -285,6 +295,8 @@ export async function listPendingInstagramReels(limit = 1): Promise<PendingReel[
     .select("slug,title,description,video_url,instagram_attempts")
     .is("instagram_posted_at", null)
     .lt("instagram_attempts", 3)
+    // つまずき図鑑は TikTok だけに出す (上の TSUMAZUKI_SOURCE のコメント)
+    .or(NOT_TSUMAZUKI)
     // 新しい動画から先に出す (古い順だと、生成ペースに投稿が追いつかない間は新作がいつまでも出なかった)
     .order("rendered_at", { ascending: false })
     .limit(limit);
@@ -329,6 +341,8 @@ export async function listPendingYoutubeUploads(limit = 1): Promise<PendingYoutu
     .select("slug,title,description,video_url,youtube_attempts")
     .is("youtube_posted_at", null)
     .lt("youtube_attempts", 3)
+    // つまずき図鑑は TikTok だけに出す (上の TSUMAZUKI_SOURCE のコメント)
+    .or(NOT_TSUMAZUKI)
     // 新しい動画から先に出す (古い順だと、生成ペースに投稿が追いつかない間は新作がいつまでも出なかった)
     .order("rendered_at", { ascending: false })
     .limit(limit);

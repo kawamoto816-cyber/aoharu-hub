@@ -1,0 +1,70 @@
+# つまずき図鑑（TikTok 用のショート動画）を毎日作る。scripts/tsumazuki-video/run.sh
+#   順番の表（scripts/tsumazuki-video/order.txt）の上から、まだ作っていない単元を1日2本（TSUMAZUKI_PER_DAY）。
+#   止まる授業の台本と声（checkout した public/audio/jugyo）から、授業のプレイヤーを録画して作る。
+#   作った動画は Supabase Storage（shorts）に置き、/internal/shorts/done に source "tsumazuki" で記録する。
+#   管理画面の TikTok 投稿（/admin/social/tiktok）の候補にだけ並ぶ（Instagram・YouTube の自動投稿には出さない）。
+#   スケジュール: 16:10 JST（GitHub の定時実行は遅れることがある。作った単元は飛ばすので、手動で走らせても二重には作らない）。
+#   手動実行: unit を入れるとその単元だけ作る（作り直しにも使う）。
+#   必要な Secrets: CRON_SECRET, SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY
+name: tsumazuki-video
+on:
+  schedule:
+    - cron: "10 7 * * *" # 16:10 JST
+  workflow_dispatch:
+    inputs:
+      unit:
+        description: "単元id（空なら順番の表から、まだ作っていない単元）"
+        default: ""
+      per_day:
+        description: "作る本数"
+        default: "2"
+      cast:
+        description: "キャストid（空なら自動）"
+        default: ""
+concurrency:
+  group: tsumazuki-video
+  cancel-in-progress: false
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install deps
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg fonts-noto-cjk fonts-noto-cjk-extra python3-pil > /dev/null
+          npm ci
+          # 録画にだけ使う道具（package.json には入れない）
+          npm install --no-save esbuild@0.28.2 playwright@1.63.0 tsx@4.23.12
+          npx playwright install --with-deps chromium
+      - name: Make videos
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          TSUMAZUKI_UNIT: ${{ github.event.inputs.unit }}
+          TSUMAZUKI_PER_DAY: ${{ github.event.inputs.per_day || '2' }}
+          TSUMAZUKI_CAST: ${{ github.event.inputs.cast }}
+        run: bash scripts/tsumazuki-video/run.sh
+      - name: Alert on failure
+        if: failure()
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          curl -sS --max-time 30 -X POST "https://app.bluespring.co.jp/internal/alerts" \
+            -H "Authorization: Bearer $CRON_SECRET" -H "Content-Type: application/json" \
+            --data "{\"key\":\"tsumazuki_video\",\"title\":\"つまずき図鑑の動画の生成が失敗しました\",\"body\":\"実行結果: ${RUN_URL}\",\"action\":\"上のリンクで失敗した単元を確認するか、Claude に「つまずき図鑑の動画の生成を調べて」と依頼してください。\"}" || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: tsumazuki-video
+          path: |
+            out/*.mp4
+            out/*.json
+          retention-days: 14
