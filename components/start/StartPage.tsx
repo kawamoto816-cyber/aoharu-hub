@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useAuth } from "@clerk/nextjs";
 import { SmartSignUpButton } from "@/components/SmartSignUpButton";
 import { trackEvent } from "@/lib/analytics";
+import { StartLenses } from "./StartLenses";
 import { assignVariant, isVariant, sendStartEvent, setStartCounting, type StartVariant } from "@/lib/start/ab";
 
 // /start の中身 (A・B・C の3案)。案は端末ごとにふり分け、?v= で確かめられる (確認のときは数えない)。
@@ -318,6 +319,8 @@ export function StartPage({ data, preview }: { data: StartData; preview?: string
     <div data-variant={v}>
       {isPreview && <p className="m-0 mb-3 rounded-[10px] bg-[#FFF4E5] px-3 py-2 text-[12px] font-bold text-[#B54708]">確認用の表示（案{v.toUpperCase()}）。この表示は数えません。</p>}
       {v === "a" ? <VariantA d={data} v={v} /> : v === "b" ? <VariantB d={data} v={v} /> : <VariantC d={data} v={v} />}
+      <StartLenses v={v} lectures={data.lectures} />
+      <Ctas v={v} sample={data.sample} />
       <p className="m-0 mt-10 text-center text-[12px] text-[#5A5D73]">
         運営：株式会社ブルースプリング　
         <Link href="/learn" className="font-bold text-[#1533B8]">
