@@ -162,7 +162,7 @@ export default async function GuideArticlePage({ params }: { params: Promise<{ s
 
         <header className="mt-4">
           <p className="text-xs font-bold text-indigo-600">
-            {SEGMENT_COPY[article.segment].label} ／ {TOPIC_LABEL[article.topic]}
+            {article.topic === "katei" ? "保護者の方へ" : article.topic === "manabinaoshi" ? "小学生・中学生・高校生" : SEGMENT_COPY[article.segment].label} ／ {TOPIC_LABEL[article.topic]}
           </p>
           <h1 className="mt-2 text-2xl font-bold leading-snug text-slate-900 sm:text-3xl">{article.title}</h1>
           <p className="mt-3 text-xs text-slate-400">

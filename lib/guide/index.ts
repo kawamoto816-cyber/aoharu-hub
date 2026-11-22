@@ -23,6 +23,8 @@ export const TOPIC_LABEL: Record<GuideArticle["topic"], string> = {
   "nyushi-seido": "入試制度",
   es: "ES・就活",
   tenshoku: "転職",
+  manabinaoshi: "教科の学び直し",
+  katei: "家庭学習・塾選び",
 };
 
 export function getGuideArticle(slug: string): GuideArticle | undefined {

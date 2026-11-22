@@ -4,7 +4,8 @@
 
 import type { Segment } from "@/lib/segments";
 
-export type GuideCtaApp = "tensakun" | "shiboriyu" | "mensatsu" | "try" | "parents";
+// start＝/start（はじめての方へ）・learn＝/learn/tsumazuki（つまずきの原因）。2026-11-22 教科の記事のために追加
+export type GuideCtaApp = "tensakun" | "shiboriyu" | "mensatsu" | "try" | "parents" | "start" | "learn";
 
 export interface GuideBlockParagraph {
   type: "p";
@@ -63,7 +64,8 @@ export interface GuideArticle {
   description: string;
   segment: Segment;
   /** 記事一覧・関連記事のグルーピングに使う */
-  topic: "shibo-riyusho" | "shoronbun" | "mensetsu" | "nyushi-seido" | "es" | "tenshoku";
+  // manabinaoshi＝教科の学び直し（つまずき・勉強のしかた）、katei＝家庭学習・塾や教材の選び方（保護者向け）。2026-11-22 追加
+  topic: "shibo-riyusho" | "shoronbun" | "mensetsu" | "nyushi-seido" | "es" | "tenshoku" | "manabinaoshi" | "katei";
   /** 想定検索語 (SEOの内部メモ。画面には出さない) */
   keywords: string[];
   publishedAt: string; // YYYY-MM-DD

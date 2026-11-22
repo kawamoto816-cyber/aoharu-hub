@@ -9,9 +9,9 @@ import type { Segment } from "@/lib/segments";
 //   ■ タイトル: 志望理由書の自己分析はどこまで書くか
 //   ■ ディスクリプション: （120字前後）
 //   ■ 対象: highschool | student | career
-//   ■ トピック: shibo-riyusho | shoronbun | mensetsu | nyushi-seido | es | tenshoku
+//   ■ トピック: shibo-riyusho | shoronbun | mensetsu | nyushi-seido | es | tenshoku | manabinaoshi | katei
 //   ■ 検索語: 志望理由書 自己分析, 志望理由書 書けない
-//   ■ CTA: tensakun | shiboriyu | mensatsu | try | parents
+//   ■ CTA: tensakun | shiboriyu | mensatsu | try | parents | start | learn
 //   ■ リード:
 //   （導入文）
 //
@@ -33,8 +33,8 @@ import type { Segment } from "@/lib/segments";
 // 記事どうしは "----" の行で区切る。
 
 const SEGMENTS: Segment[] = ["highschool", "student", "career"];
-const TOPICS: GuideArticle["topic"][] = ["shibo-riyusho", "shoronbun", "mensetsu", "nyushi-seido", "es", "tenshoku"];
-const CTA_APPS: GuideCtaApp[] = ["tensakun", "shiboriyu", "mensatsu", "try", "parents"];
+const TOPICS: GuideArticle["topic"][] = ["shibo-riyusho", "shoronbun", "mensetsu", "nyushi-seido", "es", "tenshoku", "manabinaoshi", "katei"];
+const CTA_APPS: GuideCtaApp[] = ["tensakun", "shiboriyu", "mensatsu", "try", "parents", "start", "learn"];
 
 const CTA_PRESET: Record<GuideCtaApp, { heading: string; text: string; button: string }> = {
   tensakun: {
@@ -61,6 +61,16 @@ const CTA_PRESET: Record<GuideCtaApp, { heading: string; text: string; button: s
     heading: "保護者の方へ",
     text: "塾に通わなくても、家庭で出願準備を進められる形にしています。費用と使い方をまとめたページがあります。",
     button: "保護者向けの説明を読む",
+  },
+  start: {
+    heading: "教科の授業と模試は、無料で使えます",
+    text: "小学校から高校まで、教科の授業・演習・単元模試が0円。まちがえた問題から、前の学年の原因の単元まで戻れます。登録はメールアドレスだけです。",
+    button: "無料で使ってみる",
+  },
+  learn: {
+    heading: "どこでつまずいているかを、単元ごとに確かめる",
+    text: "単元ごとに、よくあるまちがいと、その原因になっている前の学年の単元をまとめています。無料の単元模試でそのまま確かめられます。",
+    button: "つまずきの原因を見る",
   },
 };
 

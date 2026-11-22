@@ -15,12 +15,19 @@ export const CTA_HREF: Record<GuideArticle["cta"]["app"], string> = {
   mensatsu: APP_URLS.mensatsu,
   try: "/try",
   parents: "/parents",
+  start: "/start",
+  learn: "/learn/tsumazuki",
 };
 
 /** 記事のタイトルから大学名を取り出す（例「京都産業大学 公募推薦の出願書類…」→「京都産業大学」）。なければ null */
 function universityOf(article: GuideArticle): string | null {
   const m = article.title.match(/([一-龠々ァ-ヶー]{2,10}大学)/);
   return m ? m[1] : null;
+}
+
+/** 教科の記事か（2026-11-22 追加のトピック） */
+export function isKyoka(article: GuideArticle): boolean {
+  return article.topic === "manabinaoshi" || article.topic === "katei";
 }
 
 /** 面接の記事か（面接の記事は、面接の練習へ送る） */
@@ -34,6 +41,8 @@ function isInterview(article: GuideArticle): boolean {
  * それ以外は記事ごとに書かれた文面（article.cta）を使う。
  */
 export function ctaCopy(article: GuideArticle): { heading: string; text: string; button: string; href: string } {
+  // 教科の記事（学び直し・家庭学習）は、記事の CTA（/start・/learn/tsumazuki）のまま。大学名があっても添削へは送らない
+  if (isKyoka(article)) return { heading: article.cta.heading, text: article.cta.text, button: article.cta.button, href: ctaHref(article) };
   const uni = universityOf(article);
   if (article.segment === "highschool" && isInterview(article)) {
     return {
