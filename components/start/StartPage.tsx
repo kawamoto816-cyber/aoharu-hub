@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useAuth } from "@clerk/nextjs";
 import { SmartSignUpButton } from "@/components/SmartSignUpButton";
 import { trackEvent } from "@/lib/analytics";
+import { FreeTable } from "@/components/start/FreeTable";
 import { StartLenses } from "./StartLenses";
 import { assignVariant, isVariant, sendStartEvent, setStartCounting, type StartVariant } from "@/lib/start/ab";
 
@@ -66,46 +67,6 @@ function MoshiPair({ v }: { v: StartVariant }) {
           </li>
         ))}
       </ul>
-    </section>
-  );
-}
-
-function FreeTable() {
-  const rows: [string, string, string][] = [
-    ["小中高の全単元の授業・図解・ドリル・模試", "◯ 何本でも", "◯"],
-    ["まちがえた問題から、前の学年の原因の単元へ戻る（さかのぼり）", "◯", "◯"],
-    ["公立高校入試模試・共通テスト模試", "1回", "月2回"],
-    ["志望理由書・小論文の添削", "—", "月2本（2本目からは点数と大事な指摘1つまで）"],
-    ["学びの記録（どこまで進んだか）", "この端末だけ", "◯"],
-  ];
-  return (
-    <section aria-labelledby="free-h" className="mt-8">
-      <h2 id="free-h" className="m-0 text-[19px] font-black">
-        無料でできること
-      </h2>
-      <div className="mt-3 overflow-hidden rounded-[14px] border-[1.5px] border-[#15172B] bg-white">
-        <table className="w-full border-collapse text-[13px]">
-          <thead>
-            <tr className="bg-[#F7F6F1] text-left">
-              <th scope="col" className="px-3 py-2 font-black"></th>
-              <th scope="col" className="whitespace-nowrap px-2 py-2 font-black">登録なし</th>
-              <th scope="col" className="whitespace-nowrap px-2 py-2 font-black">無料登録</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map(([a, b, c]) => (
-              <tr key={a} className="border-t border-[#15172B]/10 align-top">
-                <th scope="row" className="px-3 py-2 text-left font-bold">{a}</th>
-                <td className="px-2 py-2">{b}</td>
-                <td className="px-2 py-2">{c}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      <p className="m-0 mt-2 text-[12px] leading-relaxed text-[#5A5D73]">
-        有料のもの：添削の続き（1通300円）、Pro（月980円。模試・添削の回数の制限なし）。登録はメールアドレスだけで、勝手に有料になることはありません。
-      </p>
     </section>
   );
 }
