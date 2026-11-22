@@ -323,6 +323,49 @@ export async function markInstagramReelFailed(slug: string, error: string, previ
 }
 
 // ------------------------------------------------------------------
+// Facebook ページ (アオハルラーン) のリール投稿。つまずき図鑑だけを出す (受験書類の動画はページの内容と合わないため)。
+// 列: facebook_posted_at / facebook_video_id / facebook_error / facebook_attempts (docs/social-posts.sql)
+// ------------------------------------------------------------------
+export interface PendingFacebookReel {
+  slug: string;
+  title: string;
+  description: string | null;
+  video_url: string;
+  facebook_attempts: number;
+}
+
+/** まだ Facebook に投稿していない (かつ失敗が3回未満の) つまずき図鑑の動画を、作った順に取得する */
+export async function listPendingFacebookReels(limit = 1): Promise<PendingFacebookReel[]> {
+  const supabase = getSupabaseAdmin();
+  const { data, error } = await supabase
+    .from("shorts_videos")
+    .select("slug,title,description,video_url,facebook_attempts")
+    .is("facebook_posted_at", null)
+    .lt("facebook_attempts", 3)
+    .eq("source", TSUMAZUKI_SOURCE)
+    .order("rendered_at", { ascending: true })
+    .limit(limit);
+  if (error) throw new Error(`shorts_videos select (facebook pending): ${error.message}`);
+  return (data ?? []).map((r) => ({ ...r, facebook_attempts: r.facebook_attempts ?? 0 }));
+}
+
+export async function markFacebookPosted(slug: string, videoId: string): Promise<void> {
+  const { error } = await getSupabaseAdmin()
+    .from("shorts_videos")
+    .update({ facebook_posted_at: new Date().toISOString(), facebook_video_id: videoId, facebook_error: null })
+    .eq("slug", slug);
+  if (error) throw new Error(`shorts_videos update (facebook posted): ${error.message}`);
+}
+
+export async function markFacebookFailed(slug: string, message: string, previousAttempts: number): Promise<void> {
+  const { error } = await getSupabaseAdmin()
+    .from("shorts_videos")
+    .update({ facebook_error: message, facebook_attempts: previousAttempts + 1 })
+    .eq("slug", slug);
+  if (error) throw new Error(`shorts_videos update (facebook failed): ${error.message}`);
+}
+
+// ------------------------------------------------------------------
 // YouTube (Shorts) 投稿 (生成済み動画のうち、まだ投稿していないものを少しずつ処理する)
 // ------------------------------------------------------------------
 export interface PendingYoutubeUpload {

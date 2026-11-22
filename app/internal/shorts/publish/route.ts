@@ -11,12 +11,16 @@ import {
   markDuplicate,
   markInstagramReelFailed,
   markInstagramReelPosted,
+  listPendingFacebookReels,
+  markFacebookFailed,
+  markFacebookPosted,
   markYoutubeFailed,
   markYoutubeUploaded,
 } from "@/lib/social/shorts";
 import { clearAlert, raiseAlert, sendMail } from "@/lib/social/alert";
 import { isInstagramConfigured, publishReelContainer, reelContainerStatus, startReelContainer } from "@/lib/social/instagram";
 import { isYouTubePostingConfigured, uploadShortToYouTube } from "@/lib/social/youtube";
+import { isFacebookConfigured, postReelToFacebook } from "@/lib/social/facebook";
 
 // 生成済みショート動画の YouTube・Instagram リールへの投稿 (1回の実行でそれぞれ最大1本ずつ)。
 //   GET /internal/shorts/publish   (Bearer CRON_SECRET または token)
@@ -147,6 +151,24 @@ async function reelStep(deadlineAt: number): Promise<Result> {
   }
 }
 
+// Facebook ページ (アオハルラーン) のリール。つまずき図鑑だけを、作った順に1本ずつ (2026-11-23 追加)。
+// アップロードは Facebook 側が動画の URL を取りに来る方式なので、待ち時間は短い。
+async function facebookStep(): Promise<Result> {
+  if (!isFacebookConfigured()) return { slug: "-", status: "not_configured" };
+  if (await tooSoon("facebook_reel_last_at")) return { slug: "-", status: "spacing", error: "前の投稿から90分たっていません" };
+  const [v] = await listPendingFacebookReels(1);
+  if (!v) return { slug: "-", status: "nothing_pending" };
+  try {
+    const r = await postReelToFacebook({ videoUrl: v.video_url, description: `${v.title}\n\n${v.description ?? ""}`.trim() });
+    await markFacebookPosted(v.slug, r.id);
+    await setSetting("facebook_reel_last_at", new Date().toISOString()).catch(() => undefined);
+    return { slug: v.slug, status: "posted", external_id: r.id };
+  } catch (e) {
+    const message = e instanceof Error ? e.message : String(e);
+    await markFacebookFailed(v.slug, message, v.facebook_attempts).catch(() => undefined);
+    return { slug: v.slug, status: "failed", error: message };
+  }
+}
 
 // TikTok は Content Sharing Guidelines により、投稿ごとに人が公開範囲などを選ぶ必要があり、全自動投稿はできない。
 // そのかわり、未投稿の動画があれば1日1回 (9時台以降・21時台まで) 投稿画面へのリンクをメールで知らせ、
@@ -193,9 +215,10 @@ export async function GET(req: Request) {
   const youtube = await youtubeStep().catch((e: Error) => ({ slug: "(error)", status: "failed", error: e.message }));
   // リールは残り時間の範囲で (関数の上限 300 秒から余裕を引く。10/13 に YouTube のアップロードが長引き 120 秒で打ち切られたため延長)
   const reel = await reelStep(startedAt + 240_000).catch((e: Error) => ({ slug: "(error)", status: "failed", error: e.message }));
+  const facebook = await facebookStep().catch((e: Error) => ({ slug: "(error)", status: "failed", error: e.message }));
 
-  for (const [name, r] of [["YouTube", youtube], ["Instagram リール", reel]] as const) {
-    const key = name === "YouTube" ? "shorts_youtube_failed" : "shorts_reel_failed";
+  for (const [name, r] of [["YouTube", youtube], ["Instagram リール", reel], ["Facebook リール", facebook]] as const) {
+    const key = name === "YouTube" ? "shorts_youtube_failed" : name === "Facebook リール" ? "shorts_facebook_failed" : "shorts_reel_failed";
     if (r.status === "failed") {
       await raiseAlert(
         key,
@@ -210,6 +233,6 @@ export async function GET(req: Request) {
 
   const tiktok = await tiktokReminder(now).catch((e: Error) => `通知失敗: ${e.message}`);
 
-  const ok = youtube.status !== "failed" && reel.status !== "failed";
-  return NextResponse.json({ ok, jst: now, youtube, reel, tiktok }, { headers: { "Cache-Control": "no-store" } });
+  const ok = youtube.status !== "failed" && reel.status !== "failed" && facebook.status !== "failed";
+  return NextResponse.json({ ok, jst: now, youtube, reel, facebook, tiktok }, { headers: { "Cache-Control": "no-store" } });
 }

@@ -79,3 +79,10 @@ alter table public.shorts_videos add column if not exists tiktok_publish_id text
 alter table public.shorts_videos add column if not exists tiktok_error text;
 alter table public.shorts_videos add column if not exists tiktok_attempts integer not null default 0;
 create index if not exists shorts_videos_tiktok_pending_idx on public.shorts_videos (rendered_at) where tiktok_posted_at is null;
+
+-- Facebook ページ (アオハルラーン) のリール自動投稿の進捗 (2026-11-23。つまずき図鑑だけを出す)
+alter table public.shorts_videos add column if not exists facebook_posted_at timestamptz;
+alter table public.shorts_videos add column if not exists facebook_video_id text;
+alter table public.shorts_videos add column if not exists facebook_error text;
+alter table public.shorts_videos add column if not exists facebook_attempts integer not null default 0;
+create index if not exists shorts_videos_facebook_pending_idx on public.shorts_videos (rendered_at) where facebook_posted_at is null;
