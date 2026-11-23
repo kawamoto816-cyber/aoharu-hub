@@ -8,6 +8,7 @@ import { getStripe, handleStripeWebhookEvent } from "@bluespring/aoharu-entitlem
 import { ensureTeamPassForSession, TEAM_METADATA_KIND } from "@/lib/team-pass/store";
 import { grantTicketForSession, TICKET } from "@/lib/tensaku/ticket";
 import { recordReferralSale } from "@/lib/referral/store";
+import { COURSE_PASS_KIND, grantCoursePassForSession } from "@/lib/station/course-pass";
 
 export async function POST(req: Request) {
   const signature = req.headers.get("stripe-signature");
@@ -43,6 +44,11 @@ export async function POST(req: Request) {
     // 1通分の添削（300円）：その人の添削の回数を2つ足す
     if (event.type === "checkout.session.completed" && event.data.object.metadata?.kind === TICKET.metadataKind) {
       await grantTicketForSession(event.data.object.id);
+      return NextResponse.json({ received: true });
+    }
+    // 直前コース（共通テスト・公立高校入試）：そのコースの利用権を期限つきで付ける
+    if (event.type === "checkout.session.completed" && event.data.object.metadata?.kind === COURSE_PASS_KIND) {
+      await grantCoursePassForSession(event.data.object.id);
       return NextResponse.json({ received: true });
     }
     // 紹介コードつきのパス：先生へのお礼の計算のために記録する（パスを付けるのは下の共通の処理）

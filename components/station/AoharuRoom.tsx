@@ -708,11 +708,10 @@ function FromCourse({ onPick }: { onPick: (s: string) => void }) {
   if (!v || v.date !== ymd(new Date()) || !v.items.length) {
     return (
       <p className="m-0 mt-2 text-[12px] text-[#5A5D73]">
-        国公立の2次を受ける人は、
-        <Link href="/station/course" className="font-bold text-[#1533B8]">
-          直前5週間コース
+        <Link href="/station/course/kyotsu" className="font-bold text-[#1533B8]">
+          直前コース
         </Link>
-        で計画を作ると、今日のやることをここから選べます。
+        （共通テスト・公立高校入試・国公立2次）で計画を作ると、今日のやることをここから選べます。
       </p>
     );
   }
@@ -720,7 +719,7 @@ function FromCourse({ onPick }: { onPick: (s: string) => void }) {
     <div className="mt-2 rounded-[10px] bg-[#F3F5FF] p-2.5">
       <p className="m-0 text-[12px] font-black text-[#1533B8]">
         直前コース（{v.univ}）{v.week}週目{v.day}日目の、今日のやること
-        <Link href="/station/course" className="ml-2 font-bold">
+        <Link href={v.href && v.href.startsWith("/station/course") ? v.href : "/station/course"} className="ml-2 font-bold">
           コースを見る →
         </Link>
       </p>

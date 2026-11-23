@@ -5,12 +5,13 @@ import { useEffect, useMemo, useSyncExternalStore } from "react";
 import { EXAM_RESULTS_KEY, type ExamAttempt } from "@/lib/exam/results";
 import { CoursePaid } from "./CoursePaid";
 import { DayHead } from "./DayHead";
-import { courseDay, fromYmd, TODAY_KEY, ymd, type TodayList, daysToZenki, firstWeek, laterWeeks, HISTORY, latestBySpec, strategy, subjectsFor, type CourseUniv, type Line, type UnitInfo } from "@/lib/station/course";
+import { courseDay, daysUntil, fromYmd, TODAY_KEY, weeksBetween, ymd, type TodayList, daysToZenki, firstWeek, laterWeeks, HISTORY, latestBySpec, strategy, subjectsFor, type CourseSubject, type CourseUniv, type Line, type UnitInfo } from "@/lib/station/course";
+import { KYOTSU_EXAM_DAY, type CourseDef } from "@/lib/station/course-kinds";
 
-// 直前5週間コース（試作）の画面。① 志望校 ② 診断 ③ 作戦表 ④ 最初の週の計画 ⑤ 2〜5週目（有料の伴走。試作は切りかえボタンで見られる。components/station/CoursePaid.tsx）。
-// えらんだ志望校・目標・チェックは、このブラウザにだけ残す。診断の結果は大学別模試の記録（この端末）から読む。
+// 直前コースの画面（国公立2次＝試作／共通テスト・公立高校入試＝販売中。種類は lib/station/course-kinds.ts）。
+// ① 志望校（2次）または受ける科目・試験日（共通テスト・高校入試） ② 診断 ③ 作戦表 ④ 最初の週の計画 ⑤ 2週目から（有料の伴走。components/station/CoursePaid.tsx）。
+// えらんだもの・目標・チェックは、このブラウザにだけ残す。診断の結果は模試の記録（この端末）から読む。
 
-const KEY = "aoharu-course-v1";
 export interface CourseState {
   univ: string;
   line: Line;
@@ -19,6 +20,9 @@ export interface CourseState {
   checked: string[];
   /** コースを始めた日（YYYY-MM-DD） */
   start?: string;
+  /** 共通テスト・高校入試：受ける科目（省略＝高校入試は5教科ぜんぶ・共通テストは未選択）と、試験日（YYYY-MM-DD） */
+  picked?: string[];
+  exam?: string;
   /** 試作：有料（伴走）の画面を見る */
   paid?: boolean;
   /** 週ごとのふり返り */
@@ -51,9 +55,9 @@ const raw = (k: string) => {
     return "";
   }
 };
-function save(s: CourseState) {
+function save(key: string, s: CourseState) {
   try {
-    window.localStorage.setItem(KEY, JSON.stringify(s));
+    window.localStorage.setItem(key, JSON.stringify(s));
   } catch {
     /* 保存できなくても続ける */
   }
@@ -76,49 +80,114 @@ const step = (n: number, title: string, sub?: string) => (
   </div>
 );
 
-export function Course({ univs, units, serverToday }: { univs: CourseUniv[]; units: Record<string, UnitInfo>; serverToday: string }) {
+export function Course({ def, univs = [], pool = [], units, serverToday }: { def: CourseDef; univs?: CourseUniv[]; /** 共通テスト・高校入試：えらべる科目 */ pool?: CourseSubject[]; units: Record<string, UnitInfo>; serverToday: string }) {
+  const KEY = def.storeKey;
+  const niji = def.kind === "niji";
   const sRaw = useSyncExternalStore(subscribe, () => raw(KEY), () => "");
   const rRaw = useSyncExternalStore(subscribe, () => raw(EXAM_RESULTS_KEY), () => "");
   const s = useMemo(() => ({ ...INITIAL, ...parse<Partial<CourseState>>(sRaw, {}) }), [sRaw]);
   const results = useMemo(() => parse<ExamAttempt[]>(rRaw, []).filter((a) => a && typeof a.spec === "string" && Array.isArray(a.parts)), [rRaw]);
-  const set = (p: Partial<CourseState>) => save({ ...s, ...p });
+  const set = (p: Partial<CourseState>) => save(KEY, { ...s, ...p });
 
   const u = univs.find((x) => x.univ === s.univ);
   const all = u ? subjectsFor(u, s.line) : [];
   const hasBoth = HISTORY.every((h) => all.some((x) => x.kamoku === h));
-  const subjects = hasBoth ? all.filter((x) => !HISTORY.includes(x.kamoku) || x.kamoku === s.history) : all;
-  const latest = latestBySpec(results, subjects.map((x) => x.key));
+  // 共通テスト・高校入試は、えらんだ科目（高校入試は最初から5教科ぜんぶ）
+  const picked = s.picked ?? (def.kind === "koko" ? pool.map((x) => x.key) : []);
+  const subjects = niji ? (hasBoth ? all.filter((x) => !HISTORY.includes(x.kamoku) || x.kamoku === s.history) : all) : pool.filter((x) => picked.includes(x.key));
+  const ready = niji ? !!u : subjects.length > 0;
+  const latest = latestBySpec(results, subjects.map((x) => x.key), def.specPrefix);
   const rows = strategy(subjects, latest, s.rate);
   const diagnosed = rows.filter((r) => r.attempt);
-  const plan = firstWeek(rows, units);
+  const plan = firstWeek(rows, units, def.moshi);
+  // 試験日（共通テストは 2027年1月16日が最初から入っている。高校入試は都道府県でちがうので自分で入れる）と、コース全体の週数
+  const examDay = niji ? undefined : s.exam ?? (def.kind === "kyotsu" ? KYOTSU_EXAM_DAY : undefined);
+  const weeks = niji ? 5 : weeksBetween(s.start, examDay);
   // 今日の日付（YYYY-MM-DD）。サーバーが描くときは日本時間の今日（serverToday）を使い、ブラウザで動き出したらその端末の今日に置きかえる。
   // 以前はサーバー側を空にしていたので、配られる HTML では「今日から — 日」になり、ブラウザで動き出すまで日数が出なかった。
   const today = useSyncExternalStore(subscribe, () => ymd(new Date()), () => serverToday);
   const zenki = daysToZenki(fromYmd(today));
-  const cur = courseDay(s.start, fromYmd(today));
-  const plans = laterWeeks(rows, units);
+  const cur = courseDay(s.start, fromYmd(today), weeks);
+  const plans = laterWeeks(rows, units, { weeks, moshi: def.moshi, mark: def.mark });
+  const left = examDay ? daysUntil(examDay, fromYmd(today)) : null;
   const todayTasks = cur ? (cur.week === 1 ? plan : plans.find((p) => p.week === cur.week)?.days ?? []).find((d) => d.no === cur.day)?.tasks ?? [] : [];
   const todayText = todayTasks.map((x) => x.text).join("\n");
   const todayIds = todayTasks.map((x) => x.id).join("\n");
 
   // アオハルームの「今日のやること」の候補として、このブラウザに置く
   useEffect(() => {
-    if (!cur || !u) return;
-    const v: TodayList = { date: ymd(new Date()), univ: u.univ, week: cur.week, day: cur.day, items: todayText ? todayText.split("\n") : [], ids: todayIds ? todayIds.split("\n") : [] };
+    if (!cur || !ready) return;
+    const v: TodayList = { date: ymd(new Date()), univ: u?.univ ?? def.short, week: cur.week, day: cur.day, items: todayText ? todayText.split("\n") : [], ids: todayIds ? todayIds.split("\n") : [], key: KEY, href: def.href };
     try {
       window.localStorage.setItem(TODAY_KEY, JSON.stringify(v));
     } catch {
       /* 保存できなくても続ける */
     }
-  }, [cur?.week, cur?.day, u?.univ, todayText, todayIds]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [cur?.week, cur?.day, u?.univ, ready, todayText, todayIds]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const toggleSubject = (k: string) => set({ picked: picked.includes(k) ? picked.filter((x) => x !== k) : [...picked, k] });
+  const cats = [...new Set(pool.map((x) => x.category ?? ""))];
 
   return (
     <div className="flex min-w-0 flex-col gap-4">
-      <p className="m-0 rounded-[12px] bg-[#E6EAFB] px-4 py-2 text-[13.5px] font-bold">
-        国公立の前期日程は例年2月25日から。今日から<b className="text-[18px]"> {zenki.days} </b>日です（大学ごとの日程は募集要項で確かめてください）。
-      </p>
+      {niji ? (
+        <p className="m-0 rounded-[12px] bg-[#E6EAFB] px-4 py-2 text-[13.5px] font-bold">
+          国公立の前期日程は例年2月25日から。今日から<b className="text-[18px]"> {zenki.days} </b>日です（大学ごとの日程は募集要項で確かめてください）。
+        </p>
+      ) : (
+        <p className="m-0 rounded-[12px] bg-[#E6EAFB] px-4 py-2 text-[13.5px] font-bold">
+          {left === null ? (
+            "下の①で試験日を入れると、今日から何日かと、試験日までの週数に合わせた計画が出ます。"
+          ) : left >= 0 ? (
+            <>
+              {def.exam}（{fromYmd(examDay!).getMonth() + 1}月{fromYmd(examDay!).getDate()}日）まで、今日から<b className="text-[18px]"> {left} </b>日です。
+            </>
+          ) : (
+            `${def.exam}の試験日（${fromYmd(examDay!).getMonth() + 1}月${fromYmd(examDay!).getDate()}日）は過ぎています。①で試験日を直せます。`
+          )}
+        </p>
+      )}
 
-      {/* ① 志望校 */}
+      {/* ① 受ける科目と試験日（共通テスト・高校入試） */}
+      {!niji && (
+        <section aria-label="受ける科目と試験日" className={card}>
+          {step(1, def.kind === "koko" ? "試験日と、受ける教科" : "受ける科目と、試験日", `${subjects.length}科目 えらんだ`)}
+          <label className="mt-3 flex flex-wrap items-center gap-2 text-[13px] font-bold">
+            試験日
+            <input type="date" value={examDay ?? ""} onChange={(e) => set({ exam: e.target.value || undefined })} className="rounded-[8px] border-[1.5px] border-[#15172B] bg-white px-2 py-1 text-[13px]" />
+            <span className="text-[12px] font-bold text-[#5A5D73]">
+              {def.kind === "koko" ? "都道府県でちがいます。学校の先生か、教育委員会の発表で確かめて入れてください。" : "令和9年度は2027年1月16日・17日（受験案内で確かめてください）。"}
+            </span>
+          </label>
+          {cats.map((c) => (
+            <div key={c} className="mt-3">
+              {c && <p className="m-0 text-[12px] font-black text-[#1533B8]">{c}</p>}
+              <ul className="m-0 mt-1 flex list-none flex-wrap gap-1.5 p-0">
+                {pool
+                  .filter((x) => (x.category ?? "") === c)
+                  .map((x) => {
+                    const on = picked.includes(x.key);
+                    return (
+                      <li key={x.key}>
+                        <button type="button" aria-pressed={on} onClick={() => toggleSubject(x.key)} className={`rounded-[10px] border-[1.5px] border-[#15172B] px-3 py-1.5 text-[13.5px] font-black ${on ? "bg-[#FFE45C]" : "bg-white"}`}>
+                          {on ? "✓ " : ""}
+                          {x.kamoku}
+                          <span className="ml-1 text-[11px] font-bold text-[#5A5D73]">
+                            {x.minutes}分・{x.total}点
+                          </span>
+                        </button>
+                      </li>
+                    );
+                  })}
+              </ul>
+            </div>
+          ))}
+          {subjects.length === 0 && <p className="m-0 mt-3 rounded-[10px] bg-[#FFF8D6] px-3 py-2 text-[13.5px] font-bold">受ける科目を1つ以上えらぶと、診断に進めます。</p>}
+        </section>
+      )}
+
+      {/* ① 志望校（国公立2次） */}
+      {niji && (
       <section aria-label="志望校をえらぶ" className={card}>
         {step(1, "志望校をえらぶ", "いま試作で選べるのは、大学別模試がある国公立大学です")}
         <div role="radiogroup" aria-label="系統" className="mt-3 flex gap-2">
@@ -158,13 +227,21 @@ export function Course({ univs, units, serverToday }: { univs: CourseUniv[]; uni
           </div>
         )}
       </section>
+      )}
 
-      {u && (
+      {ready && (
         <>
           {/* ② 診断 */}
           <section aria-label="診断" className={card}>
-            {step(2, "診断：大学別模試を1回ずつ", `${diagnosed.length}/${subjects.length}科目 できた`)}
-            <p className="m-0 mt-1 text-[13px] leading-relaxed text-[#3A3D55]">{u.univ}型の2次試験の形式に寄せたオリジナル問題で、いまの点を測ります。本番の時間で解いて、終わったらこのページに戻ってください（結果は自動で読みこみます）。</p>
+            {step(2, `診断：${def.moshi}を1回ずつ`, `${diagnosed.length}/${subjects.length}科目 できた`)}
+            <p className="m-0 mt-1 text-[13px] leading-relaxed text-[#3A3D55]">
+              {niji
+                ? `${u?.univ}型の2次試験の形式に寄せたオリジナル問題で、いまの点を測ります。`
+                : def.kind === "kyotsu"
+                  ? "マーク式の共通テスト型のオリジナル問題で、いまの点を測ります（公式の問題・形式ではありません）。"
+                  : "一般的な公立高校入試の傾向に寄せたオリジナル問題で、いまの点を測ります（都道府県ごとの実際の形式・難しさとはちがいます）。"}
+              本番の時間で解いて、終わったらこのページに戻ってください（結果は自動で読みこみます）。模試は無料で、何回でも解けます。
+            </p>
             <ul className="m-0 mt-3 grid list-none gap-2 p-0 sm:grid-cols-2">
               {rows.map((r) => (
                 <li key={r.subject.key} className="flex items-center gap-2 rounded-[10px] bg-[#F7F6F1] px-3 py-2">
@@ -193,11 +270,15 @@ export function Course({ univs, units, serverToday }: { univs: CourseUniv[]; uni
             {step(3, "作戦表：目標まであと何点")}
             <label className="mt-2 flex flex-wrap items-center gap-2 text-[13px] font-bold">
               目標の得点率
-              <input type="range" min={0.4} max={0.85} step={0.05} value={s.rate} onChange={(e) => set({ rate: Number(e.target.value) })} className="w-[160px]" />
+              <input type="range" min={0.4} max={0.9} step={0.05} value={s.rate} onChange={(e) => set({ rate: Number(e.target.value) })} className="w-[160px]" />
               <span className="text-[16px] font-black tabular-nums">{Math.round(s.rate * 100)}%</span>
             </label>
             <p className="m-0 mt-1 text-[12px] leading-relaxed text-[#5A5D73]">
-              既定の60%は仮の目安です。大学が公表している合格最低点や配点を見て、自分で決めてください。点は大学別模試の満点で見た目安で、実際の試験の配点とは同じではありません。
+              {niji
+                ? "既定の60%は仮の目安です。大学が公表している合格最低点や配点を見て、自分で決めてください。点は大学別模試の満点で見た目安で、実際の試験の配点とは同じではありません。"
+                : def.kind === "kyotsu"
+                  ? "既定の60%は仮の目安です。志望校が公表している共通テストの得点率の目安を見て、自分で決めてください。点は共通テスト模試（オリジナル問題）での目安で、本番の点数を予想するものではありません。"
+                  : "既定の60%は仮の目安です。志望校の目安は、学校の先生に確かめて自分で決めてください。点は公立高校入試模試（オリジナル問題）での目安で、本番の点数を予想するものではありません。"}
             </p>
             {diagnosed.length === 0 ? (
               <p className="m-0 mt-3 rounded-[10px] bg-[#FFF8D6] px-3 py-2 text-[13.5px] font-bold">②の診断を1科目でも終えると、ここに作戦表が出ます。</p>
@@ -256,7 +337,7 @@ export function Course({ univs, units, serverToday }: { univs: CourseUniv[]; uni
           {/* ④ 最初の週 */}
           <section aria-label="最初の週の計画" className={card}>
             {step(4, "最初の週の計画", "ここまで無料")}
-            {plan.length > 0 && <StartDay s={s} set={set} cur={cur} today={today} />}
+            {plan.length > 0 && <StartDay s={s} set={set} cur={cur} today={today} niji={niji} weeks={weeks} examDay={examDay} />}
             {plan.length === 0 ? (
               <p className="m-0 mt-2 text-[13.5px] text-[#5A5D73]">診断の結果から、7日分のやることを並べます。</p>
             ) : (
@@ -304,7 +385,7 @@ export function Course({ univs, units, serverToday }: { univs: CourseUniv[]; uni
           </section>
 
           {/* ⑤ 2週目から：有料の伴走（試作は切りかえボタン） */}
-          <CoursePaid s={s} set={set} rows={rows} units={units} results={results} subjects={subjects} cur={cur} week1Total={plan.reduce((a, d) => a + d.tasks.length, 0)} />
+          <CoursePaid def={def} weeks={weeks} s={s} set={set} rows={rows} units={units} results={results} subjects={subjects} cur={cur} week1Total={plan.reduce((a, d) => a + d.tasks.length, 0)} />
         </>
       )}
     </div>
@@ -312,7 +393,7 @@ export function Course({ univs, units, serverToday }: { univs: CourseUniv[]; uni
 }
 
 /** コースを始める日と、いまは何週目か */
-function StartDay({ s, set, cur, today }: { s: CourseState; set: (p: Partial<CourseState>) => void; cur: { week: number; day: number } | null; today: string }) {
+function StartDay({ s, set, cur, today, niji, weeks, examDay }: { s: CourseState; set: (p: Partial<CourseState>) => void; cur: { week: number; day: number } | null; today: string; niji: boolean; weeks: number; examDay?: string }) {
   return (
     <div className="mt-2 flex flex-wrap items-center gap-2 rounded-[10px] bg-[#F7F6F1] px-3 py-2 text-[13px]">
       <label className="flex items-center gap-1.5 font-bold">
@@ -327,12 +408,13 @@ function StartDay({ s, set, cur, today }: { s: CourseState; set: (p: Partial<Cou
       {cur ? (
         <span className="font-black text-[#1533B8]">
           いまは{cur.week}週目の{cur.day}日目
+          {niji ? "" : `（全${weeks}週）`}
           {cur.week > 1 ? "（2週目からの計画は、下の伴走にあります）" : ""}
         </span>
       ) : s.start ? (
         <span className="text-[#5A5D73]">始める日になると、その日のやることに印がつきます</span>
       ) : (
-        <span className="text-[#5A5D73]">共通テストのあと（1月中旬〜）に始めると、前期日程にちょうど5週間です</span>
+        <span className="text-[#5A5D73]">{niji ? "共通テストのあと（1月中旬〜）に始めると、前期日程にちょうど5週間です" : examDay ? "始める日を決めると、試験日までの週数（2〜8週）に合わせて計画を並べます" : "上の①で試験日も入れてください"}</span>
       )}
     </div>
   );

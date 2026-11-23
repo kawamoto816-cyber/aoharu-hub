@@ -6,15 +6,18 @@ import type { ExamAttempt } from "@/lib/exam/results";
 import { laterWeeks, trends, type CourseSubject, type Row, type UnitInfo } from "@/lib/station/course";
 import type { CourseState, Review } from "./Course";
 import { DayHead } from "./DayHead";
+import { CourseOffer, useCourseAccess } from "./CourseOffer";
+import type { CourseDef } from "@/lib/station/course-kinds";
 
-// 直前5週間コースの有料部分（試作）：2〜5週目の計画・週のふり返り・進み具合・保護者への報告（見本）。
-// 無料と有料の境目を画面ではっきり見せる。試作では切りかえボタンで有料の画面を見られる（お金はかからない）。
-// 値段・申し込み・決済はまだない（決めるのは運営）。
+// 直前コースの有料部分：2週目からの計画・週のふり返り・進み具合・保護者に見せる報告。無料と有料の境目を画面ではっきり見せる。
+//   共通テスト・公立高校入試 … 販売中（4,980円・1回払い）。使えるかはサーバーで確かめる（CourseOffer.tsx）。Max・受験シーズンパスの人はそのまま使える
+//   国公立2次 … 試作のまま。切りかえボタンで有料の画面を見られる（お金はかからない。値段・決済はまだない）
 
 const card = "rounded-[14px] border-[2px] border-[#15172B] bg-white p-4";
-const WEEKS = [2, 3, 4, 5];
 
 export function CoursePaid({
+  def,
+  weeks,
   s,
   set,
   rows,
@@ -24,6 +27,9 @@ export function CoursePaid({
   week1Total,
   cur,
 }: {
+  def: CourseDef;
+  /** コース全体の週数（1週目をふくむ） */
+  weeks: number;
   s: CourseState;
   set: (p: Partial<CourseState>) => void;
   rows: Row[];
@@ -33,7 +39,10 @@ export function CoursePaid({
   results: ExamAttempt[];
   subjects: CourseSubject[];
 }) {
-  const plans = laterWeeks(rows, units);
+  const plans = laterWeeks(rows, units, { weeks, moshi: def.moshi, mark: def.mark });
+  const acc = useCourseAccess(def);
+  // 販売中のコースは、サーバーで確かめた利用権。試作（国公立2次）は切りかえボタン
+  const open = def.sale ? acc.access : !!s.paid;
   return (
     <>
       <div role="separator" aria-label="ここから有料" className="flex items-center gap-2 py-1">
@@ -44,31 +53,46 @@ export function CoursePaid({
       <section aria-label="2週目から" className="rounded-[14px] border-[2px] border-[#1533B8] bg-[#F3F5FF] p-4">
         <div className="flex flex-wrap items-baseline gap-2">
           <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-[#1533B8] text-[14px] font-black text-white">5</span>
-          <h2 className="m-0 text-[18px] font-black">2週目〜5週目：伴走</h2>
-          <span className="text-[12px] font-bold text-[#1533B8]">有料（値段は未定）</span>
-          <button
-            type="button"
-            aria-pressed={!!s.paid}
-            onClick={() => set({ paid: !s.paid })}
-            className="ml-auto rounded-[10px] border-[1.5px] border-[#15172B] bg-[#FFE45C] px-3 py-1.5 text-[12.5px] font-black"
-          >
-            {s.paid ? "試作：無料の見え方にもどす" : "試作：有料の画面を見る（お金はかかりません）"}
-          </button>
+          <h2 className="m-0 text-[18px] font-black">2週目〜{weeks > 2 ? `${weeks}週目` : "試験日"}：伴走</h2>
+          {def.sale ? (
+            <span className="text-[12px] font-bold text-[#1533B8]">{acc.loading ? "確かめています…" : open ? (acc.via === "max" ? "ご利用中（Max・受験シーズンパス）" : `ご利用中（${def.sale.endsLabel}まで）`) : "有料"}</span>
+          ) : (
+            <>
+              <span className="text-[12px] font-bold text-[#1533B8]">有料（値段は未定）</span>
+              <button type="button" aria-pressed={!!s.paid} onClick={() => set({ paid: !s.paid })} className="ml-auto rounded-[10px] border-[1.5px] border-[#15172B] bg-[#FFE45C] px-3 py-1.5 text-[12.5px] font-black">
+                {s.paid ? "試作：無料の見え方にもどす" : "試作：有料の画面を見る（お金はかかりません）"}
+              </button>
+            </>
+          )}
         </div>
+        {acc.justPaid && (
+          <p role="status" className="m-0 mt-2 rounded-[10px] bg-[#E3F5E9] px-3 py-2 text-[13.5px] font-black text-[#11643A]">
+            お申し込みありがとうございます。2週目からの伴走が使えるようになりました。
+          </p>
+        )}
         <ul className="m-0 mt-2 grid gap-0.5 pl-5 text-[13px] leading-relaxed">
-          <li>毎週、最新の診断から作戦表と計画を作り直す（大学別模試の大問演習を週ごとに並べる）</li>
+          <li>毎週、最新の診断から作戦表と計画を作り直す（{def.moshi}の大問演習・通し演習を、試験日までの週に並べる）</li>
           <li>まちがえたら、さかのぼりで根っこの単元へ戻ってから、また大問へ</li>
           <li>週のふり返りと、科目ごとの点の動き・やったことの割合（進み具合の管理）</li>
-          <li>保護者へ、週に1回「目標まであと何点」と続けた様子を報告</li>
+          <li>{def.sale ? "保護者に見せる週の報告（「目標まであと何点」と続けた様子を、ボタン1つで文面に）" : "保護者へ、週に1回「目標まであと何点」と続けた様子を報告"}</li>
         </ul>
-        {!s.paid ? <Locked plans={plans} /> : plans.length === 0 ? <p className="m-0 mt-3 text-[13.5px] font-bold">②の診断を1科目でも終えると、2週目からの計画が出ます。</p> : <Paid s={s} set={set} rows={rows} plans={plans} results={results} subjects={subjects} week1Total={week1Total} cur={cur} />}
+        {!open ? (
+          <>
+            <Locked plans={plans} weeks={weeks} />
+            {def.sale && !acc.loading && <CourseOffer def={def} signedIn={acc.signedIn} />}
+          </>
+        ) : plans.length === 0 ? (
+          <p className="m-0 mt-3 text-[13.5px] font-bold">②の診断を1科目でも終えると、2週目からの計画が出ます。</p>
+        ) : (
+          <Paid def={def} s={s} set={set} rows={rows} plans={plans} results={results} subjects={subjects} week1Total={week1Total} cur={cur} />
+        )}
       </section>
     </>
   );
 }
 
-function Locked({ plans }: { plans: ReturnType<typeof laterWeeks> }) {
-  const themes = plans.length ? plans : WEEKS.map((w) => ({ week: w, theme: "診断のあとに作ります", lead: "", days: [] }));
+function Locked({ plans, weeks }: { plans: ReturnType<typeof laterWeeks>; weeks: number }) {
+  const themes = plans.length ? plans : Array.from({ length: weeks - 1 }, (_, i) => ({ week: i + 2, theme: "診断のあとに作ります", lead: "", days: [] }));
   return (
     <div className="mt-3 grid gap-2 sm:grid-cols-2">
       {themes.map((p) => (
@@ -86,6 +110,7 @@ function Locked({ plans }: { plans: ReturnType<typeof laterWeeks> }) {
 }
 
 function Paid({
+  def,
   s,
   set,
   rows,
@@ -95,6 +120,7 @@ function Paid({
   week1Total,
   cur,
 }: {
+  def: CourseDef;
   s: CourseState;
   set: (p: Partial<CourseState>) => void;
   rows: Row[];
@@ -104,10 +130,13 @@ function Paid({
   results: ExamAttempt[];
   subjects: CourseSubject[];
 }) {
-  const [week, setWeek] = useState(cur && cur.week >= 2 ? cur.week : 2);
+  const WEEKS = plans.map((p) => p.week);
+  const [picked, setWeek] = useState(cur && cur.week >= 2 ? cur.week : 2);
+  // 試験日を変えて週数が減ったときは、最後の週を出す
+  const week = WEEKS.includes(picked) ? picked : WEEKS[WEEKS.length - 1];
   const plan = plans.find((p) => p.week === week)!;
   const ids = (w: number) => (w === 1 ? s.checked.filter((x) => /^d\d-/.test(x)) : s.checked.filter((x) => x.startsWith(`w${w}d`)));
-  const totals = (w: number) => (w === 1 ? week1Total : plans.find((p) => p.week === w)!.days.reduce((a, d) => a + d.tasks.length, 0));
+  const totals = (w: number) => (w === 1 ? week1Total : (plans.find((p) => p.week === w)?.days ?? []).reduce((a, d) => a + d.tasks.length, 0));
   const toggle = (id: string) => set({ checked: s.checked.includes(id) ? s.checked.filter((x) => x !== id) : [...s.checked, id] });
   return (
     <div className="mt-3 grid gap-3">
@@ -149,12 +178,12 @@ function Paid({
             </li>
           ))}
         </ol>
-        <p className="m-0 mt-2 text-[11.5px] text-[#5A5D73]">計画は、その時点の最新の診断から作り直しています。大学別模試を解きなおすと、作戦表と一緒に並びも変わります。</p>
+        <p className="m-0 mt-2 text-[11.5px] text-[#5A5D73]">計画は、その時点の最新の診断から作り直しています。{def.moshi}を解きなおすと、作戦表と一緒に並びも変わります。</p>
       </div>
 
       <ReviewForm key={week} week={week} s={s} set={set} rows={rows} done={ids(week).length} total={totals(week)} />
-      <Progress s={s} results={results} subjects={subjects} ids={ids} totals={totals} />
-      <ParentWeek week={week} s={s} rows={rows} results={results} subjects={subjects} done={ids(week).length} total={totals(week)} />
+      <Progress def={def} weeks={WEEKS} s={s} results={results} subjects={subjects} ids={ids} totals={totals} />
+      <ParentWeek def={def} week={week} s={s} rows={rows} results={results} subjects={subjects} done={ids(week).length} total={totals(week)} />
     </div>
   );
 }
@@ -211,14 +240,14 @@ function ReviewForm({ week, s, set, rows, done, total }: { week: number; s: Cour
   );
 }
 
-function Progress({ s, results, subjects, ids, totals }: { s: CourseState; results: ExamAttempt[]; subjects: CourseSubject[]; ids: (w: number) => string[]; totals: (w: number) => number }) {
-  const ts = trends(results, subjects).filter((t) => t.points.length);
+function Progress({ def, weeks: WEEKS, s, results, subjects, ids, totals }: { def: CourseDef; weeks: number[]; s: CourseState; results: ExamAttempt[]; subjects: CourseSubject[]; ids: (w: number) => string[]; totals: (w: number) => number }) {
+  const ts = trends(results, subjects, def.specPrefix).filter((t) => t.points.length);
   return (
     <div className={card}>
       <h3 className="m-0 text-[16px] font-black">進み具合</h3>
       <div className="mt-2 grid gap-4 sm:grid-cols-2">
         <div>
-          <p className="m-0 text-[12.5px] font-black">科目ごとの得点率（大学別模試）<span className="ml-1 font-bold text-[#B42318]">赤の破線＝目標</span></p>
+          <p className="m-0 text-[12.5px] font-black">科目ごとの得点率（{def.moshi}）<span className="ml-1 font-bold text-[#B42318]">赤の破線＝目標</span></p>
           {ts.length === 0 && <p className="m-0 mt-1 text-[12.5px] text-[#5A5D73]">診断がまだありません。</p>}
           <ul className="m-0 mt-1 grid list-none gap-2 p-0">
             {ts.map((t) => {
@@ -277,15 +306,36 @@ function Spark({ points, target }: { points: number[]; target: number }) {
   );
 }
 
-function ParentWeek({ week, s, rows, results, subjects, done, total }: { week: number; s: CourseState; rows: Row[]; results: ExamAttempt[]; subjects: CourseSubject[]; done: number; total: number }) {
+function ParentWeek({ def, week, s, rows, results, subjects, done, total }: { def: CourseDef; week: number; s: CourseState; rows: Row[]; results: ExamAttempt[]; subjects: CourseSubject[]; done: number; total: number }) {
   const diag = rows.filter((r) => r.attempt);
   const gap = diag.reduce((a, r) => a + r.gap, 0);
-  const ts = trends(results, subjects).filter((t) => t.points.length > 1);
+  const ts = trends(results, subjects, def.specPrefix).filter((t) => t.points.length > 1);
   const rv = s.reviews?.[week];
+  const [copied, setCopied] = useState(false);
+  const moves = ts.length ? ts.map((t) => `${t.kamoku} ${t.points[0].pct}→${t.points[t.points.length - 1].pct}%`).join("、") : "";
+  const review = rv ? `手ごたえは${rv.better || "（未記入）"}。まだ不安なのは「${rv.worry || "（未記入）"}」。来週は1日${rv.hours}時間の予定です。` : "まだ書いていません。";
+  // 保護者に送る文面（本人が自分で送る。こちらからは送らない）
+  const text = [
+    `【${def.name}】${week}週目の報告`,
+    `目標まで（診断した科目の合計）：${gap ? `あと${gap}点` : "届いています"}`,
+    `今週の計画：${done}/${total} できた`,
+    ...(moves ? [`点の動き：${moves}`] : []),
+    `ふり返り：${review}`,
+    `※点は${def.moshi}（オリジナル問題）での目安で、合否を予想するものではありません。`,
+  ].join("\n");
+  async function copy() {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      /* コピーできない環境では、この画面を見せてもらう */
+    }
+  }
   return (
     <article aria-label="保護者への報告" className="rounded-[14px] border-[1.5px] border-[#15172B] bg-[#FFFDF5] p-4 text-[13.5px] leading-relaxed">
-      <h3 className="m-0 text-[16px] font-black">保護者への報告（見本）：{week}週目</h3>
-      <p className="m-0 mt-1 text-[12px] text-[#5A5D73]">伴走では、毎週この形で保護者の方にお届けします（お子さまの同意のうえで）。</p>
+      <h3 className="m-0 text-[16px] font-black">{def.sale ? `保護者に見せる報告：${week}週目` : `保護者への報告（見本）：${week}週目`}</h3>
+      <p className="m-0 mt-1 text-[12px] text-[#5A5D73]">{def.sale ? "この画面を見せるか、下のボタンで文面をコピーして、自分でLINEやメールで送れます（こちらから保護者の方へ送ることはありません）。" : "伴走では、毎週この形で保護者の方にお届けします（お子さまの同意のうえで）。"}</p>
       <dl className="m-0 mt-2 grid grid-cols-2 gap-2 sm:grid-cols-3">
         <div className="rounded-[10px] bg-white px-3 py-2">
           <dt className="text-[11.5px] font-bold text-[#5A5D73]">目標まで（診断した科目）</dt>
@@ -308,7 +358,12 @@ function ParentWeek({ week, s, rows, results, subjects, done, total }: { week: n
       <p className="m-0 mt-2 rounded-[10px] bg-white px-3 py-2 text-[12.5px]">
         声のかけ方のヒント：この時期は点数の上下より、計画をこなした日数をほめてください。不安な単元を口にできたら、それは前に進んでいるしるしです。
       </p>
-      <p className="m-0 mt-2 text-[11.5px] text-[#5A5D73]">点は大学別模試（オリジナル問題）での目安で、合否を予想するものではありません。</p>
+      {def.sale && (
+        <button type="button" onClick={copy} className="mt-2 min-h-[40px] rounded-[10px] border-[1.5px] border-[#15172B] bg-[#FFE45C] px-4 text-[13px] font-black">
+          {copied ? "コピーしました" : "報告の文面をコピーする"}
+        </button>
+      )}
+      <p className="m-0 mt-2 text-[11.5px] text-[#5A5D73]">点は{def.moshi}（オリジナル問題）での目安で、合否を予想するものではありません。</p>
     </article>
   );
 }

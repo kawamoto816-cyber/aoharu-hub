@@ -89,6 +89,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${base}${OSHIERU_HOME}`, lastModified: now, changeFrequency: "weekly" as const, priority: 0.6 },
     ...OSHIERU_UNITS.map((u) => ({ url: `${base}${oshieruHref(u)}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.5 })),
     { url: `${base}${OSHIERU_AI_HOME}`, lastModified: now, changeFrequency: "weekly" as const, priority: 0.6 },
+    // 直前コース（共通テスト・公立高校入試。2026-11-23 販売。駅のほかのページは試作なので入れない）
+    { url: `${base}/station/course/kyotsu`, lastModified: now, changeFrequency: "weekly" as const, priority: 0.7 },
+    { url: `${base}/station/course/koko`, lastModified: now, changeFrequency: "weekly" as const, priority: 0.7 },
     // ちょっと待った授業（?cast= は入れない。canonical は cast なし）
     { url: `${base}${JUGYO_HOME}`, lastModified: now, changeFrequency: "weekly" as const, priority: 0.7 },
     ...JUGYO_UNITS.map((u) => ({ url: `${base}${jugyoHref(u)}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),

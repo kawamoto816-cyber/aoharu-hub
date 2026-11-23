@@ -1,6 +1,7 @@
 import type { ExamAttempt } from "@/lib/exam/results";
 
-// 国公立2次・直前5週間コース（試作）。純粋な関数だけ（画面は components/station/Course.tsx）。
+// 直前コース（国公立2次・共通テスト・公立高校入試）の計画づくり。純粋な関数だけ（画面は components/station/Course.tsx）。
+// コースの種類・値段は course-kinds.ts。共通テスト・公立高校入試は、試験日までの週数（2〜8週）に合わせて計画を並べる。
 // 無料の入口：志望校をえらぶ → 診断（大学別模試）→ 作戦表（目標まであと何点・どの大問・どの単元）→ 最初の週の計画。
 // 2週目以降（計画の作り直し・進み具合の管理・保護者への報告）は有料の伴走にする予定。値段・決済はまだ作らない。
 //
@@ -11,6 +12,8 @@ export type Line = "文系" | "理系";
 
 export interface CourseSubject {
   key: string;
+  /** 一覧の見出し（共通テスト：国語・数学・英語・情報／理科／地理歴史・公民） */
+  category?: string;
   kamoku: string;
   minutes: number;
   total: number;
@@ -40,10 +43,10 @@ export function subjectsFor(u: CourseUniv, line: Line): CourseSubject[] {
 export const HISTORY = ["日本史", "世界史"];
 
 /** 科目ごとの最新の診断（大学別模試の結果） */
-export function latestBySpec(all: ExamAttempt[], keys: string[]): Record<string, ExamAttempt> {
+export function latestBySpec(all: ExamAttempt[], keys: string[], prefix = "daigaku:"): Record<string, ExamAttempt> {
   const out: Record<string, ExamAttempt> = {};
   for (const a of all) {
-    const k = a.spec.startsWith("daigaku:") ? a.spec.slice(8) : "";
+    const k = a.spec.startsWith(prefix) ? a.spec.slice(prefix.length) : "";
     if (!keys.includes(k)) continue;
     if (!out[k] || a.at > out[k].at) out[k] = a;
   }
@@ -95,7 +98,7 @@ export interface Day {
 }
 
 /** 最初の週の計画：差の大きい科目と、失点の大きい単元・大問から順に7日へ並べる */
-export function firstWeek(rows: Row[], units: Record<string, UnitInfo>): Day[] {
+export function firstWeek(rows: Row[], units: Record<string, UnitInfo>, moshi = "大学別模試"): Day[] {
   const done = rows.filter((r) => r.attempt);
   if (!done.length) return [];
   const bySubj = [...done].sort((a, b) => b.gap - a.gap || a.score / a.total - b.score / b.total);
@@ -120,13 +123,13 @@ export function firstWeek(rows: Row[], units: Record<string, UnitInfo>): Day[] {
     // 通しの1回分は、差のいちばん大きい科目（3日目）と2番目の科目（6日目）
     const s = (i % 3 === 2 ? bySubj[(i === 2 ? 0 : 1) % bySubj.length] : bySubj[i % bySubj.length]).subject;
     if (i % 3 === 2) {
-      tasks.push({ id: `d${i + 1}-x`, text: `${s.kamoku}：大学別模試を1回分、本番の${s.minutes}分で解く`, links: [{ href: s.play, label: "大学別模試" }] });
+      tasks.push({ id: `d${i + 1}-x`, text: `${s.kamoku}：${moshi}を1回分、本番の${s.minutes}分で解く`, links: [{ href: s.play, label: moshi }] });
     } else {
       const p = weakParts.length ? weakParts[i % weakParts.length] : null;
       tasks.push(
         p
           ? { id: `d${i + 1}-p`, text: `${p.subject.kamoku}「${p.title}」（${p.score}/${p.total}点）：模範解答と採点基準を読み、何も見ずに解き直す`, links: [{ href: p.subject.play, label: "もう一度解く" }] }
-          : { id: `d${i + 1}-p`, text: `${s.kamoku}：診断の見直し（まちがえた問題の解説を読み、解き直す）`, links: [{ href: s.play, label: "大学別模試" }] },
+          : { id: `d${i + 1}-p`, text: `${s.kamoku}：診断の見直し（まちがえた問題の解説を読み、解き直す）`, links: [{ href: s.play, label: moshi }] },
       );
     }
     days.push({ no: i + 1, tasks });
@@ -134,7 +137,7 @@ export function firstWeek(rows: Row[], units: Record<string, UnitInfo>): Day[] {
   days.push({
     no: 7,
     tasks: [
-      { id: "d7-r", text: `週のふり返り：いちばん差の大きかった${bySubj[0].subject.kamoku}をもう1回解いて、作戦表を見直す`, links: [{ href: bySubj[0].subject.play, label: "大学別模試" }] },
+      { id: "d7-r", text: `週のふり返り：いちばん差の大きかった${bySubj[0].subject.kamoku}をもう1回解いて、作戦表を見直す`, links: [{ href: bySubj[0].subject.play, label: moshi }] },
     ],
   });
   return days;
@@ -158,12 +161,32 @@ export interface WeekPlan {
   days: Day[];
 }
 
+// 週のテーマは4つの段階。最後の週はいつも「直前」。それより前の週に、大問演習 → 通し演習 → 時間割どおり を均等に割りふる
+// （5週のコースなら 2週目＝大問演習・3週目＝通し・4週目＝時間割・5週目＝直前。国公立2次はこれで固定）。
 const WEEK_THEMES = [
   { theme: "大問演習：失点の大きい大問をつぶす", lead: "苦手に合わせた回で大問を1題ずつ。まちがえたら、結果画面の「つまずきの根っこを探す」から根っこの単元へ戻ってから、もう一度その大問へ。" },
-  { theme: "通し演習：全科目を本番の時間で1回ずつ", lead: "1日1科目を本番の時間で通す。終わったら大問ごとの時間配分を見て、どこで時間を使いすぎたかを確かめる。" },
+  { theme: "通し演習：全科目を本番の時間で1回ずつ", lead: "1日1科目を本番の時間で通す。終わったら、大問ごとにかかった時間をふり返って、どこで時間を使いすぎたかを確かめる。" },
   { theme: "時間割どおりに解く・取りこぼしをなくす", lead: "本番と同じ順番・時間で解く日をつくる。部分点を取りにいく書き方（途中式・根拠）を、採点基準で確かめる。" },
   { theme: "直前：量を減らして、仕上げと体調", lead: "新しいことは増やさず、まちがいノートと弱い単元の見直し。前日は早く寝る。" },
 ];
+/** マーク式（共通テスト）のときの3つめの段階 */
+const MARK_THEME = { theme: "時間割どおりに解く・取りこぼしをなくす", lead: "本番と同じ順番・時間で解く日をつくる。見直しの時間を5分残す配分と、マークのずれの確かめ方を決めておく。" };
+
+export interface PlanOpt {
+  /** コース全体の週数（1週目をふくむ。2〜8。省略＝5） */
+  weeks?: number;
+  /** 診断に使う模試の名前（省略＝大学別模試） */
+  moshi?: string;
+  /** マーク式（記述の自己採点がない） */
+  mark?: boolean;
+}
+
+/** その週（2〜weeks）の段階（0＝大問演習・1＝通し・2＝時間割・3＝直前） */
+export function phaseOf(week: number, weeks: number): number {
+  if (week >= weeks) return 3;
+  const mid = weeks - 2; // 2週目〜(weeks-1)週目の数
+  return Math.min(2, Math.floor(((week - 2) * 3) / mid));
+}
 
 /** 苦手に合わせた回（?w=）のURL */
 const weakHref = (play: string, us: string[]) => {
@@ -172,14 +195,18 @@ const weakHref = (play: string, us: string[]) => {
 };
 
 /** 2〜5週目の計画。その時点の最新の診断から作り直す（週が進むたびに結果が変われば計画も変わる） */
-export function laterWeeks(rows: Row[], units: Record<string, UnitInfo>): WeekPlan[] {
+export function laterWeeks(rows: Row[], units: Record<string, UnitInfo>, opt: PlanOpt = {}): WeekPlan[] {
+  const weeks = Math.max(2, Math.min(8, opt.weeks ?? 5));
+  const moshi = opt.moshi ?? "大学別模試";
   const done = rows.filter((r) => r.attempt);
   if (!done.length) return [];
   const bySubj = [...done].sort((a, b) => b.gap - a.gap || a.score / a.total - b.score / b.total);
   const subjAt = (i: number) => bySubj[i % bySubj.length];
   const unitName = (u: string) => units[u]?.name ?? u;
-  return WEEK_THEMES.map((t, wi) => {
+  return Array.from({ length: weeks - 1 }, (_, wi) => {
     const week = wi + 2;
+    const phase = phaseOf(week, weeks);
+    const t = phase === 2 && opt.mark ? MARK_THEME : WEEK_THEMES[phase];
     const days: Day[] = [];
     for (let d = 0; d < 7; d++) {
       const id = (k: string) => `w${week}d${d + 1}-${k}`;
@@ -189,7 +216,7 @@ export function laterWeeks(rows: Row[], units: Record<string, UnitInfo>): WeekPl
       const tasks: Task[] = [];
       if (d === 6) {
         tasks.push({ id: id("r"), text: "週のふり返りを書く（下の「週のふり返り」）。作戦表を見て、来週の配分を決める", links: [] });
-      } else if (week === 2) {
+      } else if (phase === 0) {
         const p = r.parts[d % Math.max(1, r.parts.length)];
         tasks.push({
           id: id("p"),
@@ -200,12 +227,17 @@ export function laterWeeks(rows: Row[], units: Record<string, UnitInfo>): WeekPl
           const u = weak[d % weak.length];
           tasks.push({ id: id("u"), text: `まちがえたら「${unitName(u)}」の根っこへ戻る`, links: [{ href: `/learn/sakanobori?u=${encodeURIComponent(u)}`, label: "さかのぼり" }] });
         }
-      } else if (week === 3) {
-        tasks.push({ id: id("x"), text: `${s.kamoku}：大学別模試を1回分、本番の${s.minutes}分で通す`, links: [{ href: s.play, label: "大学別模試" }] });
-        tasks.push({ id: id("t"), text: "結果画面の「大問別の時間」を見て、使いすぎた大問をメモする", links: [] });
-      } else if (week === 4) {
-        if (d % 2 === 0) tasks.push({ id: id("x"), text: `${s.kamoku}：本番と同じ時刻に始めて、本番の${s.minutes}分で解く`, links: [{ href: s.play, label: "大学別模試" }] });
-        else tasks.push({ id: id("w"), text: `${s.kamoku}：記述の自己採点で落とした観点を、模範解答の書き方で書き直す`, links: [{ href: weakHref(s.play, weak), label: "苦手に合わせた回" }] });
+      } else if (phase === 1) {
+        tasks.push({ id: id("x"), text: `${s.kamoku}：${moshi}を1回分、本番の${s.minutes}分で通す`, links: [{ href: s.play, label: moshi }] });
+        tasks.push({ id: id("t"), text: "大問ごとにかかった時間をふり返って、使いすぎた大問をメモする", links: [] });
+      } else if (phase === 2) {
+        if (d % 2 === 0) tasks.push({ id: id("x"), text: `${s.kamoku}：本番と同じ時刻に始めて、本番の${s.minutes}分で解く`, links: [{ href: s.play, label: moshi }] });
+        else
+          tasks.push({
+            id: id("w"),
+            text: opt.mark ? `${s.kamoku}：まちがえた問題の解説を読み、何も見ずに解き直す（選んだ理由を1行で言えるように）` : `${s.kamoku}：記述の自己採点で落とした観点を、模範解答の書き方で書き直す`,
+            links: [{ href: weakHref(s.play, weak), label: "苦手に合わせた回" }],
+          });
       } else {
         const u = weak[d % Math.max(1, weak.length)];
         tasks.push(
@@ -213,7 +245,7 @@ export function laterWeeks(rows: Row[], units: Record<string, UnitInfo>): WeekPl
             ? { id: id("n"), text: `まちがいノートと「${unitName(u)}」の見直し（新しい問題は増やさない）`, links: [{ href: `/learn/sakanobori?u=${encodeURIComponent(u)}`, label: "さかのぼり" }] }
             : { id: id("n"), text: `${s.kamoku}：まちがいノートの見直し`, links: [] },
         );
-        if (d === 1) tasks.push({ id: id("x"), text: "本番と同じ時間割で、全科目を1日で通す（最後の通し）", links: [{ href: bySubj[0].subject.play, label: "大学別模試" }] });
+        if (d === 1) tasks.push({ id: id("x"), text: "本番と同じ時間割で、全科目を1日で通す（最後の通し）", links: [{ href: bySubj[0].subject.play, label: moshi }] });
       }
       days.push({ no: d + 1, tasks });
     }
@@ -228,12 +260,12 @@ export interface Trend {
 }
 
 /** 科目ごとの得点率の動き（古い順） */
-export function trends(all: ExamAttempt[], subjects: CourseSubject[]): Trend[] {
+export function trends(all: ExamAttempt[], subjects: CourseSubject[], prefix = "daigaku:"): Trend[] {
   return subjects.map((s) => ({
     key: s.key,
     kamoku: s.kamoku,
     points: all
-      .filter((a) => a.spec === `daigaku:${s.key}` && a.total > 0)
+      .filter((a) => a.spec === `${prefix}${s.key}` && a.total > 0)
       .sort((a, b) => (a.at < b.at ? -1 : 1))
       .map((a) => ({ at: a.at, pct: Math.round((a.score / a.total) * 100) })),
   }));
@@ -252,15 +284,28 @@ export function fromYmd(s: string): Date {
 /** 日本時間の今日（YYYY-MM-DD）。サーバーは UTC で動くので、サーバーで「今日」を決めるときはこれを使う */
 export const todayJst = (now: Date = new Date()) => new Date(now.getTime() + 9 * 3_600_000).toISOString().slice(0, 10);
 
-/** 始めた日（YYYY-MM-DD）から数えて、いまは何週目（1〜5）の何日目（1〜7）か。始める前なら null。5週を過ぎたら5週目の7日目 */
-export function courseDay(start: string | undefined, today: Date): { week: number; day: number } | null {
+/** 始めた日から試験日までの週数（切り上げ。2〜8週）。どちらかが決まっていなければ5週 */
+export function weeksBetween(start: string | undefined, exam: string | undefined): number {
+  const ok = (x?: string) => !!x && /^\d{4}-\d{2}-\d{2}$/.test(x);
+  if (!ok(start) || !ok(exam)) return 5;
+  const n = Math.round((fromYmd(exam!).getTime() - fromYmd(start!).getTime()) / 86_400_000);
+  return Math.max(2, Math.min(8, Math.ceil(n / 7)));
+}
+
+/** その日（YYYY-MM-DD）まで今日から何日か（過ぎていれば負の数） */
+export function daysUntil(day: string, today: Date): number {
+  return Math.round((fromYmd(day).getTime() - new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime()) / 86_400_000);
+}
+
+/** 始めた日（YYYY-MM-DD）から数えて、いまは何週目（1〜weeks）の何日目（1〜7）か。始める前なら null。最後の週を過ぎたら最後の週の7日目 */
+export function courseDay(start: string | undefined, today: Date, weeks = 5): { week: number; day: number } | null {
   if (!start || !/^\d{4}-\d{2}-\d{2}$/.test(start)) return null;
   const [y, m, d] = start.split("-").map(Number);
   const s = new Date(y, m - 1, d);
   const t = new Date(today.getFullYear(), today.getMonth(), today.getDate());
   const n = Math.round((t.getTime() - s.getTime()) / 86_400_000);
   if (n < 0) return null;
-  if (n >= 35) return { week: 5, day: 7 };
+  if (n >= weeks * 7) return { week: weeks, day: 7 };
   return { week: Math.floor(n / 7) + 1, day: (n % 7) + 1 };
 }
 
@@ -274,6 +319,9 @@ export interface TodayList {
   items: string[];
   /** items と同じ順の、計画のチェックの id */
   ids?: string[];
+  /** その計画を残しているキー（省略＝国公立2次）と、コースのページ */
+  key?: string;
+  href?: string;
 }
 
 /** アオハルームで「できた」と記録したら、コースの計画の同じやることにチェックを入れる */
@@ -283,11 +331,12 @@ export function checkCourseTask(plan: string) {
     if (!t?.ids) return;
     const i = t.items.findIndex((x) => x.slice(0, 60) === plan);
     if (i < 0) return;
-    const raw = window.localStorage.getItem("aoharu-course-v1");
+    const key = t.key && /^aoharu-course-[a-z0-9-]+$/.test(t.key) ? t.key : "aoharu-course-v1";
+    const raw = window.localStorage.getItem(key);
     const s = raw ? (JSON.parse(raw) as { checked?: string[] }) : {};
     const checked = s.checked ?? [];
     if (checked.includes(t.ids[i])) return;
-    window.localStorage.setItem("aoharu-course-v1", JSON.stringify({ ...s, checked: [...checked, t.ids[i]] }));
+    window.localStorage.setItem(key, JSON.stringify({ ...s, checked: [...checked, t.ids[i]] }));
   } catch {
     /* 読めない・書けないときは何もしない */
   }

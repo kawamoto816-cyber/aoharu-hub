@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { CheckoutSuccessTracker } from "@/components/CheckoutSuccessTracker";
+import { grantCoursePassForSession } from "@/lib/station/course-pass";
 
 // /parents/thanks: お子さんから届いた支払いリンクで、保護者が Pro の支払いを終えたあとに戻るページ。
 // 支払った保護者はログインしていないので、ここでは「お子さんのアカウントが Pro になった」ことと解約の方法だけを伝える。
@@ -10,14 +11,29 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default async function ParentThanksPage({ searchParams }: { searchParams: Promise<{ plan?: string }> }) {
-  const season = (await searchParams).plan === "season";
+export default async function ParentThanksPage({ searchParams }: { searchParams: Promise<{ plan?: string; session_id?: string }> }) {
+  const sp = await searchParams;
+  const plan = sp.plan ?? "";
+  // 直前コース：Webhook がまだ届いていなくても、ここで支払いを確かめて付ける（付く相手は支払いのセッションに書かれたお子さんだけ）
+  if (plan.startsWith("course_") && sp.session_id) await grantCoursePassForSession(sp.session_id).catch((e) => console.error("[parents/thanks] course", e instanceof Error ? e.message : e));
+  const season = plan === "season";
+  const course = plan === "course_kyotsu" ? "共通テスト 直前コース（2027年1月31日まで）" : plan === "course_koko" ? "公立高校入試 直前コース（2027年3月31日まで）" : null;
   return (
     <main className="mx-auto max-w-xl flex-1 px-5 py-16 text-slate-800">
       <p className="text-xs font-bold text-indigo-600">アオハルOS</p>
       <h1 className="mt-2 text-2xl font-bold text-slate-900">お支払いありがとうございました</h1>
       <CheckoutSuccessTracker />
-      {season ? (
+      {course ? (
+        <>
+          <p className="mt-4 text-sm leading-relaxed">
+            お子さんのアカウントで「{course}」が使えるようになりました。毎週の計画の作り直し、週のふり返り、進み具合の確認ができます。反映まで数分かかることがあります。お子さんに、コースのページを開き直すよう伝えてください。
+          </p>
+          <h2 className="mt-8 text-sm font-bold text-slate-900">お支払いについて</h2>
+          <p className="mt-2 text-sm leading-relaxed">
+            1回のお支払いで終わりです。自動更新はなく、期限が来たら有料の機能が閉じるだけで、追加の請求はありません。領収書はお支払い時に入力したメールアドレスに届きます。
+          </p>
+        </>
+      ) : season ? (
         <>
           <p className="mt-4 text-sm leading-relaxed">
             お子さんのアカウントで「受験シーズンパス」が使えるようになりました。2027年3月31日まで、志望理由書・小論文の添削、面接練習など、アオハルOSの全機能を回数を気にせず使えます。反映まで数分かかることがあります。

@@ -5,6 +5,8 @@ import { currentUser } from "@clerk/nextjs/server";
 import { resolveShareToken } from "@/lib/parent-share/store";
 import { createTicketCheckoutSession, TICKET } from "@/lib/tensaku/ticket";
 import { discounted, getReferral } from "@/lib/referral/store";
+import { COURSES, isSaleKind, type SaleKind } from "@/lib/station/course-kinds";
+import { courseAccess, createCoursePassCheckoutSession } from "@/lib/station/course-pass";
 import {
   getCurrentUserId,
   createCheckoutSession,
@@ -46,6 +48,9 @@ export async function POST(req: Request) {
 
     // 受験シーズンパス（買い切り・自動更新なし）
     if (body?.plan === "season") return seasonPass(req, userId, body?.payer === "parent", typeof body?.ref === "string" ? body.ref : undefined);
+
+    // 直前コース（共通テスト・公立高校入試）：1回払い 4,980円
+    if (body?.plan === "course") return coursePass(req, userId, body?.kind, body?.payer === "parent");
 
     // 1通分の添削（300円・書き直したあとの再添削1回つき）
     if (body?.plan === "ticket") {
@@ -131,6 +136,28 @@ async function seasonPass(req: Request, userId: string, forParent: boolean, refC
     successUrl,
     cancelUrl: forParent ? `${origin}/parents#season` : `${origin}/tensaku?checkout=cancel`,
     userEmail,
+  });
+  if (!session.url) return NextResponse.json({ error: "Checkoutセッションの作成に失敗しました" }, { status: 500 });
+  return NextResponse.json({ url: session.url });
+}
+
+/** 直前コースの支払い画面。もう使える人（買った人・Max・受験シーズンパス）には出さない（二重に払わせない） */
+async function coursePass(req: Request, userId: string, kindRaw: unknown, forParent: boolean) {
+  if (!isSaleKind(kindRaw)) return NextResponse.json({ error: "コースの種類がちがいます" }, { status: 400 });
+  const kind: SaleKind = kindRaw;
+  const c = COURSES[kind];
+  // 公立高校入試コース（中学生向け）は、保護者あての支払いリンクだけ
+  if (c.sale!.parentOnly && !forParent) return NextResponse.json({ error: "このコースは、保護者の方あての支払いリンクからお申し込みください", reason: "parent_only" }, { status: 400 });
+  if ((await courseAccess(userId, kind)).access) return NextResponse.json({ error: "すでにこのコースを使えます", reason: "already_paid" }, { status: 409 });
+  const origin = new URL(req.url).origin;
+  const user = forParent ? null : await currentUser();
+  const q = `plan=course_${kind}&value=${c.sale!.priceJpy}&session_id={CHECKOUT_SESSION_ID}`;
+  const session = await createCoursePassCheckoutSession({
+    userId,
+    kind,
+    successUrl: forParent ? `${origin}/parents/thanks?${q}` : `${origin}${c.href}?checkout=success&${q}`,
+    cancelUrl: forParent ? `${origin}/parents#course` : `${origin}${c.href}?checkout=cancel`,
+    userEmail: user?.emailAddresses?.[0]?.emailAddress,
   });
   if (!session.url) return NextResponse.json({ error: "Checkoutセッションの作成に失敗しました" }, { status: 500 });
   return NextResponse.json({ url: session.url });
