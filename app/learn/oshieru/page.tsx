@@ -5,12 +5,11 @@ import { Haru } from "@/components/oshieru/Haru";
 import { OSHIERU_UNITS, hasOshieru, oshieruHref } from "@/lib/oshieru";
 import { LEVELS } from "@/lib/school";
 
-// /learn/oshieru: オシエルの単元一覧（学校段階・教科ごと）。代表の公開OKが出るまで noindex・サイトマップに入れない。
+// /learn/oshieru: オシエルの単元一覧（学校段階・教科ごと）。2026-11-23 代表の公開OKで公開（検索に出す・サイトマップに入れる）。
 // ふだんの入口は、図解レクチャーのページの「ハルに教える」。
 
 export const metadata: Metadata = {
   title: "オシエル｜AIの生徒ハルに教える｜アオハルラーン",
-  robots: { index: false, follow: false },
 };
 
 export default function Page() {

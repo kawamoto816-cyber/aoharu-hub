@@ -8,13 +8,19 @@ import { oshieruAiHref } from "@/lib/oshieru/ai-lesson-home";
 import { toMockScript, toPublic } from "@/lib/oshieru/public";
 
 // /learn/oshieru/<単元id>: オシエル（AIの生徒ハルに教える）の1回分。入口は図解レクチャーのページの「ハルに教える」。
-// 代表の公開OKが出るまで noindex・サイトマップに入れない。
+// 2026-11-23 代表の公開OKで公開（検索に出す・サイトマップに入れる）。
 // ?mock=1 で台本モード（AIなし）。誤解セットのうち、言い直しのまちがいの有無と採点の条件はクライアントに渡さない（台本モードのときだけ台本を渡す）。
 
-export const metadata: Metadata = {
-  title: "オシエル｜AIの生徒ハルに教える｜アオハルラーン",
-  robots: { index: false, follow: false },
-};
+export async function generateMetadata({ params }: { params: Promise<{ unit: string }> }): Promise<Metadata> {
+  const { unit } = await params;
+  const u = getOshieru(unit);
+  const name = u?.set.topic ?? "オシエル";
+  return {
+    title: `${name}をAIの生徒ハルに教える｜オシエル｜アオハルラーン`,
+    description: `「${name}」でまちがえているAIの生徒ハルに、自分の言葉で説明して教える練習です。登録なしでも1日1回ためせます。`,
+    alternates: { canonical: `/learn/oshieru/${unit}` },
+  };
+}
 
 export default async function Page({ params, searchParams }: { params: Promise<{ unit: string }>; searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) {
   const { unit } = await params;

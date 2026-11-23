@@ -4,7 +4,7 @@ import { OSHIERU_SETS } from "./data";
 import type { OshieruSet } from "./types";
 
 // オシエル（AIの生徒ハルに教える）。/learn/oshieru/<単元id>。図解レクチャーのページの「ハルに教える」から入る。
-// 一覧 /learn/oshieru は noindex・サイトマップに入れない（代表の公開OKが出るまで）。
+// 一覧 /learn/oshieru と各単元は公開（2026-11-23 代表OK。全848単元）。声で教えるオシエルAI（/learn/oshieru-ai）は試作のまま noindex。
 // 誤解セット (data/。手書き hand.ts ＋ 機械で作った gen.ts) と、正しさのものさしにする図解レクチャー (lib/lecture/data/) を単元ごとに組にする。
 
 export const OSHIERU_HOME = "/learn/oshieru";

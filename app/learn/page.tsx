@@ -218,7 +218,7 @@ export default function LearnHub() {
               ["太字を暗記する", "物語で覚える", "小説・4コマ・漫才"],
               ["黙って読む", "名作を本物の声で聴く", "原文の朗読・ネイティブの名演説"],
               ["問題を解いて終わり", "ツッコんで鍛える", "ボケのまちがいを時間内に直す"],
-              ["テストで忘れる", "教えて自分のものに", "AIの生徒ハルに説明する（試作）"],
+              ["テストで忘れる", "教えて自分のものに", "AIの生徒ハルに説明する（全848単元）"],
             ].map(([old, nu, note]) => (
               <div key={nu} className="grid grid-cols-[1fr_auto_1.25fr] items-center border-b border-[#E3DCC8] last:border-b-0">
                 <span className="px-3 py-3 text-[13px] text-[#8F94B8] line-through decoration-[#C9CEF2]">{old}</span>

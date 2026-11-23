@@ -7,7 +7,7 @@ import { schoolCounts } from "@/lib/school";
 //   SCHOOL  学校の教科 (教科ごとの入口 /learn/kyoka/<教科> へ。教材の一覧は lib/learn/kyoka.ts)
 //   APPLY   選ばれる力 (総合型選抜・推薦入試・就活。スキル盤とカード、11のアプリ) → /learn/apply
 //   ADVANCE 知のアドバンス (裏面と知の図書館) → /learn/apply#ura
-// まだないマスは「準備中」として点線で見せる (③教えるは「オシエル」。全単元の覚える・鍛えるがそろってから作る)。
+// まだないマスは「準備中」として点線で見せる (③教えるの「オシエル」は学校の教科で公開中、ほかの棚は準備中)。
 
 const STAGES = [
   { no: "①", name: "覚える", game: "技や呪文を覚える", how: "図解のカードや診断で、知識をためる" },
@@ -19,7 +19,9 @@ type Item = { label: string; href: string; external?: boolean; sub?: string };
 type Cell = { items: Item[]; soon?: string[]; note?: string };
 type Row = { key: string; en: string; title: string; lead: string; cta?: { label: string; href: string }; tint: string; cells: [Cell, Cell, Cell] };
 
-const OSHIERU: Cell = { items: [], soon: ["オシエル"], note: "AIの弟子に教える。全単元の①②がそろったら開講" };
+// 学校の教科は全848単元でオシエルが使える（2026-11-23 公開）。選ばれる力・知のアドバンスのオシエルはまだない。
+const OSHIERU_SCHOOL: Cell = { items: [{ label: "オシエル", href: "/learn/oshieru", sub: "AIの生徒ハルに教える・全848単元" }], note: "自分の言葉で説明できたら、マスター" };
+const OSHIERU: Cell = { items: [], soon: ["オシエル"], note: "AIの生徒に教える。学校の教科で公開中、この棚は準備中" };
 
 function rows(): Row[] {
   const school = schoolCounts();
@@ -53,7 +55,7 @@ function rows(): Row[] {
           ],
           note: `公開中 ${school.kitaeru.open} / ${school.kitaeru.total} 単元`,
         },
-        OSHIERU,
+        OSHIERU_SCHOOL,
       ],
     },
     {

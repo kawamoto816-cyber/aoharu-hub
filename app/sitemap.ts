@@ -28,6 +28,7 @@ import { isLockedCard } from "@/lib/learn/lock";
 import { JUGYO_HOME, UNITS as JUGYO_UNITS, jugyoHref } from "@/lib/jugyo";
 import { uzJugyoPublicPaths } from "@/lib/jugyo/uz/lessons";
 import { TSUMAZUKI_HOME, TSUMAZUKI_UNITS, tsumazukiHref } from "@/lib/tsumazuki";
+import { OSHIERU_HOME, OSHIERU_UNITS, oshieruHref } from "@/lib/oshieru";
 
 // 検索エンジン向けサイトマップ。入口ページを追加したらここに足す。
 // /guide の記事は静的記事とDBの記事の両方を載せる (取り込んだ記事が当日中に見つかるように)。
@@ -83,6 +84,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // つまずきの原因（単元ごとのよくあるまちがい・原因の単元・前に必要な単元）
     { url: `${base}${TSUMAZUKI_HOME}`, lastModified: now, changeFrequency: "weekly" as const, priority: 0.7 },
     ...TSUMAZUKI_UNITS.map((u) => ({ url: `${base}${tsumazukiHref(u)}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
+    // オシエル（AIの生徒ハルに教える。2026-11-23 公開）
+    { url: `${base}${OSHIERU_HOME}`, lastModified: now, changeFrequency: "weekly" as const, priority: 0.6 },
+    ...OSHIERU_UNITS.map((u) => ({ url: `${base}${oshieruHref(u)}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.5 })),
     // ちょっと待った授業（?cast= は入れない。canonical は cast なし）
     { url: `${base}${JUGYO_HOME}`, lastModified: now, changeFrequency: "weekly" as const, priority: 0.7 },
     ...JUGYO_UNITS.map((u) => ({ url: `${base}${jugyoHref(u)}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
