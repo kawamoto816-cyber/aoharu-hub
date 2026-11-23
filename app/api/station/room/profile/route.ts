@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { readPost } from "@/lib/station/bin-api";
-import { GRADES } from "@/lib/station/room";
+import { ROOM_GRADES as GRADES } from "@/lib/station/room-rules";
 import { cleanNick, saveRoomProfile } from "@/lib/station/room-store";
 
 // アオハルーム：部屋で見せるニックネームと学年を決める（登録した人のみ）。

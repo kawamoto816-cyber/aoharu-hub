@@ -1,5 +1,6 @@
 import { getSupabaseAdmin } from "@/lib/aoharu-entitlements/supabase/client";
-import { GRADES, STREAK_KING, type Grade } from "@/lib/station/room";
+import type { Grade } from "@/lib/station/room";
+import { ROOM_GRADES as GRADES, ROOM_STREAK_KING as STREAK_KING } from "@/lib/station/room-rules";
 
 // アオハルーム（無料の自習室）の、みんなで共有する部分の保存と集計
 // （Supabase: station_room_cycles / station_room_presence / station_members。定義は docs/station-room.sql）。
