@@ -196,7 +196,7 @@ export function BinRide() {
   const who = (
     <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-slate-600">
       <span>
-        <span className="font-bold text-slate-900">{member.nick}</span> さん（{member.grade}・{member.team}班）
+        <span className="font-bold text-slate-900">{member.nick}</span> さん（{member.grade}・{member.team ? `${member.team}班` : "班はまだ決まっていません"}）
       </span>
       {!ride || ride.checkoutAt !== null ? (
         <button type="button" onClick={() => setEditing(true)} className="text-xs font-bold text-indigo-600 underline underline-offset-2">
@@ -355,16 +355,17 @@ function Row({ label, children }: { label: string; children: ReactNode }) {
 function ProfileForm({ initial, busy, onSave, onCancel }: { initial: BinState["member"]; busy: boolean; onSave: (v: { nick: string; grade: string; team: string }) => void; onCancel?: () => void }) {
   const [nick, setNick] = useState(initial?.nick ?? "");
   const [grade, setGrade] = useState(initial && GRADES.includes(initial.grade) ? initial.grade : "");
-  const [team, setTeam] = useState(initial?.team ?? "");
-  const ready = nick.trim().length > 0 && !!grade && !!team;
+  // 班は、まだお知らせが届いていなければ「まだ決まっていない」（空）を選ぶ。はじめての人は、どれかを選ぶまで保存できない
+  const [team, setTeam] = useState<string | null>(initial ? initial.team : null);
+  const ready = nick.trim().length > 0 && !!grade && team !== null;
   const submit = (e: FormEvent) => {
     e.preventDefault();
-    if (ready) onSave({ nick, grade, team });
+    if (ready && team !== null) onSave({ nick, grade, team });
   };
   const pick = (on: boolean) => `rounded-full border px-4 py-2 text-sm font-bold ${on ? "border-indigo-600 bg-indigo-600 text-white" : "border-slate-300 bg-white text-slate-700 hover:bg-slate-50"}`;
   return (
     <form onSubmit={submit} className={card}>
-      <p className="font-bold text-slate-900">はじめに、ニックネーム・学年・班を設定します。</p>
+      <p className="font-bold text-slate-900">はじめに、ニックネーム・学年・班を設定します。班は、お知らせが届いてから選び直せます。</p>
       <label className="mt-4 block text-xs font-bold text-slate-500">
         ニックネーム（{LIMIT.nick}文字まで。本名や学校名は使いません）
         <input value={nick} onChange={(e) => setNick(e.target.value)} maxLength={LIMIT.nick} autoComplete="off" className={field} />
@@ -380,13 +381,16 @@ function ProfileForm({ initial, busy, onSave, onCancel }: { initial: BinState["m
         </div>
       </fieldset>
       <fieldset className="mt-4">
-        <legend className="text-xs font-bold text-slate-500">班（運営からお知らせした班）</legend>
+        <legend className="text-xs font-bold text-slate-500">班（運営からお知らせした班。お知らせの前なら「まだ決まっていない」）</legend>
         <div className="mt-1 flex flex-wrap gap-2">
           {TEAMS.map((t) => (
             <button key={t} type="button" aria-pressed={team === t} onClick={() => setTeam(t)} className={pick(team === t)}>
               {t}班
             </button>
           ))}
+          <button type="button" aria-pressed={team === ""} onClick={() => setTeam("")} className={pick(team === "")}>
+            まだ決まっていない
+          </button>
         </div>
       </fieldset>
       <div className="mt-5 flex flex-wrap items-center gap-4">

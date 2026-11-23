@@ -42,7 +42,17 @@ export async function getMember(userId: string): Promise<BinMember | null> {
   }
 }
 
-export async function saveProfile(userId: string, p: { nick: string; grade: string; team: Team }): Promise<boolean> {
+/** 班だけを変える（社内の出席表から。ニックネームと学年はそのまま） */
+export async function setTeam(userId: string, team: Team | ""): Promise<boolean> {
+  try {
+    const { error } = await getSupabaseAdmin().from("station_members").update({ team, updated_at: new Date().toISOString() }).eq("user_id", userId);
+    return !error;
+  } catch {
+    return false;
+  }
+}
+
+export async function saveProfile(userId: string, p: { nick: string; grade: string; team: Team | "" }): Promise<boolean> {
   try {
     const { error } = await getSupabaseAdmin()
       .from("station_members")

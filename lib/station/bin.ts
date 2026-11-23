@@ -214,11 +214,12 @@ const len = (s: string) => [...s].length;
 
 export type Checked<T> = { ok: true; value: T } | { ok: false; error: string };
 
-export function checkProfile(input: { nick?: unknown; grade?: unknown; team?: unknown }): Checked<{ nick: string; grade: string; team: Team }> {
+/** 班は「まだ決まっていない」（空）でもよい。体験便など、班のお知らせの前に乗る人がいるため（2026-11-23） */
+export function checkProfile(input: { nick?: unknown; grade?: unknown; team?: unknown }): Checked<{ nick: string; grade: string; team: Team | "" }> {
   const nick = cleanLine(input.nick);
   if (len(nick) < 1 || len(nick) > LIMIT.nick) return { ok: false, error: `ニックネームは1〜${LIMIT.nick}文字で入れてください（本名は使いません）。` };
   if (typeof input.grade !== "string" || !GRADES.includes(input.grade)) return { ok: false, error: "学年を選んでください。" };
-  if (!isTeam(input.team)) return { ok: false, error: "班を選んでください。" };
+  if (input.team !== "" && !isTeam(input.team)) return { ok: false, error: "班を選んでください（まだお知らせが届いていなければ「まだ決まっていない」）。" };
   return { ok: true, value: { nick, grade: input.grade, team: input.team } };
 }
 
