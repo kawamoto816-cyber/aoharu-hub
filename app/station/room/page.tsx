@@ -1,8 +1,17 @@
+import type { Metadata } from "next";
 import { StationShell } from "@/components/station/StationShell";
 import { AoharuRoom } from "@/components/station/AoharuRoom";
 
 // /station/room：アオハルーム（勉強王自習室）。登録した人どうしの本物の部屋（座席・ランキングはサーバー）。自習ホームの中の「みんなで学ぶ部屋（話さないつながり）」。無料。
 // 25分（50分）の集中 → ふり返り → 休憩を繰り返し、集中中の学び（解いた・正解・単元模試・完走）を学びポイントにして週で競う。
+// 検索に出す（2026-11-23 代表の公開OK）。無料の自習室として、入口から案内しているページ。
+export const metadata: Metadata = {
+  title: "アオハルーム｜無料のオンライン自習室｜アオハルラーン",
+  description: "登録するだけで使える、無料のオンライン自習室。25分の集中とふり返りをくり返し、ニックネームで並んで学びます。",
+  alternates: { canonical: "https://app.bluespring.co.jp/station/room" },
+  robots: { index: true, follow: true },
+};
+
 export default function Page() {
   return (
     <StationShell

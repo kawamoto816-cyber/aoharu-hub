@@ -14,7 +14,8 @@ export const metadata: Metadata = {
     images: [{ url: "/og-gakushubin.png", width: 1200, height: 630, alt: "アオハル 学習便：「勉強しなさい」を、わたしたちが引き受けます。" }],
   },
   twitter: { card: "summary_large_image", images: ["/og-gakushubin.png"] },
-  robots: { index: false, follow: false },
+  alternates: { canonical: "https://app.bluespring.co.jp/station/gakushubin" },
+  robots: { index: true, follow: true },
 };
 
 const yen = (n: number) => `${n.toLocaleString("ja-JP")}円`;
