@@ -226,7 +226,7 @@ export function BinRide() {
       <p className="text-xs font-bold text-indigo-200">今日の便</p>
       <p className="mt-1 text-lg font-bold">{binLabel(current)}</p>
       <p className="mt-3 text-sm text-slate-200">
-        いま：<span className="font-bold text-white">{stage.key === "koma3" && isHomeroom(member.team, current) ? "第3コマ：班のホームルーム（班の部屋へ）" : stage.label}</span>
+        いま：<span className="font-bold text-white">{(stage.key === "koma3" || stage.key === "rest2") && isHomeroom(member.team, current) ? "班のホームルーム（20分・この部屋に残ります）" : stage.label}</span>
       </p>
       {stage.endsMs !== null && stage.key !== "after" ? (
         <p className="mt-1 text-3xl font-bold tabular-nums" aria-live="off">
@@ -332,7 +332,7 @@ export function BinRide() {
                 <span className="w-24 shrink-0 tabular-nums">
                   {jstHm(atMin(current, s.from))}〜{jstHm(atMin(current, s.to))}
                 </span>
-                <span>{s.key === "koma3" && isHomeroom(member.team, current) ? "第3コマ：班のホームルーム（班の部屋へ）" : s.label}</span>
+                <span>{(s.key === "koma3" || s.key === "rest2") && isHomeroom(member.team, current) ? "班のホームルーム（20分・この部屋に残ります）" : s.label}</span>
               </li>
             ))}
           </ol>
