@@ -23,10 +23,32 @@ declare global {
 
 // gtag.js の読み込み前・読み込み失敗時にも例外を投げないようにするための
 // 薄いラッパー。コンバージョン計測が失敗してもユーザー体験には一切影響させない。
+//
+// gtag の初期化（layout の afterInteractive スクリプト）より先に呼ばれることがある
+// （例：Stripe の支払いから戻った直後の purchase、登録直後の sign_up）。
+// そのときは捨てずに、最大5秒だけ待ってから送る。2026-11-20 の Pro の購入が
+// GA4 に記録されなかったのはこの順番のため。
 export function trackEvent(eventName: string, params?: GtagEventParams) {
   try {
-    if (typeof window === "undefined" || typeof window.gtag !== "function") return;
-    window.gtag("event", eventName, params);
+    if (typeof window === "undefined") return;
+    if (typeof window.gtag === "function") {
+      window.gtag("event", eventName, params);
+      return;
+    }
+    let tries = 0;
+    const timer = window.setInterval(() => {
+      tries += 1;
+      try {
+        if (typeof window.gtag === "function") {
+          window.clearInterval(timer);
+          window.gtag("event", eventName, params);
+        } else if (tries >= 25) {
+          window.clearInterval(timer);
+        }
+      } catch {
+        window.clearInterval(timer);
+      }
+    }, 200);
   } catch {
     // 計測の失敗でアプリの動作を止めない
   }
