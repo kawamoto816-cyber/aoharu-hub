@@ -3,6 +3,7 @@
 import { useSyncExternalStore } from "react";
 import { MASTERY_KEY } from "@/lib/sakanobori/mastery";
 import { MOSHI_RESULTS_KEY } from "@/lib/moshi/results";
+import { ROOM_GRADES, ROOM_STREAK_KING } from "@/lib/station/room-rules";
 
 // アオハルーム（勉強王自習室・試作）。自習ホームの中の「みんなで学ぶ部屋（話さないつながり）」。
 // 25分＋5分（または50分＋10分）を1サイクルとして繰り返し、集中している間に自習ホームで起きた
@@ -23,7 +24,7 @@ export const modeOf = (m: Mode) => MODES.find((x) => x.mode === m)!;
 export const REFLECT = ["できた", "半分できた", "できなかった"] as const;
 export type Reflect = (typeof REFLECT)[number];
 
-export const GRADES = ["小6", "中1", "中2", "中3", "高1", "高2", "高3"] as const;
+export const GRADES = ROOM_GRADES;
 export type Grade = (typeof GRADES)[number];
 
 /** 学びポイントの決まり */
@@ -320,7 +321,7 @@ export function board(all: Row[], kind: Board, grade: Grade): Row[] {
   return [...list].sort((a, b) => b[key] - a[key] || Number(b.me) - Number(a.me));
 }
 
-export const STREAK_KING = 30;
+export const STREAK_KING = ROOM_STREAK_KING;
 
 export interface Title {
   id: string;
