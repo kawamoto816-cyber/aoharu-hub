@@ -40,6 +40,8 @@ const EVENT_LABEL: Record<string, string> = {
   voice_submit: "声が届いた",
   season_offer_view: "パスの案内を見た",
   bin_link_click: "学習便の案内クリック",
+  bin_guide_click: "学習便 入口→ご案内",
+  bin_apply_click: "学習便 申込フォームを開く",
   ask_parent_link: "保護者リンク作成",
   begin_checkout: "決済開始",
   purchase: "購入",

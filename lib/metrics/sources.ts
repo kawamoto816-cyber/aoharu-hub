@@ -47,6 +47,8 @@ export const FUNNEL_EVENTS = [
   "tensaku_preview_submit",
   "tensaku_preview_result",
   "bin_link_click",
+  "bin_guide_click",
+  "bin_apply_click",
   "sign_up",
   "tensaku_full_result",
   "tensaku_full_rescore",
