@@ -8,6 +8,7 @@ import { learnIdFromLocation, markDone } from "@/lib/learn/progress";
 import { SeasonPassOffer } from "@/components/billing/SeasonPassOffer";
 import { VoiceForm } from "@/components/voices/VoiceForm";
 import { TicketBuyButton } from "@/components/billing/TicketBuyButton";
+import { ProQuickButton } from "@/components/billing/ProQuickButton";
 import { DeadlineNote } from "@/components/tensaku/DeadlineNote";
 
 // /tensaku の添削フォーム。
@@ -485,7 +486,18 @@ export function PreviewForm({ handFont, initialKind = "shibo" }: { handFont: str
           {/* 添削の結果を見た人に：使った人の声を集める（名前なし・載せるかは本人が選ぶ）。2026-11-15 まで書き直した人だけに出していて、声が0件だった */}
           {signedIn && <VoiceForm kind={kind} before={prev ? prev.total : null} after={full.total} />}
 
-          {/* 無料プランの人に：いちばん「もっと直したい」場面で、出願まで使い放題の道を見せる */}
+          {/* 無料プランの人に：まず小さく始められる2つ（1通300円・Pro 月980円）を、パスより先に見せる。
+              2026-11 の実績で買われたのはこの2つで、パス（7,800円）だけを見せていた間は支払い画面に進む人がほとんどいなかった */}
+          {signedIn && !status?.unlimited && (
+            <div className="mt-6 rounded-[16px] border-[1.5px] border-[#15172B] bg-white p-4">
+              <p className="m-0 text-sm font-black">このあとも直して、点を上げたい人へ</p>
+              <p className="mb-0 mt-1 text-xs leading-relaxed text-[#5A5D73]">無料は月2本までです。続きは、1通だけ・今月だけ、のどちらでも始められます。</p>
+              {(full.lockedPoints ?? 0) === 0 && <TicketBuyButton location="tensaku_full_result" className="mt-3" />}
+              <ProQuickButton location="tensaku_full_result" className="mt-3" />
+            </div>
+          )}
+
+          {/* 出願まで何度も使う人には、使い放題のパスも見せる */}
           {signedIn && !status?.unlimited && (
             <SeasonPassOffer
               location="tensaku_full_result"

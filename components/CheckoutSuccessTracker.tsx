@@ -9,6 +9,7 @@
 // - 計測後はURLからクエリパラメータを取り除き、以後のリロードでも再送されないようにする。
 
 import { useEffect, useRef } from "react";
+import { trackEvent } from "@/lib/analytics";
 
 const TRACKED_SESSION_KEY = "aoharu_ga4_purchase_tracked_session_id";
 
@@ -37,14 +38,14 @@ export function CheckoutSuccessTracker() {
       // sessionStorageが使えない環境では二重計測防止をスキップ(致命的ではない)
     }
 
-    if (!alreadyTracked && typeof window.gtag === "function") {
-      window.gtag("event", "purchase", {
+    if (!alreadyTracked) {
+      // gtag の初期化より先にここへ来ることがあるので、trackEvent（準備できるまで最大5秒待つ）で送る
+      trackEvent("purchase", {
         transaction_id: sessionId || `no-session-${Date.now()}`,
         currency: "JPY",
         value: Number.isFinite(value) ? value : undefined,
-        items: plan
-          ? [{ item_id: plan, item_name: `アオハルOS ${plan}`, price: value }]
-          : undefined,
+        item_id: plan ?? undefined,
+        item_name: plan ? `アオハルOS ${plan}` : undefined,
       });
       try {
         if (sessionId) sessionStorage.setItem(TRACKED_SESSION_KEY, sessionId);

@@ -36,7 +36,7 @@ export function TicketBuyButton({ location, className }: { location: string; cla
       >
         {busy ? "支払い画面を開いています…" : `この1通だけ添削する（${TICKET_PRICE_JPY}円・書き直しの再添削1回つき）`}
       </button>
-      <p className="mb-0 mt-1 text-center text-xs text-[#5A5D73]">1回払い・自動更新なし・期限なし。何通も直すなら Pro（月980円）のほうが得です。</p>
+      <p className="mb-0 mt-1 text-center text-xs text-[#5A5D73]">1回払い・自動更新なし・期限なし。PayPay・カードで払えます。何通も直すなら Pro（月980円）のほうが得です。</p>
       {error && <p className="mb-0 mt-1 text-center text-xs font-bold text-[#B42318]">{error}</p>}
     </div>
   );
