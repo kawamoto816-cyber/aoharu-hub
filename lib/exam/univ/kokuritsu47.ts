@@ -153,8 +153,8 @@ const U: Univ[] = [
   },
   {
     slug: "wakayama", univ: "和歌山大学", order: 312,
-    bun: { minutes: 90, who: "教育学部・観光学部", d: [["seq", "数列"], ["vector", "ベクトル"], ["prob", "確率"], ["calc", "数学Ⅱの微分・積分"]] },
-    ri: { minutes: 120, who: "システム工学部", d: [["seq", "数列"], ["vector", "ベクトル"], ["prob", "確率"], ["int", "数学Ⅲの微分・積分"], ["complex", "複素数平面"]] },
+    bun: { minutes: 90, official: "令和9年度", who: "教育学部・観光学部", d: [["seq", "数列"], ["vector", "ベクトル"], ["prob", "確率"], ["calc", "数学Ⅱの微分・積分"]] },
+    ri: { minutes: 90, official: "令和9年度", who: "システム工学部", d: [["seq", "数列"], ["vector", "ベクトル"], ["prob", "確率"], ["int", "数学Ⅲの微分・積分"], ["complex", "複素数平面"]] },
   },
   {
     slug: "tottori", univ: "鳥取大学", order: 313,
@@ -164,9 +164,9 @@ const U: Univ[] = [
   },
   {
     slug: "shimane", univ: "島根大学", order: 314,
-    eigo: { minutes: 90, who: "法文学部・人間科学部・総合理工学部ほか", d: [["R", "長文読解"], ["R", "長文読解（下線部の解釈・和訳）"], ["E", "図表を読んで英語で書く"]] },
-    bun: { minutes: 90, who: "教育学部", d: [["seq", "数列"], ["prob", "場合の数・確率"], ["coord", "関数と図形"]] },
-    ri: { minutes: 120, who: "総合理工学部・医学部医学科（大問数は医学科の4題）", guess: true, d: [["seq", "数列"], ["prob", "場合の数・確率"], ["int", "積分法"], ["limit", "数列の極限"]] },
+    eigo: { minutes: 90, official: "令和8年度", who: "法文学部・人間科学部・総合理工学部ほか", d: [["R", "長文読解"], ["R", "長文読解（下線部の解釈・和訳）"], ["E", "図表を読んで英語で書く"]] },
+    bun: { minutes: 90, official: "令和8年度", who: "教育学部", d: [["seq", "数列"], ["prob", "場合の数・確率"], ["coord", "関数と図形"]] },
+    ri: { minutes: 90, official: "令和8年度", who: "総合理工学部・材料エネルギー学部（大問数は公開情報で確かめられず、4題にしている）", guess: true, d: [["seq", "数列"], ["prob", "場合の数・確率"], ["int", "積分法"], ["limit", "数列の極限"]] },
   },
   {
     slug: "okayama", univ: "岡山大学", order: 315,
@@ -217,8 +217,8 @@ const U: Univ[] = [
   },
   {
     slug: "miyazaki", univ: "宮崎大学", order: 324,
-    eigo: { minutes: 60, who: "工学部", d: [["R", "研究の概要の読解"], ["K", "会話文"], ["R", "長文読解（出来事の順序）"], ["R", "記事の読解（日本語・英語での説明）"]] },
-    ri: { minutes: 120, who: "工学部", d: [["limit", "極限・微分・積分の基礎"], ["diff", "曲線の極値・接線・面積"], ["prob", "確率"], ["vector", "空間ベクトル"], ["seq", "数列と数学的帰納法"]] },
+    eigo: { minutes: 60, official: "令和9年度", who: "工学部", d: [["R", "研究の概要の読解"], ["K", "会話文"], ["R", "長文読解（出来事の順序）"], ["R", "記事の読解（日本語・英語での説明）"]] },
+    ri: { minutes: 120, official: "令和9年度", who: "工学部", d: [["limit", "極限・微分・積分の基礎"], ["diff", "曲線の極値・接線・面積"], ["prob", "確率"], ["vector", "空間ベクトル"], ["seq", "数列と数学的帰納法"]] },
   },
   {
     slug: "kagoshima", univ: "鹿児島大学", order: 325,
