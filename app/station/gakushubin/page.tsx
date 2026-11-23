@@ -1,11 +1,19 @@
 import type { Metadata } from "next";
 import { BinDoc, BinSection } from "@/components/station/BinDoc";
+import { TrackedLink } from "@/components/TrackedLink";
 import { BIN, BIN_TIMETABLE } from "@/lib/station/gakushubin";
 
 // /station/gakushubin：学習便（試験運用）の保護者向けご案内。申込フォームへつなぐ。
 export const metadata: Metadata = {
   title: "アオハル 学習便 モニター募集（中学生・保護者の方へ）",
   description: "決まった時刻にオンラインの自習室に集まり、見守り役のもとで90分学ぶ「学習便」の試験運用モニターを募集します。毎回の学習記録を保護者の方へお届けします。",
+  openGraph: {
+    title: "アオハル 学習便 モニター募集（中学生・保護者の方へ）",
+    description: "決まった時刻にオンラインの自習室に集まり、見守り役のもとで90分学ぶ「学習便」の試験運用モニターを募集します。毎回の学習記録を保護者の方へお届けします。",
+    url: "https://app.bluespring.co.jp/station/gakushubin",
+    images: [{ url: "/og-gakushubin.png", width: 1200, height: 630, alt: "アオハル 学習便：「勉強しなさい」を、わたしたちが引き受けます。" }],
+  },
+  twitter: { card: "summary_large_image", images: ["/og-gakushubin.png"] },
   robots: { index: false, follow: false },
 };
 
@@ -113,9 +121,9 @@ export default function Page() {
 
       <div className="rounded-2xl border border-indigo-200 bg-indigo-50 p-6 text-center">
         <p className="text-sm font-bold text-slate-900">お申し込みは保護者の方からお願いします（所要時間：約5分）</p>
-        <a href={BIN.applyUrl} target="_blank" rel="noopener noreferrer" className="mt-4 inline-block rounded-full bg-indigo-600 px-8 py-3 text-sm font-bold text-white hover:bg-indigo-500">
+        <TrackedLink href={BIN.applyUrl} event="bin_apply_click" params={{ location: "gakushubin" }} external className="mt-4 inline-block rounded-full bg-indigo-600 px-8 py-3 text-sm font-bold text-white hover:bg-indigo-500">
           モニターに申し込む
-        </a>
+        </TrackedLink>
         <p className="mt-3 text-xs text-slate-600">
           お問い合わせ：
           <a href={`mailto:${BIN.mail}`} className="text-indigo-600 underline underline-offset-2">

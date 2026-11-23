@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { StationShell } from "@/components/station/StationShell";
+import { TrackedLink } from "@/components/TrackedLink";
 import { BIN, BIN_TIMETABLE } from "@/lib/station/gakushubin";
 
 // /station：ラーニングステーションの入口。保護者が読むページにした（2026-11-23 代表の判断）。
@@ -65,9 +66,9 @@ export default function Page() {
             決まった時刻にオンラインの自習室に集まり、見守り役のもとで90分学ぶ「{BIN.name}」。乗ったかどうか、何問解いたかを、その日のうちに保護者の方へお届けします。
           </p>
           <div className="mt-5 flex flex-wrap items-center gap-3">
-            <Link href="/station/gakushubin" className={primary}>
+            <TrackedLink href="/station/gakushubin" event="bin_guide_click" params={{ location: "station_hero" }} className={primary}>
               保護者の方へ：ご案内とお申し込み
-            </Link>
+            </TrackedLink>
           </div>
           <p className="m-0 mt-3 text-[13px] leading-relaxed text-[#4A4D63]">
             4週間 {yen(BIN.priceJpy)}（税込）・{BIN.refundBy}まで全額返金・自動更新なし。いまお申し込みいただくと、冬休みの体験便（12月26〜28日の朝）にも無料で乗れます。
@@ -126,7 +127,7 @@ export default function Page() {
           </table>
         </div>
         <div className="mt-4 flex flex-wrap gap-3">
-          <Link href="/station/gakushubin" className={primary}>学習便のご案内（保護者の方）</Link>
+          <TrackedLink href="/station/gakushubin" event="bin_guide_click" params={{ location: "station_compare" }} className={primary}>学習便のご案内（保護者の方）</TrackedLink>
           <Link href="/station/room" className={secondary}>無料の自習室に入る（生徒）</Link>
         </div>
       </section>
@@ -216,14 +217,14 @@ export default function Page() {
             </div>
           ))}
         </dl>
-        <Link href="/station/gakushubin" className="mt-3 inline-block text-[14px] font-black text-[#1533B8]">12問すべてを見る →</Link>
+        <TrackedLink href="/station/gakushubin" event="bin_guide_click" params={{ location: "station_faq" }} className="mt-3 inline-block text-[14px] font-black text-[#1533B8]">12問すべてを見る →</TrackedLink>
       </section>
 
       {/* 申し込み */}
       <section className={`${card} mt-10 !bg-[#EEF1FF] text-center`}>
         <p className="m-0 text-[20px] font-black">申込締切 {BIN.applyBy}・定員{BIN.seats}名</p>
         <p className="m-0 mt-1 text-[14px] text-[#3A3D55]">お申し込みは保護者の方から。所要時間は約5分です。</p>
-        <Link href="/station/gakushubin" className={`${primary} mt-4`}>保護者の方へ：ご案内とお申し込み</Link>
+        <TrackedLink href="/station/gakushubin" event="bin_guide_click" params={{ location: "station_bottom" }} className={`${primary} mt-4`}>保護者の方へ：ご案内とお申し込み</TrackedLink>
       </section>
 
       <p className="m-0 mt-8 text-[13px] leading-relaxed text-[#4A4D63]">

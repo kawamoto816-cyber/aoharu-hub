@@ -31,6 +31,7 @@ import {
   type RoomState,
 } from "@/lib/station/room";
 import { SmartSignUpButton } from "@/components/SmartSignUpButton";
+import { TrackedLink } from "@/components/TrackedLink";
 import { findBins, jstHm, mdwLabel } from "@/lib/station/bin";
 import type { LiveRoom } from "@/lib/station/room-store";
 import { Ambience } from "./Ambience";
@@ -632,9 +633,9 @@ function NextBin({ now }: { now: number }) {
       </p>
       <p className="m-0 mt-1 text-[13px] leading-relaxed text-white/75">
         時刻を決めて集まり、見守り役のもとで90分。出席と学習量は、その日のうちに保護者の方へ届きます。お申し込みは保護者の方からです。
-        <Link href="/station" className="ml-1 font-black text-[#FFE45C]">
+        <TrackedLink href="/station" event="bin_link_click" params={{ location: "room" }} className="ml-1 font-black text-[#FFE45C]">
           学習便のご案内 →
-        </Link>
+        </TrackedLink>
       </p>
     </section>
   );

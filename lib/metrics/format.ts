@@ -14,6 +14,8 @@ const FUNNEL_LABEL: Record<(typeof FUNNEL_EVENTS)[number], string> = {
   tensaku_preview_submit: "お試し添削の送信",
   tensaku_preview_result: "お試し添削の結果表示",
   bin_link_click: "学習便への案内をクリック",
+  bin_guide_click: "学習便：入口からご案内へ",
+  bin_apply_click: "学習便：申込フォームを開いた",
   sign_up: "新規登録の完了",
   tensaku_full_result: "/tensaku での全文添削",
   tensaku_full_rescore: "書き直して2回目以上の全文添削",
