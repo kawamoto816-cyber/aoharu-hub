@@ -5,16 +5,14 @@ import { usePathname } from "next/navigation";
 import { balance, useStation } from "@/lib/station/store";
 
 // 駅の中の案内。学習便だけは試作ではなく実際の有料モニターなので、色を変えて目立たせる（案内ページは別の外枠 BinDoc で開く）。
+// 入口（/station）は保護者が読むページなので、案内は少なくする。準備中の試作は「実験室」1つにまとめた（2026-11-23）。
+const LAB = ["/station/lab", "/station/board", "/station/circle", "/station/stage", "/station/ranking", "/station/shelf"];
 const ROOMS: { href: string; label: string; hot?: boolean }[] = [
   { href: "/station", label: "駅の入口" },
   { href: "/station/gakushubin", label: "学習便（モニター募集中）", hot: true },
-  { href: "/station/room", label: "アオハルーム" },
+  { href: "/station/room", label: "アオハルーム（無料）" },
   { href: "/station/course", label: "直前コース" },
-  { href: "/station/board", label: "掲示板" },
-  { href: "/station/circle", label: "サークル" },
-  { href: "/station/stage", label: "教壇" },
-  { href: "/station/ranking", label: "格付け" },
-  { href: "/station/shelf", label: "自分の棚" },
+  { href: "/station/lab", label: "実験室" },
   { href: "/station/guide", label: "使い方" },
 ];
 
@@ -24,7 +22,8 @@ export function StationNav() {
   return (
     <nav aria-label="駅の中の案内" className="flex flex-wrap items-center gap-1.5">
       {ROOMS.map((r) => {
-        const on = r.href === "/station" ? path === "/station" : path.startsWith(r.href);
+        const inLab = LAB.some((l) => path.startsWith(l));
+        const on = r.href === "/station" ? path === "/station" : r.href === "/station/lab" ? inLab : path.startsWith(r.href);
         return (
           <Link
             key={r.href}
@@ -36,9 +35,12 @@ export function StationNav() {
           </Link>
         );
       })}
-      <span className="ml-auto rounded-full bg-[#15172B] px-3 py-1.5 text-[13px] font-black text-white" title="ブルーコイン（換金できない感謝のしるし）">
-        <Coin /> {balance(s)}
-      </span>
+      {/* ブルーコインは試作なので、実験室とその中のページでだけ出す */}
+      {LAB.some((l) => path.startsWith(l)) ? (
+        <span className="ml-auto rounded-full bg-[#15172B] px-3 py-1.5 text-[13px] font-black text-white" title="ブルーコイン（換金できない感謝のしるし）">
+          <Coin /> {balance(s)}
+        </span>
+      ) : null}
     </nav>
   );
 }
