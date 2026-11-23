@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { CopyText } from "@/components/station/CopyText";
 import { isAdminUser } from "@/lib/metrics/admin-auth";
-import { absentText, addDays, atMin, BIN_MIN, binOf, dailyText, isDate, isSlot, jstHm, jstToday, lateMin, mdwLabel, mondayOf, REFLECT_LABEL, rideMin, isFullRide, slotOn, SLOTS, type Reflect, type Slot } from "@/lib/station/bin";
+import { absentText, TEAMS, addDays, atMin, BIN_MIN, binOf, dailyText, isDate, isSlot, jstHm, jstToday, lateMin, mdwLabel, mondayOf, REFLECT_LABEL, rideMin, isFullRide, slotOn, SLOTS, type Reflect, type Slot } from "@/lib/station/bin";
 import { listMembers, listRides, type BinMember, type RideRow } from "@/lib/station/bin-store";
+import { setTeamAction } from "./actions";
 import { loadSummary, type UserSummary } from "@/lib/station/log-store";
 import { unitName } from "@/lib/terms/meta";
 
@@ -254,6 +255,40 @@ export default async function AdminStationBinPage({ searchParams }: { searchPara
           ) : null}
         </>
       )}
+
+      <section className="mt-12">
+        <h2 className="text-sm font-bold text-slate-900">班の設定</h2>
+        <p className="mt-1 text-xs leading-relaxed text-slate-500">
+          班分けが決まったら、ここで入れます（A＝月、B＝水、C＝木、D＝金がホームルームの曜日）。入れておくと、生徒の乗車ページにホームルームの日が出ます。生徒が自分で選び直すこともできます。
+        </p>
+        {(members ?? []).length === 0 ? (
+          <p className="mt-3 text-sm text-slate-500">まだ、乗車ページでニックネームを決めた人がいません。</p>
+        ) : (
+          <ul className="mt-3 grid gap-2 sm:grid-cols-2">
+            {(members ?? []).map((m) => (
+              <li key={m.user_id} className="flex flex-wrap items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm">
+                <span className="min-w-0 flex-1">
+                  <Name m={m} /> <span className="text-slate-500">{m.grade}</span>
+                </span>
+                <form action={setTeamAction} className="flex items-center gap-1.5">
+                  <input type="hidden" name="userId" value={m.user_id} />
+                  <select name="team" defaultValue={m.team ?? ""} aria-label={`${m.nick || m.user_id.slice(-6)} の班`} className="rounded-lg border border-slate-300 bg-white px-2 py-1 text-sm">
+                    <option value="">未定</option>
+                    {TEAMS.map((t) => (
+                      <option key={t} value={t}>
+                        {t}班
+                      </option>
+                    ))}
+                  </select>
+                  <button type="submit" className="rounded-lg bg-indigo-600 px-2.5 py-1 text-xs font-bold text-white hover:bg-indigo-500">
+                    保存
+                  </button>
+                </form>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
     </main>
   );
 }

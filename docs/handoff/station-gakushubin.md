@@ -50,3 +50,10 @@ SQL は `docs/station-log.sql` と `docs/station-bin.sql`。どちらも本番�
 - 4コースとも 4,980円・1回払い：共通テスト／大学入試（国公立2次・私大。1回の支払いで全大学）／公立高校入試／私立高校入試。高校入試の2コースは保護者あての支払いリンクだけ。Max・受験シーズンパスは追加なし。
 - 種類と値段は `lib/station/course-kinds.ts`、利用権は `lib/station/course-pass.ts`（app_settings）、画面は `components/station/Course*.tsx`。
 - `StationShell` に `notice` を足した（販売中のページでは「試作です」の注意を出さない）。`/station` の入口・学習便・アオハルームには手を入れていない。
+
+## 2026-11-23 追記（#39・#40）
+
+- 計測（#39）：`bin_guide_click`（/station → ご案内。location: station_hero / compare / faq / bottom）、`bin_apply_click`（申込フォームへ）、`bin_link_click`（ほかのページ → 学習便。アオハルームは location "room"）。社内ダッシュボードのラベルは lib/metrics/sources.ts・lib/metrics/format.ts・app/admin/page.tsx。
+- OGP（#39）：`public/og-gakushubin.png`。/station と /station/gakushubin に openGraph / twitter。
+- 班（#40）：乗車ページのプロフィールで、班は「まだ決まっていない」（空）でも保存できる（体験便は班のお知らせの前にあるため）。班分けのあとは、社内の出席表 `/admin/station/bin` の「班の設定」から運営が入れる（`setTeamAction` → `setTeam`）。
+- 運用キット（申込への返信、体験便、本番前の連絡、LINEの返信集、管理表、Zoomの設定）：https://claude.ai/artifact/7hRr8BWN5AbtTzjfeDeFFy

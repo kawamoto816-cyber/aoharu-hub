@@ -77,6 +77,7 @@ eq("乗っていた分（発車前・終着後は数えない）", [b.rideMin(ni
 eq("ホームルームの日（B班＝水）", [b.isHomeroom("B", night), b.isHomeroom("A", night), b.isHomeroom("B", morning), b.isHomeroom("", night)], [true, false, false, false]);
 
 // ---- 入力の検証 ----
+eq("プロフィール：班はまだ決まっていない（空）でも保存できる", [b.checkProfile({ nick: "そら", grade: "中2", team: "" }).ok, b.checkProfile({ nick: "そら", grade: "中2", team: "E" }).ok, b.checkProfile({ nick: "そら", grade: "中2" }).ok], [true, false, false]);
 eq("プロフィール", [b.checkProfile({ nick: " そら\n", grade: "中2", team: "B" }), b.checkProfile({ nick: "", grade: "中2", team: "B" }).ok, b.checkProfile({ nick: "そら", grade: "高1", team: "B" }).ok, b.checkProfile({ nick: "そら", grade: "中2", team: "E" }).ok, b.checkProfile({ nick: "あ".repeat(21), grade: "中2", team: "A" }).ok], [{ ok: true, value: { nick: "そら", grade: "中2", team: "B" } }, false, false, false, false]);
 eq("宣言", [b.checkPlan("数学").ok, b.checkPlan("  数学  ").ok, b.checkPlan(123).ok, b.checkPlan("あ".repeat(81)).ok, b.checkPlan("連立方程式の演習を\n20問")], [false, false, false, false, { ok: true, value: "連立方程式の演習を 20問" }]);
 eq("下車", [b.checkCheckout({ explain: "みじかい", reflect: "done" }).ok, b.checkCheckout({ explain: "加減法は係数をそろえて消す。", reflect: "maybe" }).ok, b.checkCheckout({ explain: "加減法は係数をそろえて消す。", reflect: "half" }).ok, b.checkCheckout({ explain: "あ".repeat(401), reflect: "done" }).ok], [false, false, true, false]);
