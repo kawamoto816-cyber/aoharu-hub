@@ -18,7 +18,7 @@ export function Shelf() {
   return (
     <div className="mt-4 grid gap-4">
       <section className={card}>
-        <h2 className="m-0 text-[17px] font-black">会員の段</h2>
+        <h2 className="m-0 text-[17px] font-black">駅の段（試作）</h2>
         <ol className="m-0 mt-2 grid list-none gap-1.5 p-0 sm:grid-cols-5">
           {RANKS.map((r) => (
             <li key={r.rank} className={`rounded-[10px] border-[1.5px] p-2 text-[12px] leading-relaxed ${r.rank === rank ? "border-[#1533B8] bg-[#1533B8] text-white" : r.rank < rank ? "border-[#15172B] bg-[#E6EAFB]" : "border-dashed border-[#C9C7BD] bg-white"}`}>

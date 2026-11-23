@@ -4,8 +4,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { balance, useStation } from "@/lib/station/store";
 
-const ROOMS = [
+// 駅の中の案内。学習便だけは試作ではなく実際の有料モニターなので、色を変えて目立たせる（案内ページは別の外枠 BinDoc で開く）。
+const ROOMS: { href: string; label: string; hot?: boolean }[] = [
   { href: "/station", label: "駅の入口" },
+  { href: "/station/gakushubin", label: "学習便（モニター募集中）", hot: true },
   { href: "/station/room", label: "アオハルーム" },
   { href: "/station/course", label: "直前コース" },
   { href: "/station/board", label: "掲示板" },
@@ -28,7 +30,7 @@ export function StationNav() {
             key={r.href}
             href={r.href}
             aria-current={on ? "page" : undefined}
-            className={`rounded-full border-[1.5px] border-[#15172B] px-3 py-1.5 text-[13px] font-black no-underline ${on ? "bg-[#1533B8] text-white" : "bg-white text-[#15172B] hover:bg-[#E6EAFB]"}`}
+            className={`rounded-full border-[1.5px] border-[#15172B] px-3 py-1.5 text-[13px] font-black no-underline ${on ? "bg-[#1533B8] text-white" : r.hot ? "bg-[#FFE45C] text-[#15172B] hover:bg-[#FFD400]" : "bg-white text-[#15172B] hover:bg-[#E6EAFB]"}`}
           >
             {r.label}
           </Link>
@@ -50,11 +52,12 @@ export function Coin({ size = 14 }: { size?: number }) {
   );
 }
 
+/** わかった星（0〜3）。とった星は ★、まだの分は ☆ で出す（色だけの差にすると、どの授業も★★★に見えてしまうため） */
 export function Stars({ n, size = 15 }: { n: number; size?: number }) {
   return (
-    <span role="img" aria-label={n ? `マナビシュラン 星${n}つ` : "星はまだ"} className="whitespace-nowrap" style={{ fontSize: size, letterSpacing: 1 }}>
+    <span role="img" aria-label={n ? `わかった星 ${n}つ（3つが最高）` : "わかった星はまだ"} className="whitespace-nowrap" style={{ fontSize: size, letterSpacing: 1 }}>
       {n ? <span className="text-[#E0A800]">{"★".repeat(n)}</span> : null}
-      <span className="text-[#C9C7BD]">{"★".repeat(3 - n)}</span>
+      <span className="text-[#8A8C9C]">{"☆".repeat(3 - n)}</span>
     </span>
   );
 }

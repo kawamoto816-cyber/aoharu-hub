@@ -2,6 +2,7 @@ import type { Lesson, Rating, ShareCard, Slot, TeachRequest } from "./types";
 
 // ラーニングステーション（試作）の見本のデータ。登場するのは架空のニックネームの生徒。
 // 画面には「見本のデータ」と書いて出す。本番ではサーバーの記録に置きかえる。
+// 先生役の「わかった星」は 0〜3 にばらつくように点を置いてある（ソラ★★★／コハル・レン★★／ミナト・ユイ★／カイ・アオイ・ヒナタは授業が3回に足りず星なし）。
 
 export const STATION_NAME = "ラーニングステーション";
 export const MY_CIRCLE = "サークル・あさひ";

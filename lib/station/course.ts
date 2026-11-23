@@ -243,6 +243,15 @@ export function trends(all: ExamAttempt[], subjects: CourseSubject[]): Trend[] {
 
 export const ymd = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 
+/** YYYY-MM-DD を、その日の0時（その場の時刻帯）の Date にする */
+export function fromYmd(s: string): Date {
+  const [y, m, d] = s.split("-").map(Number);
+  return new Date(y, m - 1, d);
+}
+
+/** 日本時間の今日（YYYY-MM-DD）。サーバーは UTC で動くので、サーバーで「今日」を決めるときはこれを使う */
+export const todayJst = (now: Date = new Date()) => new Date(now.getTime() + 9 * 3_600_000).toISOString().slice(0, 10);
+
 /** 始めた日（YYYY-MM-DD）から数えて、いまは何週目（1〜5）の何日目（1〜7）か。始める前なら null。5週を過ぎたら5週目の7日目 */
 export function courseDay(start: string | undefined, today: Date): { week: number; day: number } | null {
   if (!start || !/^\d{4}-\d{2}-\d{2}$/.test(start)) return null;

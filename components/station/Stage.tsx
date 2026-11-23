@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState, useTransition } from "react";
 import { checkLessonPlan, unitHints } from "@/app/station/actions";
 import { LESSONS, REQUESTS } from "@/lib/station/demo";
-import { canTeach, lessonPoint, teacherCards } from "@/lib/station/rating";
+import { STAR_MIN_LESSONS, STAR_RULE, canTeach, lessonPoint, teacherCards } from "@/lib/station/rating";
 import { addCoins, newId, update, useStation } from "@/lib/station/store";
 import type { LessonPlan, PlanCheck, TeachRequest } from "@/lib/station/types";
 import { VoiceLesson } from "./VoiceLesson";
@@ -27,7 +27,28 @@ export function Stage({ units, initialUnit, requestId }: { units: UnitOpt[]; ini
     <div className="mt-4 grid gap-6">
       <TeachForm units={units} initialUnit={initialUnit} request={request} />
       <section>
-        <h2 className="m-0 mb-2 text-[17px] font-black">これまでの授業</h2>
+        <h2 className="m-0 text-[17px] font-black">
+          これまでの授業<span className="ml-2 text-[11.5px] font-bold text-[#5A5D73]">見本のデータ（架空のニックネーム・架空の点数）</span>
+        </h2>
+        <div className="mb-3 mt-2 rounded-[12px] border-[1.5px] border-dashed border-[#15172B] bg-[#FFF8D6] p-3 text-[12.5px] leading-relaxed">
+          <p className="m-0 text-[13.5px] font-black">星（わかった星）の意味</p>
+          <p className="m-0 mt-1">
+            星は授業1回ごとではなく、<b>先生役ごと</b>につきます。授業1回の「わからせ点」＝AI点検の点（100点満点）と、受講者が確かめの1問を解けた割合（％）を半分ずつ。その平均で星が決まります。受けた人の人気は入れません。
+          </p>
+          <ul className="m-0 mt-1 list-none p-0">
+            {STAR_RULE.map((r) => (
+              <li key={r.stars}>
+                <Stars n={r.stars} size={13} />　わからせ点の平均が{r.text.replace("わからせ点の平均が", "")}
+              </li>
+            ))}
+            <li>
+              <Stars n={0} size={13} />　平均が72未満、または授業がまだ{STAR_MIN_LESSONS}回に足りない（星は{STAR_MIN_LESSONS}回から）
+            </li>
+          </ul>
+          <p className="m-0 mt-1 text-[#5A5D73]">
+            受けた生徒の評価は、もう1つの物差し「受けた人の声」で別に見ます。<Link href="/station/ranking" className="font-black text-[#1533B8]">格付けの見本を見る →</Link>
+          </p>
+        </div>
         <ul className="m-0 grid list-none gap-2 p-0 sm:grid-cols-2">
           {s.myLessons.map((m) => (
             <li key={m.id} className="rounded-[12px] border-[1.5px] border-[#1533B8] bg-[#E6EAFB] p-3">
@@ -43,11 +64,12 @@ export function Stage({ units, initialUnit, requestId }: { units: UnitOpt[]; ini
                 <Link href={`/station/stage/${l.id}`} className="block h-full rounded-[12px] border-[1.5px] border-[#15172B] bg-white p-3 text-[#15172B] no-underline hover:bg-[#F7F6F1]">
                   <p className="m-0 flex items-center gap-2 text-[11.5px] font-bold text-[#5A5D73]">
                     <span>{l.teacher}（{l.grade}）・{l.subject}・{l.unitName}</span>
-                    <span className="ml-auto"><Stars n={c.stars} size={13} /></span>
+                    <span className="ml-auto whitespace-nowrap">先生役の星 <Stars n={c.stars} size={13} /></span>
                   </p>
                   <p className="m-0 mt-0.5 text-[15px] font-black">{l.title}</p>
                   <p className="m-0 mt-0.5 text-[12px] text-[#3A3D55]">
                     わからせ点 {lessonPoint(l)}・受講 {l.attendees}人・確かめの正答 {Math.round(l.checkRate * 100)}%
+                    {c.lessons.length < STAR_MIN_LESSONS ? `・${l.teacher}さんは授業${c.lessons.length}回（星は${STAR_MIN_LESSONS}回から）` : ""}
                   </p>
                 </Link>
               </li>

@@ -17,17 +17,18 @@ export function Circle() {
   if (!s.member) {
     return (
       <div className={`${card} mt-4`}>
-        <h2 className="m-0 text-[17px] font-black">サークルに入るには</h2>
-        <ol className="m-0 mt-2 pl-5 text-[14px] leading-loose">
+        <h2 className="m-0 text-[17px] font-black">ラーニングサークルは準備中です（試作を公開中）</h2>
+        <p className="m-0 mt-2 text-[14px] leading-relaxed">
+          まだ募集していません。値段や始める時期も決まっていません。試作の画面は、駅の入口の「ラーニングサークル」のボタンをオンにすると動かせます（お金はかかりません）。
+        </p>
+        <ul className="m-0 mt-2 pl-5 text-[14px] leading-loose">
           <li>
-            <Link href="/station/board" className="font-bold text-[#1533B8]">掲示板</Link>で、シェア会を見学する（月に1回まで無料）
+            <Link href="/station/board" className="font-bold text-[#1533B8]">掲示板</Link>で、シェア会の時間割の見本を見られます
           </li>
-          <li>保護者に「お願いのリンク」を送る（有料の案内は保護者にだけ届きます）</li>
-          <li>保護者が同意して会員権を買うと、サークルが決まる</li>
-        </ol>
-        <p className="m-0 mt-2 text-[13px] text-[#3A3D55]">試作では、駅の入口の「ラーニングサークル会員権」のボタンで入ったことにできます。</p>
+          <li>始めるときは、保護者の同意をいただいてから参加する形にします</li>
+        </ul>
         <Link href="/station" className="mt-3 inline-block rounded-[10px] border-[1.5px] border-[#15172B] bg-[#FFE45C] px-4 py-2 text-[14px] font-black text-[#15172B] no-underline">駅の入口へ</Link>
-        <h3 className="m-0 mt-5 text-[14px] font-black">シェアカードの見本</h3>
+        <h3 className="m-0 mt-5 text-[14px] font-black">シェアカードの見本（架空のニックネーム）</h3>
         <div className="mt-2 grid gap-3 sm:grid-cols-2">
           {SHARES.slice(0, 2).map((c) => (
             <CardView key={c.id} c={c} readonly />
@@ -41,7 +42,7 @@ export function Circle() {
     <div className="mt-4 grid gap-4 lg:grid-cols-[320px_1fr]">
       <div className="grid content-start gap-4">
         <section className={card}>
-          <h2 className="m-0 text-[17px] font-black">{MY_CIRCLE}</h2>
+          <h2 className="m-0 text-[17px] font-black">{MY_CIRCLE}<span className="ml-2 text-[11.5px] font-bold text-[#5A5D73]">見本のサークル</span></h2>
           {next && (
             <p className="m-0 mt-1 text-[13px] text-[#3A3D55]">
               次のシェア会：{Number(next.at.slice(5, 7))}月{Number(next.at.slice(8, 10))}日 {next.at.slice(11, 16)}〜
@@ -69,7 +70,7 @@ export function Circle() {
         <ShareForm />
       </div>
       <section>
-        <h2 className="m-0 mb-2 text-[17px] font-black">シェアカード</h2>
+        <h2 className="m-0 mb-2 text-[17px] font-black">シェアカード<span className="ml-2 text-[11.5px] font-bold text-[#5A5D73]">あなたのカード以外は見本</span></h2>
         <div className="grid gap-3">
           {cards.map((c) => (
             <CardView key={c.id} c={c} />
