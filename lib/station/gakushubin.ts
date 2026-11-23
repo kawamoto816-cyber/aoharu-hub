@@ -6,7 +6,13 @@ export const BIN = {
   seats: 24,
   payBy: "2027年1月11日(月)",
   refundBy: "2027年1月17日(日)",
-  briefing: "2027年1月9日(土)",
+  /** 申込の締切（定員に達したら先に締め切る） */
+  applyBy: "2027年1月8日(金)",
+  /** 第1週の便の予約の締切 */
+  firstBookBy: "2027年1月10日(日)",
+  /** 班をお知らせする日 */
+  teamNoticeOn: "2027年1月11日(月)",
+  line: "アオハル 学習便（@724myiue）",
   /** 申込フォーム（Googleフォーム。公開すると開ける） */
   applyUrl: "https://docs.google.com/forms/d/1jZYNI17Kb4w1y1Q9EGjEvdG8VhIge2GX5VkzWeebaUY/viewform",
   mail: "pr@bluespring.co.jp",
