@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { StationShell } from "@/components/station/StationShell";
 import { TrackedLink } from "@/components/TrackedLink";
@@ -8,6 +9,12 @@ import { BIN, BIN_TIMETABLE } from "@/lib/station/gakushubin";
 //   ・無料の自習室「アオハルーム」を、ちがい（時刻の約束・見守り役・保護者への報告）が分かる形で並べる
 //   ・準備中の試作（サークル・教壇・掲示板・格付け・コイン・自分の棚）は /station/lab（実験室）へ移した
 // 文言を直すときは、保護者向けご案内（/station/gakushubin）と食いちがわないようにする。
+
+// 検索に出す（2026-11-23 代表の公開OK）。タイトルと説明文は layout.tsx のものを使う。
+export const metadata: Metadata = {
+  alternates: { canonical: "https://app.bluespring.co.jp/station" },
+  robots: { index: true, follow: true },
+};
 
 const yen = (n: number) => `${n.toLocaleString("ja-JP")}円`;
 

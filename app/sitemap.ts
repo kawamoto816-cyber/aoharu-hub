@@ -90,6 +90,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...OSHIERU_UNITS.map((u) => ({ url: `${base}${oshieruHref(u)}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.5 })),
     { url: `${base}${OSHIERU_AI_HOME}`, lastModified: now, changeFrequency: "weekly" as const, priority: 0.6 },
     // 直前コース（共通テスト・大学入試・公立高校入試・私立高校入試。2026-11-23 販売。駅のほかのページは入れない）
+    // ラーニングステーションの入口・学習便のご案内・アオハルーム（2026-11-23 代表の公開OK。実験室などの試作は入れない）
+    { url: `${base}/station`, lastModified: now, changeFrequency: "weekly" as const, priority: 0.8 },
+    { url: `${base}/station/gakushubin`, lastModified: now, changeFrequency: "weekly" as const, priority: 0.8 },
+    { url: `${base}/station/room`, lastModified: now, changeFrequency: "weekly" as const, priority: 0.6 },
     { url: `${base}/station/course`, lastModified: now, changeFrequency: "weekly" as const, priority: 0.7 },
     { url: `${base}/station/course/shikoko`, lastModified: now, changeFrequency: "weekly" as const, priority: 0.7 },
     { url: `${base}/station/course/kyotsu`, lastModified: now, changeFrequency: "weekly" as const, priority: 0.7 },

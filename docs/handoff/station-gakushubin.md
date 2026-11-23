@@ -57,3 +57,4 @@ SQL は `docs/station-log.sql` と `docs/station-bin.sql`。どちらも本番�
 - OGP（#39）：`public/og-gakushubin.png`。/station と /station/gakushubin に openGraph / twitter。
 - 班（#40）：乗車ページのプロフィールで、班は「まだ決まっていない」（空）でも保存できる（体験便は班のお知らせの前にあるため）。班分けのあとは、社内の出席表 `/admin/station/bin` の「班の設定」から運営が入れる（`setTeamAction` → `setTeam`）。
 - 運用キット（申込への返信、体験便、本番前の連絡、LINEの返信集、管理表、Zoomの設定）：https://claude.ai/artifact/7hRr8BWN5AbtTzjfeDeFFy
+- 検索公開（#41）：/station・/station/gakushubin・/station/room を index にし、サイトマップへ追加（代表の公開OK 2026-11-23）。app/station/layout.tsx の既定は noindex のままなので、実験室・サークル・教壇などの試作は検索に出ない。検索に出すページは各 page.tsx に robots: { index: true } を置く。

@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
-// ラーニングステーション（試作）。代表の公開OKが出るまで noindex・サイトマップに入れない。
+// ラーニングステーション。入口（/station）・学習便のご案内・アオハルームは検索に出す（2026-11-23 代表の公開OK）。
+// ここは「既定は noindex」のまま。実験室・サークル・教壇など準備中の試作は、この既定で検索に出ない。
+// 検索に出すページは、各 page.tsx で robots: { index: true } を置く。
 // description を置かないと、サイト全体の説明文（app/layout.tsx）がそのまま出てしまうので、駅の内容に合う文をここで決める。
 export const metadata: Metadata = {
   title: "ラーニングステーション｜アオハル 学習便と無料の自習室｜アオハルラーン",
