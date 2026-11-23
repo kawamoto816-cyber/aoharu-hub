@@ -56,7 +56,9 @@ export default function Page() {
           <h1 className="m-0 mt-3 text-[32px] font-black leading-[1.35] sm:text-[40px]">
             「勉強しなさい」を、
             <br />
-            わたしたちが引き受けます。
+            わたしたちが
+            <br />
+            引き受けます。
           </h1>
           <p className="m-0 mt-3 text-[15.5px] leading-relaxed text-[#3A3D55]">
             決まった時刻にオンラインの自習室に集まり、見守り役のもとで90分学ぶ「{BIN.name}」。乗ったかどうか、何問解いたかを、その日のうちに保護者の方へお届けします。
