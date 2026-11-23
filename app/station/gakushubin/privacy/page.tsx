@@ -77,7 +77,7 @@ export default function Page() {
 
       <BinSection title="9. お問い合わせ窓口">
         <p>
-          株式会社ブルースプリング　岡山県岡山市北区磨屋町7-2　代表者 川本潤
+          株式会社ブルースプリング　岡山県岡山市北区磨屋町7-2　代表取締役社長 川本 潤
           <br />
           <a href={`mailto:${BIN.mail}`} className="text-indigo-600 underline underline-offset-2">
             {BIN.mail}
