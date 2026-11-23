@@ -1,8 +1,8 @@
 import type { Lesson, Rank, Rating } from "./types";
 
 // 2つの物差し（ラーニングステーション試作）
-//   マナビシュラン … 「わからせる授業ができたか」をAIの点検と受講者の正答率で見る。星0〜3。生徒の人気は入れない。
-//   マナビログ     … 授業を実際に受けた生徒の評価だけで格付けする（ザガットの考え方）。各観点0〜3の平均×10＝30点満点。
+//   わかった星   … 「わからせる授業ができたか」をAIの点検と受講者の正答率で見る。星0〜3。生徒の人気は入れない。
+//   受けた人の声 … 授業を実際に受けた生徒の評価だけで格付けする。各観点0〜3の平均×10＝30点満点。
 // 2つを分けておくことで、「人気はあるが分かりにくい」「分かりやすいが地味」のどちらも見える。
 
 export const STAR_MIN_LESSONS = 3;
@@ -27,8 +27,8 @@ export const STAR_RULE = [
 ];
 
 const avg = (xs: number[]) => (xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : 0);
-/** ザガット式：0〜3 の平均を10倍し、小数1けた */
-export const zagat = (xs: number[]) => Math.round(avg(xs) * 100) / 10;
+/** 30点満点の点：0〜3 の平均を10倍し、小数1けた */
+export const score30 = (xs: number[]) => Math.round(avg(xs) * 100) / 10;
 
 export interface TeacherCard {
   nick: string;
@@ -51,9 +51,9 @@ export function teacherCards(lessons: Lesson[], extraRatings: Record<string, Rat
   return [...by.entries()].map(([nick, ls]) => {
     const rs = ls.flatMap((l) => [...l.ratings, ...(extraRatings[l.id] ?? [])]);
     const points = ls.map(lessonPoint);
-    const clear = zagat(rs.map((r) => r.clear));
-    const care = zagat(rs.map((r) => r.care));
-    const again = zagat(rs.map((r) => r.again));
+    const clear = score30(rs.map((r) => r.clear));
+    const care = score30(rs.map((r) => r.care));
+    const again = score30(rs.map((r) => r.again));
     return {
       nick,
       grade: ls[0].grade,
@@ -71,9 +71,9 @@ export function teacherCards(lessons: Lesson[], extraRatings: Record<string, Rat
   });
 }
 
-/** マナビシュランの並び：星 → わからせ点 */
+/** わかった星の並び：星 → わからせ点 */
 export const byStars = (cs: TeacherCard[]) => [...cs].sort((a, b) => b.stars - a.stars || b.point - a.point);
-/** マナビログの並び：票が足りない人は後ろ（格付けしない） → 総合点 → 票数 */
+/** 受けた人の声の並び：票が足りない人は後ろ（格付けしない） → 総合点 → 票数 */
 export const byLog = (cs: TeacherCard[]) =>
   [...cs].sort((a, b) => Number(b.votes >= LOG_MIN_VOTES) - Number(a.votes >= LOG_MIN_VOTES) || b.total - a.total || b.votes - a.votes);
 
@@ -85,13 +85,13 @@ export const RATING_AXES = [
 
 export const RATING_SCALE = ["ざんねん", "ふつう", "よかった", "すばらしい"];
 
-// 会員の段
+// 駅の段。サークルと教壇は準備中（会員権・登壇権としての課金はやめた：2026-11-23）。試作では入口のボタンで「参加している」ことにして動かす。
 export const RANKS: { rank: Rank; name: string; can: string; need: string; product: string }[] = [
   { rank: 1, name: "学ぶ人", can: "自習ホームのすべて。サークルを月に1回見学", need: "無料登録", product: "無料" },
-  { rank: 2, name: "シェアする人", can: "サークルに入り、週に1回シェア。学生の授業を受ける・「教えて」を出す", need: "保護者の同意と会員権", product: "ラーニングサークル会員権" },
-  { rank: 3, name: "つなぐ人", can: "シェア会の司会・サークル長", need: "シェア4回", product: "会員権のまま" },
-  { rank: 4, name: "教える人", can: "教壇で授業をする", need: "シェア4回＋教える単元をオシエルで合格＋登壇権", product: "ティーチング登壇権" },
-  { rank: 5, name: "先輩", can: "新しいサークルの世話役、新しい先生の相談役", need: "授業4回と運営の推薦", product: "登壇権" },
+  { rank: 2, name: "シェアする人", can: "サークルに入り、週に1回シェア。学生の授業を受ける・「教えて」を出す", need: "保護者の同意とサークルへの参加（準備中）", product: "準備中（試作）" },
+  { rank: 3, name: "つなぐ人", can: "シェア会の司会・サークル長", need: "シェア4回", product: "準備中（試作）" },
+  { rank: 4, name: "教える人", can: "教壇で授業をする", need: "シェア4回＋教える単元をオシエルで合格＋教壇に立つ申し込み（準備中）", product: "準備中（試作）" },
+  { rank: 5, name: "先輩", can: "新しいサークルの世話役、新しい先生の相談役", need: "授業4回と運営の推薦", product: "準備中（試作）" },
 ];
 
 export function rankOf(s: { member: boolean; teacher: boolean; shares: number; taught: number; oshieruPassed: number }): Rank {
@@ -102,9 +102,9 @@ export function rankOf(s: { member: boolean; teacher: boolean; shares: number; t
 
 export function canTeach(s: { member: boolean; teacher: boolean; shares: number; oshieruPassed: number }) {
   const missing: string[] = [];
-  if (!s.member) missing.push("ラーニングサークル会員権");
+  if (!s.member) missing.push("サークルへの参加（入口のボタン）");
   if (s.shares < 4) missing.push(`シェアをあと${4 - s.shares}回`);
   if (s.oshieruPassed < 1) missing.push("教える単元をオシエルで合格");
-  if (!s.teacher) missing.push("ティーチング登壇権");
+  if (!s.teacher) missing.push("教壇に立つ申し込み（入口のボタン）");
   return missing;
 }

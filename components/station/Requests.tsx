@@ -8,7 +8,7 @@ import type { TeachRequest } from "@/lib/station/types";
 
 // 掲示板の「教えて」リクエスト。わからないことを出すと、同じことを知りたい人が「わたしも」で集まり、
 // 覚えた人が「教えます」で手をあげて、教壇で授業をつくる（わからない人は教えてもらい、覚えた人は教える）。
-// 出せるのは会員だけ。名前はニックネームだけで、個人どうしのやりとりはない（答えは授業の中で）。
+// 出せるのはサークルに入った人だけ（準備中。試作は入口のボタンで動かす）。名前はニックネームだけで、個人どうしのやりとりはない（答えは授業の中で）。
 
 type UnitOpt = { unit: string; name: string; label: string };
 const input = "w-full rounded-[8px] border-[1.5px] border-[#15172B] bg-white px-2 py-1.5 text-[14px]";
@@ -31,7 +31,7 @@ export function Requests({ units }: { units: UnitOpt[] }) {
             {open ? "閉じる" : "＋「教えて」を出す"}
           </button>
         ) : (
-          <span className="ml-auto text-[12px] font-bold text-[#5A5D73]">会員になると「教えて」を出せます</span>
+          <span className="ml-auto text-[12px] font-bold text-[#5A5D73]">サークルに入ると「教えて」を出せます（準備中）</span>
         )}
       </div>
       {open && s.member && <RequestForm units={units} onDone={() => setOpen(false)} />}
@@ -79,7 +79,7 @@ export function Requests({ units }: { units: UnitOpt[] }) {
         })}
       </ul>
       <p className="m-0 mt-2 text-[11.5px] leading-relaxed text-[#5A5D73]">
-        「教えます」を押すと、教壇でその単元の授業をつくれます（教壇に立つ条件：シェア4回・オシエル合格・登壇権）。答えは個人あてには送らず、授業の中で返します。
+        「教えます」を押すと、教壇でその単元の授業をつくれます（教壇に立つ条件：シェア4回・オシエル合格・教壇に立つ申し込み）。答えは個人あてには送らず、授業の中で返します。
       </p>
     </section>
   );

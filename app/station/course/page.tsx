@@ -3,11 +3,15 @@ import { Course } from "@/components/station/Course";
 import { UNIV_EXAMS } from "@/lib/exam/univ";
 import { examPlayHref } from "@/lib/exam";
 import { hasUnitMoshi, unitMoshiHref, unitView } from "@/lib/moshi/unit";
-import type { CourseUniv, UnitInfo } from "@/lib/station/course";
+import { todayJst, type CourseUniv, type UnitInfo } from "@/lib/station/course";
 
 // /station/course：国公立2次・直前5週間コース（試作）。駅の「路線」にあたる。
 // 無料の入口（志望校 → 診断 → 作戦表 → 最初の週の計画）まで。2週目以降の伴走は有料の予定で、値段・決済はまだない。
 // 大学と科目は、大学別模試（lib/exam/univ）の国公立の型から作る。
+
+// 「前期日程まで今日から○日」をサーバーでも描くので、1時間ごとに作り直す（作り直さないと、ビルドした日の日数のまま配られる）。
+// ブラウザで動き出したあとは、その端末の今日の日付で数え直す（components/station/Course.tsx）。
+export const revalidate = 3600;
 
 const sum = (xs: { points: number }[]) => xs.reduce((a, x) => a + x.points, 0);
 
@@ -35,7 +39,7 @@ export default function Page() {
         共通テストのあと、前期日程までの5週間を、志望校の2次試験に合わせて逆算します。志望校をえらび、大学別模試で診断し、目標まであと何点・どの大問・どの単元かを作戦表にして、最初の週の計画まで無料で作れます。
       </p>
       <div className="mt-4">
-        <Course univs={[...byUniv.values()]} units={units} />
+        <Course univs={[...byUniv.values()]} units={units} serverToday={todayJst()} />
       </div>
     </StationShell>
   );

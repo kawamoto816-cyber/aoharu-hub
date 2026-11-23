@@ -49,7 +49,7 @@ export function Board() {
                   {x.unitName && <p className="m-0 text-[12px] text-[#5A5D73]">単元：{x.unitName}</p>}
                   <div className="mt-2 flex flex-wrap gap-2">
                     {(mine || needMember) && !s.member ? (
-                      <span className="text-[12px] font-bold text-[#5A5D73]">{mine ? "サークルに入ると参加できます" : "ラーニングサークル会員なら受けられます"}（入口の「会員権」）</span>
+                      <span className="text-[12px] font-bold text-[#5A5D73]">{mine ? "サークルに入ると参加できます" : "サークルに入ると受けられます"}（準備中。試作は入口の「ラーニングサークル」のボタンで動かせます）</span>
                     ) : (
                       <button
                         type="button"

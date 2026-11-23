@@ -5,7 +5,7 @@ import { useEffect, useMemo, useSyncExternalStore } from "react";
 import { EXAM_RESULTS_KEY, type ExamAttempt } from "@/lib/exam/results";
 import { CoursePaid } from "./CoursePaid";
 import { DayHead } from "./DayHead";
-import { courseDay, TODAY_KEY, ymd, type TodayList, daysToZenki, firstWeek, laterWeeks, HISTORY, latestBySpec, strategy, subjectsFor, type CourseUniv, type Line, type UnitInfo } from "@/lib/station/course";
+import { courseDay, fromYmd, TODAY_KEY, ymd, type TodayList, daysToZenki, firstWeek, laterWeeks, HISTORY, latestBySpec, strategy, subjectsFor, type CourseUniv, type Line, type UnitInfo } from "@/lib/station/course";
 
 // 直前5週間コース（試作）の画面。① 志望校 ② 診断 ③ 作戦表 ④ 最初の週の計画 ⑤ 2〜5週目（有料の伴走。試作は切りかえボタンで見られる。components/station/CoursePaid.tsx）。
 // えらんだ志望校・目標・チェックは、このブラウザにだけ残す。診断の結果は大学別模試の記録（この端末）から読む。
@@ -76,7 +76,7 @@ const step = (n: number, title: string, sub?: string) => (
   </div>
 );
 
-export function Course({ univs, units }: { univs: CourseUniv[]; units: Record<string, UnitInfo> }) {
+export function Course({ univs, units, serverToday }: { univs: CourseUniv[]; units: Record<string, UnitInfo>; serverToday: string }) {
   const sRaw = useSyncExternalStore(subscribe, () => raw(KEY), () => "");
   const rRaw = useSyncExternalStore(subscribe, () => raw(EXAM_RESULTS_KEY), () => "");
   const s = useMemo(() => ({ ...INITIAL, ...parse<Partial<CourseState>>(sRaw, {}) }), [sRaw]);
@@ -91,10 +91,11 @@ export function Course({ univs, units }: { univs: CourseUniv[]; units: Record<st
   const rows = strategy(subjects, latest, s.rate);
   const diagnosed = rows.filter((r) => r.attempt);
   const plan = firstWeek(rows, units);
-  // 今日の日付はブラウザで決める（サーバーとブラウザで時刻帯がちがうため）
-  const today = useSyncExternalStore(subscribe, () => new Date().toDateString(), () => "");
-  const zenki = today ? daysToZenki(new Date(today)) : null;
-  const cur = today ? courseDay(s.start, new Date(today)) : null;
+  // 今日の日付（YYYY-MM-DD）。サーバーが描くときは日本時間の今日（serverToday）を使い、ブラウザで動き出したらその端末の今日に置きかえる。
+  // 以前はサーバー側を空にしていたので、配られる HTML では「今日から — 日」になり、ブラウザで動き出すまで日数が出なかった。
+  const today = useSyncExternalStore(subscribe, () => ymd(new Date()), () => serverToday);
+  const zenki = daysToZenki(fromYmd(today));
+  const cur = courseDay(s.start, fromYmd(today));
   const plans = laterWeeks(rows, units);
   const todayTasks = cur ? (cur.week === 1 ? plan : plans.find((p) => p.week === cur.week)?.days ?? []).find((d) => d.no === cur.day)?.tasks ?? [] : [];
   const todayText = todayTasks.map((x) => x.text).join("\n");
@@ -114,7 +115,7 @@ export function Course({ univs, units }: { univs: CourseUniv[]; units: Record<st
   return (
     <div className="flex min-w-0 flex-col gap-4">
       <p className="m-0 rounded-[12px] bg-[#E6EAFB] px-4 py-2 text-[13.5px] font-bold">
-        国公立の前期日程は例年2月25日から。今日から<b className="text-[18px]"> {zenki ? zenki.days : "—"} </b>日です（大学ごとの日程は募集要項で確かめてください）。
+        国公立の前期日程は例年2月25日から。今日から<b className="text-[18px]"> {zenki.days} </b>日です（大学ごとの日程は募集要項で確かめてください）。
       </p>
 
       {/* ① 志望校 */}
@@ -319,7 +320,7 @@ function StartDay({ s, set, cur, today }: { s: CourseState; set: (p: Partial<Cou
         <input type="date" value={s.start ?? ""} onChange={(e) => set({ start: e.target.value || undefined })} className="rounded-[8px] border-[1.5px] border-[#15172B] bg-white px-2 py-1 text-[13px]" />
       </label>
       {!s.start && today && (
-        <button type="button" onClick={() => set({ start: ymd(new Date(today)) })} className="rounded-[8px] border-[1.5px] border-[#15172B] bg-[#FFE45C] px-3 py-1 text-[12.5px] font-black">
+        <button type="button" onClick={() => set({ start: today })} className="rounded-[8px] border-[1.5px] border-[#15172B] bg-[#FFE45C] px-3 py-1 text-[12.5px] font-black">
           今日から始める
         </button>
       )}

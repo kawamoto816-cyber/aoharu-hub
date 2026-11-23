@@ -53,7 +53,7 @@ export interface Lesson {
   /** 受講者が確かめの1問に正解した割合（0〜1） */
   checkRate: number;
   attendees: number;
-  /** 受講者の評価（マナビログ）。各観点 0〜3 */
+  /** 受講者の評価（受けた人の声）。各観点 0〜3 */
   ratings: Rating[];
   coins: number;
 }

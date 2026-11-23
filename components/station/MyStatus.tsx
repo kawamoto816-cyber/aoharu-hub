@@ -5,7 +5,8 @@ import { RANKS, rankOf } from "@/lib/station/rating";
 import { addCoins, balance, update, useStation } from "@/lib/station/store";
 import { Coin } from "./StationNav";
 
-// 入口の「いまの自分」：ニックネーム・段・コイン・会員の状態（試作の切りかえ）
+// 入口の「いまの自分」：ニックネーム・段・コイン・サークルと教壇の試作の切りかえ。
+// サークルと教壇は準備中で、値段は出さない。ボタンは「参加していることにして試作を動かす」ためだけのもの（課金ではない）。
 export function MyStatus() {
   const s = useStation();
   const shares = s.myShares.length;
@@ -42,22 +43,22 @@ export function MyStatus() {
         >
           {learned ? "今日の学びは記録ずみ" : "今日の学びを記録（＋5コイン）"}
         </button>
-        <Toggle on={s.member} label="ラーニングサークル会員権" price="月額2,980円（案）" onClick={() => update((x) => ({ ...x, member: !x.member, teacher: x.member ? false : x.teacher }))} />
-        <Toggle on={s.teacher} disabled={!s.member} label="ティーチング登壇権" price="月額＋3,980円（案）" onClick={() => update((x) => ({ ...x, teacher: !x.teacher }))} />
+        <Toggle on={s.member} label="ラーニングサークル" note="準備中・試作を動かしてみる" onClick={() => update((x) => ({ ...x, member: !x.member, teacher: x.member ? false : x.teacher }))} />
+        <Toggle on={s.teacher} disabled={!s.member} label="教壇" note="準備中・試作を動かしてみる" onClick={() => update((x) => ({ ...x, teacher: !x.teacher }))} />
       </div>
       <p className="m-0 mt-2 text-[11.5px] leading-relaxed text-[#5A5D73]">
-        本番では、会員権は保護者の同意と支払いで入ります（生徒が保護者に「お願いのリンク」を送る）。試作では、ボタンで入ったことにできます。お金はかかりません。
+        ラーニングサークルと教壇は準備中です。上のボタンは、参加していることにして試作の画面を動かすためのもので、申し込みや支払いにはなりません（教壇はサークルの試作をオンにすると選べます）。値段や始める時期は決まっていません。
         <Link href="/station/shelf" className="ml-1 font-bold text-[#1533B8]">段の上がり方は自分の棚へ</Link>
       </p>
     </section>
   );
 }
 
-function Toggle({ on, label, price, onClick, disabled }: { on: boolean; label: string; price: string; onClick: () => void; disabled?: boolean }) {
+function Toggle({ on, label, note, onClick, disabled }: { on: boolean; label: string; note: string; onClick: () => void; disabled?: boolean }) {
   return (
     <button type="button" aria-pressed={on} disabled={disabled} onClick={onClick} className={`rounded-[10px] border-[1.5px] px-3 py-2 text-left text-[13px] font-black disabled:opacity-40 ${on ? "border-[#1533B8] bg-[#1533B8] text-white" : "border-[#15172B] bg-white"}`}>
       {on ? "✓ " : ""}{label}
-      <span className={`block text-[11px] font-bold ${on ? "text-white/80" : "text-[#5A5D73]"}`}>{on ? "入っています（試作）" : `${price}・ためしに入る`}</span>
+      <span className={`block text-[11px] font-bold ${on ? "text-white/80" : "text-[#5A5D73]"}`}>{on ? "試作を動かしています（もう一度押すと戻す）" : note}</span>
     </button>
   );
 }

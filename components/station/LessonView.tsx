@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { LESSONS, SLOTS } from "@/lib/station/demo";
-import { LOG_MIN_VOTES, RATING_AXES, RATING_SCALE, lessonPoint, teacherCards, zagat } from "@/lib/station/rating";
+import { LOG_MIN_VOTES, RATING_AXES, RATING_SCALE, lessonPoint, score30, teacherCards } from "@/lib/station/rating";
 import { TIP_CAP, addCoins, sendTip, update, useStation } from "@/lib/station/store";
 import type { Lesson, Rating } from "@/lib/station/types";
 import { Coin, Stars } from "./StationNav";
@@ -22,7 +22,7 @@ export function LessonView({ lesson: l }: { lesson: Lesson }) {
     <div className="grid gap-4 lg:grid-cols-[1fr_340px]">
       <article className="rounded-[14px] border-[2px] border-[#15172B] bg-white p-5">
         <p className="m-0 text-[12px] font-bold text-[#5A5D73]">
-          {l.subject}・{l.unitName}・{Number(l.at.slice(5, 7))}月{Number(l.at.slice(8, 10))}日の授業
+          {l.subject}・{l.unitName}・{Number(l.at.slice(5, 7))}月{Number(l.at.slice(8, 10))}日の授業・見本のデータ
         </p>
         <h1 className="m-0 mt-1 text-[24px] font-black leading-snug">{l.title}</h1>
         <p className="m-0 mt-1 text-[14px]">先生役：<b>{l.teacher}</b>（{l.grade}）</p>
@@ -32,12 +32,12 @@ export function LessonView({ lesson: l }: { lesson: Lesson }) {
           <Stat label="確かめの正答" value={`${Math.round(l.checkRate * 100)}%`} />
           <Stat label="わからせ点" value={`${lessonPoint(l)}`} />
         </div>
-        <p className="m-0 mt-1 text-[11.5px] text-[#5A5D73]">わからせ点＝AI点検と、受講者が確かめの1問を解けた割合を半分ずつ。マナビシュランの星はこの平均で決まります。</p>
+        <p className="m-0 mt-1 text-[11.5px] text-[#5A5D73]">わからせ点＝AI点検と、受講者が確かめの1問を解けた割合を半分ずつ。先生役の「わかった星」は、この点の平均で決まります。</p>
 
-        <h2 className="m-0 mt-5 text-[16px] font-black">この授業の評価（マナビログ）</h2>
+        <h2 className="m-0 mt-5 text-[16px] font-black">この授業の評価（受けた人の声）</h2>
         <div className="mt-2 grid grid-cols-3 gap-2 text-center">
           {RATING_AXES.map((a) => (
-            <Stat key={a.key} label={a.label} value={`${zagat(rs.map((r) => r[a.key]))}`} sub="30点満点" />
+            <Stat key={a.key} label={a.label} value={`${score30(rs.map((r) => r[a.key]))}`} sub="30点満点" />
           ))}
         </div>
         <p className="m-0 mt-1 text-[11.5px] text-[#5A5D73]">評価できるのは、授業を受けた人だけ。票は {rs.length} 件。</p>
@@ -53,11 +53,11 @@ export function LessonView({ lesson: l }: { lesson: Lesson }) {
 
       <aside className="grid content-start gap-3">
         <section className="rounded-[14px] border-[1.5px] border-[#15172B] bg-white p-4">
-          <p className="m-0 text-[12px] font-bold text-[#5A5D73]">先生役</p>
+          <p className="m-0 text-[12px] font-bold text-[#5A5D73]">先生役（見本・架空のニックネーム）</p>
           <p className="m-0 text-[20px] font-black">{c.nick}</p>
           <p className="m-0 mt-1"><Stars n={c.stars} size={20} /></p>
           <p className="m-0 mt-1 text-[13px] leading-relaxed">
-            マナビログ {c.votes >= LOG_MIN_VOTES ? <b>{c.total}</b> : "（票が集まり中）"}・授業 {c.lessons.length}回・受けとったコイン {c.coins}
+            受けた人の声 {c.votes >= LOG_MIN_VOTES ? <b>{c.total}</b> : "（票が集まり中）"}・授業 {c.lessons.length}回・受けとったコイン {c.coins}
           </p>
           <Link href="/station/ranking" className="mt-1 inline-block text-[12.5px] font-black text-[#1533B8]">格付けを見る →</Link>
         </section>
