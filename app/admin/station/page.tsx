@@ -47,6 +47,15 @@ export default async function AdminStationPage({ searchParams }: { searchParams:
         日付と時刻（日本時間）で区切って、生徒ごとの学習量を見ます。数字は生徒の端末から1分おきに届く差分です。完走の5点は入っていません。
       </p>
 
+      <p className="mt-3 flex flex-wrap gap-2 text-xs">
+        <Link href={`/admin/station/bin?date=${range.date}`} className="rounded-full bg-indigo-600 px-3 py-1 font-bold text-white hover:bg-indigo-500">
+          出席表（乗車・未着通知・当日報告）
+        </Link>
+        <Link href={`/admin/station/weekly?week=${range.date}`} className="rounded-full bg-indigo-600 px-3 py-1 font-bold text-white hover:bg-indigo-500">
+          週報
+        </Link>
+      </p>
+
       <form method="get" className="mt-6 flex flex-wrap items-end gap-3 rounded-2xl border border-slate-200 p-4">
         <label className="text-xs font-bold text-slate-500">
           日付
