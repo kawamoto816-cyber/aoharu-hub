@@ -4,6 +4,7 @@ import { SmartSignUpButton } from "@/components/SmartSignUpButton";
 import { ShareToChild } from "@/components/ShareToChild";
 import { TrackedLink } from "@/components/TrackedLink";
 import { VoiceList } from "@/components/voices/VoiceList";
+import { BIN } from "@/lib/station/gakushubin";
 import { seasonPrice, yen, SEASON_ENDS_LABEL } from "@/lib/aoharu-entitlements/config/season-price";
 
 // /parents: 保護者向けLP。
@@ -92,6 +93,24 @@ function CourseForParents() {
   );
 }
 
+// 中学生の保護者に向けた「アオハル 学習便」の案内（/station へ）。値段と日付は lib/station/gakushubin.ts から読む
+function BinForParents() {
+  return (
+    <section id="gakushubin" className="scroll-mt-16 border-b border-slate-200 bg-white py-12">
+      <div className="mx-auto max-w-4xl px-6">
+        <p className="text-xs font-bold text-indigo-600">中学生の保護者の方へ・モニター募集中（{BIN.seats}名）</p>
+        <h2 className="mt-2 text-xl font-bold text-slate-900">「勉強しなさい」を引き受ける、見守りつきのオンライン自習便</h2>
+        <p className="mt-3 text-sm leading-relaxed text-slate-600">
+          「{BIN.name}」は、決まった時刻にオンラインの自習室に集まり、見守り役のもとで90分学ぶサービスです。乗ったかどうか、何問解いたかを、その日のうちに保護者の方へお届けします。{BIN.period}の試験運用で、参加費は{BIN.priceJpy.toLocaleString("ja-JP")}円（税込）。{BIN.refundBy}までのお申し出で全額を返金します。
+        </p>
+        <TrackedLink href="/station" event="bin_link_click" params={{ location: "parents" }} className="mt-4 inline-block text-sm font-bold text-indigo-600 underline underline-offset-2">
+          学習便のくわしい内容を見る →
+        </TrackedLink>
+      </div>
+    </section>
+  );
+}
+
 function SeasonForParents() {
   const sp = seasonPrice();
   const rows: [string, string][] = [
@@ -166,6 +185,7 @@ export default function ParentsPage() {
 
       <SeasonForParents />
       <CourseForParents />
+      <BinForParents />
 
       <section className="bg-slate-50/60 py-14">
         <div className="mx-auto max-w-4xl px-6">

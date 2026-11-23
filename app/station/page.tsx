@@ -37,6 +37,7 @@ const STEPS: [string, string, string][] = [
 const FAQS: [string, string][] = [
   ["分からない問題は誰が教えてくれますか", "見守り役は教科を教えません。教材のアオハルラーンと、その中のAIコーチで解決します。"],
   ["スマートフォン1台でも参加できますか", "できません。パソコンまたはタブレットをご用意ください。"],
+  ["冬休みの体験便とは何ですか", `${BIN.trial}に走らせる便です。参加が決まった方は、追加の費用なしで乗れます。`],
   ["期間が終わったあとはどうなりますか", "自動で継続になったり、課金されたりすることはありません。"],
 ];
 
@@ -69,7 +70,7 @@ export default function Page() {
             </Link>
           </div>
           <p className="m-0 mt-3 text-[13px] leading-relaxed text-[#4A4D63]">
-            4週間 {yen(BIN.priceJpy)}（税込）・{BIN.refundBy}まで全額返金・自動更新なし。
+            4週間 {yen(BIN.priceJpy)}（税込）・{BIN.refundBy}まで全額返金・自動更新なし。いまお申し込みいただくと、冬休みの体験便（12月26〜28日の朝）にも無料で乗れます。
             <Link href="/station/gakushubin/ride" className="ml-1 font-black text-[#1533B8]">参加が決まった生徒はこちら</Link>
           </p>
           <p className="m-0 mt-2 text-[14px] font-black">

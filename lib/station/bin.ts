@@ -26,6 +26,15 @@ export interface Period {
   to: string;
 }
 export const BIN_PERIOD: Period = { from: "2027-01-13", to: "2027-02-07" };
+/**
+ * 冬休みの体験便（2026-11-23 代表の判断）。本番の前に、参加が決まった家庭が無料で乗れる朝便。
+ * 期間（BIN_PERIOD）の外だが、この日付だけは便がある。曜日の決まり（SLOTS.days）にも従わない。
+ */
+export const TRIAL_BINS: Readonly<Record<string, Slot>> = {
+  "2026-12-26": "morning",
+  "2026-12-27": "morning",
+  "2026-12-28": "morning",
+};
 /** 第1週の月曜（週報の「第n週」の起点） */
 export const FIRST_MONDAY = "2027-01-11";
 
@@ -98,6 +107,7 @@ export interface Bin {
 /** その日に走る便の種類（運休日・期間の外は null）。period に null を渡すと期間を見ない */
 export function slotOn(date: string, period: Period | null = BIN_PERIOD): Slot | null {
   if (!isDate(date)) return null;
+  if (TRIAL_BINS[date]) return TRIAL_BINS[date];
   if (period && (date < period.from || date > period.to)) return null;
   const dow = dowOf(date);
   for (const slot of ["night", "morning"] as const) if (SLOTS[slot].days.includes(dow)) return slot;
@@ -120,9 +130,10 @@ export function findBins(nowMs: number, period: Period | null = BIN_PERIOD): { c
   let current: Bin | null = null;
   let next: Bin | null = null;
   const today = jstDate(nowMs);
-  const first = period && today < period.from ? period.from : today;
-  for (let i = 0; i < 14 && !next; i++) {
-    const date = addDays(first, i);
+  // 今日から順に探す。期間の前なら、期間の初日の2週間後まで見る（そのあいだにある体験便も拾う）
+  const lead = period && today < period.from ? Math.round((Date.parse(period.from) - Date.parse(today)) / DAY) : 0;
+  for (let i = 0; i < lead + 14 && !next; i++) {
+    const date = addDays(today, i);
     if (period && date > period.to) break;
     const slot = slotOn(date, period);
     if (!slot) continue;
