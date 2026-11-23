@@ -1,12 +1,13 @@
-// 直前コースの3つの種類（画面とサーバーの両方から読む。環境変数は使わない）。
-//   niji   国公立2次・直前5週間コース（試作のまま。値段・決済はまだない）
-//   kyotsu 共通テスト 直前コース（2026-11-23 代表の判断で販売：4,980円・1回払い）
-//   koko   公立高校入試 直前コース（同上。中学生向けなので、支払いは保護者あての支払いリンクだけ）
+// 直前コースの4つの種類（画面とサーバーの両方から読む。環境変数は使わない）。どれも 4,980円・1回払い（2026-11-23 代表の判断）。
+//   kyotsu  共通テスト 直前コース
+//   daigaku 大学入試 直前コース（国公立2次・私大。1回の支払いで、大学別模試のある全大学を切りかえて使える。もとは試作の「国公立2次・直前5週間コース」）
+//   koko    公立高校入試 直前コース（中学生向けなので、支払いは保護者あての支払いリンクだけ）
+//   shikoko 私立高校入試 直前コース（同上）
 // 無料：診断・作戦表・最初の1週間。有料：2週目からの計画の作り直し・週のふり返り・進み具合・保護者に見せる報告。
 // Max・受験シーズンパスの人は、追加の支払いなしで使える（2026-11-23 代表の判断）。
 
-export type CourseKind = "niji" | "kyotsu" | "koko";
-export type SaleKind = "kyotsu" | "koko";
+export type CourseKind = "daigaku" | "kyotsu" | "koko" | "shikoko";
+export type SaleKind = CourseKind;
 
 export const COURSE_PRICE_JPY = 4980;
 
@@ -30,7 +31,18 @@ export interface CourseDef {
 }
 
 export const COURSES: Record<CourseKind, CourseDef> = {
-  niji: { kind: "niji", storeKey: "aoharu-course-v1", href: "/station/course", name: "国公立2次・直前5週間コース", short: "国公立2次", moshi: "大学別模試", specPrefix: "daigaku:", exam: "前期日程", mark: false },
+  daigaku: {
+    kind: "daigaku",
+    storeKey: "aoharu-course-v1",
+    href: "/station/course",
+    name: "大学入試 直前コース",
+    short: "国公立2次・私大",
+    moshi: "大学別模試",
+    specPrefix: "daigaku:",
+    exam: "志望校の試験",
+    mark: false,
+    sale: { priceJpy: COURSE_PRICE_JPY, endsAt: "2027-03-31T23:59:59+09:00", endsLabel: "2027年3月31日", parentOnly: false },
+  },
   kyotsu: {
     kind: "kyotsu",
     storeKey: "aoharu-course-kyotsu-v1",
@@ -55,9 +67,24 @@ export const COURSES: Record<CourseKind, CourseDef> = {
     mark: false,
     sale: { priceJpy: COURSE_PRICE_JPY, endsAt: "2027-03-31T23:59:59+09:00", endsLabel: "2027年3月31日", parentOnly: true },
   },
+  shikoko: {
+    kind: "shikoko",
+    storeKey: "aoharu-course-shikoko-v1",
+    href: "/station/course/shikoko",
+    name: "私立高校入試 直前コース",
+    short: "私立高校入試",
+    moshi: "私立入試型の模試",
+    specPrefix: "shiritsu:",
+    exam: "私立高校入試",
+    mark: false,
+    sale: { priceJpy: COURSE_PRICE_JPY, endsAt: "2027-03-31T23:59:59+09:00", endsLabel: "2027年3月31日", parentOnly: true },
+  },
 };
 
-export const isSaleKind = (k: unknown): k is SaleKind => k === "kyotsu" || k === "koko";
+/** 私立入試型の模試は、教科ごとに50分・全範囲で診断する（記録の spec は shiritsu:<教科>:50） */
+export const SHIKOKO_MINUTES = 50;
+
+export const isSaleKind = (k: unknown): k is SaleKind => k === "kyotsu" || k === "koko" || k === "shikoko" || k === "daigaku";
 
 /** 令和9年度の共通テスト（2027年1月16日・17日）。画面で変えられる */
 export const KYOTSU_EXAM_DAY = "2027-01-16";

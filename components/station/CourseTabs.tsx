@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { COURSES, type CourseKind } from "@/lib/station/course-kinds";
 
-// 直前コースの3つの種類の切りかえ（共通テスト・公立高校入試・国公立2次）。
-const ORDER: CourseKind[] = ["kyotsu", "koko", "niji"];
+// 直前コースの4つの種類の切りかえ（共通テスト・大学入試（国公立2次・私大）・公立高校入試・私立高校入試）。
+const ORDER: CourseKind[] = ["kyotsu", "daigaku", "koko", "shikoko"];
 
 export function CourseTabs({ here }: { here: CourseKind }) {
   return (

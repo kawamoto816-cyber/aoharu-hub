@@ -634,7 +634,7 @@ function FromCourse({ onPick }: { onPick: (s: string) => void }) {
         <Link href="/station/course/kyotsu" className="font-bold text-[#1533B8]">
           直前コース
         </Link>
-        （共通テスト・公立高校入試・国公立2次）で計画を作ると、今日のやることをここから選べます。
+        （共通テスト・大学入試・高校入試）で計画を作ると、今日のやることをここから選べます。
       </p>
     );
   }

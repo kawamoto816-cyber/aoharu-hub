@@ -2,7 +2,7 @@ import { getStripe, getOrCreateSubscription } from "@bluespring/aoharu-entitleme
 import { getSetting, setSetting } from "@/lib/social/store";
 import { COURSES, isSaleKind, type SaleKind } from "./course-kinds";
 
-// 直前コース（共通テスト・公立高校入試）の利用権。1回払い 4,980円・自動更新なし（2026-11-23 代表の判断）。
+// 直前コース（共通テスト・大学入試・公立高校入試・私立高校入試）の利用権。1回払い 4,980円・自動更新なし（2026-11-23 代表の判断）。
 // 買うと、そのコースの「2週目から（伴走）」が期限の日まで使える。Max・受験シーズンパスの人は買わなくても使える。
 // 保存先は app_settings（key/value）。新しいテーブルは作らない（1通分の添削 lib/tensaku/ticket.ts と同じやり方）。
 //   course_pass:<種類>:<ユーザーID>     → 期限（ISO 8601）

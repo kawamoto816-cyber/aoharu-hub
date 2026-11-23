@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { CheckoutSuccessTracker } from "@/components/CheckoutSuccessTracker";
 import { grantCoursePassForSession } from "@/lib/station/course-pass";
+import { COURSES, isSaleKind } from "@/lib/station/course-kinds";
 
 // /parents/thanks: お子さんから届いた支払いリンクで、保護者が Pro の支払いを終えたあとに戻るページ。
 // 支払った保護者はログインしていないので、ここでは「お子さんのアカウントが Pro になった」ことと解約の方法だけを伝える。
@@ -17,7 +18,8 @@ export default async function ParentThanksPage({ searchParams }: { searchParams:
   // 直前コース：Webhook がまだ届いていなくても、ここで支払いを確かめて付ける（付く相手は支払いのセッションに書かれたお子さんだけ）
   if (plan.startsWith("course_") && sp.session_id) await grantCoursePassForSession(sp.session_id).catch((e) => console.error("[parents/thanks] course", e instanceof Error ? e.message : e));
   const season = plan === "season";
-  const course = plan === "course_kyotsu" ? "共通テスト 直前コース（2027年1月31日まで）" : plan === "course_koko" ? "公立高校入試 直前コース（2027年3月31日まで）" : null;
+  const kind = plan.startsWith("course_") ? plan.slice(7) : "";
+  const course = isSaleKind(kind) ? `${COURSES[kind].name}（${COURSES[kind].sale!.endsLabel}まで）` : null;
   return (
     <main className="mx-auto max-w-xl flex-1 px-5 py-16 text-slate-800">
       <p className="text-xs font-bold text-indigo-600">アオハルOS</p>

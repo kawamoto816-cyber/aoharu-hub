@@ -45,11 +45,12 @@ const FAQ: { q: string; a: string }[] = [
   },
 ];
 
-/** 直前コース（共通テスト・公立高校入試）の説明。お子さんから届く支払いリンクの文面から #course で来る */
+/** 直前コース（共通テスト・大学入試・公立高校入試・私立高校入試）の説明。お子さんから届く支払いリンクの文面から #course で来る */
 function CourseForParents() {
   const rows: [string, string][] = [
     ["値段", "各コース 4,980円（税込・1回払い）"],
-    ["使える期間", "共通テスト 直前コースは2027年1月31日まで／公立高校入試 直前コースは2027年3月31日まで"],
+    ["コースの種類", "共通テスト／大学入試（国公立2次・私大。1回のお申し込みで、大学別模試のある全ての大学で使えます）／公立高校入試／私立高校入試"],
+    ["使える期間", "共通テスト 直前コースは2027年1月31日まで／そのほかの3コースは2027年3月31日まで"],
     ["有料の内容", "毎週の診断（模試の結果）に合わせた計画の作り直し、週のふり返り、科目ごとの点の動きと計画をこなした割合、保護者の方に見せる週の報告"],
     ["無料の内容", "模試・授業・さかのぼり学習、診断・作戦表・最初の1週間の計画（お申し込みがなくても使えます）"],
     ["自動更新", "ありません。期限が来たら有料の機能が閉じるだけで、追加の請求はありません"],
@@ -60,11 +61,11 @@ function CourseForParents() {
     <section id="course" className="scroll-mt-16 border-b border-slate-200 bg-white py-12">
       <div className="mx-auto max-w-4xl px-6">
         <p className="text-xs font-bold text-indigo-600">お子さんから「保護者にお願いする」のリンクが届いた方へ</p>
-        <h2 className="mt-2 text-xl font-bold text-slate-900">直前コース（共通テスト・公立高校入試）について</h2>
+        <h2 className="mt-2 text-xl font-bold text-slate-900">直前コース（大学入試・高校入試）について</h2>
         <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-600">
           模試で科目ごとに診断し、「目標まであと何点・どの大問・どの単元か」を作戦表にして、試験日までの計画を毎週作り直す学習コースです。
           届いたリンクを開いて支払うと、お子さんのアカウントでコースの有料部分が使えるようになります（保護者の方の登録は要りません）。
-          公立高校入試 直前コースのお申し込みは、保護者の方あてのリンクからだけ受け付けています。
+          公立高校入試・私立高校入試の直前コース（中学生向け）のお申し込みは、保護者の方あてのリンクからだけ受け付けています。
         </p>
         <dl className="mt-5 divide-y divide-slate-100 overflow-hidden rounded-2xl border border-slate-200 bg-white text-sm">
           {rows.map(([k, v]) => (
@@ -80,8 +81,16 @@ function CourseForParents() {
             共通テスト 直前コース
           </Link>
           {" ／ "}
+          <Link href="/station/course" className="underline underline-offset-2">
+            大学入試 直前コース
+          </Link>
+          {" ／ "}
           <Link href="/station/course/koko" className="underline underline-offset-2">
             公立高校入試 直前コース
+          </Link>
+          {" ／ "}
+          <Link href="/station/course/shikoko" className="underline underline-offset-2">
+            私立高校入試 直前コース
           </Link>
           {" ／ "}
           <Link href="/legal/tokushoho" className="underline underline-offset-2">

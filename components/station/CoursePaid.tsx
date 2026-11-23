@@ -10,7 +10,7 @@ import { CourseOffer, useCourseAccess } from "./CourseOffer";
 import type { CourseDef } from "@/lib/station/course-kinds";
 
 // 直前コースの有料部分：2週目からの計画・週のふり返り・進み具合・保護者に見せる報告。無料と有料の境目を画面ではっきり見せる。
-//   共通テスト・公立高校入試 … 販売中（4,980円・1回払い）。使えるかはサーバーで確かめる（CourseOffer.tsx）。Max・受験シーズンパスの人はそのまま使える
+//   4コースとも販売中（4,980円・1回払い）。使えるかはサーバーで確かめる（CourseOffer.tsx）。Max・受験シーズンパスの人はそのまま使える
 //   国公立2次 … 試作のまま。切りかえボタンで有料の画面を見られる（お金はかからない。値段・決済はまだない）
 
 const card = "rounded-[14px] border-[2px] border-[#15172B] bg-white p-4";

@@ -1,7 +1,7 @@
 import type { ExamAttempt } from "@/lib/exam/results";
 
-// 直前コース（国公立2次・共通テスト・公立高校入試）の計画づくり。純粋な関数だけ（画面は components/station/Course.tsx）。
-// コースの種類・値段は course-kinds.ts。共通テスト・公立高校入試は、試験日までの週数（2〜8週）に合わせて計画を並べる。
+// 直前コース（共通テスト・大学入試・公立高校入試・私立高校入試）の計画づくり。純粋な関数だけ（画面は components/station/Course.tsx）。
+// コースの種類・値段は course-kinds.ts。試験日までの週数（2〜8週。大学入試で試験日を入れなければ5週）に合わせて計画を並べる。
 // 無料の入口：志望校をえらぶ → 診断（大学別模試）→ 作戦表（目標まであと何点・どの大問・どの単元）→ 最初の週の計画。
 // 2週目以降（計画の作り直し・進み具合の管理・保護者への報告）は有料の伴走にする予定。値段・決済はまだ作らない。
 //
@@ -22,6 +22,8 @@ export interface CourseSubject {
 
 export interface CourseUniv {
   univ: string;
+  /** 国公立・早慶上智・MARCH など（一覧の見出し） */
+  tier?: string;
   subjects: CourseSubject[];
 }
 

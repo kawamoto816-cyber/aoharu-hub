@@ -6,9 +6,9 @@ import { openSignUpWithRecovery } from "@/lib/authReloadGuard";
 import { trackEvent } from "@/lib/analytics";
 import type { CourseDef } from "@/lib/station/course-kinds";
 
-// 直前コース（共通テスト・公立高校入試）の申し込み。
-//   共通テスト   … 自分で払う ／ 保護者にお願いする（支払いリンクを作って送る）
-//   公立高校入試 … 中学生向けなので「保護者にお願いする」だけ（2026-11-23 代表の判断）。値段を強く押し出さない
+// 直前コース（共通テスト・大学入試・公立高校入試・私立高校入試）の申し込み。
+//   共通テスト・大学入試 … 自分で払う ／ 保護者にお願いする（支払いリンクを作って送る）
+//   公立・私立高校入試 … 中学生向けなので「保護者にお願いする」だけ（2026-11-23 代表の判断）。値段を強く押し出さない
 // 使えるかどうかは /api/station/course/access で確かめる。支払いから戻った直後（?checkout=success&session_id=…）は、
 // その支払いを確かめて利用権を付けてから、購入の計測を1回だけ送り、URL からパラメータを外す。
 

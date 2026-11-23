@@ -41,3 +41,10 @@ SQL は `docs/station-log.sql` と `docs/station-bin.sql`。どちらも本番�
 - アオハルームの仲間の表示は見本（架空のニックネーム）。入口でも「試作」と明記している。
 - 通し練習は、環境変数 `STATION_BIN_FROM` / `STATION_BIN_TO` で便の期間を広げると動かせる。
 - `/station` 以下は noindex のまま（代表の公開OK待ち）。
+  - 例外：直前コースの4ページ（`/station/course`・`/station/course/kyotsu`・`/station/course/koko`・`/station/course/shikoko`）は販売中なので、ページごとの metadata で検索に出し、サイトマップにも入れている（2026-11-23 代表OK。アオハルOSチャットの担当）。
+
+## 直前コース（アオハルOSチャットの担当。2026-11-23）
+
+- 4コースとも 4,980円・1回払い：共通テスト／大学入試（国公立2次・私大。1回の支払いで全大学）／公立高校入試／私立高校入試。高校入試の2コースは保護者あての支払いリンクだけ。Max・受験シーズンパスは追加なし。
+- 種類と値段は `lib/station/course-kinds.ts`、利用権は `lib/station/course-pass.ts`（app_settings）、画面は `components/station/Course*.tsx`。
+- `StationShell` に `notice` を足した（販売中のページでは「試作です」の注意を出さない）。`/station` の入口・学習便・アオハルームには手を入れていない。

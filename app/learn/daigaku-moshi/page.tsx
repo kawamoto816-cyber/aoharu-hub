@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { SeriesPage } from "@/components/exam/SeriesPage";
 import { UNIV_EXAMS } from "@/lib/exam/univ";
 
@@ -23,7 +24,15 @@ export default function DaigakuMoshiPage() {
       lead="志望大学の出題形式に寄せた英語・数学・国語・日本史・世界史の模試です。英文・本文・数学の問題はすべて書き下ろし（古文・漢文は原典から）です。数学の数値の答えは自動で採点し、記述・証明は模範解答と採点基準で自己採点します。大問の数・時間・問い方を大学ごとに変えています。第1回〜第6回は同じ問題、おまかせは毎回ちがう組み合わせ。結果画面から、つまずきの根っこ探し（さかのぼり）と、苦手に合わせた次の回へ進めます。"
       howto={["大学と科目、回をえらぶ", "本番の時間で解く。時間になると自動で提出", "大問別・単元別の結果から、根っこの単元へさかのぼって学びなおす"]}
       extra={
-        UNIV_EXAMS.length > 0 && (
+        <>
+          <aside aria-label="大学入試 直前コース" className="mt-6 max-w-[720px] rounded-[14px] border-[1.5px] border-[#15172B] bg-white p-4">
+            <p className="m-0 text-[15px] font-black">大学入試 直前コース（国公立2次・私大）</p>
+            <p className="m-0 mt-1 text-[13px] leading-relaxed text-[#3A3D55]">模試の結果から、目標まであと何点・どの大問・どの単元かを作戦表にして、試験日までの計画を作ります。診断・作戦表・最初の1週間は無料です。</p>
+            <Link href="/station/course" className="mt-2 inline-flex min-h-[40px] items-center rounded-[10px] border-[1.5px] border-[#15172B] bg-[#FFE45C] px-3 text-[13px] font-black text-[#15172B] no-underline">
+              計画を作る →
+            </Link>
+          </aside>
+          {UNIV_EXAMS.length > 0 && (
           <section aria-labelledby="univ-basis" className="mt-6 max-w-[720px]">
             <h2 id="univ-basis" className="m-0 text-[16px] font-black">
               各大学型の形式
@@ -42,7 +51,8 @@ export default function DaigakuMoshiPage() {
               ))}
             </ul>
           </section>
-        )
+          )}
+        </>
       }
     />
   );

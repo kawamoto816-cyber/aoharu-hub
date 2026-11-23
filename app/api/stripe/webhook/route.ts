@@ -46,7 +46,7 @@ export async function POST(req: Request) {
       await grantTicketForSession(event.data.object.id);
       return NextResponse.json({ received: true });
     }
-    // 直前コース（共通テスト・公立高校入試）：そのコースの利用権を期限つきで付ける
+    // 直前コース（共通テスト・大学入試・公立高校入試・私立高校入試）：そのコースの利用権を期限つきで付ける
     if (event.type === "checkout.session.completed" && event.data.object.metadata?.kind === COURSE_PASS_KIND) {
       await grantCoursePassForSession(event.data.object.id);
       return NextResponse.json({ received: true });

@@ -49,7 +49,7 @@ export async function POST(req: Request) {
     // 受験シーズンパス（買い切り・自動更新なし）
     if (body?.plan === "season") return seasonPass(req, userId, body?.payer === "parent", typeof body?.ref === "string" ? body.ref : undefined);
 
-    // 直前コース（共通テスト・公立高校入試）：1回払い 4,980円
+    // 直前コース（共通テスト・大学入試・公立高校入試・私立高校入試）：1回払い 4,980円
     if (body?.plan === "course") return coursePass(req, userId, body?.kind, body?.payer === "parent");
 
     // 1通分の添削（300円・書き直したあとの再添削1回つき）
@@ -146,7 +146,7 @@ async function coursePass(req: Request, userId: string, kindRaw: unknown, forPar
   if (!isSaleKind(kindRaw)) return NextResponse.json({ error: "コースの種類がちがいます" }, { status: 400 });
   const kind: SaleKind = kindRaw;
   const c = COURSES[kind];
-  // 公立高校入試コース（中学生向け）は、保護者あての支払いリンクだけ
+  // 高校入試の2コース（中学生向け）は、保護者あての支払いリンクだけ
   if (c.sale!.parentOnly && !forParent) return NextResponse.json({ error: "このコースは、保護者の方あての支払いリンクからお申し込みください", reason: "parent_only" }, { status: 400 });
   if ((await courseAccess(userId, kind)).access) return NextResponse.json({ error: "すでにこのコースを使えます", reason: "already_paid" }, { status: 409 });
   const origin = new URL(req.url).origin;
