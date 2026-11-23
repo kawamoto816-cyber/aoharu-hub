@@ -7,22 +7,22 @@ import { oshieruAiHref } from "@/lib/oshieru/ai-lesson-home";
 import { UNITS as JUGYO_UNITS } from "@/lib/jugyo";
 import { lectureUnitInfo } from "@/lib/lecture";
 
-// /learn/oshieru-ai: オシエルAI（声で教える授業・試作）の入口。ちょっと待った授業がある単元を先に並べる（授業で聞く → 声で教える の順にためせる）。
-// 試作なので noindex・サイトマップに入れない。ほかの単元も /learn/oshieru-ai/<単元id> で開ける（オシエルのある835単元）。
+// /learn/oshieru-ai: オシエルAI（声で教える授業）の入口。ちょっと待った授業がある単元を先に並べる（授業で聞く → 声で教える の順にためせる）。
+// 2026-11-23 代表の公開OKで公開（サイトマップに入れる）。ほかの単元も /learn/oshieru-ai/<単元id> で開ける（全848単元）。
 
 export const metadata: Metadata = {
-  title: "オシエルAI（試作）｜声でハルに教える授業｜アオハルラーン",
-  robots: { index: false, follow: false },
+  title: "オシエルAI｜声でハルに教える授業｜アオハルラーン",
+  description: "AIの生徒ハルに、声で説明して教える授業。ちょっと待った授業の黒板を使って、先生役になって教えます。小学校から高校まで全848単元。",
 };
 
 export default function Page() {
   const units = JUGYO_UNITS.filter(hasOshieru).map((u) => ({ unit: u, info: lectureUnitInfo(u) }));
   return (
-    <LearnShell narrow crumbs={[{ href: "/learn", label: "まなぶ" }, { label: "オシエルAI（試作）" }]}>
+    <LearnShell narrow crumbs={[{ href: "/learn", label: "まなぶ" }, { label: "オシエルAI" }]}>
       <div className="flex items-center gap-3">
         <Haru face="happy" size={56} />
         <div>
-          <p className="m-0 text-xs font-black tracking-wider text-[#1533B8]">学び方 3　教える（試作）</p>
+          <p className="m-0 text-xs font-black tracking-wider text-[#1533B8]">学び方 3　教える</p>
           <h1 className="m-0 mt-0.5 text-[24px] font-black leading-tight">オシエルAI</h1>
         </div>
       </div>

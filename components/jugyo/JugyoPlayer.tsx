@@ -593,7 +593,7 @@ export function JugyoPlayer(p: PlayerProps) {
               </a>
               {p.links.oshieruAi && (
                 <Link href={p.links.oshieruAi} className="flex min-h-[46px] items-center justify-between rounded-[12px] bg-white px-4 text-[15px] font-black text-[#15172B] no-underline">
-                  <span>ハルに声で教える（オシエルAI・試作）</span>
+                  <span>ハルに声で教える（オシエルAI）</span>
                   <span aria-hidden="true">→</span>
                 </Link>
               )}

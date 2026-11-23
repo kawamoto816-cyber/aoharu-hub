@@ -1,7 +1,7 @@
 import type { Figure } from "@/lib/lecture/types";
 import { plain, type OshieruUnit } from "./index";
 
-// オシエルAI（声で教える授業・試作）の黒板。/learn/oshieru-ai/<単元id>。
+// オシエルAI（声で教える授業）の黒板。/learn/oshieru-ai/<単元id>。
 // ハルの誤解に近い節の図を先に並べる（先生役の生徒が、黒板の図を切りかえながら説明する）。
 // 図はレクチャーのデータの図そのまま。誤解セットの中身（言い直しのまちがい・判定の条件）はここでは渡さない。
 
