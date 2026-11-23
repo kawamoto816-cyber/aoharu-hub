@@ -109,7 +109,7 @@ export function AoharuRoom() {
       <Ranking all={all} grade={s.grade} />
       <Titles all={all} />
       <History s={s} now={now} />
-      <ParentReport s={s} now={now} />
+      {/* 保護者への週の報告（見本）は外した（2026-11-23 代表）。保護者への報告は「学習便」だけのものにして、無料の部屋との線引きをはっきりさせる */}
       <Rules s={s} />
     </div>
   );
@@ -501,7 +501,6 @@ function History({ s, now }: { s: RoomState; now: number }) {
           ))}
         </ul>
       )}
-      <p className="m-0 mt-2 text-[11.5px] text-[#5A5D73]">本番では、週に1回この記録（時間・解いた問題・続けた日数）を保護者への共有ページにも出します。</p>
     </section>
   );
 }
@@ -599,82 +598,6 @@ function League({ s, now }: { s: RoomState; now: number }) {
         })}
       </ol>
       <p className="m-0 mt-2 text-[11.5px] text-[#5A5D73]">リーグの仲間は見本（架空のニックネーム。週の進みに合わせてポイントが増えます）。</p>
-    </section>
-  );
-}
-
-// ---------- 保護者への週の報告（見本） ----------
-
-const WEEKDAYS = ["月", "火", "水", "木", "金", "土", "日"];
-
-function ParentReport({ s, now }: { s: RoomState; now: number }) {
-  const [open, setOpen] = useState(false);
-  if (!now) return null;
-  const d = new Date(now);
-  const wk = weekKey(d);
-  const list = s.cycles.filter((c) => weekKey(new Date(c.at)) === wk);
-  const st = myStats(s.cycles, d);
-  const solved = list.reduce((a, c) => a + c.gains.solved, 0);
-  const correct = list.reduce((a, c) => a + c.gains.correct, 0);
-  const done = list.filter((c) => c.completed).length;
-  const perDay = WEEKDAYS.map((_, i) => list.filter((c) => (new Date(c.at).getDay() + 6) % 7 === i).reduce((a, c) => a + c.focusSec / 60, 0));
-  const maxMin = Math.max(25, ...perDay);
-  const mon = new Date(wk + "T00:00:00");
-  const sun = new Date(mon);
-  sun.setDate(mon.getDate() + 6);
-  const md = (x: Date) => `${x.getMonth() + 1}月${x.getDate()}日`;
-  return (
-    <section aria-labelledby="room-parent" className="mt-4">
-      <button type="button" aria-expanded={open} onClick={() => setOpen(!open)} className={`${btn} bg-white`}>
-        {open ? "保護者への週の報告（見本）を閉じる" : "保護者への週の報告（見本）を見る"}
-      </button>
-      {open && (
-        <article aria-labelledby="room-parent" className="mt-2 rounded-[14px] border-[1.5px] border-[#15172B] bg-[#FFFDF5] p-4 text-[13.5px] leading-relaxed">
-          <h2 id="room-parent" className="m-0 text-[17px] font-black">
-            {s.nick === "あなた" ? "お子さま" : `${s.nick}さん`}の今週のアオハルーム（{md(mon)}〜{md(sun)}）
-          </h2>
-          <p className="m-0 mt-1 text-[12px] text-[#5A5D73]">アオハルラーンから、週に1回お届けする報告の見本です。点数や順位ではなく、続けた様子をお伝えします。</p>
-          <dl className="m-0 mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
-            {[
-              ["集中した時間", `${Math.floor(st.weekFocusMin / 60)}時間${st.weekFocusMin % 60}分`],
-              ["最後までやりきった回", `${done}回`],
-              ["解いた問題", `${solved}問（正解 ${correct}問）`],
-              ["続けている日数", `${st.streak}日`],
-            ].map(([k, v]) => (
-              <div key={k} className="rounded-[10px] bg-white px-3 py-2">
-                <dt className="text-[11.5px] font-bold text-[#5A5D73]">{k}</dt>
-                <dd className="m-0 text-[16px] font-black">{v}</dd>
-              </div>
-            ))}
-          </dl>
-          <h3 className="m-0 mt-3 text-[14px] font-black">曜日ごとの集中した時間</h3>
-          <div className="mt-1 flex h-[90px] items-end gap-2" role="img" aria-label={WEEKDAYS.map((w, i) => `${w}曜 ${Math.round(perDay[i])}分`).join("、")}>
-            {perDay.map((m, i) => (
-              <div key={i} className="flex flex-1 flex-col items-center gap-0.5">
-                <span className="text-[10.5px] tabular-nums text-[#5A5D73]">{m ? Math.round(m) : ""}</span>
-                <span className="w-full rounded-t-[4px] bg-[#1533B8]" style={{ height: `${Math.max(2, (m / maxMin) * 60)}px`, opacity: m ? 1 : 0.15 }} />
-                <span className="text-[11px] font-bold">{WEEKDAYS[i]}</span>
-              </div>
-            ))}
-          </div>
-          <h3 className="m-0 mt-3 text-[14px] font-black">本人が決めた「やること」とふり返り</h3>
-          {list.length === 0 ? (
-            <p className="m-0 mt-1 text-[#5A5D73]">今週はまだ記録がありません。</p>
-          ) : (
-            <ul className="m-0 mt-1 pl-5">
-              {list.slice(0, 8).map((c) => (
-                <li key={c.id}>
-                  {c.plan}（{c.reflect}）
-                </li>
-              ))}
-            </ul>
-          )}
-          <p className="m-0 mt-3 rounded-[10px] bg-white px-3 py-2 text-[12.5px]">
-            声のかけ方のヒント：結果より、決めたことをやりきった回をほめてください。「今週は{done}回やりきったね」の一言が、来週も続ける力になります。
-          </p>
-          <p className="m-0 mt-2 text-[11.5px] text-[#5A5D73]">本番では、保護者への共有ページに週1回出します（お子さまの同意のうえで）。ニックネーム以外の個人の情報は出しません。</p>
-        </article>
-      )}
     </section>
   );
 }
