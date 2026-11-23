@@ -6,17 +6,8 @@ import { checkCourseTask, TODAY_KEY, ymd, type TodayList } from "@/lib/station/c
 import {
   board,
   GRADES,
-  LEAGUES,
-  LEAGUE_SIZE,
-  MOVE,
-  leagueTable,
-  presentAt,
-  rollLeague,
-  weekPoints,
-  weekProgress,
   MODES,
   POINT_RULE,
-  PEERS,
   REFLECT,
   SAME_UNIT_FULL,
   STREAK_KING,
@@ -39,11 +30,18 @@ import {
   type Reflect,
   type RoomState,
 } from "@/lib/station/room";
+import { SmartSignUpButton } from "@/components/SmartSignUpButton";
+import { findBins, jstHm, mdwLabel } from "@/lib/station/bin";
+import type { LiveRoom } from "@/lib/station/room-store";
 import { Ambience } from "./Ambience";
+import { useLiveRoom } from "./useLiveRoom";
 
-// アオハルーム（勉強王自習室・試作）の画面。
+// アオハルーム（勉強王自習室）の画面。
 // タイマー（やること宣言 → 集中 → ふり返り → 休憩）・学びポイント・週のランキング・勉強王の称号・自分の記録。
-// 部屋の座席と仲間は見本（架空のニックネーム）。本番は「いまいる人」をデータベースで知らせ、ポイントはサーバーで数える。
+// 部屋の座席（いま集中している人）とランキングは、登録した人どうしの本物の記録（サーバー：lib/station/room-store.ts）。
+// 出すのはニックネーム・学年・数字だけ。声・映像・チャット・個人あてのやりとりはない。
+// タイマーと自分の記録は、登録していなくてもこの端末だけで動く。サーバーが使えないときも、この端末だけの表示で動く。
+// 週のリーグ（見本の30人と競う）は、本物の人数が集まるまで外した（2026-11-23）。
 
 const box = "rounded-[14px] border-[2px] border-[#15172B] p-4";
 const btn = "rounded-[10px] border-[1.5px] border-[#15172B] px-4 py-2 text-[14px] font-black disabled:opacity-40";
@@ -55,7 +53,6 @@ const hm = (iso: string) => {
   const d = new Date(iso);
   return `${d.getMonth() + 1}/${d.getDate()} ${d.getHours()}:${String(d.getMinutes()).padStart(2, "0")}`;
 };
-const STAMPS = ["がんばれ", "おつかれさま", "いっしょに"];
 
 export function AoharuRoom() {
   const s = useRoom();
@@ -77,17 +74,18 @@ export function AoharuRoom() {
     }
   }, [now, s.running, s.restUntil]);
 
-  // 週が変わったら、前の週の順位でリーグを上げ下げする
-  useEffect(() => {
-    if (!now) return;
-    const wk = weekKey(new Date(now));
-    if (s.league?.week === wk) return;
-    updateRoom((v) => ({ ...v, league: rollLeague(v.league, v.cycles, v.nick, new Date(now)) }));
-  }, [now, s.league?.week]);
-
   const date = new Date(now || 0);
   const st = myStats(s.cycles, date);
-  const all = rows(s, st);
+  const { live, seated, saveProfile } = useLiveRoom(s);
+  // 部屋で決めたニックネームと学年を、この端末の設定にも写す
+  const memberNick = live?.member?.nick;
+  const memberGrade = live?.member?.grade;
+  useEffect(() => {
+    if (!memberNick) return;
+    updateRoom((v) => (v.nick === memberNick && v.grade === memberGrade ? v : { ...v, nick: memberNick, grade: (GRADES as readonly string[]).includes(memberGrade ?? "") ? (memberGrade as Grade) : v.grade }));
+  }, [memberNick, memberGrade]);
+  // 自分の行はこの端末の記録から、ほかの人の行はサーバーから（サーバーが使えないときは自分だけ）
+  const all = [...rows(s, st).filter((r) => r.me), ...(live?.ready ? live.rows.filter((r) => !r.me) : [])];
   return (
     <div>
       {now > 0 && isNight(date) && (
@@ -100,17 +98,18 @@ export function AoharuRoom() {
           今日はもう{Math.floor(st.todayFocusMin / 60)}時間以上集中しています。立ち上がって、水を飲んで、少し体を動かしましょう。
         </p>
       )}
+      <Join live={live} s={s} saveProfile={saveProfile} />
       <Status st={st} />
       <div className="mt-4 grid gap-4 lg:grid-cols-[1.25fr_1fr]">
         <Timer s={s} now={now} />
-        <Seats s={s} now={now} />
+        <Seats s={s} live={live} seated={seated} />
       </div>
-      <League s={s} now={now} />
+      <NextBin now={now} />
       <Ranking all={all} grade={s.grade} />
       <Titles all={all} />
       <History s={s} now={now} />
       {/* 保護者への週の報告（見本）は外した（2026-11-23 代表）。保護者への報告は「学習便」だけのものにして、無料の部屋との線引きをはっきりさせる */}
-      <Rules s={s} />
+      <Rules s={s} seated={seated} saveProfile={saveProfile} />
     </div>
   );
 }
@@ -306,9 +305,6 @@ function Look({ s }: { s: RoomState }) {
 }
 
 function Rest({ s, now }: { s: RoomState; now: number }) {
-  const [sent, setSent] = useState<string | null>(null);
-  const here = now ? PEERS.filter((p) => presentAt(p, new Date(now))) : [];
-  const lit = here.length ? here : PEERS.filter((p) => p.here);
   return (
     <section aria-labelledby="room-timer" className={`${box} bg-[#E9F7EF]`}>
       <h2 id="room-timer" className="m-0 text-[14px] font-black text-[#11643A]">
@@ -316,28 +312,6 @@ function Rest({ s, now }: { s: RoomState; now: number }) {
       </h2>
       <p className="m-0 mt-1 text-[44px] font-black leading-none tabular-nums">{now ? mmss(s.restUntil! - now) : "--:--"}</p>
       <p className="m-0 mt-2 text-[13.5px] leading-relaxed">画面から目を離して、肩を回す・首をのばす・遠くを見る。水を一口。</p>
-      <p className="m-0 mt-3 text-[12.5px] font-black">部屋の仲間にスタンプを送る（休憩中だけ・決まった言葉だけ）</p>
-      <div className="mt-1 flex flex-wrap gap-1.5">
-        {STAMPS.map((x) => (
-          <button
-            key={x}
-            type="button"
-            onClick={() => {
-              const to = lit[(s.stamps + x.length) % lit.length].nick;
-              updateRoom((v) => ({ ...v, stamps: v.stamps + 1 }));
-              setSent(`${to}さんに「${x}」を送りました`);
-            }}
-            className="rounded-full border-[1.5px] border-[#15172B] bg-white px-3 py-1 text-[13px] font-black"
-          >
-            {x}
-          </button>
-        ))}
-      </div>
-      {sent && (
-        <p role="status" className="m-0 mt-1 text-[12.5px] font-bold text-[#11643A]">
-          {sent}
-        </p>
-      )}
       <button type="button" onClick={() => updateRoom((v) => ({ ...v, restUntil: null }))} className={`${btn} mt-3 bg-white`}>
         休憩を終えて、次のサイクルへ
       </button>
@@ -345,21 +319,24 @@ function Rest({ s, now }: { s: RoomState; now: number }) {
   );
 }
 
-// ---------- 部屋の座席（見本） ----------
+// ---------- 部屋の座席（いま集中している人） ----------
 
-function Seats({ s, now }: { s: RoomState; now: number }) {
-  const seats = [{ nick: s.nick, here: s.running ? "集中中" : undefined, me: true }, ...PEERS.slice(0, 15).map((p) => ({ nick: p.nick, here: now ? presentAt(p, new Date(now)) : undefined, me: false }))];
-  const on = seats.filter((x) => x.here).length;
+function Seats({ s, live, seated }: { s: RoomState; live: LiveRoom | null; seated: boolean }) {
+  // 自分はこの端末の状態で出す（すぐ光るように）。ほかの人はサーバーから
+  const others = live?.ready ? live.present.filter((p) => !p.me) : [];
+  const meOn = !!s.running;
+  const seats = [{ nick: s.nick, here: meOn ? `集中中 ${s.running!.mode}分` : undefined, me: true }, ...others.slice(0, 23).map((p) => ({ nick: p.nick, here: `集中中 ${p.mode}分`, me: false }))];
+  const on = others.length + (meOn ? 1 : 0);
   return (
     <section aria-labelledby="room-seats" className={`${box} bg-[#22264A] text-white`}>
       <h2 id="room-seats" className="m-0 flex items-baseline gap-2 text-[16px] font-black">
-        今日の部屋
-        <span className="text-[12px] font-bold text-white/70">いま {now ? on : "-"} 人が学習中（見本）</span>
+        いまの部屋
+        <span className="text-[12px] font-bold text-white/70">{live?.ready ? `いま ${on} 人が集中しています` : "部屋の様子を読み込んでいます…"}</span>
       </h2>
       <ul className="m-0 mt-3 grid list-none grid-cols-4 gap-2 p-0">
-        {seats.map((x) => (
+        {seats.map((x, i) => (
           <li
-            key={x.nick + (x.me ? "-me" : "")}
+            key={`${x.nick}-${i}`}
             className={`flex min-h-[64px] flex-col items-center justify-center rounded-[10px] border px-1 text-center ${x.here ? "border-[#FFE45C] bg-[#FFE45C]/15" : "border-white/15 bg-white/5 text-white/40"}`}
           >
             <span aria-hidden="true" className={`mb-1 h-2.5 w-8 rounded-full ${x.here ? "bg-[#FFE45C] shadow-[0_0_10px_#FFE45C]" : "bg-white/15"}`} />
@@ -367,11 +344,18 @@ function Seats({ s, now }: { s: RoomState; now: number }) {
               {x.nick}
               {x.me && x.nick !== "あなた" ? "（あなた）" : ""}
             </span>
-            <span className="text-[10.5px] text-white/70">{x.here ?? "おやすみ"}</span>
+            <span className="text-[10.5px] text-white/70">{x.here ?? "休けい中"}</span>
           </li>
         ))}
       </ul>
-      <p className="m-0 mt-2 text-[11.5px] leading-relaxed text-white/60">話さないつながりの部屋です。出るのはニックネームと学習中の教科だけ。チャットはなく、休憩中にスタンプだけ送れます。</p>
+      {others.length > 23 && <p className="m-0 mt-2 text-[11.5px] text-white/70">ほか {others.length - 23} 人</p>}
+      {live?.ready && others.length === 0 && (
+        <p className="m-0 mt-2 text-[12px] leading-relaxed text-white/80">{meOn ? "いまは、あなたが最初の1人です。" : "いまは、だれも集中していません。最初の1人になりましょう。"}</p>
+      )}
+      <p className="m-0 mt-2 text-[11.5px] leading-relaxed text-white/60">
+        話さないつながりの部屋です。ほかの人に見えるのは、ニックネームと「集中中」の表示、ポイントなどの数字だけ。声・映像・チャットはありません。
+        {!seated && "あなたの席がほかの人に見えるのは、登録してニックネームを決めてからです。"}
+      </p>
     </section>
   );
 }
@@ -507,7 +491,9 @@ function History({ s, now }: { s: RoomState; now: number }) {
 
 // ---------- 決まり・設定 ----------
 
-function Rules({ s }: { s: RoomState }) {
+function Rules({ s, seated, saveProfile }: { s: RoomState; seated: boolean; saveProfile: (nick: string, grade: string) => Promise<string | null> }) {
+  const [msg, setMsg] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
   return (
     <section aria-labelledby="room-rules" className="mt-4 grid gap-3 sm:grid-cols-2">
       <div className="rounded-[14px] border-[1.5px] border-[#15172B] bg-white p-4 text-[13px] leading-relaxed">
@@ -522,7 +508,7 @@ function Rules({ s }: { s: RoomState }) {
           <li>23時〜朝5時に始めたサイクルは、ランキング・称号に数えない</li>
           <li>継続王は{STREAK_KING}日続けた人。何人でもなれます</li>
         </ul>
-        <p className="m-0 mt-1 text-[12px] text-[#5A5D73]">試作では、この端末の学習の記録で数えています。本番ではサーバーで数えます。</p>
+        <p className="m-0 mt-1 text-[12px] text-[#5A5D73]">ポイントは、集中しているあいだにこの端末で解いた記録から数えます。登録してニックネームを決めると、ランキングに名前が出ます。</p>
       </div>
       <div className="rounded-[14px] border-[1.5px] border-[#15172B] bg-white p-4 text-[13px]">
         <h2 className="m-0 text-[15px] font-black">わたしの設定</h2>
@@ -538,66 +524,118 @@ function Rules({ s }: { s: RoomState }) {
             ))}
           </select>
         </label>
+        {seated && (
+          <div className="mt-2">
+            <button
+              type="button"
+              disabled={busy}
+              onClick={async () => {
+                setBusy(true);
+                const e = await saveProfile(s.nick, s.grade);
+                setMsg(e ?? "部屋での名前と学年を変えました。");
+                setBusy(false);
+              }}
+              className="rounded-[8px] border-[1.5px] border-[#15172B] bg-[#FFE45C] px-3 py-1.5 text-[13px] font-black disabled:opacity-40"
+            >
+              {busy ? "保存しています…" : "この名前と学年を、部屋に反映する"}
+            </button>
+            {msg && (
+              <p role="status" className="m-0 mt-1 text-[12px] font-bold text-[#1533B8]">
+                {msg}
+              </p>
+            )}
+          </div>
+        )}
         <p className="m-0 mt-2 text-[12px] text-[#5A5D73]">音（カフェ・雨・図書館）は、権利のきれいな音源を用意してから足します。</p>
         <button type="button" onClick={() => resetRoom()} className="mt-2 text-[12px] font-bold text-[#B42318] underline">
-          この部屋の記録を消す（試作）
+          この端末にある部屋の記録を消す
         </button>
       </div>
     </section>
   );
 }
 
-// ---------- 週のリーグ ----------
+// ---------- 登録とニックネーム ----------
 
-function League({ s, now }: { s: RoomState; now: number }) {
-  if (!now || !s.league) return null;
-  const d = new Date(now);
-  const level = s.league.level;
-  const table = leagueTable(s.league.week, level, weekProgress(d), { nick: s.nick, points: weekPoints(s.cycles, s.league.week) });
-  const myRank = table.findIndex((r) => r.me) + 1;
-  const left = 7 - ((d.getDay() + 6) % 7);
-  const top = level < LEAGUES.length - 1;
-  const bottom = level > 0;
-  const last = s.league.last;
+function Join({ live, s, saveProfile }: { live: LiveRoom | null; s: RoomState; saveProfile: (nick: string, grade: string) => Promise<string | null> }) {
+  const [nick, setNick] = useState("");
+  const [grade, setGrade] = useState<string>(s.grade);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  if (!live?.ready) return null;
+  if (live.member) return null;
+  const wrap = "mb-3 rounded-[14px] border-[2px] border-[#15172B] bg-[#EEF1FF] p-4";
+  if (!live.signedIn) {
+    return (
+      <section aria-label="部屋に座るには" className={wrap}>
+        <p className="m-0 text-[15px] font-black">無料登録すると、部屋の席に座れます</p>
+        <p className="m-0 mt-1 text-[13px] leading-relaxed text-[#3A3D55]">
+          登録してニックネームを決めると、集中しているあいだ席が光り、ランキングに名前が出ます。登録しなくても、タイマーと自分の記録はこの端末だけで使えます。
+        </p>
+        <SmartSignUpButton analyticsLocation="aoharoom_join" redirectUrl="/station/room" className={`${btn} mt-2 bg-[#1533B8] text-white`}>
+          無料登録してはじめる
+        </SmartSignUpButton>
+      </section>
+    );
+  }
   return (
-    <section aria-labelledby="room-league" className={`${box} mt-4 bg-white`}>
-      <div className="flex flex-wrap items-baseline gap-2">
-        <h2 id="room-league" className="m-0 text-[18px] font-black">
-          今週の{LEAGUES[level]}
-        </h2>
-        <span className="text-[12.5px] font-bold text-[#5A5D73]">
-          同じくらいの{LEAGUE_SIZE}人で競う・あと{left}日（日曜の夜まで）
-        </span>
-        <span className="ml-auto text-[14px] font-black">いま {myRank}位</span>
+    <section aria-label="ニックネームを決める" className={wrap}>
+      <p className="m-0 text-[15px] font-black">部屋で使うニックネームを決めてください</p>
+      <p className="m-0 mt-1 text-[13px] leading-relaxed text-[#3A3D55]">ほかの人に見える名前です。本名・学校名・連絡先は書かないでください。</p>
+      <div className="mt-2 flex flex-wrap items-end gap-2">
+        <label className="block text-[12.5px] font-bold">
+          ニックネーム（12字まで）
+          <input className="mt-0.5 block w-[200px] rounded-[8px] border-[1.5px] border-[#15172B] bg-white px-2 py-2 text-[15px]" value={nick} maxLength={12} onChange={(e) => setNick(e.target.value)} />
+        </label>
+        <label className="block text-[12.5px] font-bold">
+          学年
+          <select className="mt-0.5 block rounded-[8px] border-[1.5px] border-[#15172B] bg-white px-2 py-2 text-[15px]" value={grade} onChange={(e) => setGrade(e.target.value)}>
+            {GRADES.map((g) => (
+              <option key={g}>{g}</option>
+            ))}
+          </select>
+        </label>
+        <button
+          type="button"
+          disabled={busy || nick.trim().length < 1}
+          onClick={async () => {
+            setBusy(true);
+            setError(await saveProfile(nick, grade));
+            setBusy(false);
+          }}
+          className={`${btn} bg-[#FFE45C]`}
+        >
+          {busy ? "保存しています…" : "この名前で座る"}
+        </button>
       </div>
-      {last && (
-        <p role="status" className={`m-0 mt-2 rounded-[10px] px-3 py-2 text-[13px] font-bold ${last.moved === "up" ? "bg-[#E9F7EF] text-[#11643A]" : last.moved === "down" ? "bg-[#FDECEA] text-[#B42318]" : "bg-[#F7F6F1]"}`}>
-          先週は{LEAGUES[last.from]}で{last.rank}位。
-          {last.moved === "up" ? `${LEAGUES[level]}に昇格しました。` : last.moved === "down" ? `${LEAGUES[level]}で立て直しましょう。` : "同じリーグで続けます。"}
+      {error && (
+        <p role="alert" className="m-0 mt-2 text-[12.5px] font-bold text-[#B42318]">
+          {error}
         </p>
       )}
-      <p className="m-0 mt-1 text-[12px] text-[#5A5D73]">
-        {top ? `上位${MOVE}人は次の週に${LEAGUES[level + 1]}へ昇格。` : "いちばん上のリーグです。"}
-        {bottom ? `下位${MOVE}人は${LEAGUES[level - 1]}へ。` : "このリーグに降格はありません。"}
-        {LEAGUES.join(" → ")}
+    </section>
+  );
+}
+
+// ---------- 次の学習便のお知らせ ----------
+
+function NextBin({ now }: { now: number }) {
+  if (!now) return null;
+  const { current, next } = findBins(now);
+  const bin = current ?? next;
+  if (!bin) return null;
+  return (
+    <section aria-label="次の学習便" className="mt-4 rounded-[14px] bg-[#15172B] p-4 text-white">
+      <p className="m-0 text-[12px] font-black text-[#FFE45C]">ひとりだと続かない人へ</p>
+      <p className="m-0 text-[17px] font-black">
+        {current ? "いま、学習便が走っています" : `次の学習便：${mdwLabel(bin.date)} ${bin.name} ${jstHm(bin.startMs)}発`}
       </p>
-      <ol className="m-0 mt-2 grid list-none grid-cols-1 gap-x-3 gap-y-0.5 p-0 sm:grid-cols-2">
-        {table.map((r, i) => {
-          const zone = top && i < MOVE ? "up" : bottom && i >= LEAGUE_SIZE - MOVE ? "down" : "";
-          return (
-            <li
-              key={r.nick + (r.me ? "-me" : "")}
-              className={`flex items-center gap-2 rounded-[8px] px-2 py-1 text-[13px] ${r.me ? "border-[1.5px] border-[#1533B8] bg-[#E6EAFB] font-black" : zone === "up" ? "bg-[#E9F7EF]" : zone === "down" ? "bg-[#FDECEA]" : ""}`}
-            >
-              <span className="w-6 text-right font-black tabular-nums">{i + 1}</span>
-              <span className="min-w-0 flex-1 truncate">{r.me ? (r.nick === "あなた" ? "あなた" : `${r.nick}（あなた）`) : r.nick}</span>
-              {zone && <span className={`text-[10.5px] font-black ${zone === "up" ? "text-[#11643A]" : "text-[#B42318]"}`}>{zone === "up" ? "▲昇格圏" : "▼降格圏"}</span>}
-              <span className="w-[44px] text-right font-black tabular-nums">{r.points}</span>
-            </li>
-          );
-        })}
-      </ol>
-      <p className="m-0 mt-2 text-[11.5px] text-[#5A5D73]">リーグの仲間は見本（架空のニックネーム。週の進みに合わせてポイントが増えます）。</p>
+      <p className="m-0 mt-1 text-[13px] leading-relaxed text-white/75">
+        時刻を決めて集まり、見守り役のもとで90分。出席と学習量は、その日のうちに保護者の方へ届きます。お申し込みは保護者の方からです。
+        <Link href="/station" className="ml-1 font-black text-[#FFE45C]">
+          学習便のご案内 →
+        </Link>
+      </p>
     </section>
   );
 }

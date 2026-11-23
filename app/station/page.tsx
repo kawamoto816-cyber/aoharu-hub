@@ -22,7 +22,7 @@ const COMPARE: [string, string, string][] = [
   ["見守り役", "いません", "毎便います（進行と声かけ）"],
   ["保護者への報告", "ありません", "未着通知・当日報告・週報"],
   ["班とホームルーム", "ありません", "5人の班で週1回"],
-  ["声・映像", "ありません（ニックネームと学習中の教科だけ）", "Zoom。顔出しは任意"],
+  ["声・映像", "ありません（ニックネームと「集中中」の表示だけ）", "Zoom。顔出しは任意"],
 ];
 
 const STEPS: [string, string, string][] = [
@@ -106,7 +106,7 @@ export default function Page() {
                 <td className="p-3" />
                 <th scope="col" className="p-3 font-black">
                   アオハルーム
-                  <span className="block text-[12.5px] text-[#1533B8]">無料の自習室（試作）</span>
+                  <span className="block text-[12.5px] text-[#1533B8]">無料の自習室</span>
                 </th>
                 <th scope="col" className="rounded-t-[10px] bg-[#FFE45C] p-3 font-black">
                   {BIN.name}
@@ -189,7 +189,7 @@ export default function Page() {
       <section className="mt-10">
         <h2 className="m-0 text-[22px] font-black leading-snug">無料の自習室「アオハルーム」</h2>
         <p className="m-0 mt-1 text-[14px] leading-relaxed text-[#4A4D63]">
-          みんなで黙って学ぶ部屋です。25分集中して、ふり返り、休憩する。いつでも入れます（いまは試作で、部屋の仲間の表示は見本です）。
+          みんなで黙って学ぶ部屋です。25分集中して、ふり返り、休憩する。いつでも入れます。無料登録してニックネームを決めると、席に座って、ランキングに名前が出ます。
         </p>
         <div className="mt-4 grid gap-3 sm:grid-cols-2">
           <div className={card}>

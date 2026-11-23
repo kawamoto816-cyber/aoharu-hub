@@ -1,11 +1,18 @@
 import { StationShell } from "@/components/station/StationShell";
 import { AoharuRoom } from "@/components/station/AoharuRoom";
 
-// /station/room：アオハルーム（勉強王自習室・試作）。自習ホームの中の「みんなで学ぶ部屋（話さないつながり）」。無料。
+// /station/room：アオハルーム（勉強王自習室）。登録した人どうしの本物の部屋（座席・ランキングはサーバー）。自習ホームの中の「みんなで学ぶ部屋（話さないつながり）」。無料。
 // 25分（50分）の集中 → ふり返り → 休憩を繰り返し、集中中の学び（解いた・正解・単元模試・完走）を学びポイントにして週で競う。
 export default function Page() {
   return (
-    <StationShell here="アオハルーム">
+    <StationShell
+      here="アオハルーム"
+      notice={
+        <p className="m-0 mb-3 rounded-[10px] border border-[#C9C7BD] bg-white px-3 py-2 text-[12px] font-bold leading-relaxed text-[#3A3D55]">
+          無料の自習室です。ほかの人に見えるのは、ニックネームと「集中中」の表示、ポイントなどの数字だけ。声・映像・チャットはありません。本名・学校名・連絡先はニックネームに書かないでください。
+        </p>
+      }
+    >
       <p className="m-0 text-xs font-black tracking-wider text-[#1533B8]">無料・自習ホームの中の部屋</p>
       <h1 className="m-0 mt-1 text-[26px] font-black">アオハルーム（勉強王自習室）</h1>
       <p className="m-0 mt-1 max-w-[760px] text-[14px] leading-relaxed text-[#3A3D55]">
