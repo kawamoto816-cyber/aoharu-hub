@@ -55,8 +55,12 @@ export async function saveLog(userId: string, entries: LogEntry[], profile: { ni
       const { error } = await db.from("station_learn_log").insert(entries.map((e) => ({ user_id: userId, ...e })));
       if (error) return false;
     }
+    // はじめての人だけ登録する。すでに登録がある人のニックネーム・学年は上書きしない
+    // （学習便の乗車ページで決めた名前を、端末の自習室の名前で書きかえないため）。
     if (profile.nick || profile.grade) {
-      await db.from("station_members").upsert({ user_id: userId, nick: profile.nick, grade: profile.grade, updated_at: new Date().toISOString() }, { onConflict: "user_id" });
+      await db
+        .from("station_members")
+        .upsert({ user_id: userId, nick: profile.nick, grade: profile.grade, updated_at: new Date().toISOString() }, { onConflict: "user_id", ignoreDuplicates: true });
     }
     return true;
   } catch {
