@@ -195,6 +195,12 @@ export function Landing() {
             <TrackedLink href="/parents" event="parents_cta_click" params={{ location: "lp_parents" }} className="mt-5 inline-block text-[15px] font-bold text-[#1533B8] hover:text-[#0E2380]">
               保護者向けのご案内を読む →
             </TrackedLink>
+            <p className="mt-3 text-[14px] leading-[1.8] text-[#3A3D55]">
+              中学生の保護者の方へ：決まった時刻に集まって学ぶ、見守りつきのオンライン自習便
+              <TrackedLink href="/station" event="bin_link_click" params={{ location: "lp_parents" }} className="ml-1 font-bold text-[#1533B8] hover:text-[#0E2380]">
+                「アオハル 学習便」モニター募集中 →
+              </TrackedLink>
+            </p>
           </div>
           <div className="flex min-w-0 flex-[1_1_300px] flex-col gap-3">
             <div className="flex items-baseline justify-between rounded-[14px] border-[1.5px] border-dashed border-[#9A9CB0] px-5 py-[18px]">
@@ -279,7 +285,10 @@ export function Landing() {
 
       <footer className="mx-auto flex max-w-[1200px] flex-wrap justify-between gap-4 px-4 pb-28 pt-7 text-xs text-[#5A5D73] sm:px-6 sm:pb-10">
         <span>株式会社ブルースプリング</span>
-        <Link href="/legal/tokushoho" className="text-[#5A5D73] underline underline-offset-2">特定商取引法に基づく表記</Link>
+        <span className="flex flex-wrap gap-x-4 gap-y-1">
+          <TrackedLink href="/station" event="bin_link_click" params={{ location: "lp_footer" }} className="text-[#5A5D73] underline underline-offset-2">ラーニングステーション（学習便・無料の自習室）</TrackedLink>
+          <Link href="/legal/tokushoho" className="text-[#5A5D73] underline underline-offset-2">特定商取引法に基づく表記</Link>
+        </span>
       </footer>
 
       {/* スマホだけ画面下に固定するボタン */}

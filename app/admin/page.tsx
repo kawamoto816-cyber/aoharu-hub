@@ -39,6 +39,7 @@ const EVENT_LABEL: Record<string, string> = {
   tensaku_full_rescore: "書き直して再添削",
   voice_submit: "声が届いた",
   season_offer_view: "パスの案内を見た",
+  bin_link_click: "学習便の案内クリック",
   ask_parent_link: "保護者リンク作成",
   begin_checkout: "決済開始",
   purchase: "購入",

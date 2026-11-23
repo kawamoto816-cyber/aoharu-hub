@@ -1,3 +1,4 @@
+import { TrackedLink } from "@/components/TrackedLink";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { SeriesPage } from "@/components/exam/SeriesPage";
@@ -25,6 +26,10 @@ export default function KokoMoshiPage() {
           <Link href="/station/course/koko" className="mt-2 inline-flex min-h-[40px] items-center rounded-[10px] border-[1.5px] border-[#15172B] bg-[#FFE45C] px-3 text-[13px] font-black text-[#15172B] no-underline">
             計画を作る →
           </Link>
+          <p className="m-0 mt-3 border-t border-[#E4E2D8] pt-2 text-[12.5px] leading-relaxed text-[#3A3D55]">
+            保護者の方へ：決まった時刻に集まって学ぶ、見守りつきのオンライン自習便があります。
+            <TrackedLink href="/station" event="bin_link_click" params={{ location: "koko_moshi" }} className="ml-1 font-black text-[#1533B8]">アオハル 学習便を見る →</TrackedLink>
+          </p>
         </aside>
       }
       id="koko"

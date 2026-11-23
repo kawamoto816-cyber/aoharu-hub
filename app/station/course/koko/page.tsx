@@ -1,3 +1,4 @@
+import { TrackedLink } from "@/components/TrackedLink";
 import type { Metadata } from "next";
 import { StationShell } from "@/components/station/StationShell";
 import { Course } from "@/components/station/Course";
@@ -46,6 +47,10 @@ export default function Page() {
       <div className="mt-4">
         <Course def={def} pool={pool} units={units} serverToday={todayJst()} />
       </div>
+      <p className="m-0 mt-5 rounded-[12px] border-[1.5px] border-dashed border-[#5A5D73] bg-white px-4 py-3 text-[13px] leading-relaxed text-[#3A3D55]">
+        保護者の方へ：計画どおりに机に向かう時間をつくる、見守りつきのオンライン自習便があります。
+        <TrackedLink href="/station" event="bin_link_click" params={{ location: "course_koko" }} className="ml-1 font-black text-[#1533B8]">アオハル 学習便を見る →</TrackedLink>
+      </p>
     </StationShell>
   );
 }
