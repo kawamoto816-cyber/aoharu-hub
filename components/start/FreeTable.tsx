@@ -1,7 +1,12 @@
-// /start の「無料でできること・有料でできること」の表と、有料の3つの選び方。A・B・C どの案でも同じものを出す。
+import Link from "next/link";
+
+// /start の「無料でできること・有料でできること」の表と、有料の4つの選び方。A・B・C どの案でも同じものを出す。
 
 // 無料と有料の境目（2026-11-22 じゅんさんの依頼で「有料」の列を足して作り直し）。
 // 境目は1本（2026-11-22 じゅんさん決定で入試模試の上限をなくした）：教科の勉強と模試は無料。お金がかかるのは「受験の書類と面接」だけ（時間配分の分析は Pro のおまけ）。
+// 2026-11-23 直前コース（共通テスト・公立高校入試。各4,980円・1回払い）の販売に合わせて、境目を2本にした：
+//   お金がかかるのは「受験の書類と面接」と「直前コースの2週目からの伴走」。授業・模試・診断・作戦表・最初の1週間の計画は無料のまま。
+//   Pro には直前コースは入らない。Max・受験シーズンパスには入る（lib/station/course-kinds.ts・course-pass.ts）。
 // 回数は lib/exam/access.ts（模試）・lib/tensaku/full.ts（添削 月2本）と合わせる。面接練習（メンサツ）の無料は「1問体験（評価レポートつき）月1回」（2026-11-22 に interview.bluespring.co.jp の表示で確認）。
 type Cell = string | true;
 const TABLE: { group: string; note?: string; rows: [string, Cell, Cell, Cell][] }[] = [
@@ -26,6 +31,14 @@ const TABLE: { group: string; note?: string; rows: [string, Cell, Cell, Cell][] 
     ],
   },
   {
+    group: "直前コース（共通テスト・公立高校入試）",
+    note: "模試で診断して、試験日までの計画を作ります",
+    rows: [
+      ["診断・作戦表・最初の1週間の計画", "診断の模試は1回まで", true, true],
+      ["2週目からの伴走（毎週の計画の作り直し・進み具合）", "—", "—", "各4,980円（パスなら追加なし）"],
+    ],
+  },
+  {
     group: "記録",
     rows: [["どこまで進んだか", "この端末だけ", true, true]],
   },
@@ -43,7 +56,7 @@ export function FreeTable() {
       <h2 id="free-h" className="m-0 text-[19px] font-black">
         無料と有料の境目
       </h2>
-      <p className="m-0 mt-1 text-[13px] leading-relaxed text-[#3A3D55]">教科の勉強と模試は、無料登録で全部使えます。お金がかかるのは、受験の書類と面接だけです。</p>
+      <p className="m-0 mt-1 text-[13px] leading-relaxed text-[#3A3D55]">教科の勉強と模試は、無料登録で全部使えます。お金がかかるのは、受験の書類と面接、それに直前コースの2週目からの伴走だけです。</p>
       <div className="mt-3 overflow-hidden rounded-[14px] border-[1.5px] border-[#15172B] bg-white">
         <table className="w-full table-fixed border-collapse text-[12.5px] leading-snug">
           <colgroup>
@@ -94,17 +107,18 @@ export function FreeTable() {
 }
 
 // 有料の範囲（2026-11-22 じゅんさんの指摘「Pro が何の回数の制限をなくすのかわからない」で書き直し）。
-// 境目は1本：教科の勉強と模試は無料。お金がかかるのは「受験の書類と面接」だけ。
+// 教科の勉強と模試は無料。お金がかかるのは「受験の書類と面接」と「直前コースの2週目からの伴走」（2026-11-23 追加）。
 // 中身は lib/exam/access.ts（模試の回数）・lib/tensaku/ticket.ts（1通300円）・lib/aoharu-entitlements（Pro・シーズンパス）と合わせる。
 export function PaidBox() {
   const rows: [string, string, string][] = [
     ["1通ずつ", "300円", "志望理由書・小論文の添削を1通。書き直したあと1回見直します"],
     ["Pro", "月980円", "志望理由書・小論文の添削と面接練習が、回数の制限なし。模試の時間配分の分析もつきます"],
-    ["受験シーズンパス", "1回払い", "受験生向け。3月末まで Pro の中身を含む全部が使えます。月額ではなく、自動更新もありません"],
+    ["受験シーズンパス", "1回払い", "受験生向け。3月末まで Pro の中身を含む全部が使えます（直前コースも追加なし）。月額ではなく、自動更新もありません"],
+    ["直前コース", "各4,980円・1回払い", "共通テスト・公立高校入試の2コース。診断・作戦表・最初の1週間は無料で、2週目からの計画の作り直しと進み具合の管理が有料です。Pro には入りません。公立高校入試コースのお申し込みは保護者の方から"],
   ];
   return (
     <div className="mt-3 rounded-[14px] border-[1.5px] border-dashed border-[#15172B] bg-[#FFFBE6] p-4">
-      <p className="m-0 text-[14px] font-black">有料の3つの選び方</p>
+      <p className="m-0 text-[14px] font-black">有料の4つの選び方</p>
       <p className="m-0 mt-1 text-[12.5px] leading-relaxed text-[#3A3D55]">
         どれも、必要な人が自分で選んだときだけです。教科の勉強のためにお金を払う必要はありません。
       </p>
@@ -117,6 +131,16 @@ export function PaidBox() {
           </li>
         ))}
       </ul>
+      <p className="m-0 mt-2 text-[12.5px] font-bold">
+        直前コースを見る：
+        <Link href="/station/course/kyotsu" className="text-[#1533B8] underline">
+          共通テスト
+        </Link>
+        {" ／ "}
+        <Link href="/station/course/koko" className="text-[#1533B8] underline">
+          公立高校入試
+        </Link>
+      </p>
       <p className="m-0 mt-2 text-[12px] text-[#5A5D73]">登録はメールアドレスだけ。カードの登録はいらず、勝手に有料になることはありません。</p>
     </div>
   );
