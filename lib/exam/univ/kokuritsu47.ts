@@ -13,8 +13,13 @@ import { PARTS, fromParts, type PartDaimon } from "./parts";
 //   - 文法・語法の大問、整序英作文は部品が無いので入れていない（omit に書いて、画面の format に出す）。小問集合は近い分野の大問に置きかえた
 //   - 満点は、大問ごとの目安（長文60・英作文/和文英訳/会話文40・数学は1題50）を足したもの。実際の配点ではない
 //
-// まだ作っていないもの（ページに時間か大問数が無かった）：
-//   弘前・秋田・福島・群馬・埼玉・新潟・滋賀・愛媛（英語・数学とも）、筑波の数学、千葉の数学（理系）、金沢の英語、
+// 大学公式での確認（2026-11-23 夜〜。記録は /home/claude/work/univ/official.md → docs/univ-official-check.md）：
+//   各大学の一般選抜「学生募集要項」の PDF を全文読み、個別学力検査の時間割と照らす。official をつけた科目が確認ずみ。
+//   募集要項に書いてあるのは試験時間と配点まで。大問数は募集要項には無く、過去の問題・出題意図で確かめる必要がある（まだしていない）。
+//   弘前・秋田・群馬・滋賀・愛媛は、じゅけラボのページに時間が無かったが、募集要項で時間が確かめられたので型にした。
+//
+// まだ作っていないもの：
+//   福島・埼玉・新潟（大問数が分からない）、愛媛の英語、筑波の数学、千葉の数学（理系）、金沢の英語、
 //   岡山・徳島・高知・長崎・香川・山口の数学（理系）の一部、岐阜の英語（全50問の選択式で、記述の部品では組めない）など。
 
 type E = "R" | "E" | "T" | "K";
@@ -49,6 +54,8 @@ interface Sub<K> {
   guess?: boolean;
   /** 部品が無くて入れていない大問 */
   omit?: string;
+  /** 試験時間を大学公式の学生募集要項で確かめた（その資料の年度。「令和8年度」） */
+  official?: string;
 }
 interface Univ {
   slug: string;
@@ -61,9 +68,27 @@ interface Univ {
 
 const U: Univ[] = [
   {
+    slug: "hirosaki", univ: "弘前大学", order: 300,
+    eigo: { minutes: 90, official: "令和8年度", who: "人文社会科学部・教育学部・医学部", d: [["K", "会話文の読解"], ["R", "長文読解（説明文）"], ["E", "会話を踏まえた英語表現と、日本文化の説明"], ["E", "メール形式の英作文（約100語）"]] },
+    bun: { minutes: 90, official: "令和8年度", who: "人文社会科学部・教育学部・農学生命科学部（数学①）", d: [["vector", "図形と計量"], ["seq", "データと自然数の和"], ["coord", "不等式の表す領域"]] },
+    ri: { minutes: 90, official: "令和8年度", who: "教育学部・理工学部（数学②）", d: [["int", "積分法"], ["diff", "関数の増減・極値・グラフ"], ["vector", "空間ベクトル"]] },
+  },
+  {
+    slug: "akita", univ: "秋田大学", order: 300,
+    eigo: { minutes: 60, official: "令和8年度", who: "国際資源学部・教育文化学部・医学部保健学科・情報データ科学部", d: [["R", "長文読解"], ["R", "長文読解"], ["E", "英作文（具体例を挙げて一段落）"]] },
+    bun: { minutes: 90, official: "令和8年度", who: "教育文化学部・情報データ科学部（文系）", d: [["coord", "2次関数の最大・最小"], ["calc", "3次関数の微分・積分"], ["vector", "三角形と外接円のベクトル"]] },
+    ri: { minutes: 90, official: "令和8年度", who: "国際資源学部・総合環境理工学部・情報データ科学部（理系）", d: [["vector", "三角形と外接円のベクトル"], ["diff", "円の位置関係・図形"], ["int", "曲線と接線・回転体の体積"]] },
+  },
+  {
+    slug: "gunma", univ: "群馬大学", order: 302,
+    eigo: { minutes: 120, official: "令和8年度", who: "情報学部", d: [["R", "長文読解"], ["R", "長文読解（和訳・日本語説明）"], ["T", "和文英訳"]] },
+    bun: { minutes: 120, official: "令和8年度", who: "情報学部（数学Ⅲをふくまない選択）", d: [["seq", "式の処理・数列の和・整数"], ["prob", "確率"], ["coord", "数列・三角関数と数学的帰納法"], ["vector", "空間ベクトル"], ["calc", "関数のグラフ・面積・最大値"]] },
+    ri: { minutes: 120, official: "令和8年度", who: "情報学部（数学Ⅲをふくむ選択）", d: [["seq", "式の処理・数列の和・整数"], ["prob", "確率"], ["limit", "数列・三角関数と数学的帰納法"], ["vector", "空間ベクトル"], ["int", "指数関数・三角関数の微分積分と極限"]] },
+  },
+  {
     slug: "iwate", univ: "岩手大学", order: 301,
-    eigo: { minutes: 90, who: "人文社会科学部", d: [["R", "長文読解（文化・社会）"], ["R", "長文読解（人生観・随想）"], ["E", "資料を踏まえた英語エッセイ"]] },
-    ri: { minutes: 120, who: "理工学部", d: [["complex", "複素数"], ["prob", "場合の数・確率"], ["vector", "ベクトル"], ["seq", "数列"], ["int", "積分と極限"]] },
+    eigo: { minutes: 90, official: "令和8年度", who: "人文社会科学部", d: [["R", "長文読解（文化・社会）"], ["R", "長文読解（人生観・随想）"], ["E", "資料を踏まえた英語エッセイ"]] },
+    ri: { minutes: 120, official: "令和8年度", who: "理工学部", d: [["complex", "複素数"], ["prob", "場合の数・確率"], ["vector", "ベクトル"], ["seq", "数列"], ["int", "積分と極限"]] },
   },
   {
     slug: "yamagata", univ: "山形大学", order: 302,
@@ -117,6 +142,11 @@ const U: Univ[] = [
     ri: { minutes: 120, who: "医学部医学科・工学部", d: [["vector", "ベクトル・小問"], ["prob", "確率と対数"], ["int", "数学Ⅲの微分・積分"]] },
   },
   {
+    slug: "shiga", univ: "滋賀大学", order: 310,
+    eigo: { minutes: 90, official: "令和8年度", who: "経済学部・データサイエンス学部", guess: true, d: [["R", "長文読解（和訳・内容説明）"], ["E", "自由英作文"]] },
+    bun: { minutes: 90, official: "令和8年度", who: "経済学部ほか（6題から4題を解答）", d: [["seq", "数列と数学的帰納法"], ["coord", "式と証明・対数"], ["prob", "場合の数・統計"], ["calc", "3次関数の極値と面積"]] },
+  },
+  {
     slug: "narajo", univ: "奈良女子大学", order: 311,
     eigo: { minutes: 100, who: "全学部共通", d: [["R", "英文和訳をふくむ読解"], ["T", "和文英訳"], ["R", "長文読解と日本語による内容説明"]] },
     ri: { minutes: 90, who: "理学部・工学部", d: [["vector", "空間図形とベクトル"], ["int", "接線と面積（微分・積分）"], ["diff", "指数関数・対数関数"]] },
@@ -155,6 +185,10 @@ const U: Univ[] = [
   {
     slug: "kagawa", univ: "香川大学", order: 318,
     eigo: { minutes: 90, who: "全学部共通", d: [["R", "長文読解（英問英答）"], ["R", "長文読解（和訳・内容説明）"], ["E", "自由英作文（100〜120語）"]] },
+  },
+  {
+    slug: "ehime", univ: "愛媛大学", order: 318,
+    ri: { minutes: 120, official: "令和7年度", who: "理学部・医学部医学科・工学部（理型）", guess: true, d: [["seq", "数列"], ["prob", "確率"], ["vector", "ベクトル"], ["diff", "微分法"], ["int", "積分法・平面上の曲線"], ["complex", "複素数平面"]] },
   },
   {
     slug: "kochi", univ: "高知大学", order: 319,
@@ -209,6 +243,7 @@ function build<K extends string>(u: Univ, kamoku: UnivExam["kamoku"], key: strin
   const chunks = split(s.d.map(([k]) => k), parts);
   // 長文読解は、部品によって小問が5問の節と6問の節があるので、5問にそろえる（そろえないと、6問を求める大問に5問の節が当たって組めない）
   const daimon: PartDaimon[] = s.d.map(([k, title], i) => ({ title: `第${i + 1}問　${title}`, points: points(k), parts: chunks[i], ...(k === "R" ? { count: [5, 5] as [number, number] } : {}) }));
+  const official = s.official ? `試験時間は大学の${s.official}一般選抜の学生募集要項で確かめた。` : "試験時間は大学の募集要項ではまだ確かめていない。";
   const guess = s.guess ? "大問ごとの分野は公開情報で確かめられなかったので、よく出る構成にしている。" : "";
   const omit = s.omit ? `${s.omit}は、この型では出していない。` : "";
   return fromParts({
@@ -217,7 +252,7 @@ function build<K extends string>(u: Univ, kamoku: UnivExam["kamoku"], key: strin
     kamoku,
     tier: "国公立",
     order,
-    basis: `前期日程の個別学力検査「${label}」（${s.who}。${s.minutes}分・大問${s.d.length + (s.omit ? 1 : 0)}題）の傾向を、受験情報サイトの公開情報から参考にした。${guess}${omit}大問の中身は旧帝大・神戸大の型と共通の部品で、難しさは実際よりやや高めのことがある。満点はこの型のための目安。${NOTE}`,
+    basis: `前期日程の個別学力検査「${label}」（${s.who}。${s.minutes}分・大問${s.d.length + (s.omit ? 1 : 0)}題）の傾向を、受験情報サイトの公開情報から参考にした。${official}${guess}${omit}大問の中身は旧帝大・神戸大の型と共通の部品で、難しさは実際よりやや高めのことがある。満点はこの型のための目安。${NOTE}`,
     format: `${s.minutes}分・大問${s.d.length}題。${s.d.map(([, t]) => t.replace(/（.*?）/g, "")).join("、")}。${s.omit ? `（${s.omit}はふくまない）` : ""}`,
     minutes: s.minutes,
     groups,
