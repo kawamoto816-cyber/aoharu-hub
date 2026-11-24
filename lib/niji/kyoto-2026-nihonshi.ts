@@ -583,6 +583,7 @@ export const KYOTO_2026_NIHONSHI: NijiExam = {
             {
               id: "(1)",
               name: "摂関政治の特徴（天皇との関係、中・下級貴族との関係）",
+              lesson: "r1",
               pt: 15,
               unit: `${H}heian`,
               steps: [
@@ -603,6 +604,7 @@ export const KYOTO_2026_NIHONSHI: NijiExam = {
             {
               id: "(2)",
               name: "鎌倉時代の経済（流通をめぐる新しい動き）",
+              lesson: "r2",
               pt: 15,
               unit: `${H}kamakura`,
               steps: [

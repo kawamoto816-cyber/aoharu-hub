@@ -57,11 +57,11 @@ export const EIGO: KijutsuLesson[] = [
         "The idea that people learn more from success than from failure, which many of us accept without question, is not supported by the evidence.",
       ],
       q: "この文を和訳せよ。",
-      hint: "中心の動詞は is (not supported)。主語は The idea 〜 question まで。that は idea の内容を言う「同格」。which は前の内容（その考え）を受けます。",
+      hint: "中心の動詞は is (not supported)。主語の中心は The idea で、that 〜 failure は idea の内容を言う「同格」。コンマではさまれた which 〜 question は、The idea（〜という考え）を先行詞とする付け足しの説明（非制限用法）です。",
       answer:
         "人は失敗からよりも成功からのほうが多くをまなぶという考えは、私たちの多くが疑うことなく受け入れているものだが、証拠によって裏づけられてはいない。",
       points: [
-        "主語：The idea 〜 failure（同格の that）",
+        "主語：The idea ＋ 同格の that 節（〜 failure まで）",
         "which 以下は、その考えへの付け足しの説明",
         "述語：証拠によって裏づけられていない（受け身＋否定）",
       ],
@@ -77,7 +77,7 @@ export const EIGO: KijutsuLesson[] = [
       "物や事が主語で、人に何かを「させる・あたえる・できなくする」文（無生物主語）は、主語を「〜によって」「〜のせいで」「〜すると」と副詞のように訳し、人を主語にする。",
       "名詞に動詞がかくれているとき（the discovery of 〜, his failure to 〜）は、「〜を発見すること」「彼が〜できなかったこと」と、文のようにほどく。",
       "代名詞（it, they, this, that）と、the＋名詞の言いかえは、何を指すか決めてから訳す。「内容を補って」とあれば、指す内容を言葉にして入れる。",
-      "コロン（:）のあとは具体的な説明、セミコロン（;）はつなぎ。「つまり」「すなわち」でつなぐ。",
+      "コロン（:）のあとは、前の言葉の具体的な説明や言いかえ。「つまり」「すなわち」でつなぐ。セミコロン（;）は、関係の深い2つの文をならべる印。前後の関係（そして・しかし・というのも）を文脈で決めて訳す。",
       "できた訳を、英語を見ずに声に出して読み、引っかかるところを直す。",
     ],
     ex: {
@@ -97,11 +97,11 @@ export const EIGO: KijutsuLesson[] = [
         ["代名詞", "them ＝ people。「人々」と訳す。"],
         [
           "コロン",
-          "what had always been there（ずっとそこにあったもの）＝ コロンのあとの「かすかすぎて気づかれなかった何千もの星」。「つまり」でつなぐ。",
+          "what had always been there（ずっとそこにあったもの）＝ コロンのあとの「あまりに暗くて気づかれなかった何千もの星」。「つまり」でつなぐ。",
         ],
       ],
       answer:
-        "望遠鏡が発明されたことで、人々は、ずっとそこにあったもの、つまり、かすかすぎて気づかれなかった何千もの星を見られるようになった。",
+        "望遠鏡が発明されたことで、人々は、ずっとそこにあったもの、つまり、あまりに暗くて気づかれなかった何千もの星を見られるようになった。",
       ng: {
         text: "望遠鏡の発明は、彼らにいつもそこにあったものを見ることを許した。気づくにはあまりにかすかな何千の星。",
         why: "構文はまちがっていませんが、無生物主語と them をそのまま訳したので、日本語として読みにくくなっています。コロンの前後の関係（＝言いかえ）も訳に出ていません。",
@@ -115,14 +115,14 @@ export const EIGO: KijutsuLesson[] = [
     ],
     drill: {
       text: [
-        "Clay tablets were used for writing thousands of years ago. A new project is now printing important books on ceramic plates. In a sense, we are returning to them to make sure our records survive.",
+        "Clay tablets were used for writing thousands of years ago. Today, a new project is printing an entire library on thin ceramic. In a sense, we are returning to them to make sure our records survive.",
       ],
       q: "3つ目の文（In a sense 〜）を、returning to them の内容を補って和訳せよ。",
-      hint: "them は clay tablets。ただし今使っているのは ceramic plates なので、「粘土板のような板に記録する方法」と補います。",
+      hint: "them は clay tablets。ただし今使っているのは ceramic（焼き物）の板なので、「粘土板のような焼き物の板に記録する方法」と補います。",
       answer:
-        "ある意味で、私たちは、自分たちの記録が確実に残るようにするために、大昔の粘土板と同じように、板に書いて記録するという方法にもどろうとしている。",
+        "ある意味で、私たちは、自分たちの記録が確実に残るようにするために、大昔の粘土板と同じような、焼き物の板に文字を記録するという方法にもどりつつある。",
       points: [
-        "them の内容を補った（粘土板のような板に記録すること）",
+        "them の内容を補った（粘土板のような焼き物の板に記録すること）",
         "to make sure 〜 を目的として訳した",
         "In a sense ＝ ある意味で",
       ],
@@ -142,7 +142,7 @@ export const EIGO: KijutsuLesson[] = [
     ],
     ex: {
       text: [
-        "When researchers examined a single spoonful of soil with a new genetic method, they found the traces of several thousand kinds of living things. Most of them had never been named. The soil under our feet, it seemed, was an unread library.",
+        "When researchers examined a single spoonful of soil with a new genetic method, they found traces of several thousand kinds of living things. Most of them had never been named. The soil under our feet, it seemed, was an unread library.",
       ],
       q: "最後の文 “The soil under our feet, it seemed, was an unread library.” はどういう意味か、本文に即して具体的に説明せよ。",
       steps: [
@@ -183,7 +183,7 @@ export const EIGO: KijutsuLesson[] = [
       q: "“to think so is to forget how he saw time” はどういう意味か、本文に即して具体的に説明せよ。",
       hint: "so の中身（何を考えることか）と、how he saw time の中身（王は時間をどう見ていたか）を、前後から取ります。",
       answer:
-        "王は自分の記録が今も読まれていると知れば驚くだろうと考えるのは、王の時間の見方を見落としているということ。王自身が千年以上前の記録を掘り出しており、自分の記録も同じくらい長く残ると見こんでいたのだから、驚くとはかぎらない。",
+        "王自身が千年以上前の記録を掘り出しており、自分の記録も同じくらい長く残ると見こんでいた。つまり、今も記録が読めることに王は驚くだろうと考えるのは、記録は千年以上残って当然だという王の時間の見方を忘れた考えであり、王は驚きはしないはずだ、ということ。",
       points: [
         "so の中身：王は今も読まれていることに驚くだろう、と考えること",
         "王の時間の見方：自分も千年以上前の記録を掘り出していた",
@@ -213,16 +213,16 @@ export const EIGO: KijutsuLesson[] = [
         ["主語を決める", "1文目：一般の人→ you。2文目：you。"],
         [
           "かみくだく",
-          "向き不向き→それが自分に合っているかどうか。飛びこんでみる→とにかく始めてみる。一つの手だ→一つのよい方法だ。",
+          "向き不向き→それが自分に合っているかどうか。飛びこんでみる→とにかく始めてみる。一つの手だ→一つのよい選択肢だ（one good option）。",
         ],
         [
           "ならべる",
           "あなたは・知ることができない・それが自分に合っているかどうかを・実際にやってみるまで。",
         ],
-        ["つなぐ", "So, when you cannot decide, 〜."],
+        ["つなぐ", "So, if you are not sure whether to do something, 〜."],
       ],
       answer:
-        "You cannot know whether something suits you until you actually try it. So, when you cannot decide, simply starting it is one good way.",
+        "You cannot know whether something suits you until you actually try it. So, if you are not sure whether to do something, one good option is simply to try it first.",
       ng: {
         text: "Anything is not understood suitable or not suitable if not do. So if lost, first diving is one hand.",
         why: "日本語を1語ずつ英語におきかえています。「一つの手」を one hand、「迷う」を lost としたのは、かみくだく手順をとばしたためです。",
@@ -241,7 +241,7 @@ export const EIGO: KijutsuLesson[] = [
       q: "この文を英訳せよ。",
       hint: "「〜したいものだ」→ naturally want to 〜。「〜して、はじめて分かる」→ not 〜 until …。",
       answer:
-        "When we decide which path to take, we all naturally want to think carefully and make the choice that satisfies us most. However, we cannot know whether that path suits us until we have followed it for some time.",
+        "When we decide which path to take in life, we all naturally want to think carefully and make the choice that satisfies us most. However, we cannot know whether that path suits us until we have followed it for some time.",
       points: [
         "主語を補っている（we / you）",
         "「納得のいく選択」をかみくだいて書いている",
@@ -299,7 +299,7 @@ export const EIGO: KijutsuLesson[] = [
       q: "メモ（主張・理由①・理由②）を作ってから、段落を書け。",
       hint: "主張の例：毎日、その日にまなんだことを短く書きとめる。",
       answer:
-        "One habit that students should have is writing a short note every day about what they learned. First, writing helps them remember. When they put a lesson into their own words, they understand it more deeply. Second, the notes show their progress. Looking back at old notes, they can see how much they have grown, which gives them confidence. Therefore, a few minutes of writing each day is a simple but powerful habit.（73語）",
+        "One habit that students should have is writing a short note every day about what they have learned. First, writing helps them remember. When they put a lesson into their own words, they understand it more deeply. Second, the notes show their progress. Looking back at old notes, they can see how much they have grown, which gives them confidence. Therefore, a few minutes of writing each day is a simple but powerful habit.（74語）",
       points: [
         "1文目が主張（問いの言葉を使っている）",
         "理由2つ＋それぞれの説明",

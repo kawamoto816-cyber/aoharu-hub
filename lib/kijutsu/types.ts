@@ -1,7 +1,7 @@
-// 「記述の階段」(/learn/kijutsu)：国語と英語の記述の答案を、1段ずつ作れるようにする授業。
+// 「記述の階段」(/learn/kijutsu)：国語・英語の記述と、地理・歴史の論述の答案を、1段ずつ作れるようにする授業。
 // 例文・例題・解答例は、すべてアオハルが書いたオリジナル（入試問題や本からの引用はない）。
 
-export type KijutsuTrack = "gendaibun" | "kobun" | "eigo";
+export type KijutsuTrack = "gendaibun" | "kobun" | "eigo" | "rekishi" | "chiri";
 
 export interface KijutsuLesson {
   /** URL に使う id（例 g1） */
@@ -53,5 +53,15 @@ export const TRACKS: { id: KijutsuTrack; name: string; lead: string }[] = [
     id: "eigo",
     name: "英語の記述（和訳・説明・英作文）",
     lead: "和訳は骨組みから。説明は指す内容を集める。英作文は、日本語をかみくだいてから書く。",
+  },
+  {
+    id: "rekishi",
+    name: "歴史の論述（日本史・世界史）",
+    lead: "問いを枠に分け、「変化」「比較」「資料」の型で書く。最後に、字数から要素の数を決めて仕上げる。",
+  },
+  {
+    id: "chiri",
+    name: "地理の説明・論述",
+    lead: "用語の名前で終わらせず、「原因→しくみ→結果」でつなぐ。資料の読みとりを根拠にし、30〜40字にまとめる。",
   },
 ];

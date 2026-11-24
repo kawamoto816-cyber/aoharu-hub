@@ -1,12 +1,20 @@
+import { CHIRI } from "./chiri";
 import { EIGO } from "./eigo";
 import { GENDAIBUN } from "./gendaibun";
 import { KOBUN } from "./kobun";
+import { REKISHI } from "./rekishi";
 import { TRACKS, type KijutsuLesson } from "./types";
 
 export { TRACKS };
 export type { KijutsuLesson };
 
-export const KIJUTSU: KijutsuLesson[] = [...GENDAIBUN, ...KOBUN, ...EIGO];
+export const KIJUTSU: KijutsuLesson[] = [
+  ...GENDAIBUN,
+  ...KOBUN,
+  ...EIGO,
+  ...REKISHI,
+  ...CHIRI,
+];
 export const getKijutsu = (id: string) => KIJUTSU.find((l) => l.id === id);
 export const kijutsuHref = (id: string) => `/learn/kijutsu/${id}`;
 export const trackName = (t: KijutsuLesson["track"]) =>

@@ -54,7 +54,7 @@ export default function NijiHubPage() {
         ))}
       </ul>
       <p className="m-0 mt-4 rounded-[12px] border border-[#B9C3E8] bg-[#F1F4FD] p-3 text-[13px] leading-relaxed text-[#15172B]">
-        国語・英語の記述で点が取れないときは、
+        国語・英語の記述や、地理・歴史の論述で点が取れないときは、
         <Link href="/learn/kijutsu" className="font-bold text-[#1533B8]">
           記述の階段
         </Link>

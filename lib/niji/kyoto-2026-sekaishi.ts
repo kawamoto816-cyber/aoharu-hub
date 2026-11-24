@@ -32,6 +32,7 @@ export const KYOTO_2026_SEKAISHI: NijiExam = {
             {
               id: "論述",
               name: "工業化の背景・進み方と、政治や社会にもたらした変化",
+              lesson: "r2",
               pt: 20,
               unit: `${W}taisen`,
               steps: [
@@ -295,6 +296,7 @@ export const KYOTO_2026_SEKAISHI: NijiExam = {
             {
               id: "論述",
               name: "経済の運営と、政治的自由・人権から見た三国のちがい",
+              lesson: "r3",
               pt: 20,
               unit: `${W}taisen`,
               steps: [
@@ -407,6 +409,7 @@ export const KYOTO_2026_SEKAISHI: NijiExam = {
             {
               id: "(8)",
               name: "当時のイギリス人エリートにとってのローマ帝国の意義（タキトゥスと比べて）",
+              lesson: "r3",
               pt: 3,
               unit: `${W}teikokushugi`,
               steps: [
