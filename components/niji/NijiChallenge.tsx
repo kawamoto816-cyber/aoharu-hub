@@ -26,6 +26,8 @@ type Mark = {
   why?: Why;
   /** 自動採点の設問でえらんだ答え（sel の並びどおり） */
   pick?: string[];
+  /** 解答用紙に書いた答え（語句・数・記述）。公立高校入試で使う */
+  text?: string;
 };
 type Saved = {
   phase: "run" | "grade" | "done";
@@ -99,7 +101,7 @@ const sakanoboriHref = (unit: string, n: number) =>
 function PageLinks({ exam }: { exam: NijiExam }) {
   return (
     <a
-      href={exam.page}
+      href={exam.qPage ?? exam.page}
       target="_blank"
       rel="noopener noreferrer"
       className={`${smBtn} bg-white text-[#15172B]`}
@@ -110,6 +112,22 @@ function PageLinks({ exam }: { exam: NijiExam }) {
     </a>
   );
 }
+
+// 解答用紙に書いた語句・数を、正答と照らす（全角・空白・かっこのちがいは見ない）。合えば自動で ○
+const norm = (x: string) =>
+  x
+    .normalize("NFKC")
+    .replace(/[−‐‑–—ー－]/g, "-")
+    .replace(/[\s、,，。.・]/g, "")
+    .toLowerCase();
+const sameAnswer = (text: string, ans: string) => {
+  const t = norm(text);
+  if (!t) return false;
+  const a = ans.normalize("NFKC");
+  return [a.replace(/[()]/g, ""), a.replace(/\([^)]*\)/g, "")].some(
+    (c) => norm(c) === t,
+  );
+};
 
 const fresh = (target = 0.6): Saved => ({
   phase: "run",
@@ -130,6 +148,8 @@ export function NijiChallenge({
   lessonLinks?: Record<string, { name: string; where: string; href: string }>;
 }) {
   const K = exam.style === "kijutsu";
+  // 公立高校入試：画面の解答用紙に答えを入れてから、採点する（マークは自動、語句は照合、記述はチェック表）
+  const A = exam.base === "koko";
   const hasSel = exam.daimon.some((d) =>
     d.blocks.some((b) => b.items.some((it) => it.sel)),
   );
@@ -170,12 +190,37 @@ export function NijiChallenge({
     [exam],
   );
 
+  // 解答用紙を出したとき：マークは自動で ○×、語句・数は正答と合えば ○（空欄は ×）。合わないものは、採点の画面で自分で見くらべる
+  const gradeSheet = (marks: Record<string, Mark>) => {
+    const next = { ...marks };
+    for (const { d, it } of items) {
+      if (it.steps || it.paper) continue;
+      const k = itemKey(d, it);
+      const m = next[k] ?? {};
+      if (it.sel) {
+        const ok = it.sel.every((x, j) => m.pick?.[j] === x.ok);
+        next[k] = {
+          ...m,
+          pick: it.sel.map((_, j) => m.pick?.[j] ?? ""),
+          v: ok ? 1 : 0,
+        };
+      } else if (!(m.text ?? "").trim()) next[k] = { ...m, v: 0 };
+      else if (sameAnswer(m.text ?? "", it.ans ?? "")) next[k] = { ...m, v: 1 };
+    }
+    return next;
+  };
+  const answered = (it: NijiItem, m?: Mark) =>
+    it.paper ||
+    (it.sel
+      ? it.sel.every((_, j) => !!m?.pick?.[j])
+      : !!(m?.text ?? "").trim());
+
   const start = (timed: boolean) => {
     const t = nowMs();
     setNow(t);
     update(() => ({
       ...fresh(target),
-      phase: timed ? "run" : "grade",
+      phase: timed || A ? "run" : "grade",
       ...(timed ? { startedAt: t, cur: exam.daimon[0].no, curSince: t } : {}),
     }));
     trackEvent("niji_start", { exam: exam.id, timed: timed ? 1 : 0 });
@@ -193,6 +238,7 @@ export function NijiChallenge({
     const t = nowMs();
     update((p) => ({
       ...p,
+      ...(A ? { marks: gradeSheet(p.marks) } : {}),
       phase: "grade",
       laps: closeLap(p, t),
       cur: undefined,
@@ -250,16 +296,20 @@ export function NijiChallenge({
           <ol className="m-0 mt-3 grid list-none gap-3 p-0">
             {[
               [
-                "問題を開いて、紙に解く",
-                K
-                  ? `問題は${exam.pageOwner ?? exam.univ}の公開ページで開きます（印刷しても、タブレットで見ても）。本番と同じく、答案を紙に書きます。`
-                  : `問題は${exam.pageOwner ?? exam.univ}の公開ページで開きます（印刷しても、タブレットで見ても）。本番と同じく、導出の過程も紙に書きます。`,
+                A ? "問題を開いて、解答用紙に答える" : "問題を開いて、紙に解く",
+                A
+                  ? `問題は${exam.pageOwner ?? exam.univ}の公開ページで開きます（印刷しても、タブレットで見ても）。答えは、この画面の解答用紙に入れます。記号や数字はえらび、語句・数・記述は書きこみます（本番と同じ、マークと記述の形です）。計算やメモは紙に。`
+                  : K
+                    ? `問題は${exam.pageOwner ?? exam.univ}の公開ページで開きます（印刷しても、タブレットで見ても）。本番と同じく、答案を紙に書きます。`
+                    : `問題は${exam.pageOwner ?? exam.univ}の公開ページで開きます（印刷しても、タブレットで見ても）。本番と同じく、導出の過程も紙に書きます。`,
               ],
               [
-                "設問ごとに自己採点",
-                K
-                  ? "語句・記号は答えを見て ○×。記述は「この要素が書けたか」のチェック表で部分点を出し、解答例で確かめます。"
-                  : "空欄は答えを見て ○×。記述は「この式が書けたか」のチェック表で部分点を出し、解答例で確かめます。",
+                A ? "出すと、採点される" : "設問ごとに自己採点",
+                A
+                  ? "記号・数字は自動で ○×。語句・数は正答と照らします。記述は、自分の答えを見ながら「この要素が書けたか」のチェック表で部分点を出し、解答例で確かめます。"
+                  : K
+                    ? "語句・記号は答えを見て ○×。記述は「この要素が書けたか」のチェック表で部分点を出し、解答例で確かめます。"
+                    : "空欄は答えを見て ○×。記述は「この式が書けたか」のチェック表で部分点を出し、解答例で確かめます。",
               ],
               [
                 "落とした理由を1タップ",
@@ -320,7 +370,7 @@ export function NijiChallenge({
               onClick={() => start(false)}
               className={`${bigBtn} cursor-pointer bg-white text-[#15172B]`}
             >
-              もう解いた・自己採点だけする
+              {A ? "時計なしで始める" : "もう解いた・自己採点だけする"}
             </button>
           </p>
         </section>
@@ -336,6 +386,206 @@ export function NijiChallenge({
     const lapOf = (no: string) =>
       (s.laps[no] ?? 0) +
       (s.cur === no && s.curSince ? Math.max(0, now - s.curSince) / 1000 : 0);
+    if (A) {
+      const d = exam.daimon.find((x) => x.no === tab) ?? exam.daimon[0];
+      const nAns = items.filter(({ d: dd, it }) =>
+        answered(it, s.marks[itemKey(dd, it)]),
+      ).length;
+      const goTab = (no: string) => {
+        setTab(no);
+        if (s.startedAt) switchTo(no);
+        window.scrollTo(0, 0);
+      };
+      const di = exam.daimon.indexOf(d);
+      return (
+        <div>
+          <div
+            className="sticky top-2 z-10 mb-3 flex items-center justify-between gap-3 rounded-[12px] bg-[#15172B] px-4 py-2.5 text-white"
+            role="timer"
+            aria-live="off"
+          >
+            <span className="text-[13px] font-bold leading-snug">
+              解答用紙
+              <br />
+              <span className="text-[12px] font-normal opacity-80">
+                答えた設問 {nAns} / {items.length}
+              </span>
+            </span>
+            {s.startedAt ? (
+              <span className="whitespace-nowrap text-[13px]">
+                {left >= 0 ? "残り" : "延長"}{" "}
+                <b
+                  className={`text-[22px] tabular-nums ${left <= 300 ? "text-[#FFE45C]" : ""}`}
+                >
+                  {mmss(Math.abs(left))}
+                </b>
+              </span>
+            ) : (
+              <span className="whitespace-nowrap text-[12px] opacity-80">
+                時計なし
+              </span>
+            )}
+          </div>
+          <section className={card}>
+            <p className="m-0 flex flex-wrap items-center gap-2">
+              <PageLinks exam={exam} />
+              <span className="text-[12.5px] leading-relaxed text-[#3A3D55]">
+                問題は別の画面（または印刷）で見て、答えをここに入れます。入れた答えは、この端末に残ります。
+              </span>
+            </p>
+            <p className="m-0 mt-3 flex flex-wrap gap-2" role="tablist">
+              {exam.daimon.map((x) => (
+                <button
+                  key={x.no}
+                  type="button"
+                  role="tab"
+                  aria-selected={x.no === d.no}
+                  onClick={() => goTab(x.no)}
+                  className={`${pill} ${x.no === d.no ? "border-[#15172B] bg-[#15172B] text-white" : "border-[#15172B] bg-white text-[#15172B]"}`}
+                >
+                  大問{x.no}
+                </button>
+              ))}
+            </p>
+            <p className="m-0 mt-2 text-[12.5px] text-[#5A5D75]">
+              {d.theme}（目安 {d.minutes}分
+              {s.startedAt ? `・いま ${mmss(lapOf(d.no))}` : ""}）
+            </p>
+            {d.blocks.map((b) => (
+              <div key={b.title} className="mt-2">
+                {b.items.map((it) => {
+                  const k = itemKey(d, it);
+                  const m = s.marks[k];
+                  return (
+                    <div
+                      key={it.id}
+                      className="border-b border-dashed border-[#E4E2D8] py-2.5"
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <p className="m-0 text-[14px] font-black leading-snug">
+                          {it.id}
+                          <span className="ml-2 text-[12px] font-normal text-[#5A5D75]">
+                            {it.steps
+                              ? "記述"
+                              : it.sel
+                                ? "えらぶ"
+                                : it.paper
+                                  ? "紙"
+                                  : "書く"}
+                          </span>
+                        </p>
+                        <p className="m-0 whitespace-nowrap text-[12px] tabular-nums text-[#5A5D75]">
+                          {it.pt}点
+                        </p>
+                      </div>
+                      {it.paper ? (
+                        <p className="m-0 mt-1 text-[13px] leading-relaxed text-[#3A3D55]">
+                          この設問は、紙にかきます。採点のときに、正答表と見くらべます。
+                        </p>
+                      ) : it.sel ? (
+                        <div className="mt-1.5 grid gap-1.5">
+                          {it.sel.map((sl, si) => (
+                            <p
+                              key={si}
+                              className="m-0 flex flex-wrap items-center gap-1.5"
+                              role="radiogroup"
+                              aria-label={`${it.id} ${sl.label ?? "答え"}`}
+                            >
+                              {sl.label && (
+                                <span className="min-w-[2.2em] text-[12.5px] font-black text-[#3A3D55]">
+                                  {sl.label}
+                                </span>
+                              )}
+                              {sl.opts.map((o) => (
+                                <button
+                                  key={o}
+                                  type="button"
+                                  role="radio"
+                                  aria-checked={m?.pick?.[si] === o}
+                                  onClick={() =>
+                                    setMark(k, (mm) => {
+                                      const pick = it.sel!.map(
+                                        (_, j) => mm.pick?.[j] ?? "",
+                                      );
+                                      // もう一度押すと、えらんだものを消せる（マークを消すのと同じ）
+                                      pick[si] = pick[si] === o ? "" : o;
+                                      return { ...mm, pick };
+                                    })
+                                  }
+                                  className={`min-h-[40px] min-w-[40px] cursor-pointer rounded-[9px] border-[1.5px] px-2 text-[14px] font-black ${m?.pick?.[si] === o ? "border-[#15172B] bg-[#15172B] text-white" : "border-[#8a94a3] bg-white"}`}
+                                >
+                                  {o}
+                                </button>
+                              ))}
+                            </p>
+                          ))}
+                        </div>
+                      ) : it.steps ? (
+                        <textarea
+                          value={m?.text ?? ""}
+                          onChange={(e) =>
+                            setMark(k, (mm) => ({
+                              ...mm,
+                              text: e.target.value,
+                            }))
+                          }
+                          rows={5}
+                          maxLength={2000}
+                          aria-label={`${it.id} の答え`}
+                          placeholder="ここに答えを書く"
+                          className="mt-1.5 w-full rounded-[10px] border-[1.5px] border-[#8a94a3] px-3 py-2 text-[16px] leading-relaxed outline-none focus:border-[#1533B8]"
+                        />
+                      ) : (
+                        <input
+                          value={m?.text ?? ""}
+                          onChange={(e) =>
+                            setMark(k, (mm) => ({
+                              ...mm,
+                              text: e.target.value,
+                            }))
+                          }
+                          maxLength={200}
+                          aria-label={`${it.id} の答え`}
+                          placeholder="ここに答えを書く"
+                          className="mt-1.5 w-full rounded-[10px] border-[1.5px] border-[#8a94a3] px-3 py-2 text-[16px] outline-none focus:border-[#1533B8]"
+                        />
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            ))}
+            <p className="m-0 mt-4 flex flex-wrap gap-2">
+              {di < exam.daimon.length - 1 && (
+                <button
+                  type="button"
+                  onClick={() => goTab(exam.daimon[di + 1].no)}
+                  className={`${bigBtn} cursor-pointer bg-white text-[#15172B]`}
+                >
+                  次の大問へ
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={() => {
+                  setTab(exam.daimon[0].no);
+                  toGrade();
+                }}
+                className={`${bigBtn} cursor-pointer bg-[#1533B8] text-white`}
+              >
+                解答を出して、採点へ
+              </button>
+            </p>
+            {nAns < items.length && (
+              <p className="m-0 mt-2 text-[12.5px] font-bold text-[#B42318]">
+                まだ答えていない設問が {items.length - nAns} あります（出すと、×
+                になります）。
+              </p>
+            )}
+          </section>
+        </div>
+      );
+    }
     return (
       <div>
         <div
@@ -418,7 +668,7 @@ export function NijiChallenge({
       <div>
         <div className="sticky top-2 z-10 mb-3 flex items-center justify-between gap-3 rounded-[12px] bg-[#15172B] px-4 py-2.5 text-white">
           <span className="text-[13px] font-bold leading-snug">
-            自己採点
+            {A ? "採点" : "自己採点"}
             <br />
             <span className="text-[12px] font-normal opacity-80">
               つけた設問 {nTouched} / {items.length}
@@ -431,10 +681,12 @@ export function NijiChallenge({
         </div>
         <section className={card}>
           <p className="m-0 text-[13px] leading-relaxed text-[#3A3D55]">
-            {K
-              ? "語句・記号は「答えを見る」で照らして ○×（合っていたものは「語句・記号を全部○」でまとめて）。記述は、答案に書けた要素にチェックし、「解答例を見る」で確かめます。落とした設問だけ、理由を聞きます。"
-              : "空欄は「答えを見る」で照らして ○×（合っていた小問群は「空欄を全部○」でまとめて）。記述は、答案に書けた項目にチェックし、「解答例を見る」で確かめます。落とした設問だけ、理由を聞きます。"}
-            {hasSel
+            {A
+              ? "記号・数字は、出した答えを自動で採点しました。語句・数は、自分の答えと正答を見くらべて、まだ ○× がついていないものにつけます。記述は、自分の答えを見ながら、書けた要素にチェックし、「解答例を見る」で確かめます。落とした設問だけ、理由を聞きます。"
+              : K
+                ? "語句・記号は「答えを見る」で照らして ○×（合っていたものは「語句・記号を全部○」でまとめて）。記述は、答案に書けた要素にチェックし、「解答例を見る」で確かめます。落とした設問だけ、理由を聞きます。"
+                : "空欄は「答えを見る」で照らして ○×（合っていた小問群は「空欄を全部○」でまとめて）。記述は、答案に書けた項目にチェックし、「解答例を見る」で確かめます。落とした設問だけ、理由を聞きます。"}
+            {hasSel && !A
               ? "記号や数字をえらぶ設問は、えらぶと自動で採点します。"
               : ""}
             {exam.pointsNote ? "" : "点はアオハルの目安です。"}
@@ -449,7 +701,8 @@ export function NijiChallenge({
                 onClick={() => setTab(x.no)}
                 className={`${pill} ${x.no === d.no ? "border-[#15172B] bg-[#15172B] text-white" : "border-[#15172B] bg-white text-[#15172B]"}`}
               >
-                問題{x.no}（{r1(score(x))}/{daimonPoints(x)}）
+                {A ? "大問" : "問題"}
+                {x.no}（{r1(score(x))}/{daimonPoints(x)}）
               </button>
             ))}
           </p>
@@ -459,7 +712,7 @@ export function NijiChallenge({
                 <h3 className="m-0 text-[13px] font-black text-[#3A3D55]">
                   {b.title}
                 </h3>
-                {b.items.some((it) => !it.steps && !it.sel) && (
+                {!A && b.items.some((it) => !it.steps && !it.sel) && (
                   <button
                     type="button"
                     onClick={() =>
@@ -497,6 +750,27 @@ export function NijiChallenge({
                         {it.pt}点
                       </p>
                     </div>
+                    {A && !it.sel && !it.paper && (
+                      <p className="m-0 mt-1.5 whitespace-pre-wrap rounded-[8px] border border-[#E4E2D8] bg-[#FBFAF6] px-2.5 py-1.5 text-[13.5px] leading-relaxed">
+                        <span className="text-[12px] font-black text-[#5A5D75]">
+                          あなたの答え：
+                        </span>
+                        {(m?.text ?? "").trim() || "（書いていない）"}
+                      </p>
+                    )}
+                    {A && !it.sel && !it.steps && !it.paper && (
+                      <p className="m-0 mt-1 text-[13px] leading-relaxed">
+                        <span className="text-[12px] font-black text-[#5A5D75]">
+                          正答：
+                        </span>
+                        {it.ans}
+                        {m?.v === undefined && (
+                          <span className="block text-[12px] font-bold text-[#B42318]">
+                            見くらべて、○ か × をつけてください。
+                          </span>
+                        )}
+                      </p>
+                    )}
                     {it.steps ? (
                       <>
                         {it.steps.map((st, i) => (
@@ -574,6 +848,7 @@ export function NijiChallenge({
                                 type="button"
                                 role="radio"
                                 aria-checked={m?.pick?.[si] === o}
+                                disabled={A}
                                 onClick={() =>
                                   setMark(k, (mm) => {
                                     const pick = it.sel!.map(
@@ -603,7 +878,9 @@ export function NijiChallenge({
                           <p
                             className={`m-0 text-[13px] font-black ${m.v ? "text-[#1E7B3A]" : "text-[#C0392B]"}`}
                           >
-                            {m.v ? "○ 正解" : `× 正解は ${it.ans}`}
+                            {m.v
+                              ? "○ 正解"
+                              : `× ${A && !m.pick?.some(Boolean) ? "（答えていない）" : ""}正解は ${it.ans}`}
                           </p>
                         )}
                       </div>

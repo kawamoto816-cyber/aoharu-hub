@@ -8,6 +8,16 @@ import type { NijiDaimon, NijiExam, NijiItem } from "@/lib/niji/types";
 const PAGE =
   "https://www.kyoiku.metro.tokyo.lg.jp/admission/high_school/ability_test/problem_and_answer/release20260221_n01";
 
+// 科目ごとの問題（PDF）。「問題を開く」は、ここを直接開く（2026-11-24 じゅんさんの指示）
+const DOC = "https://www.kyoiku.metro.tokyo.lg.jp/documents/d/kyoiku/";
+const Q_PAGE: Record<string, string> = {
+  kokugo: `${DOC}nyu20260408_ko02`,
+  sugaku: `${DOC}nyu20260221_su102`,
+  eigo: `${DOC}nyu20260221_ei102`,
+  shakai: `${DOC}nyu20260221_sh102`,
+  rika: `${DOC}20260225_rika_mondai`,
+};
+
 type Sel = NonNullable<NijiItem["sel"]>;
 const KANA = ["ア", "イ", "ウ", "エ"];
 const DIGITS = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
@@ -49,6 +59,7 @@ const a = (
     unit,
     ans,
     ...(sel ? { sel } : {}),
+    ...(/作図|全員に/.test(name) ? { paper: true } : {}),
     ...(o.skill ? { skill: o.skill } : {}),
   };
 };
@@ -93,6 +104,7 @@ const base = (
   pointsNote:
     "設問ごとの配点は、東京都教育委員会の正答表のとおりです。記述の部分点（チェック表の点）だけは、アオハルの目安です。",
   page: PAGE,
+  qPage: Q_PAGE[id],
   pageLabel:
     "東京都教育委員会「令和8年度都立高等学校入学者選抜 学力検査問題及び正答表」",
   checked,

@@ -27,6 +27,8 @@ export interface NijiItem {
   sel?: { label?: string; opts: string[]; ok: string }[];
   /** 単元の中の、問われ方（例：気持ちの読みとり）。あると、作戦表はこの単位でも分ける */
   skill?: string;
+  /** 画面の解答用紙に入力できない設問（作図など）。紙にかいて、採点のときに ○× をつける */
+  paper?: boolean;
   /** 「解答例を見る」ボタンの名前を変えるとき (例：解答例をまだ載せていない設問) */
   exLabel?: string;
 }
@@ -75,6 +77,8 @@ export interface NijiExam {
   total: number;
   /** 大学の公開ページ (問題と出題意図) */
   page: string;
+  /** この科目の問題そのもの（PDF など）へのリンク。あると「問題を開く」はここを開く */
+  qPage?: string;
   pageLabel: string;
   /** 解答例を外の資料と照らしたか */
   checked: string;
