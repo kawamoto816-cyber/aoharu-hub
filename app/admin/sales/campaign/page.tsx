@@ -140,6 +140,9 @@ export default async function CampaignPage({ searchParams }: { searchParams: Pro
         <a href={CAMPAIGN.flyer} target="_blank" rel="noopener noreferrer" className="ml-1 font-bold text-indigo-600 underline underline-offset-2">
           {CAMPAIGN.flyer}
         </a>
+        <a href={CAMPAIGN.slides} target="_blank" rel="noopener noreferrer" className="ml-2 font-bold text-indigo-600 underline underline-offset-2">
+          {CAMPAIGN.slides}
+        </a>
       </p>
     </main>
   );

@@ -9,12 +9,13 @@ import { getSalesControls, isResendConfigured, recordOutreach, sendEmail, type O
 //
 // 対象：見込み先リスト (sales_leads) の「学習塾」で、送信済み・メールあての宛先。
 // 外す：送信停止の宛先、バウンス・苦情があった宛先、返信をくれた宛先（個別にやりとり中）、このご案内をもう送った宛先。
-// 文面とPDFは 2026-11-24 に代表が確認したもの。変えるときは、id も変える（同じ id だと「もう送った」と数えるため）。
+// 文面とPDFは 2026-11-24 に代表が確認したもの（同日、スライドのリンクを足して id を 11b にした。11 では1通も送っていない）。変えるときは、id も変える（同じ id だと「もう送った」と数えるため）。
 
 export const CAMPAIGN = {
-  id: "juku-os-2026-11",
+  id: "juku-os-2026-11b",
   name: "塾向けご案内（学びのOS・無料お試し）",
   flyer: "https://app.bluespring.co.jp/docs/aoharu-os-juku-flyer.pdf",
+  slides: "https://app.bluespring.co.jp/docs/aoharu-os-juku-slides.pdf",
   subject: "個人塾の先生へ｜生徒の学習が一覧で見える「学びのOS」を、無料でお試しいただけます",
 } as const;
 const SOURCE = `campaign-${CAMPAIGN.id}`;
@@ -57,7 +58,11 @@ export const CAMPAIGN_BODY = `学習塾の先生へ
 ■ 無料お試し
 生徒10人＋先生1人で、30日間、すべての機能をお使いいただけます。お支払いの登録は要らず、期限後に請求することもありません。
 
-お試しをご希望の場合は、このメールに「試す」と一言ご返信ください。招待コードと先生用のページをお送りします。くわしい内容は、こちらの資料（PDF・2ページ）をご覧ください。
+お試しをご希望の場合は、このメールに「試す」と一言ご返信ください。招待コードと先生用のページをお送りします。くわしい内容は、こちらの資料をご覧ください。
+
+・画面つきのご案内スライド（PDF・8ページ）
+${CAMPAIGN.slides}
+・ご案内（PDF・2ページ）
 ${CAMPAIGN.flyer}
 
 今後このようなご案内が不要な場合は、「不要」とご返信ください。以後お送りしません。

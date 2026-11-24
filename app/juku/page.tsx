@@ -308,6 +308,14 @@ export default function JukuPage() {
             >
               全単元の一覧（教科の地図） →
             </Link>
+            <a
+              href="/docs/aoharu-os-juku-slides.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex min-h-[44px] items-center text-[13.5px] font-black text-[#1533B8]"
+            >
+              画面つきのご案内スライド（PDF・8ページ） →
+            </a>
           </p>
         </div>
       </section>

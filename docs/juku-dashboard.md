@@ -35,7 +35,7 @@
 ## 塾向けご案内の送信（2026-11-24）
 
 - `/admin/sales/campaign`：過去に営業メールを送った学習塾（`sales_leads` の pattern_key = juku・送信済み・メールあり）へ、ご案内を1通ずつ送る。`lib/sales/campaign.ts`。
-- BCC の一斉送信ではなく、ふだんの営業送信と同じ道（Resend・`sales_outreach` に記録・送信停止リスト・バウンス時の自動停止）を通す。source は `campaign-juku-os-2026-11`。
+- BCC の一斉送信ではなく、ふだんの営業送信と同じ道（Resend・`sales_outreach` に記録・送信停止リスト・バウンス時の自動停止）を通す。source は `campaign-juku-os-2026-11b`（スライドのリンクを足したときに 11 → 11b。11 では送っていない）。スライドのPDFは `public/docs/aoharu-os-juku-slides.pdf`（元は Slides のアーティファクト「アオハルOS 塾・教室の先生向けご案内」）。
 - 送らない宛先：送信停止、バウンス・苦情、返信あり（個別にやりとり中）、このご案内を送信済み、記入例などの送れないアドレス。
 - 送るのはボタンを押したときだけ。1回に `sales_controls.max_per_run` 件まで。「自分あてに1通」で文面を確かめられる（記録には入れない）。
 - 資料は添付ではなくリンク：`public/docs/aoharu-os-juku-flyer.pdf`（元は作業メモの juku-flyer.html を Playwright で PDF にしたもの）。
