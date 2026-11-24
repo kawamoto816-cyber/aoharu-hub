@@ -40,6 +40,8 @@ type Saved = {
   target: number;
   doneUnits: string[];
   recorded?: boolean;
+  /** 画面の解答用紙に答えを入れる形で始めた */
+  sheet?: boolean;
 };
 
 const key = (id: string) => `niji:v1:${id}`;
@@ -148,8 +150,7 @@ export function NijiChallenge({
   lessonLinks?: Record<string, { name: string; where: string; href: string }>;
 }) {
   const K = exam.style === "kijutsu";
-  // 公立高校入試：画面の解答用紙に答えを入れてから、採点する（マークは自動、語句は照合、記述はチェック表）
-  const A = exam.base === "koko";
+  const isKoko = exam.base === "koko";
   const hasSel = exam.daimon.some((d) =>
     d.blocks.some((b) => b.items.some((it) => it.sel)),
   );
@@ -158,6 +159,10 @@ export function NijiChallenge({
   const [now, setNow] = useState(0);
   const [tab, setTab] = useState(exam.daimon[0].no);
   const [open, setOpen] = useState<Record<string, boolean>>({});
+  // 画面の解答用紙に答えを入れてから採点する形（マークは自動、語句は照合、記述はチェック表）。
+  // 公立高校入試はいつもこの形。2次試験は、はじめるときにえらぶ（記述が中心の科目は画面、数学・理科は紙がはじめの設定）
+  const [sheetPick, setSheetPick] = useState(isKoko || K);
+  const A = isKoko || (s ? !!s.sheet : sheetPick);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- 初回だけ、この端末に残した続きから復元する
@@ -220,6 +225,7 @@ export function NijiChallenge({
     setNow(t);
     update(() => ({
       ...fresh(target),
+      sheet: A,
       phase: timed || A ? "run" : "grade",
       ...(timed ? { startedAt: t, cur: exam.daimon[0].no, curSince: t } : {}),
     }));
@@ -298,7 +304,7 @@ export function NijiChallenge({
               [
                 A ? "問題を開いて、解答用紙に答える" : "問題を開いて、紙に解く",
                 A
-                  ? `問題は${exam.pageOwner ?? exam.univ}の公開ページで開きます（印刷しても、タブレットで見ても）。答えは、この画面の解答用紙に入れます。記号や数字はえらび、語句・数・記述は書きこみます（本番と同じ、マークと記述の形です）。計算やメモは紙に。`
+                  ? `問題は${exam.pageOwner ?? exam.univ}の公開ページで開きます（印刷しても、タブレットで見ても）。答えは、この画面の解答用紙に入れます。${isKoko ? "記号や数字はえらび、語句・数・記述は書きこみます（本番と同じ、マークと記述の形です）。" : "空欄の答えと記述を、設問ごとに書きこみます。"}計算や下書きは紙に。`
                   : K
                     ? `問題は${exam.pageOwner ?? exam.univ}の公開ページで開きます（印刷しても、タブレットで見ても）。本番と同じく、答案を紙に書きます。`
                     : `問題は${exam.pageOwner ?? exam.univ}の公開ページで開きます（印刷しても、タブレットで見ても）。本番と同じく、導出の過程も紙に書きます。`,
@@ -340,6 +346,35 @@ export function NijiChallenge({
               </li>
             ))}
           </ol>
+          {!isKoko && (
+            <>
+              <h3 className="m-0 mt-4 text-[14px] font-black">答えの書き方</h3>
+              <p className="m-0 mt-1.5 flex flex-wrap gap-2" role="radiogroup">
+                {(
+                  [
+                    [true, "画面の解答用紙に書く"],
+                    [false, "紙に書く"],
+                  ] as const
+                ).map(([v, t]) => (
+                  <button
+                    key={t}
+                    type="button"
+                    role="radio"
+                    aria-checked={sheetPick === v}
+                    onClick={() => setSheetPick(v)}
+                    className={`${pill} ${sheetPick === v ? "border-[#1533B8] bg-[#F1F4FD] text-[#1533B8]" : "border-[#E4E2D8] bg-white text-[#15172B]"}`}
+                  >
+                    {t}
+                  </button>
+                ))}
+              </p>
+              <p className="m-0 mt-1 text-[12px] leading-relaxed text-[#5A5D75]">
+                {K
+                  ? "画面に書くと、採点のときに自分の答えと解答例・チェック表を並べて見られます。"
+                  : "式や図が多い科目は、紙に書くほうが本番に近くなります。画面に書く場合も、途中の計算は紙に。"}
+              </p>
+            </>
+          )}
           <h3 className="m-0 mt-4 text-[14px] font-black">
             目標点（自分で決める）
           </h3>
@@ -682,7 +717,7 @@ export function NijiChallenge({
         <section className={card}>
           <p className="m-0 text-[13px] leading-relaxed text-[#3A3D55]">
             {A
-              ? "記号・数字は、出した答えを自動で採点しました。語句・数は、自分の答えと正答を見くらべて、まだ ○× がついていないものにつけます。記述は、自分の答えを見ながら、書けた要素にチェックし、「解答例を見る」で確かめます。落とした設問だけ、理由を聞きます。"
+              ? "えらぶ設問は、出した答えを自動で採点しました。語句・数は、自分の答えと正答を見くらべて、まだ ○× がついていないものにつけます。記述は、自分の答えを見ながら、書けた要素にチェックし、「解答例を見る」で確かめます。落とした設問だけ、理由を聞きます。"
               : K
                 ? "語句・記号は「答えを見る」で照らして ○×（合っていたものは「語句・記号を全部○」でまとめて）。記述は、答案に書けた要素にチェックし、「解答例を見る」で確かめます。落とした設問だけ、理由を聞きます。"
                 : "空欄は「答えを見る」で照らして ○×（合っていた小問群は「空欄を全部○」でまとめて）。記述は、答案に書けた項目にチェックし、「解答例を見る」で確かめます。落とした設問だけ、理由を聞きます。"}
