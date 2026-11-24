@@ -5,6 +5,8 @@ import type { NijiDaimon, NijiExam, NijiItem } from "@/lib/niji/types";
 // 正答（記号・数・語）と配点は、東京都教育委員会の「正答表」のとおり。
 // 記述（証明・作文・英作文・説明）は、正答表の解答例を写さず、アオハルが書いたチェック表と解答例を出す。
 
+import { TOKYO_2026_WHY } from "./tokyo-2026-why";
+
 const PAGE =
   "https://www.kyoiku.metro.tokyo.lg.jp/admission/high_school/ability_test/problem_and_answer/release20260221_n01";
 
@@ -108,7 +110,16 @@ const base = (
   pageLabel:
     "東京都教育委員会「令和8年度都立高等学校入学者選抜 学力検査問題及び正答表」",
   checked,
-  daimon,
+  daimon: daimon.map((d) => ({
+    ...d,
+    blocks: d.blocks.map((b) => ({
+      ...b,
+      items: b.items.map((it) => {
+        const why = TOKYO_2026_WHY[id]?.[`${d.no}-${it.id}`];
+        return why ? { ...it, why } : it;
+      }),
+    })),
+  })),
 });
 
 const J = "j-ja-";

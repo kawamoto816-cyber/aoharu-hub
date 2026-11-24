@@ -984,6 +984,14 @@ export function NijiChallenge({
                           : it.ans}
                       </div>
                     )}
+                    {it.why && m?.v !== undefined && (
+                      <p className="m-0 mt-1.5 rounded-[8px] bg-[#F1F4FD] px-2.5 py-1.5 text-[13px] leading-relaxed">
+                        <span className="text-[12px] font-black text-[#1533B8]">
+                          正解と理由：
+                        </span>
+                        {it.why}
+                      </p>
+                    )}
                     {lost && (
                       <p
                         className="m-0 mt-1.5 flex flex-wrap gap-1.5"
