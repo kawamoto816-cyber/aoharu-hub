@@ -53,6 +53,13 @@ export default function NijiHubPage() {
           </li>
         ))}
       </ul>
+      <p className="m-0 mt-4 rounded-[12px] border border-[#B9C3E8] bg-[#F1F4FD] p-3 text-[13px] leading-relaxed text-[#15172B]">
+        国語・英語の記述で点が取れないときは、
+        <Link href="/learn/kijutsu" className="font-bold text-[#1533B8]">
+          記述の階段
+        </Link>
+        （型と例題で1段ずつ）へ。作戦表からも、落とした設問に合う段へ進めます。
+      </p>
       <p className="m-0 mt-5 text-[12px] leading-relaxed text-[#5A5D75]">
         問題文は載せていません（大学の公開ページで開きます）。解答例・点の目安は、アオハルOSが問題から解いて作成したもので、大学の公式の解答ではありません。共通テストは
         <Link href="/learn/kakomon" className="font-bold text-[#1533B8]">

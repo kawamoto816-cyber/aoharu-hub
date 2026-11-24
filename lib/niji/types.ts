@@ -18,6 +18,8 @@ export interface NijiItem {
   steps?: [string, number][];
   /** 記述の解答例 (行ごと) */
   ex?: string[];
+  /** 「記述の階段」(lib/kijutsu) の段の id。あると、作戦表はその段ごとにまとめ、授業へ案内する */
+  lesson?: string;
   /** 「解答例を見る」ボタンの名前を変えるとき (例：解答例をまだ載せていない設問) */
   exLabel?: string;
 }

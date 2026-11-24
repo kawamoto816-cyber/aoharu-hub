@@ -114,9 +114,12 @@ const fresh = (target = 0.6): Saved => ({
 export function NijiChallenge({
   exam,
   unitLinks,
+  lessonLinks = {},
 }: {
   exam: NijiExam;
   unitLinks: Record<string, UnitLink>;
+  /** 「記述の階段」の段 (id → 名前・場所・リンク)。設問に lesson があるとき、作戦表の行き先になる */
+  lessonLinks?: Record<string, { name: string; where: string; href: string }>;
 }) {
   const K = exam.style === "kijutsu";
   const [s, setS] = useState<Saved | null>(null);
@@ -627,24 +630,32 @@ export function NijiChallenge({
   const targetPt = Math.round(total * s.target);
   const by = new Map<
     string,
-    { lost: number; ids: string[]; why: Partial<Record<Why, number>> }
+    {
+      lost: number;
+      ids: string[];
+      why: Partial<Record<Why, number>>;
+      unit: string;
+    }
   >();
   for (const { d, it } of items) {
     const m = s.marks[itemKey(d, it)];
     if (!touched(it, m)) continue;
     const l = it.pt - got(it, m);
     if (l <= 0) continue;
-    const r = by.get(it.unit) ?? { lost: 0, ids: [], why: {} };
+    // 記述の階段の段がある設問は、単元ではなく段ごとにまとめる (行き先を細かくするため)
+    const key =
+      it.lesson && lessonLinks[it.lesson] ? `L:${it.lesson}` : it.unit;
+    const r = by.get(key) ?? { lost: 0, ids: [], why: {}, unit: it.unit };
     r.lost += l;
     r.ids.push(`${d.no}${it.id}`);
     const w = m?.why ?? "p";
     r.why[w] = (r.why[w] ?? 0) + l;
-    by.set(it.unit, r);
+    by.set(key, r);
   }
   const rank = (r: { why: Partial<Record<Why, number>> }) =>
     (r.why.c ?? 0) * 3 + (r.why.p ?? 0) * 2 + (r.why.t ?? 0);
   const rows = [...by.entries()]
-    .filter(([u]) => unitLinks[u])
+    .filter(([u]) => u.startsWith("L:") || unitLinks[u])
     .sort((a, b) => rank(b[1]) - rank(a[1]));
   const topWhy = (r: { why: Partial<Record<Why, number>> }) =>
     (Object.entries(r.why) as [Why, number][]).sort(
@@ -743,13 +754,23 @@ export function NijiChallenge({
         )}
         <ol className="m-0 mt-3 grid list-none gap-2 p-0">
           {rows.map(([u, r], i) => {
-            const l = unitLinks[u];
+            const les = u.startsWith("L:")
+              ? lessonLinks[u.slice(2)]
+              : undefined;
+            const ul: UnitLink | undefined = unitLinks[r.unit];
+            const l = {
+              name: les?.name ?? ul?.name ?? "",
+              where: les?.where ?? ul?.where ?? "",
+              lecture: ul?.lecture,
+              moshi: ul?.moshi,
+              sakanobori: !les && !!ul?.sakanobori,
+            };
             const top = topWhy(r);
             const ok = s.doneUnits.includes(u);
             const acts: { t: string; href: string; saka?: boolean }[] = [];
             const saka = l.sakanobori && {
               t: "どこまでさかのぼるか探す",
-              href: sakanoboriHref(u, r.ids.length),
+              href: sakanoboriHref(r.unit, r.ids.length),
               saka: true,
             };
             const moshi = l.moshi && {
@@ -758,11 +779,16 @@ export function NijiChallenge({
             };
             const lec = l.lecture && { t: "図解で学びなおす", href: l.lecture };
             const time = { t: "時間の作戦を見る", href: "#niji-time" };
-            for (const a of top === "c"
-              ? [moshi, saka, lec]
-              : top === "t"
-                ? [time, saka, moshi, lec]
-                : [saka, lec, moshi])
+            const lesson = les && { t: "この段の授業を受ける", href: les.href };
+            for (const a of les
+              ? top === "t"
+                ? [time, lesson, lec]
+                : [lesson, lec, moshi]
+              : top === "c"
+                ? [moshi, saka, lec]
+                : top === "t"
+                  ? [time, saka, moshi, lec]
+                  : [saka, lec, moshi])
               if (a) acts.push(a);
             return (
               <li
@@ -798,13 +824,19 @@ export function NijiChallenge({
                   ))}
                 </p>
                 <p className="m-0 mt-1 text-[12.5px] leading-relaxed text-[#3A3D55]">
-                  {top === "c"
-                    ? K
-                      ? "内容は分かっています。解答例とくらべて、答案にまとめる練習を先に。"
-                      : "式は立っています。答えまで運ぶ練習を先に。"
-                    : top === "t"
-                      ? "解ければ取れる設問です。前の設問の時間を削る作戦を先に。"
-                      : "どこまでさかのぼればわかるかを探します。"}
+                  {les
+                    ? top === "t"
+                      ? "書ければ取れる設問です。時間を残す作戦を先に。そのあと、この段の型で手早く書く練習を。"
+                      : top === "c"
+                        ? "内容は分かっています。この段の「型」で、答案にまとめる順番を身につけます。"
+                        : "何を書けばよいかの見つけ方から、この段の授業でたしかめます。"
+                    : top === "c"
+                      ? K
+                        ? "内容は分かっています。解答例とくらべて、答案にまとめる練習を先に。"
+                        : "式は立っています。答えまで運ぶ練習を先に。"
+                      : top === "t"
+                        ? "解ければ取れる設問です。前の設問の時間を削る作戦を先に。"
+                        : "どこまでさかのぼればわかるかを探します。"}
                 </p>
                 <p className="m-0 mt-2 flex flex-wrap gap-1.5">
                   {acts.map((a, j) => (
@@ -816,7 +848,7 @@ export function NijiChallenge({
                           setKakomonReturn({
                             examId: exam.id,
                             title,
-                            unit: u,
+                            unit: r.unit,
                             unitName: l.name,
                             base: "niji",
                           });
@@ -847,7 +879,7 @@ export function NijiChallenge({
                     }
                     className="h-5 w-5 accent-[#1533B8]"
                   />
-                  この単元はつぶした
+                  {les ? "この段はつぶした" : "この単元はつぶした"}
                 </label>
               </li>
             );

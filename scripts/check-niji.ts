@@ -1,4 +1,5 @@
 // 2次試験の過去問チャレンジのデータの点検: 単元が地図にあるか、記述のチェック表の点の合計が設問の点と合うか、設問の記号が重ならないか。
+import { getKijutsu } from "@/lib/kijutsu";
 import { NIJI } from "@/lib/niji";
 import { daimonPoints } from "@/lib/niji/types";
 import { lectureUnitInfo } from "@/lib/lecture";
@@ -18,6 +19,8 @@ for (const e of NIJI) {
         const at = `${e.id} ${d.no}-${it.id}`;
         if (seen.has(it.id)) bad(`${at}: 記号が重なっている`);
         seen.add(it.id);
+        if (it.lesson && !getKijutsu(it.lesson))
+          bad(`${at}: 記述の階段の段 ${it.lesson} がない`);
         if (!lectureUnitInfo(it.unit))
           bad(`${at}: 単元 ${it.unit} が地図にない`);
         else if (!hasPrereq(it.unit))

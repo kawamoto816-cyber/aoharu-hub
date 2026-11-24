@@ -7,6 +7,7 @@ import { hasLecture, lectureHref, lectureUnitInfo } from "@/lib/lecture";
 import { hasUnitMoshi, unitMoshiHref } from "@/lib/moshi/unit";
 import { hasPrereq } from "@/lib/sakanobori";
 import { plain } from "@/components/lecture/Rich";
+import { getKijutsu, kijutsuHref, trackName } from "@/lib/kijutsu";
 import { getNiji, NIJI } from "@/lib/niji";
 import { daimonPoints } from "@/lib/niji/types";
 
@@ -39,9 +40,20 @@ export default async function NijiPlayPage({
   const e = getNiji((await params).id);
   if (!e) notFound();
   const unitLinks: Record<string, UnitLink> = {};
+  const lessonLinks: Record<
+    string,
+    { name: string; where: string; href: string }
+  > = {};
   for (const d of e.daimon)
     for (const b of d.blocks)
       for (const it of b.items) {
+        const les = it.lesson ? getKijutsu(it.lesson) : undefined;
+        if (les && !lessonLinks[les.id])
+          lessonLinks[les.id] = {
+            name: les.title,
+            where: `記述の階段 ${trackName(les.track)} 第${les.no}段`,
+            href: kijutsuHref(les.id),
+          };
         if (unitLinks[it.unit]) continue;
         const info = lectureUnitInfo(it.unit);
         if (!info) continue;
@@ -72,7 +84,7 @@ export default async function NijiPlayPage({
       <p className="m-0 mb-4 mt-1 text-[13px] font-bold text-[#3A3D55]">
         {e.kind}・{e.minutes}分・{total}点（目安）・大問{e.daimon.length}題
       </p>
-      <NijiChallenge exam={e} unitLinks={unitLinks} />
+      <NijiChallenge exam={e} unitLinks={unitLinks} lessonLinks={lessonLinks} />
     </LearnShell>
   );
 }

@@ -16,6 +16,7 @@ const desc = (
   steps: [string, number][],
   ex: string[],
   exLabel?: string,
+  lesson?: string,
 ): NijiItem => ({
   id,
   name,
@@ -24,6 +25,7 @@ const desc = (
   steps,
   ex,
   ...(exLabel ? { exLabel } : {}),
+  ...(lesson ? { lesson } : {}),
 });
 
 export const KYOTO_2026_EIGO: NijiExam = {
@@ -80,6 +82,7 @@ export const KYOTO_2026_EIGO: NijiExam = {
               ],
               [WAIT],
               "解答例について",
+              "e1",
             ),
             desc(
               "(2)",
@@ -107,6 +110,7 @@ export const KYOTO_2026_EIGO: NijiExam = {
               ],
               [WAIT],
               "解答例について",
+              "e2",
             ),
             desc(
               "(3)",
@@ -131,6 +135,8 @@ export const KYOTO_2026_EIGO: NijiExam = {
                 "大量の空気を装置に通し、つかまえた細胞の DNA を調べたところ、300をこえる別々の遺伝子配列が見つかり、それぞれがちがう種の細菌かもしれなかった。つまり、動物園に多くの種類の動物がいるように、空気の中にはじつに多様な微生物がただよっていると分かった、ということ。",
                 "（説明の例です。チェック表の要素が入っていれば、表現はちがってかまいません。）",
               ],
+              undefined,
+              "e3",
             ),
           ],
         },
@@ -164,6 +170,7 @@ export const KYOTO_2026_EIGO: NijiExam = {
               ],
               [WAIT],
               "解答例について",
+              "e1",
             ),
             desc(
               "(2)",
@@ -188,6 +195,8 @@ export const KYOTO_2026_EIGO: NijiExam = {
                 "メソポタミアの王たちは、自分の碑文が3千年紀の今も読まれていると知れば驚くにちがいない、と考えるのは、現代人の感覚をあてはめた誤りだということ。ナボニドゥスは自分より1600年以上前の王の碑文を掘り出しており、その間ずっと楔形文字が使われていたのだから、自分の碑文も同じくらい先まで残ると見こんでいたはずである。さらに王たちは、何十万年もさかのぼる支配者の系譜に自分をおき、もっと長い時間を見通していたと考えられる。",
                 "（説明の例です。チェック表の要素が入っていれば、表現はちがってかまいません。）",
               ],
+              undefined,
+              "e3",
             ),
             desc(
               "(3)",
@@ -218,6 +227,7 @@ export const KYOTO_2026_EIGO: NijiExam = {
               ],
               [WAIT],
               "解答例について",
+              "e2",
             ),
           ],
         },
@@ -254,6 +264,8 @@ export const KYOTO_2026_EIGO: NijiExam = {
                 "When you decide which path to take, you naturally want to think it over carefully beforehand and make the choice that will satisfy you most. However, the only way to find out whether that path will really be rewarding for you is to actually experience it over a certain period of time. This is an unavoidable challenge. When you stand at a crossroads, you may sometimes need to make up your mind, telling yourself that a world you cannot even imagine must be waiting beyond the choice you make.",
                 "（解答例の1つです。「実りをもたらす」は be rewarding、「腹をくくる」は make up your mind のように、意味をかみくだいてから英語にしています。）",
               ],
+              undefined,
+              "e4",
             ),
           ],
         },
@@ -283,6 +295,8 @@ export const KYOTO_2026_EIGO: NijiExam = {
                 "One thing that could make the world a better place to live in is providing free school meals for every child. First, hungry children cannot concentrate, so a daily meal directly improves their learning. Second, free meals give poor families a strong reason to send their children, especially girls, to school instead of to work. Third, buying the food from local farmers supports the local economy. In short, a simple lunch can improve health, education, and income at the same time, so it is one of the wisest investments we can make.",
                 "（92語。解答例の1つです。テーマは何でもかまいません。「主張 → 理由 → まとめ」の形になっているかを見てください。）",
               ],
+              undefined,
+              "e5",
             ),
           ],
         },
