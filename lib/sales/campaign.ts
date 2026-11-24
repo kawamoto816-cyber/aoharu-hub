@@ -16,7 +16,7 @@ export const CAMPAIGN = {
   name: "塾向けご案内（学びのOS・無料お試し）",
   flyer: "https://app.bluespring.co.jp/docs/aoharu-os-juku-flyer.pdf",
   slides: "https://app.bluespring.co.jp/docs/aoharu-os-juku-slides.pdf",
-  subject: "個人塾の先生へ｜生徒の学習が一覧で見える「学びのOS」を、無料でお試しいただけます",
+  subject: "先生お一人でも、生徒ひとりひとりに目が届く｜5教科848単元を30日無料でお試し",
 } as const;
 const SOURCE = `campaign-${CAMPAIGN.id}`;
 // 管理画面で「この宛先には送らない」にした宛先（個別にやりとり中の塾など。返信の記録が無くても外せるように）
