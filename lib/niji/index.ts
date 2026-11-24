@@ -1,3 +1,4 @@
+import { KYOTO_2026_BIO } from "./kyoto-2026-bio";
 import { KYOTO_2026_CHEM } from "./kyoto-2026-chem";
 import { KYOTO_2026_MATH_BUN } from "./kyoto-2026-math-bun";
 import { KYOTO_2026_MATH_RI } from "./kyoto-2026-math-ri";
@@ -7,6 +8,7 @@ import type { NijiExam } from "./types";
 export const NIJI: NijiExam[] = [
   KYOTO_2026_PHY,
   KYOTO_2026_CHEM,
+  KYOTO_2026_BIO,
   KYOTO_2026_MATH_RI,
   KYOTO_2026_MATH_BUN,
 ];
