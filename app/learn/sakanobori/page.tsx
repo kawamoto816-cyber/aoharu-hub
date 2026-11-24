@@ -15,6 +15,7 @@ import { candidates, decodeResults, decodeWrong, DEFAULT_GRAPH, diagnose, encode
 import { checkItems } from "@/lib/sakanobori/check";
 import { buildMap, type MapState } from "@/lib/sakanobori/map";
 import { RootMap } from "@/components/sakanobori/RootMap";
+import { KakomonReturn } from "@/components/kakomon/KakomonReturn";
 
 // /learn/sakanobori: さかのぼり（学年をこえて、つまずきの根っこまで戻る）。
 //   ?u=元の単元 &w=まちがえた小問の手がかり (diagnose の encodeWrong) &r=チェックの結果 (encodeResults) &seed=チェック問題のシード
@@ -92,6 +93,7 @@ export default async function SakanoboriPage({ searchParams }: { searchParams: P
     <LearnShell narrow crumbs={crumbs(name)}>
       <p className="m-0 text-xs font-black tracking-wider text-[#1533B8]">さかのぼり・{gradeLabel(origin)}</p>
       <h1 className="m-0 mt-1 text-[22px] font-black leading-snug">「{name}」のつまずきの根っこを探す</h1>
+      <KakomonReturn where="top" />
 
       {/* ① 候補 */}
       <section aria-labelledby="sk-c" className="mt-4 rounded-[14px] bg-[#F7F6F1] p-4">
@@ -123,6 +125,7 @@ export default async function SakanoboriPage({ searchParams }: { searchParams: P
       ) : (
         <Done state={state} origin={origin} />
       )}
+      <KakomonReturn where="bottom" />
     </LearnShell>
   );
 }
@@ -315,6 +318,7 @@ function PickOrigin({ byUnit, w, seed }: { byUnit: Map<string, number>; w: strin
     <LearnShell narrow crumbs={crumbs()}>
       <p className="m-0 text-xs font-black tracking-wider text-[#1533B8]">さかのぼり</p>
       <h1 className="m-0 mt-1 text-[22px] font-black leading-snug">どの単元から探す？</h1>
+      <KakomonReturn where="top" />
       <p className="m-0 mt-1 text-[14px] font-bold leading-relaxed text-[#3A3D55]">まちがえた問題は、いくつかの単元にありました。まちがいの多い単元から探すのがおすすめ。</p>
       <ul className="m-0 mt-4 grid list-none gap-2 p-0">
         {list.map(([u, n]) => (

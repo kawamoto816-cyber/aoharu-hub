@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { trackEvent } from "@/lib/analytics";
 import { recordMastery } from "@/lib/sakanobori/mastery";
+import { setKakomonReturn } from "@/components/kakomon/KakomonReturn";
 import { gradeKakomon, markOptions, sheetRows } from "@/lib/kakomon/grade";
 import type { KakomonExam, KakomonResult, Marks } from "@/lib/kakomon/types";
 
@@ -135,11 +136,14 @@ export function Challenge({
   const [now, setNow] = useState(0);
   const [usedSec, setUsedSec] = useState(0);
   const [confirm, setConfirm] = useState(false);
+  // 途中で離れて、もどったときにはもう時間が過ぎていた (自動では提出せず、提出するかやり直すかを選ばせる)
+  const [late, setLate] = useState(false);
   const submitted = useRef(false);
 
   const start = useCallback(() => {
     const t = Date.now();
     submitted.current = false;
+    setLate(false);
     setMarks({});
     setStartedAt(t);
     setNow(t);
@@ -149,11 +153,14 @@ export function Challenge({
     window.scrollTo(0, 0);
   }, [exam.id]);
 
-  // 前回の続き。なければ、選ぶ画面の「始める」から来たときはそのまま始める
+  // 前回の続き。選ぶ画面の「始める」(?start=1) から来たときは、終わった回・時間の過ぎた回を出さずに、新しく始める
   useEffect(() => {
     const s = load(exam.id);
+    const over =
+      !!s?.startedAt && Date.now() - s.startedAt >= exam.minutes * 60 * 1000;
     /* eslint-disable react-hooks/set-state-in-effect -- 初回だけ、この端末に残した続きから復元する */
-    if (s?.doneAt) {
+    if (autoStart && (s?.doneAt || over || !s?.startedAt)) start();
+    else if (s?.doneAt) {
       setMarks(s.marks ?? {});
       setUsedSec(s.usedSec ?? 0);
       setPhase("done");
@@ -161,10 +168,11 @@ export function Challenge({
       setMarks(s.marks ?? {});
       setStartedAt(s.startedAt);
       setNow(Date.now());
+      setLate(over);
       setPhase("run");
-    } else if (autoStart) start();
+    }
     /* eslint-enable react-hooks/set-state-in-effect */
-  }, [exam.id, autoStart, start]);
+  }, [exam.id, exam.minutes, autoStart, start]);
 
   const limit = exam.minutes * 60;
   const elapsed = startedAt
@@ -217,8 +225,8 @@ export function Challenge({
     return () => window.clearInterval(t);
   }, [phase]);
   useEffect(() => {
-    if (phase === "run" && startedAt && left === 0) submit(true);
-  }, [phase, startedAt, left, submit]);
+    if (phase === "run" && startedAt && left === 0 && !late) submit(true);
+  }, [phase, startedAt, left, late, submit]);
 
   const mark = (k: string, v: string) => {
     setMarks((m) => {
@@ -230,6 +238,7 @@ export function Challenge({
   const reset = () => {
     save(exam.id, null);
     submitted.current = false;
+    setLate(false);
     setMarks({});
     setStartedAt(null);
     setPhase("ready");
@@ -262,7 +271,9 @@ export function Challenge({
               },
               {
                 t: "答えをマークして採点",
-                b: "大問ごとの得点と、次にやる類題が出ます。",
+                b: units
+                  ? "大問ごとの得点と、落とした点を単元に分けた「逆転勉強法の作戦表」が出ます。"
+                  : "大問ごとの得点と、次にやる類題が出ます。",
               },
             ].map((x, i) => (
               <li key={x.t} className="flex gap-3">
@@ -325,6 +336,33 @@ export function Challenge({
             </b>
           </span>
         </div>
+        {late && (
+          <section className="mb-3 rounded-[14px] border-[1.5px] border-[#15172B] bg-[#FFF6D6] p-4">
+            <p className="m-0 text-[14px] font-black leading-snug">
+              前に始めた回の、制限時間（{exam.minutes}分）が過ぎています。
+            </p>
+            <p className="m-0 mt-1 text-[13px] leading-relaxed text-[#3A3D55]">
+              マークした{marked}
+              個のまま採点するか、はじめからやり直すかを選んでください。
+            </p>
+            <p className="m-0 mt-3 flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={start}
+                className={`${bigBtn} cursor-pointer bg-[#1533B8] text-white`}
+              >
+                はじめからやり直す（{exam.minutes}分）
+              </button>
+              <button
+                type="button"
+                onClick={() => submit(false)}
+                className={`${bigBtn} cursor-pointer bg-white text-[#15172B]`}
+              >
+                このまま採点する
+              </button>
+            </p>
+          </section>
+        )}
         <section className={card}>
           <p className="m-0 text-[13px] leading-relaxed text-[#3A3D55]">
             {exam.type === "kana"
@@ -519,6 +557,7 @@ export function Challenge({
       </section>
       {units && unitLinks && (
         <GyakutenPlan
+          title={`${exam.year} ${exam.kind} ${exam.subject}`}
           r={r}
           units={units}
           links={unitLinks}
@@ -613,12 +652,14 @@ function loadDone(id: string): string[] {
  * つぶした単元は、この端末に残す。
  */
 function GyakutenPlan({
+  title,
   r,
   units,
   links,
   examId,
   onRetry,
 }: {
+  title: string;
   r: KakomonResult;
   units: Record<string, string>;
   links: Record<string, UnitLink>;
@@ -634,6 +675,11 @@ function GyakutenPlan({
     // eslint-disable-next-line react-hooks/set-state-in-effect -- 初回だけ、この端末に残した進み具合を読む
     setDone(loadDone(examId));
   }, [examId]);
+  // さかのぼりから「作戦表にもどる」で来たときは、結果を読みこんだあとに作戦表までスクロールする
+  useEffect(() => {
+    if (window.location.hash !== "#gyakuten") return;
+    document.getElementById("gyakuten")?.scrollIntoView({ block: "start" });
+  }, []);
   const toggle = (u: string) => {
     setDone((prev) => {
       const next = prev.includes(u)
@@ -656,7 +702,7 @@ function GyakutenPlan({
   const btn =
     "inline-flex min-h-[40px] items-center rounded-[10px] border-[1.5px] border-[#15172B] px-3 text-[13px] font-black no-underline";
   return (
-    <section className={card}>
+    <section id="gyakuten" className={`${card} scroll-mt-4`}>
       <p className="m-0 text-[12px] font-black tracking-wider text-[#1533B8]">
         逆転勉強法
       </p>
@@ -722,12 +768,18 @@ function GyakutenPlan({
                       x.cells.length ? x.cells.map(() => x.unit) : [x.unit],
                       x.unit,
                     )}
-                    onClick={() =>
+                    onClick={() => {
+                      setKakomonReturn({
+                        examId,
+                        title,
+                        unit: x.unit,
+                        unitName: l.name,
+                      });
                       trackEvent("kakomon_sakanobori", {
                         exam: examId,
                         unit: x.unit,
-                      })
-                    }
+                      });
+                    }}
                     className={`${btn} bg-[#FFE45C] text-[#15172B]`}
                   >
                     ① どこまでさかのぼるか探す
@@ -774,6 +826,14 @@ function GyakutenPlan({
             list.some((x) => links[x.unit].sakanobori) && (
               <Link
                 href={sakanoboriHref(allWrong)}
+                onClick={() =>
+                  setKakomonReturn({
+                    examId,
+                    title,
+                    unit: "",
+                    unitName: "まちがえた単元",
+                  })
+                }
                 className={`${btn} bg-white text-[#15172B]`}
               >
                 まちがえた単元をまとめてさかのぼる
