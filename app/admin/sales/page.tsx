@@ -87,6 +87,12 @@ export default async function AdminSalesPage() {
         開封・クリックは送信メールの追跡で自動的に記録され、返信・面談は営業エージェントに伝えると自動で反映されます。
       </p>
 
+      <p className="mt-4">
+        <Link href="/admin/sales/campaign" className="inline-flex min-h-[40px] items-center rounded-full border border-indigo-200 bg-indigo-50 px-4 text-sm font-bold text-indigo-700">
+          塾向けご案内（学びのOS・無料お試し）を送る →
+        </Link>
+      </p>
+
       <section className="mt-8">
         <h2 className="text-lg font-bold text-slate-900">見込み先パイプライン</h2>
         <div className="mt-3 grid gap-4 sm:grid-cols-5">

@@ -31,3 +31,13 @@
 - 生徒ごとの「どの単元でつまずいているか」（単元の名前は出していない。`station_learn_log.unit` から出せる）。
 - 過去問チャレンジ・模試の点数（端末にしか無い）。
 - CSV の書き出し、保護者への報告文。
+
+## 塾向けご案内の送信（2026-11-24）
+
+- `/admin/sales/campaign`：過去に営業メールを送った学習塾（`sales_leads` の pattern_key = juku・送信済み・メールあり）へ、ご案内を1通ずつ送る。`lib/sales/campaign.ts`。
+- BCC の一斉送信ではなく、ふだんの営業送信と同じ道（Resend・`sales_outreach` に記録・送信停止リスト・バウンス時の自動停止）を通す。source は `campaign-juku-os-2026-11`。
+- 送らない宛先：送信停止、バウンス・苦情、返信あり（個別にやりとり中）、このご案内を送信済み、記入例などの送れないアドレス。
+- 送るのはボタンを押したときだけ。1回に `sales_controls.max_per_run` 件まで。「自分あてに1通」で文面を確かめられる（記録には入れない）。
+- 資料は添付ではなくリンク：`public/docs/aoharu-os-juku-flyer.pdf`（元は作業メモの juku-flyer.html を Playwright で PDF にしたもの）。
+- 文面・PDF は代表が確認したもの。変えるときは `CAMPAIGN.id` も変える（同じ id だと「もう送った」と数える）。
+- このご案内を送った宛先は、90日ルール（`recentlyContacted`）により、ふだんの営業送信の対象から外れる。
