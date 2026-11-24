@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { isAdminUser } from "@/lib/metrics/admin-auth";
-import { CAMPAIGN, CAMPAIGN_BODY, OPEN_FIRST, campaignStatus } from "@/lib/sales/campaign";
+import { CAMPAIGN, CAMPAIGN_BODY, CAMPAIGN_FORM_BODY, FORM_BATCH, OPEN_FIRST, campaignFormStatus, campaignStatus } from "@/lib/sales/campaign";
 import { getSalesControls } from "@/lib/sales/outreach";
-import { runCampaignAction, sendCampaignTestAction, skipCampaignAction } from "./actions";
+import { enqueueCampaignFormsAction, runCampaignAction, sendCampaignTestAction, skipCampaignAction } from "./actions";
 
 // /admin/sales/campaign: 塾向けのご案内を、過去に営業メールを送った学習塾へ、1通ずつ送る（@bluespring.co.jp でログインした人だけ）。
 // 送るのはボタンを押したときだけ。1回に送る数は、ふだんの営業送信と同じ上限 (sales_controls.max_per_run)。
@@ -24,6 +24,7 @@ export default async function CampaignPage({ searchParams }: { searchParams: Pro
   }
   const { msg } = await searchParams;
   const [st, controls] = await Promise.all([campaignStatus().catch((e) => (e instanceof Error ? e.message : String(e))), getSalesControls()]);
+  const fs = await campaignFormStatus().catch((e) => (e instanceof Error ? e.message : String(e)));
   const btn = "min-h-[44px] rounded-lg px-4 text-sm font-bold";
 
   return (
@@ -133,7 +134,67 @@ export default async function CampaignPage({ searchParams }: { searchParams: Pro
         </>
       )}
 
-      <h2 className="mt-8 text-lg font-bold">送る文面</h2>
+      <h2 className="mt-10 text-lg font-bold">フォーム宛て（メールアドレスの無い学習塾）</h2>
+      <p className="mt-2 text-sm leading-relaxed text-slate-600">
+        お問い合わせフォームしか連絡先の無い学習塾のうち、まだ一度も送っていない先へ、同じご案内を出します。ここで「並べる」を押すと送信待ちの列に入り、平日12:30
+        の自動送信（GitHub 上のブラウザ）が、古い順に1日30件まで入力・送信します。営業お断り・画像認証・答えられない必須項目のあるフォームは、自動で見送ります。以前にフォームで送った塾には並べません（同じフォームへは90日あけるきまりのため）。
+      </p>
+      {typeof fs === "string" ? (
+        <p className="mt-4 rounded-lg bg-red-50 p-3 text-sm font-bold text-red-700">フォーム宛てを読みこめませんでした：{fs}</p>
+      ) : (
+        <>
+          <ul className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-5">
+            {[
+              { l: "これから並べられる", v: fs.eligible.length },
+              { l: "送信待ち（このご案内）", v: fs.waiting },
+              { l: "送信済み", v: fs.sent },
+              { l: "見送り", v: fs.skipped },
+              { l: "失敗", v: fs.failed },
+            ].map((x) => (
+              <li key={x.l} className="rounded-xl border border-slate-200 bg-white p-4">
+                <p className="text-xs font-bold text-slate-500">{x.l}</p>
+                <p className="mt-1 text-2xl font-bold tabular-nums">{x.v}</p>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-2 text-xs text-slate-500">
+            フォーム送信の列ぜんたいの送信待ち：{fs.queueAll}件（ふだんの営業の分もふくみます。1日30件ずつ、古い順に進みます。いまの列だと、あと約{Math.ceil(fs.queueAll / 30)}営業日分）
+          </p>
+          {fs.eligible.length > 0 && !controls.paused && (
+            <div className="mt-4 flex flex-wrap gap-3">
+              {[FORM_BATCH, FORM_BATCH * 5].map((n) => (
+                <form key={n} action={enqueueCampaignFormsAction}>
+                  <input type="hidden" name="n" value={n} />
+                  <button type="submit" className={`${btn} ${n === FORM_BATCH ? "bg-slate-900 text-white" : "border border-slate-300 bg-white text-slate-800"}`}>
+                    次の {Math.min(fs.eligible.length, n)} 件を並べる{n === FORM_BATCH ? "（1日分）" : "（5日分）"}
+                  </button>
+                </form>
+              ))}
+            </div>
+          )}
+          <p className="mt-2 text-xs leading-relaxed text-slate-500">押すと、列に入ります（取り消すときは、Claude に伝えてください）。実際に送られるのは、次の平日12:30 からです。</p>
+          {fs.eligible.length > 0 && (
+            <details className="mt-4 rounded-xl border border-slate-200 bg-white p-4">
+              <summary className="cursor-pointer text-sm font-bold">これから並べられるフォーム（全 {fs.eligible.length} 件・上から順）</summary>
+              <ul className="mt-2 divide-y divide-slate-100 text-xs leading-relaxed text-slate-600">
+                {fs.eligible.slice(0, 300).map((t) => (
+                  <li key={t.url} className="py-1">
+                    {t.company}　<span className="break-all font-mono">{t.url}</span>
+                  </li>
+                ))}
+              </ul>
+              {fs.eligible.length > 300 && <p className="mt-2 text-xs text-slate-500">（先頭の300件だけを出しています）</p>}
+            </details>
+          )}
+          <details className="mt-3 rounded-xl border border-slate-200 bg-white p-4">
+            <summary className="cursor-pointer text-sm font-bold">フォームに入れる文面</summary>
+            <p className="mt-2 text-xs text-slate-500">件名の欄があるフォームには、メールと同じ件名を入れます。</p>
+            <pre className="mt-2 whitespace-pre-wrap text-[13px] leading-relaxed">{CAMPAIGN_FORM_BODY}</pre>
+          </details>
+        </>
+      )}
+
+      <h2 className="mt-10 text-lg font-bold">送る文面（メール）</h2>
       <p className="mt-2 text-sm">
         <b>件名：</b>
         {CAMPAIGN.subject}
