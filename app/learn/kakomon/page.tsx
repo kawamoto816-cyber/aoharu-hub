@@ -147,7 +147,7 @@ export default async function KakomonHomePage({
         <Link href="/learn/niji" className="font-bold text-[#1533B8]">
           2次試験の過去問チャレンジ
         </Link>
-        （試し：京都大学 2026年度 理科4科目・数学・日本史・世界史）へ。
+        （試し：京都大学 2026年度 理科4科目・数学・日本史・世界史・地理）へ。
       </p>
     </LearnShell>
   );
