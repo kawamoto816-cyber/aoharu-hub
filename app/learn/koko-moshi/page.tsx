@@ -20,6 +20,14 @@ export default function KokoMoshiPage() {
   return (
     <SeriesPage
       extra={
+        <>
+        <aside aria-label="過去問チャレンジ" className="mt-6 max-w-[720px] rounded-[14px] border-[1.5px] border-[#15172B] bg-white p-4">
+          <p className="m-0 text-[15px] font-black">公立高校入試の過去問チャレンジ</p>
+          <p className="m-0 mt-1 text-[13px] leading-relaxed text-[#3A3D55]">本物の入試問題（いまは東京都立高校の令和8年度）を、教育委員会のページの問題で時間を計って解き、答えを入れると正答表の配点で採点します。落とした点を単元に分けて、次にやることを出します。</p>
+          <Link href="/learn/koko-nyushi" className="mt-2 inline-flex min-h-[40px] items-center rounded-[10px] border-[1.5px] border-[#15172B] bg-white px-3 text-[13px] font-black text-[#15172B] no-underline">
+            過去問チャレンジを開く →
+          </Link>
+        </aside>
         <aside aria-label="公立高校入試 直前コース" className="mt-6 max-w-[720px] rounded-[14px] border-[1.5px] border-[#15172B] bg-white p-4">
           <p className="m-0 text-[15px] font-black">公立高校入試 直前コース</p>
           <p className="m-0 mt-1 text-[13px] leading-relaxed text-[#3A3D55]">模試の結果から、目標まであと何点・どの大問・どの単元かを作戦表にして、入試の日までの計画を作ります。診断・作戦表・最初の1週間は無料です。</p>
@@ -31,6 +39,7 @@ export default function KokoMoshiPage() {
             <TrackedLink href="/station" event="bin_link_click" params={{ location: "koko_moshi" }} className="ml-1 font-black text-[#1533B8]">アオハル 学習便を見る →</TrackedLink>
           </p>
         </aside>
+        </>
       }
       id="koko"
       lead="中1〜中3の全範囲から、公立高校入試によく出る分野で5教科を組みました。各50分・100点。時間になると自動で提出し、大問ごと・単元ごとの得点と、時間の使い方がわかります。"

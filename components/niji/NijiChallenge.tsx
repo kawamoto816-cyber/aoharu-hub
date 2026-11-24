@@ -19,7 +19,14 @@ import {
 // 途中の状態は、この端末に残す。
 
 type Why = "p" | "c" | "t";
-type Mark = { v?: 0 | 1; steps?: boolean[]; done?: boolean; why?: Why };
+type Mark = {
+  v?: 0 | 1;
+  steps?: boolean[];
+  done?: boolean;
+  why?: Why;
+  /** 自動採点の設問でえらんだ答え（sel の並びどおり） */
+  pick?: string[];
+};
 type Saved = {
   phase: "run" | "grade" | "done";
   startedAt?: number;
@@ -123,6 +130,9 @@ export function NijiChallenge({
   lessonLinks?: Record<string, { name: string; where: string; href: string }>;
 }) {
   const K = exam.style === "kijutsu";
+  const hasSel = exam.daimon.some((d) =>
+    d.blocks.some((b) => b.items.some((it) => it.sel)),
+  );
   const [s, setS] = useState<Saved | null>(null);
   const [target, setTarget] = useState(0.6);
   const [now, setNow] = useState(0);
@@ -424,6 +434,9 @@ export function NijiChallenge({
             {K
               ? "語句・記号は「答えを見る」で照らして ○×（合っていたものは「語句・記号を全部○」でまとめて）。記述は、答案に書けた要素にチェックし、「解答例を見る」で確かめます。落とした設問だけ、理由を聞きます。"
               : "空欄は「答えを見る」で照らして ○×（合っていた小問群は「空欄を全部○」でまとめて）。記述は、答案に書けた項目にチェックし、「解答例を見る」で確かめます。落とした設問だけ、理由を聞きます。"}
+            {hasSel
+              ? "記号や数字をえらぶ設問は、えらぶと自動で採点します。"
+              : ""}
             {exam.pointsNote ? "" : "点はアオハルの目安です。"}
           </p>
           <p className="m-0 mt-3 flex flex-wrap gap-2" role="tablist">
@@ -446,14 +459,14 @@ export function NijiChallenge({
                 <h3 className="m-0 text-[13px] font-black text-[#3A3D55]">
                   {b.title}
                 </h3>
-                {b.items.some((it) => !it.steps) && (
+                {b.items.some((it) => !it.steps && !it.sel) && (
                   <button
                     type="button"
                     onClick={() =>
                       update((p) => {
                         const marks = { ...p.marks };
                         for (const it of b.items)
-                          if (!it.steps) {
+                          if (!it.steps && !it.sel) {
                             const k = itemKey(d, it);
                             marks[k] = { ...marks[k], v: 1, why: undefined };
                           }
@@ -541,6 +554,59 @@ export function NijiChallenge({
                           </button>
                         </p>
                       </>
+                    ) : it.sel ? (
+                      <div className="mt-1.5 grid gap-1.5">
+                        {it.sel.map((sl, si) => (
+                          <p
+                            key={si}
+                            className="m-0 flex flex-wrap items-center gap-1.5"
+                            role="radiogroup"
+                            aria-label={sl.label ?? "答え"}
+                          >
+                            {sl.label && (
+                              <span className="min-w-[2.2em] text-[12.5px] font-black text-[#3A3D55]">
+                                {sl.label}
+                              </span>
+                            )}
+                            {sl.opts.map((o) => (
+                              <button
+                                key={o}
+                                type="button"
+                                role="radio"
+                                aria-checked={m?.pick?.[si] === o}
+                                onClick={() =>
+                                  setMark(k, (mm) => {
+                                    const pick = it.sel!.map(
+                                      (_, j) => mm.pick?.[j] ?? "",
+                                    );
+                                    pick[si] = o;
+                                    const full = pick.every((x) => x !== "");
+                                    const ok = it.sel!.every(
+                                      (x, j) => pick[j] === x.ok,
+                                    );
+                                    return {
+                                      ...mm,
+                                      pick,
+                                      v: full ? (ok ? 1 : 0) : undefined,
+                                      ...(full && ok ? { why: undefined } : {}),
+                                    };
+                                  })
+                                }
+                                className={`min-h-[36px] min-w-[36px] cursor-pointer rounded-[9px] border-[1.5px] px-2 text-[13px] font-black ${m?.pick?.[si] === o ? "border-[#15172B] bg-[#15172B] text-white" : "border-[#8a94a3] bg-white"}`}
+                              >
+                                {o}
+                              </button>
+                            ))}
+                          </p>
+                        ))}
+                        {m?.v !== undefined && (
+                          <p
+                            className={`m-0 text-[13px] font-black ${m.v ? "text-[#1E7B3A]" : "text-[#C0392B]"}`}
+                          >
+                            {m.v ? "○ 正解" : `× 正解は ${it.ans}`}
+                          </p>
+                        )}
+                      </div>
                     ) : (
                       <p className="m-0 mt-1.5 flex flex-wrap gap-1.5">
                         {([1, 0] as const).map((v) => (
@@ -649,7 +715,11 @@ export function NijiChallenge({
     if (l <= 0) continue;
     // 記述の階段の段がある設問は、単元ではなく段ごとにまとめる (行き先を細かくするため)
     const key =
-      it.lesson && lessonLinks[it.lesson] ? `L:${it.lesson}` : it.unit;
+      it.lesson && lessonLinks[it.lesson]
+        ? `L:${it.lesson}`
+        : it.skill
+          ? `${it.unit}#${it.skill}`
+          : it.unit;
     const r = by.get(key) ?? { lost: 0, ids: [], why: {}, unit: it.unit };
     r.lost += l;
     r.ids.push(`${d.no}${it.id}`);
@@ -660,7 +730,7 @@ export function NijiChallenge({
   const rank = (r: { why: Partial<Record<Why, number>> }) =>
     (r.why.c ?? 0) * 3 + (r.why.p ?? 0) * 2 + (r.why.t ?? 0);
   const rows = [...by.entries()]
-    .filter(([u]) => u.startsWith("L:") || unitLinks[u])
+    .filter(([u, r]) => u.startsWith("L:") || unitLinks[r.unit])
     .sort((a, b) => rank(b[1]) - rank(a[1]));
   const topWhy = (r: { why: Partial<Record<Why, number>> }) =>
     (Object.entries(r.why) as [Why, number][]).sort(
@@ -765,7 +835,11 @@ export function NijiChallenge({
               : undefined;
             const ul: UnitLink | undefined = unitLinks[r.unit];
             const l = {
-              name: les?.name ?? ul?.name ?? "",
+              name:
+                les?.name ??
+                (u.includes("#")
+                  ? `${ul?.name ?? ""}：${u.slice(u.indexOf("#") + 1)}`
+                  : (ul?.name ?? "")),
               where: les?.where ?? ul?.where ?? "",
               lecture: ul?.lecture,
               moshi: ul?.moshi,

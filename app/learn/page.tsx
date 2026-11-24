@@ -195,6 +195,26 @@ export default function LearnHub() {
               </li>
             ))}
           </ul>
+          <h3 className="m-0 mt-5 text-[16px] font-black">過去問チャレンジ：先に本番を解いて、逆算する</h3>
+          <p className="m-0 mt-1 text-[13px] leading-relaxed text-[#C9CEF2]">本物の入試問題を先に解き、落とした点を単元に分けて、どこまでさかのぼればよいかを出します。問題は、出題した機関のページで開きます。</p>
+          <ul className="m-0 mt-3 grid list-none gap-3 p-0 sm:grid-cols-3">
+            {[
+              { href: "/learn/koko-nyushi", tag: "中3向け", name: "公立高校入試", desc: "東京都立高校 令和8年度・5教科" },
+              { href: "/learn/kakomon", tag: "高校向け", name: "共通テスト", desc: "令和6〜8年度・マークシートで自動採点" },
+              { href: "/learn/niji", tag: "高校向け", name: "国公立2次", desc: "京都大学 2026年度・全科目" },
+            ].map((x) => (
+              <li key={x.href}>
+                <Link href={x.href} className="flex h-full flex-col gap-1 rounded-[14px] border-[1.5px] border-[#15172B] bg-white p-3 text-[#15172B] no-underline shadow-[3px_3px_0_#15172B]">
+                  <span className="w-fit rounded-full bg-[#FFE45C] px-2 py-0.5 text-[11px] font-black">{x.tag}</span>
+                  <span className="flex items-center justify-between gap-2 text-[16px] font-black">
+                    {x.name}
+                    <Arrow />
+                  </span>
+                  <span className="text-[12.5px] font-bold leading-relaxed text-[#3A3D55]">{x.desc}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
         </section>
 
         {/* 4. いつもの教科書とのちがい＋1単元の冒険 */}

@@ -20,6 +20,13 @@ export interface NijiItem {
   ex?: string[];
   /** 「記述の階段」(lib/kijutsu) の段の id。あると、作戦表はその段ごとにまとめ、授業へ案内する */
   lesson?: string;
+  /**
+   * 自動採点：えらぶ欄の並び。全部が ok と合えば正解。ans には、まちがえたときに見せる正答を書く。
+   * 例：記号1つ [{opts:["ア","イ","ウ","エ"], ok:"ウ"}]、組み合わせ [{label:"①",…},{label:"②",…}]、数字のマーク [{label:"あ", opts:["0",…,"9"], ok:"2"}]
+   */
+  sel?: { label?: string; opts: string[]; ok: string }[];
+  /** 単元の中の、問われ方（例：気持ちの読みとり）。あると、作戦表はこの単位でも分ける */
+  skill?: string;
   /** 「解答例を見る」ボタンの名前を変えるとき (例：解答例をまだ載せていない設問) */
   exLabel?: string;
 }

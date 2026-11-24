@@ -25,6 +25,13 @@ export default function DaigakuMoshiPage() {
       howto={["大学と科目、回をえらぶ", "本番の時間で解く。時間になると自動で提出", "大問別・単元別の結果から、根っこの単元へさかのぼって学びなおす"]}
       extra={
         <>
+          <aside aria-label="過去問チャレンジ" className="mt-6 max-w-[720px] rounded-[14px] border-[1.5px] border-[#15172B] bg-white p-4">
+          <p className="m-0 text-[15px] font-black">2次試験の過去問チャレンジ</p>
+          <p className="m-0 mt-1 text-[13px] leading-relaxed text-[#3A3D55]">本物の2次試験（いまは京都大学 2026年度の全科目）を、大学のページの問題で時間を計って解き、設問ごとに自己採点します。落とした点を単元と「記述の階段」の段に分けて、次にやることを出します。</p>
+          <Link href="/learn/niji" className="mt-2 inline-flex min-h-[40px] items-center rounded-[10px] border-[1.5px] border-[#15172B] bg-white px-3 text-[13px] font-black text-[#15172B] no-underline">
+            過去問チャレンジを開く →
+          </Link>
+        </aside>
           <aside aria-label="大学入試 直前コース" className="mt-6 max-w-[720px] rounded-[14px] border-[1.5px] border-[#15172B] bg-white p-4">
             <p className="m-0 text-[15px] font-black">大学入試 直前コース（国公立2次・私大）</p>
             <p className="m-0 mt-1 text-[13px] leading-relaxed text-[#3A3D55]">模試の結果から、目標まであと何点・どの大問・どの単元かを作戦表にして、試験日までの計画を作ります。診断・作戦表・最初の1週間は無料です。</p>
