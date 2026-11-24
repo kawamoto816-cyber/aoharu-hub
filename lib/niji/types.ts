@@ -57,6 +57,12 @@ export interface NijiExam {
   minutes: number;
   /** 時間についての注 (理科2科目で180分 など) */
   timeNote?: string;
+  /** どの入口のものか。koko ＝ 公立高校入試の過去問チャレンジ (/learn/koko-nyushi)。省くと 2次試験 (/learn/niji) */
+  base?: "niji" | "koko";
+  /** 問題のページを出している所（例：東京都教育委員会）。省くと univ */
+  pageOwner?: string;
+  /** 配点についての注記。省くと「大学は設問ごとの配点を公表していません…」 */
+  pointsNote?: string;
   /** 記述が中心の科目。「式」「計算」の言い方を、記述向けの言い方に変える */
   style?: "kijutsu";
   total: number;

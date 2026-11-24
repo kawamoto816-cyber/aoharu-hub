@@ -15,7 +15,7 @@ export interface KakomonReturnInfo {
   unit: string;
   unitName: string;
   /** もどり先。2次試験の過去問チャレンジ (/learn/niji) から来たときは "niji" */
-  base?: "kakomon" | "niji";
+  base?: "kakomon" | "niji" | "koko";
 }
 
 export function setKakomonReturn(v: KakomonReturnInfo) {
@@ -39,7 +39,7 @@ export function KakomonReturn({ where }: { where: "top" | "bottom" }) {
     }
   }, []);
   if (!info) return null;
-  const href = `/learn/${info.base === "niji" ? "niji" : "kakomon"}/${info.examId}#gyakuten`;
+  const href = `/learn/${info.base === "niji" ? "niji" : info.base === "koko" ? "koko-nyushi" : "kakomon"}/${info.examId}#gyakuten`;
   if (where === "top")
     return (
       <p className="m-0 mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 rounded-[12px] bg-[#FFF6D6] px-3 py-2 text-[13px] font-bold leading-snug">

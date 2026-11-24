@@ -98,7 +98,8 @@ function PageLinks({ exam }: { exam: NijiExam }) {
       className={`${smBtn} bg-white text-[#15172B]`}
       onClick={() => trackEvent("niji_open_page", { exam: exam.id })}
     >
-      問題・出題意図を開く（{exam.univ}）
+      {exam.base === "koko" ? "問題を開く" : "問題・出題意図を開く"}（
+      {exam.pageOwner ?? exam.univ}）
     </a>
   );
 }
@@ -241,8 +242,8 @@ export function NijiChallenge({
               [
                 "問題を開いて、紙に解く",
                 K
-                  ? `問題は${exam.univ}の公開ページで開きます（印刷しても、タブレットで見ても）。本番と同じく、答案を紙に書きます。`
-                  : `問題は${exam.univ}の公開ページで開きます（印刷しても、タブレットで見ても）。本番と同じく、導出の過程も紙に書きます。`,
+                  ? `問題は${exam.pageOwner ?? exam.univ}の公開ページで開きます（印刷しても、タブレットで見ても）。本番と同じく、答案を紙に書きます。`
+                  : `問題は${exam.pageOwner ?? exam.univ}の公開ページで開きます（印刷しても、タブレットで見ても）。本番と同じく、導出の過程も紙に書きます。`,
               ],
               [
                 "設問ごとに自己採点",
@@ -421,8 +422,9 @@ export function NijiChallenge({
         <section className={card}>
           <p className="m-0 text-[13px] leading-relaxed text-[#3A3D55]">
             {K
-              ? "語句・記号は「答えを見る」で照らして ○×（合っていたものは「語句・記号を全部○」でまとめて）。記述は、答案に書けた要素にチェックし、「解答例を見る」で確かめます。落とした設問だけ、理由を聞きます。点はアオハルの目安です。"
-              : "空欄は「答えを見る」で照らして ○×（合っていた小問群は「空欄を全部○」でまとめて）。記述は、答案に書けた項目にチェックし、「解答例を見る」で確かめます。落とした設問だけ、理由を聞きます。点はアオハルの目安です。"}
+              ? "語句・記号は「答えを見る」で照らして ○×（合っていたものは「語句・記号を全部○」でまとめて）。記述は、答案に書けた要素にチェックし、「解答例を見る」で確かめます。落とした設問だけ、理由を聞きます。"
+              : "空欄は「答えを見る」で照らして ○×（合っていた小問群は「空欄を全部○」でまとめて）。記述は、答案に書けた項目にチェックし、「解答例を見る」で確かめます。落とした設問だけ、理由を聞きます。"}
+            {exam.pointsNote ? "" : "点はアオハルの目安です。"}
           </p>
           <p className="m-0 mt-3 flex flex-wrap gap-2" role="tablist">
             {exam.daimon.map((x) => (
@@ -618,7 +620,10 @@ export function NijiChallenge({
             <PageLinks exam={exam} />
           </p>
           <p className="m-0 mt-3 text-[12px] leading-relaxed text-[#5A5D75]">
-            解答例は、アオハルが問題から解いて書いたものです。{exam.checked}
+            {exam.base === "koko"
+              ? ""
+              : "解答例は、アオハルが問題から解いて書いたものです。"}
+            {exam.checked}
           </p>
         </section>
       </div>
@@ -686,7 +691,7 @@ export function NijiChallenge({
           {sc}
           <span className="text-[17px] font-bold text-[#5A5D75]">
             {" "}
-            / {total}点（目安）
+            / {total}点{exam.pointsNote ? "" : "（目安）"}
           </span>
         </p>
         <div className="mt-2 flex items-center gap-2">
@@ -731,7 +736,8 @@ export function NijiChallenge({
           </p>
         )}
         <p className="m-0 mt-2 text-[12px] leading-relaxed text-[#5A5D75]">
-          大学は設問ごとの配点を公表していません。点は、アオハルが決めた目安です。
+          {exam.pointsNote ??
+            "大学は設問ごとの配点を公表していません。点は、アオハルが決めた目安です。"}
         </p>
       </section>
 
@@ -749,7 +755,7 @@ export function NijiChallenge({
         </p>
         {rows.length === 0 && (
           <p className="m-0 mt-3 text-[13px] font-bold">
-            落とした設問はありません。別の年度・大学で、同じ時間配分をためせます。
+            落とした設問はありません。別の過去問で、同じ時間配分をためせます。
           </p>
         )}
         <ol className="m-0 mt-3 grid list-none gap-2 p-0">
@@ -850,7 +856,7 @@ export function NijiChallenge({
                             title,
                             unit: r.unit,
                             unitName: l.name,
-                            base: "niji",
+                            base: exam.base ?? "niji",
                           });
                         trackEvent("niji_plan_action", {
                           exam: exam.id,
@@ -970,7 +976,7 @@ export function NijiChallenge({
             記録を消して、もう一度挑む
           </button>
           <Link
-            href="/learn/niji"
+            href={exam.base === "koko" ? "/learn/koko-nyushi" : "/learn/niji"}
             className={`${bigBtn} bg-white text-[#15172B] no-underline`}
           >
             別の過去問をえらぶ
@@ -985,7 +991,7 @@ export function NijiChallenge({
 function Source({ exam }: { exam: NijiExam }) {
   return (
     <p className="m-0 mt-1 break-all text-[12px] leading-relaxed text-[#5A5D75]">
-      問題と出題意図：
+      {exam.base === "koko" ? "問題と正答表：" : "問題と出題意図："}
       <a
         href={exam.page}
         target="_blank"
@@ -994,7 +1000,9 @@ function Source({ exam }: { exam: NijiExam }) {
       >
         {exam.pageLabel}
       </a>
-      。問題文・図はこのページに載せていません。解答例・チェック表・点の目安・類題は、アオハルOSが問題から解いて作成したもので、大学の公式の解答ではありません。
+      {exam.base === "koko"
+        ? "。問題文・図はこのページに載せていません。正答（記号・数・語）と配点は正答表のとおりで、記述の解答例とチェック表は、アオハルOSが作成したものです。"
+        : "。問題文・図はこのページに載せていません。解答例・チェック表・点の目安・類題は、アオハルOSが問題から解いて作成したもので、大学の公式の解答ではありません。"}
     </p>
   );
 }

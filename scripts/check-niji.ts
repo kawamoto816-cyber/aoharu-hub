@@ -1,5 +1,6 @@
 // 2次試験の過去問チャレンジのデータの点検: 単元が地図にあるか、記述のチェック表の点の合計が設問の点と合うか、設問の記号が重ならないか。
 import { getKijutsu } from "@/lib/kijutsu";
+import { KOKO } from "@/lib/koko";
 import { NIJI } from "@/lib/niji";
 import { daimonPoints } from "@/lib/niji/types";
 import { lectureUnitInfo } from "@/lib/lecture";
@@ -10,7 +11,8 @@ const bad = (m: string) => {
   errors++;
   console.log(`✕ ${m}`);
 };
-for (const e of NIJI) {
+// 公立高校入試 (lib/koko) も同じ形なので、いっしょに点検する
+for (const e of [...NIJI, ...KOKO]) {
   let sum = 0;
   for (const d of e.daimon) {
     const seen = new Set<string>();
