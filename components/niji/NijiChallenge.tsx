@@ -56,6 +56,12 @@ const WHY: [Why, string][] = [
   ["c", "計算・書き方で落とした"],
   ["t", "時間切れ"],
 ];
+// 記述が中心の科目 (地理・英語・国語など) では、「式」「計算」の言い方を使わない。
+const WHY_K: [Why, string][] = [
+  ["p", "何を書けばよいか分からなかった"],
+  ["c", "分かっていたが、書き方で落とした"],
+  ["t", "時間切れ"],
+];
 const mmss = (sec: number) =>
   `${Math.floor(sec / 60)}:${String(Math.floor(sec % 60)).padStart(2, "0")}`;
 const nowMs = () => Date.now();
@@ -112,6 +118,7 @@ export function NijiChallenge({
   exam: NijiExam;
   unitLinks: Record<string, UnitLink>;
 }) {
+  const K = exam.style === "kijutsu";
   const [s, setS] = useState<Saved | null>(null);
   const [target, setTarget] = useState(0.6);
   const [now, setNow] = useState(0);
@@ -221,19 +228,30 @@ export function NijiChallenge({
       <div className="grid gap-4">
         <section className={card}>
           <h2 className="m-0 text-[17px] font-black">はじめ方</h2>
+          {exam.timeNote && (
+            <p className="m-0 mt-3 rounded-[10px] border border-[#E8C46A] bg-[#FFF8E1] p-3 text-[13px] font-bold leading-relaxed text-[#5A4300]">
+              {exam.timeNote}
+            </p>
+          )}
           <ol className="m-0 mt-3 grid list-none gap-3 p-0">
             {[
               [
                 "問題を開いて、紙に解く",
-                `問題は${exam.univ}の公開ページで開きます（印刷しても、タブレットで見ても）。本番と同じく、導出の過程も紙に書きます。`,
+                K
+                  ? `問題は${exam.univ}の公開ページで開きます（印刷しても、タブレットで見ても）。本番と同じく、答案を紙に書きます。`
+                  : `問題は${exam.univ}の公開ページで開きます（印刷しても、タブレットで見ても）。本番と同じく、導出の過程も紙に書きます。`,
               ],
               [
                 "設問ごとに自己採点",
-                "空欄は答えを見て ○×。記述は「この式が書けたか」のチェック表で部分点を出し、解答例で確かめます。",
+                K
+                  ? "語句・記号は答えを見て ○×。記述は「この要素が書けたか」のチェック表で部分点を出し、解答例で確かめます。"
+                  : "空欄は答えを見て ○×。記述は「この式が書けたか」のチェック表で部分点を出し、解答例で確かめます。",
               ],
               [
                 "落とした理由を1タップ",
-                "「方針が立たない／計算・書き方で落とした／時間切れ」。理由によって、次にやることが変わります。",
+                K
+                  ? "「何を書けばよいか分からなかった／分かっていたが書き方で落とした／時間切れ」。理由によって、次にやることが変わります。"
+                  : "「方針が立たない／計算・書き方で落とした／時間切れ」。理由によって、次にやることが変わります。",
               ],
               [
                 "作戦表でつぶす",
@@ -291,11 +309,6 @@ export function NijiChallenge({
               もう解いた・自己採点だけする
             </button>
           </p>
-          {exam.timeNote && (
-            <p className="m-0 mt-3 text-[12px] leading-relaxed text-[#5A5D75]">
-              {exam.timeNote}
-            </p>
-          )}
         </section>
         <Source exam={exam} />
       </div>
@@ -404,8 +417,9 @@ export function NijiChallenge({
         </div>
         <section className={card}>
           <p className="m-0 text-[13px] leading-relaxed text-[#3A3D55]">
-            空欄は「答えを見る」で照らして
-            ○×（合っていた小問群は「空欄を全部○」でまとめて）。記述は、答案に書けた項目にチェックし、「解答例を見る」で確かめます。落とした設問だけ、理由を聞きます。点はアオハルの目安です。
+            {K
+              ? "語句・記号は「答えを見る」で照らして ○×（合っていたものは「語句・記号を全部○」でまとめて）。記述は、答案に書けた要素にチェックし、「解答例を見る」で確かめます。落とした設問だけ、理由を聞きます。点はアオハルの目安です。"
+              : "空欄は「答えを見る」で照らして ○×（合っていた小問群は「空欄を全部○」でまとめて）。記述は、答案に書けた項目にチェックし、「解答例を見る」で確かめます。落とした設問だけ、理由を聞きます。点はアオハルの目安です。"}
           </p>
           <p className="m-0 mt-3 flex flex-wrap gap-2" role="tablist">
             {exam.daimon.map((x) => (
@@ -443,7 +457,7 @@ export function NijiChallenge({
                     }
                     className="min-h-[34px] cursor-pointer rounded-[10px] border-[1.5px] border-[#15172B] bg-white px-2.5 text-[12px] font-black"
                   >
-                    空欄を全部○
+                    {K ? "語句・記号を全部○" : "空欄を全部○"}
                   </button>
                 )}
               </div>
@@ -518,7 +532,7 @@ export function NijiChallenge({
                             }
                             className={`${pill} border-[#8a94a3] bg-white text-[12px]`}
                           >
-                            解答例を見る
+                            {it.exLabel ?? "解答例を見る"}
                           </button>
                         </p>
                       </>
@@ -569,7 +583,7 @@ export function NijiChallenge({
                         role="radiogroup"
                         aria-label="落とした理由"
                       >
-                        {WHY.map(([w, t]) => (
+                        {(K ? WHY_K : WHY).map(([w, t]) => (
                           <button
                             key={w}
                             type="button"
@@ -647,8 +661,8 @@ export function NijiChallenge({
     t: "bg-[#E6F0FF] text-[#1533B8]",
   };
   const tagName: Record<Why, string> = {
-    c: "計算・書き方",
-    p: "方針が立たない",
+    c: K ? "書き方" : "計算・書き方",
+    p: K ? "分からなかった" : "方針が立たない",
     t: "時間切れ",
   };
   const untouched = items.length - nTouched;
@@ -718,8 +732,9 @@ export function NijiChallenge({
           目標点までの作戦表
         </h2>
         <p className="m-0 mt-1 text-[13px] leading-relaxed text-[#3A3D55]">
-          落とした点を単元に分け、取りもどしやすい順（計算・書き方 → 方針 →
-          時間）に並べました。
+          {K
+            ? "落とした点を単元に分け、取りもどしやすい順（書き方 → 知識・読み → 時間）に並べました。"
+            : "落とした点を単元に分け、取りもどしやすい順（計算・書き方 → 方針 → 時間）に並べました。"}
         </p>
         {rows.length === 0 && (
           <p className="m-0 mt-3 text-[13px] font-bold">
@@ -738,7 +753,7 @@ export function NijiChallenge({
               saka: true,
             };
             const moshi = l.moshi && {
-              t: "単元模試で、答えまで出す練習",
+              t: K ? "単元模試で、たしかめる" : "単元模試で、答えまで出す練習",
               href: l.moshi,
             };
             const lec = l.lecture && { t: "図解で学びなおす", href: l.lecture };
@@ -784,7 +799,9 @@ export function NijiChallenge({
                 </p>
                 <p className="m-0 mt-1 text-[12.5px] leading-relaxed text-[#3A3D55]">
                   {top === "c"
-                    ? "式は立っています。答えまで運ぶ練習を先に。"
+                    ? K
+                      ? "内容は分かっています。解答例とくらべて、答案にまとめる練習を先に。"
+                      : "式は立っています。答えまで運ぶ練習を先に。"
                     : top === "t"
                       ? "解ければ取れる設問です。前の設問の時間を削る作戦を先に。"
                       : "どこまでさかのぼればわかるかを探します。"}
@@ -854,7 +871,9 @@ export function NijiChallenge({
                   )
                   .join("")
               : ""}
-            はじめの空欄で止まったら30秒で次へ進み、後ろの記述（部分点が出る）に時間を残します。
+            {K
+              ? "1つの設問で手が止まったら先へ進み、配点の大きい記述（要素ごとに部分点が出る）に時間を残します。"
+              : "はじめの空欄で止まったら30秒で次へ進み、後ろの記述（部分点が出る）に時間を残します。"}
           </p>
         </div>
       </section>

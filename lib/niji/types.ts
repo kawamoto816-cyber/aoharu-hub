@@ -18,6 +18,8 @@ export interface NijiItem {
   steps?: [string, number][];
   /** 記述の解答例 (行ごと) */
   ex?: string[];
+  /** 「解答例を見る」ボタンの名前を変えるとき (例：解答例をまだ載せていない設問) */
+  exLabel?: string;
 }
 
 export interface NijiBlock {
@@ -53,6 +55,8 @@ export interface NijiExam {
   minutes: number;
   /** 時間についての注 (理科2科目で180分 など) */
   timeNote?: string;
+  /** 記述が中心の科目。「式」「計算」の言い方を、記述向けの言い方に変える */
+  style?: "kijutsu";
   total: number;
   /** 大学の公開ページ (問題と出題意図) */
   page: string;

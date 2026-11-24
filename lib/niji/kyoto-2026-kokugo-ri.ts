@@ -13,6 +13,7 @@ export const KYOTO_2026_KOKUGO_RI: NijiExam = {
   kind: "一般選抜（前期）",
   subject: "国語（理系）",
   minutes: 90,
+  style: "kijutsu",
   total: 100,
   page: "https://www.kyoto-u.ac.jp/ja/admissions/undergrad/past-eq/r8-eq",
   pageLabel:

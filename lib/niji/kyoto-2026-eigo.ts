@@ -15,6 +15,7 @@ const desc = (
   unit: string,
   steps: [string, number][],
   ex: string[],
+  exLabel?: string,
 ): NijiItem => ({
   id,
   name,
@@ -22,6 +23,7 @@ const desc = (
   unit,
   steps,
   ex,
+  ...(exLabel ? { exLabel } : {}),
 });
 
 export const KYOTO_2026_EIGO: NijiExam = {
@@ -33,6 +35,7 @@ export const KYOTO_2026_EIGO: NijiExam = {
   minutes: 120,
   timeNote:
     "問題Ⅰ・Ⅱの英文は、大学の公式ページには載っていません（第三者の著作物のため）。手元の過去問集で解いてください。問題Ⅲ・Ⅳは公式ページで見られます。",
+  style: "kijutsu",
   total: 150,
   page: "https://www.kyoto-u.ac.jp/ja/admissions/undergrad/past-eq/r8-eq",
   pageLabel:
@@ -76,6 +79,7 @@ export const KYOTO_2026_EIGO: NijiExam = {
                 ],
               ],
               [WAIT],
+              "解答例について",
             ),
             desc(
               "(2)",
@@ -102,6 +106,7 @@ export const KYOTO_2026_EIGO: NijiExam = {
                 ["testify to を「（存在の）証拠になる／証明する」と訳した", 2],
               ],
               [WAIT],
+              "解答例について",
             ),
             desc(
               "(3)",
@@ -158,6 +163,7 @@ export const KYOTO_2026_EIGO: NijiExam = {
                 ],
               ],
               [WAIT],
+              "解答例について",
             ),
             desc(
               "(2)",
@@ -211,6 +217,7 @@ export const KYOTO_2026_EIGO: NijiExam = {
                 ["「文化の保存に現実の影響をあたえうる」と訳した", 3],
               ],
               [WAIT],
+              "解答例について",
             ),
           ],
         },

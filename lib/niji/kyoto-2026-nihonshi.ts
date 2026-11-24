@@ -13,6 +13,7 @@ export const KYOTO_2026_NIHONSHI: NijiExam = {
   kind: "一般選抜（前期）",
   subject: "日本史",
   minutes: 90,
+  style: "kijutsu",
   total: 100,
   page: "https://www.kyoto-u.ac.jp/ja/admissions/undergrad/past-eq/r8-eq",
   pageLabel:
