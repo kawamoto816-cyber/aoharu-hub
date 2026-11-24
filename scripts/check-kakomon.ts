@@ -2,6 +2,9 @@
 import { getKakomon, KAKOMON } from "@/lib/kakomon/data";
 import { checkKakomon, fullMarks, gradeKakomon } from "@/lib/kakomon/grade";
 import type { Marks } from "@/lib/kakomon/types";
+import { KAKOMON_UNITS } from "@/lib/kakomon/units";
+import { sheetRows } from "@/lib/kakomon/grade";
+import { lectureUnitInfo } from "@/lib/lecture";
 
 let errors = 0;
 for (const e of KAKOMON) {
@@ -81,6 +84,28 @@ t(
     errors++;
     console.log("✕ 選択問題（3問だけマーク）");
   }
+}
+// 解答欄 → 単元の対応表: 試験の解答欄をすべて覆い、単元が実在するか
+for (const [id, m] of Object.entries(KAKOMON_UNITS)) {
+  const e = getKakomon(id);
+  if (!e) {
+    errors++;
+    console.log(`✕ 単元の対応表: 試験 ${id} がない`);
+    continue;
+  }
+  const keys = sheetRows(e).flatMap((g) => g.cells.map((c) => c.key));
+  const bad = (msg: string) => {
+    errors++;
+    console.log(`✕ ${id}: ${msg}`);
+  };
+  for (const k of keys) if (!m[k]) bad(`解答欄 ${k} に単元がない`);
+  for (const k of Object.keys(m))
+    if (!keys.includes(k)) bad(`対応表の ${k} は試験にない解答欄`);
+  for (const u of new Set(Object.values(m)))
+    if (!lectureUnitInfo(u)) bad(`単元 ${u} が地図にない`);
+  console.log(
+    `単元の対応表 ${id}: 解答欄 ${keys.length}・単元 ${new Set(Object.values(m)).size}`,
+  );
 }
 console.log(errors ? `✕ エラー ${errors}` : "✕ エラー 0");
 process.exit(errors ? 1 : 0);

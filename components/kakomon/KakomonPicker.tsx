@@ -17,6 +17,8 @@ export interface PickerExam {
   pdf: string;
   audio?: string;
   note?: string;
+  /** 解答欄と単元の対応表があり、採点のあとに逆転勉強法の作戦表が出る */
+  gyakuten?: boolean;
 }
 
 const card =
@@ -164,7 +166,9 @@ export function KakomonPicker({
             },
             {
               t: "答えをマークして採点",
-              b: "大問ごとの得点と、次にやる類題が出ます。",
+              b: exam.gyakuten
+                ? "大問ごとの得点と、落とした点を単元に分けた「逆転勉強法の作戦表」が出ます。そこから、どこまでさかのぼればわかるかを探せます。"
+                : "大問ごとの得点と、次にやる類題が出ます（この年度は作戦表の準備中です）。",
             },
           ].map((x, i) => (
             <li

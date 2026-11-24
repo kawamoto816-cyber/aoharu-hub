@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { trackEvent } from "@/lib/analytics";
+import { recordMastery } from "@/lib/sakanobori/mastery";
 import { gradeKakomon, markOptions, sheetRows } from "@/lib/kakomon/grade";
 import type { KakomonExam, KakomonResult, Marks } from "@/lib/kakomon/types";
 
@@ -93,14 +94,34 @@ export function KakomonSource({ exam }: { exam: KakomonExam }) {
   );
 }
 
+/** 単元の表示と行き先 (サーバーで作って渡す) */
+export interface UnitLink {
+  name: string;
+  /** 化学基礎・中2 など */
+  where: string;
+  lecture?: string;
+  moshi?: string;
+  /** 前提の単元のデータがあり、さかのぼれる */
+  sakanobori: boolean;
+}
+
+/** さかのぼりのページ (lib/sakanobori の encodeWrong と同じ形：単元を「,」でつなぐ。前提のデータをクライアントに持ちこまないよう、ここで組む) */
+const sakanoboriHref = (units: string[], origin?: string) =>
+  `/learn/sakanobori?${origin ? `u=${encodeURIComponent(origin)}&` : ""}w=${units.slice(0, 40).map(encodeURIComponent).join(",")}`;
+
 export function Challenge({
   exam,
   moshiHref,
   autoStart = false,
+  units,
+  unitLinks,
 }: {
   exam: KakomonExam;
   moshiHref: string;
   autoStart?: boolean;
+  /** 解答欄 → 単元 (lib/kakomon/units.ts。ない試験は undefined) */
+  units?: Record<string, string>;
+  unitLinks?: Record<string, UnitLink>;
 }) {
   const rows = useMemo(() => sheetRows(exam), [exam]);
   const opts = useMemo(() => markOptions(exam), [exam]);
@@ -170,9 +191,23 @@ export function Challenge({
         score: r.score,
         auto: auto ? 1 : 0,
       });
+      // 単元ごとの出来を、さかのぼりの習熟度に1件ずつ記録する (その単元の解答欄がすべて正解なら ok)
+      if (units) {
+        const byUnit = new Map<string, boolean>();
+        for (const d of r.daimon)
+          if (d.counted)
+            for (const it of d.items)
+              for (const c of it.cells) {
+                const u = units[c.key];
+                if (u) byUnit.set(u, (byUnit.get(u) ?? true) && c.ok);
+              }
+        recordMastery(
+          [...byUnit.entries()].map(([unit, ok]) => ({ unit, ok })),
+        );
+      }
       window.scrollTo(0, 0);
     },
-    [exam, limit, marks, startedAt],
+    [exam, limit, marks, startedAt, units],
   );
 
   // 時計。時間になったら自動で提出
@@ -482,6 +517,15 @@ export function Challenge({
             </div>
           ))}
       </section>
+      {units && unitLinks && (
+        <GyakutenPlan
+          r={r}
+          units={units}
+          links={unitLinks}
+          examId={exam.id}
+          onRetry={reset}
+        />
+      )}
       <section className={card}>
         <h2 className="m-0 text-[17px] font-black">次にやること</h2>
         <p className="m-0 mt-1 text-[13px] leading-relaxed text-[#3A3D55]">
@@ -513,5 +557,237 @@ export function Challenge({
       </section>
       <KakomonSource exam={exam} />
     </div>
+  );
+}
+
+/** 落とした点を単元ごとに集める (設問の落とした点を、その設問のまちがえた解答欄の単元に等分する) */
+export function lostByUnit(
+  r: KakomonResult,
+  units: Record<string, string>,
+): { unit: string; lost: number; cells: string[] }[] {
+  const m = new Map<string, { lost: number; cells: string[] }>();
+  for (const d of r.daimon) {
+    if (!d.counted) continue;
+    for (const it of d.items) {
+      const lost = it.points - it.got;
+      if (lost <= 0) continue;
+      const wrong = it.cells.filter((c) => !c.ok);
+      const blame = (wrong.length ? wrong : it.cells).filter(
+        (c) => units[c.key],
+      );
+      if (!blame.length) continue;
+      for (const c of blame) {
+        const u = units[c.key];
+        const row = m.get(u) ?? { lost: 0, cells: [] };
+        row.lost += lost / blame.length;
+        if (!c.ok)
+          row.cells.push(
+            c.key.includes("-") ? `第${d.no}問${c.label}` : c.label,
+          );
+        m.set(u, row);
+      }
+    }
+  }
+  return [...m.entries()]
+    .map(([unit, v]) => ({
+      unit,
+      lost: Math.round(v.lost * 10) / 10,
+      cells: v.cells,
+    }))
+    .sort((a, b) => b.lost - a.lost);
+}
+
+const planKey = (id: string) => `kakomon:v2:plan:${id}`;
+function loadDone(id: string): string[] {
+  try {
+    const raw = window.localStorage.getItem(planKey(id));
+    return raw ? (JSON.parse(raw) as string[]) : [];
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * 逆転勉強法の作戦表。過去問（ラスボス）で落とした点を単元に分け、落とした点の多い順に、
+ * 「根っこを探す（前の学年までさかのぼる）→ 図解 → 単元模試」で1つずつつぶす。全部つぶしたら、もう一度ラスボスへ。
+ * つぶした単元は、この端末に残す。
+ */
+function GyakutenPlan({
+  r,
+  units,
+  links,
+  examId,
+  onRetry,
+}: {
+  r: KakomonResult;
+  units: Record<string, string>;
+  links: Record<string, UnitLink>;
+  examId: string;
+  onRetry: () => void;
+}) {
+  const list = useMemo(
+    () => lostByUnit(r, units).filter((x) => links[x.unit]),
+    [r, units, links],
+  );
+  const [done, setDone] = useState<string[]>([]);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- 初回だけ、この端末に残した進み具合を読む
+    setDone(loadDone(examId));
+  }, [examId]);
+  const toggle = (u: string) => {
+    setDone((prev) => {
+      const next = prev.includes(u)
+        ? prev.filter((x) => x !== u)
+        : [...prev, u];
+      try {
+        window.localStorage.setItem(planKey(examId), JSON.stringify(next));
+      } catch {
+        /* 保存できなくても続けられる */
+      }
+      if (!prev.includes(u))
+        trackEvent("kakomon_unit_done", { exam: examId, unit: u });
+      return next;
+    });
+  };
+  if (list.length === 0) return null;
+  const lostAll = Math.round(list.reduce((a, x) => a + x.lost, 0));
+  const doneN = list.filter((x) => done.includes(x.unit)).length;
+  const allWrong = list.flatMap((x) => x.cells.map(() => x.unit));
+  const btn =
+    "inline-flex min-h-[40px] items-center rounded-[10px] border-[1.5px] border-[#15172B] px-3 text-[13px] font-black no-underline";
+  return (
+    <section className={card}>
+      <p className="m-0 text-[12px] font-black tracking-wider text-[#1533B8]">
+        逆転勉強法
+      </p>
+      <h2 className="m-0 mt-0.5 text-[18px] font-black">
+        ラスボスから逆算する作戦表
+      </h2>
+      <p className="m-0 mt-1 text-[13px] leading-relaxed text-[#3A3D55]">
+        積み上げてから最後に本番を解くのではなく、先に本番を解いて、わからなかったところだけを、わかるところまでさかのぼってつぶしていきます。落とした
+        {lostAll}
+        点を、問われていた単元に分けました。上の単元ほど、取りもどせる点が大きい単元です。
+      </p>
+      <div
+        className="mt-3 flex items-center gap-2"
+        aria-label={`つぶした単元 ${doneN} / ${list.length}`}
+      >
+        <div
+          className="h-2 flex-1 overflow-hidden rounded bg-[#E9E8E0]"
+          aria-hidden
+        >
+          <div
+            className="h-full bg-[#1533B8]"
+            style={{ width: `${Math.round((doneN / list.length) * 100)}%` }}
+          />
+        </div>
+        <span className="whitespace-nowrap text-[12px] font-bold tabular-nums">
+          {doneN} / {list.length} 単元
+        </span>
+      </div>
+      <ol className="m-0 mt-3 grid list-none gap-2 p-0">
+        {list.map((x, i) => {
+          const l = links[x.unit];
+          const ok = done.includes(x.unit);
+          return (
+            <li
+              key={x.unit}
+              className={`rounded-[12px] border p-3 ${ok ? "border-[#B9C3E8] bg-[#F1F4FD]" : "border-[#E4E2D8] bg-[#FBFAF6]"}`}
+            >
+              <div className="flex items-start justify-between gap-2">
+                <div className="min-w-0">
+                  <p className="m-0 text-[12px] font-bold text-[#5A5D75]">
+                    {i + 1}. {l.where}
+                  </p>
+                  <p
+                    className={`m-0 text-[15px] font-black ${ok ? "text-[#5A5D75] line-through" : ""}`}
+                  >
+                    {l.name}
+                  </p>
+                </div>
+                <p className="m-0 whitespace-nowrap text-right text-[12px] font-bold text-[#C0392B]">
+                  −{x.lost}点
+                </p>
+              </div>
+              {x.cells.length > 0 && (
+                <p className="m-0 mt-0.5 text-[12px] text-[#3A3D55]">
+                  まちがえた解答欄：{x.cells.slice(0, 12).join("・")}
+                  {x.cells.length > 12 ? "…" : ""}
+                </p>
+              )}
+              <p className="m-0 mt-2 flex flex-wrap gap-1.5">
+                {l.sakanobori && (
+                  <Link
+                    href={sakanoboriHref(
+                      x.cells.length ? x.cells.map(() => x.unit) : [x.unit],
+                      x.unit,
+                    )}
+                    onClick={() =>
+                      trackEvent("kakomon_sakanobori", {
+                        exam: examId,
+                        unit: x.unit,
+                      })
+                    }
+                    className={`${btn} bg-[#FFE45C] text-[#15172B]`}
+                  >
+                    ① どこまでさかのぼるか探す
+                  </Link>
+                )}
+                {l.lecture && (
+                  <Link
+                    href={l.lecture}
+                    className={`${btn} bg-white text-[#15172B]`}
+                  >
+                    ② 図解で学びなおす
+                  </Link>
+                )}
+                {l.moshi && (
+                  <Link
+                    href={l.moshi}
+                    className={`${btn} bg-white text-[#15172B]`}
+                  >
+                    ③ 単元模試でたしかめる
+                  </Link>
+                )}
+              </p>
+              <label className="mt-2 flex cursor-pointer items-center gap-2 text-[13px] font-bold">
+                <input
+                  type="checkbox"
+                  checked={ok}
+                  onChange={() => toggle(x.unit)}
+                  className="h-5 w-5 accent-[#1533B8]"
+                />
+                この単元はつぶした
+              </label>
+            </li>
+          );
+        })}
+      </ol>
+      <div className="mt-3 rounded-[12px] bg-[#FFF6D6] p-3">
+        <p className="m-0 text-[13px] font-bold leading-relaxed">
+          {doneN === list.length
+            ? "全部の単元をつぶしました。もう一度ラスボスに挑んで、取りもどせた点をたしかめましょう。"
+            : "1つずつつぶしたら、もう一度ラスボス（この過去問）に挑みます。同じ年度の追・再試験は、別のラスボスとして使えます。"}
+        </p>
+        <p className="m-0 mt-2 flex flex-wrap gap-2">
+          {allWrong.length > 0 &&
+            list.some((x) => links[x.unit].sakanobori) && (
+              <Link
+                href={sakanoboriHref(allWrong)}
+                className={`${btn} bg-white text-[#15172B]`}
+              >
+                まちがえた単元をまとめてさかのぼる
+              </Link>
+            )}
+          <button
+            type="button"
+            onClick={onRetry}
+            className={`${btn} cursor-pointer bg-[#1533B8] text-white`}
+          >
+            ラスボスに再挑戦する
+          </button>
+        </p>
+      </div>
+    </section>
   );
 }

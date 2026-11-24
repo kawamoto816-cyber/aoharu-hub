@@ -1,7 +1,12 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { LearnShell } from "@/components/learn/LearnShell";
-import { Challenge } from "@/components/kakomon/Challenge";
+import { Challenge, type UnitLink } from "@/components/kakomon/Challenge";
+import { hasLecture, lectureHref, lectureUnitInfo } from "@/lib/lecture";
+import { hasUnitMoshi, unitMoshiHref } from "@/lib/moshi/unit";
+import { hasPrereq } from "@/lib/sakanobori";
+import { plain } from "@/components/lecture/Rich";
+import { unitsOfExam } from "@/lib/kakomon/units";
 import { examPlayHref } from "@/lib/exam";
 import { getKakomon, KAKOMON } from "@/lib/kakomon/data";
 
@@ -41,6 +46,22 @@ export default async function KakomonPlayPage({
   const e = getKakomon((await params).id);
   if (!e) notFound();
   const autoStart = (await searchParams).start === "1";
+  // 解答欄 → 単元の対応表があれば、結果の画面で、まちがえた単元からさかのぼりへつなぐ
+  const units = unitsOfExam(e.id);
+  const unitLinks: Record<string, UnitLink> = {};
+  for (const u of new Set(Object.values(units ?? {}))) {
+    const info = lectureUnitInfo(u);
+    if (!info) continue;
+    unitLinks[u] = {
+      name: plain(info.name),
+      where: /^[小中高]\d/.test(info.group)
+        ? info.group
+        : `${info.level === "高校" ? "高校" : info.level} ${info.group}`,
+      ...(hasLecture(u) ? { lecture: lectureHref(u) } : {}),
+      ...(hasUnitMoshi(u) ? { moshi: unitMoshiHref(u) } : {}),
+      sakanobori: hasPrereq(u),
+    };
+  }
   return (
     <LearnShell
       narrow
@@ -63,6 +84,7 @@ export default async function KakomonPlayPage({
         exam={e}
         moshiHref={examPlayHref("kyotsu", { subject: e.moshi })}
         autoStart={autoStart}
+        {...(units ? { units, unitLinks } : {})}
       />
     </LearnShell>
   );

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { LearnShell } from "@/components/learn/LearnShell";
+import { unitsOfExam } from "@/lib/kakomon/units";
 import {
   KakomonPicker,
   type PickerExam,
@@ -44,6 +45,7 @@ export default async function KakomonHomePage({
     daimon: e.daimon.length,
     pdf: e.pdf,
     ...(e.audio ? { audio: e.audio } : {}),
+    gyakuten: !!unitsOfExam(e.id),
     note: [
       e.select
         ? `第${e.select.from[0]}問〜第${e.select.from[e.select.from.length - 1]}問は${e.select.count}問を選んで解きます。`
@@ -69,6 +71,55 @@ export default async function KakomonHomePage({
         本物の共通テストを、本番と同じ時間で解くためのマークシートです。令和6〜8年度の本試験と追・再試験、
         {exams.length}の試験に対応しています。
       </p>
+      <section
+        aria-label="逆転勉強法"
+        className="mb-4 rounded-[14px] border-[1.5px] border-[#15172B] bg-[#FFFBEA] p-4 sm:p-5"
+      >
+        <p className="m-0 text-[12px] font-black tracking-wider text-[#1533B8]">
+          逆転勉強法
+        </p>
+        <h2 className="m-0 mt-0.5 text-[18px] font-black">
+          先にラスボスを解いて、わからないところから逆算する
+        </h2>
+        <p className="m-0 mt-1 text-[13px] leading-relaxed text-[#3A3D55]">
+          ふつうの勉強は、階段をのぼるように積み上げて、最後に試験問題を解きます。逆転勉強法は順番が逆です。最初に本番の問題を解き、解けなかったところだけを、わかるところまでさかのぼって、しらみつぶしにしていきます。
+        </p>
+        <ol className="m-0 mt-3 grid list-none gap-2 p-0 sm:grid-cols-2">
+          {[
+            [
+              "ラスボスを先に解く",
+              "本番の過去問を、今の力のまま時間を計って解く。",
+            ],
+            [
+              "わからないところを抜き出す",
+              "落とした点を、問われていた単元に分ける。点の大きい単元から。",
+            ],
+            [
+              "どこまでさかのぼるか探す",
+              "3問ずつたしかめながら、前の学年の単元までたどって根っこを見つける。",
+            ],
+            [
+              "上りなおして、もう一度ラスボスへ",
+              "根っこから学びなおし、つぶした単元に印をつけ、同じ過去問に再挑戦する。",
+            ],
+          ].map(([t, b], i) => (
+            <li key={t} className="flex gap-2 rounded-[10px] bg-white p-2.5">
+              <span className="flex h-6 w-6 flex-none items-center justify-center rounded-full bg-[#15172B] text-[12px] font-black text-white">
+                {i + 1}
+              </span>
+              <span>
+                <b className="block text-[14px]">{t}</b>
+                <span className="text-[12.5px] leading-relaxed text-[#3A3D55]">
+                  {b}
+                </span>
+              </span>
+            </li>
+          ))}
+        </ol>
+        <p className="m-0 mt-2 text-[12px] leading-relaxed text-[#5A5D75]">
+          作戦表（単元への分け方とさかのぼり）は、令和8年度の本試験・追・再試験の全科目で出ます。令和7・6年度は採点までです。
+        </p>
+      </section>
       <KakomonPicker
         exams={exams}
         years={KAKOMON_YEARS}

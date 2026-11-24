@@ -1,0 +1,264 @@
+@r8-tsui-phyb
+101 phyb-koryu
+102-103 phyb-hosoku
+104 phyb-netsu
+105 phyb-oto
+106-108 phyb-undo
+109-111 phyb-hosoku
+112-115 phyb-koryu
+@r8-tsui-chemb
+101 chemb-genshi
+102 chemb-genso
+103 chemb-sanka
+104 chemb-bunri
+105 chemb-kinzoku
+106 chemb-denchi
+107 chemb-chuwa
+108 chemb-mol
+109 chemb-sanka
+110 chemb-hannoshiki
+111 chemb-genso
+112-113 chemb-sanka
+114 chemb-chuwa
+115-116 chemb-hannoshiki
+@r8-tsui-biob
+101 biob-tayosei
+102 biob-saibo
+103-104 biob-taisha
+105 biob-hatsugen
+106 biob-bunretsu
+107-109 biob-shinkei
+110-111 biob-taieki
+112 biob-meneki
+113-114 biob-sento
+115-116 biob-hozen
+117 biob-seitaikei
+@r8-tsui-earthb
+101 earthb-katachi
+102 earthb-jishin
+103 earthb-kazan
+104 earthb-naibu
+105-106 earthb-rekishi
+107-109 earthb-junkan
+110 earthb-uchu
+111 earthb-taiyokei
+112 earthb-uchu
+113 earthb-saigai
+114 earthb-taiki
+115 earthb-saigai
+@r8-tsui-phy
+1 phyb-hosoku
+2 phy-genshi
+3 phy-kitai
+4 phy-hikari
+5 phy-denba
+6-8 phy-undoryo
+9 phy-denshi
+10-11 phy-hikari
+12-17 phy-netsurikigaku
+18 phy-jiba
+19 phy-yudo
+20-22 phy-koryu
+@r8-tsui-chem
+1 chem-jotai
+2-3 chem-yoeki
+4-6 chem-kitai
+7 chem-sokudo
+8-11 chem-denri
+12 chem-energy
+13-14 chem-hikinzoku
+15-18 chem-kinzoku
+19-20 chem-shibo
+21-25 chem-hokozoku
+26 chem-tennen
+27-28 chem-kinzoku
+29 chem-jotai
+30-32 chem-gosei
+@r8-tsui-bio
+1 bio-keito
+2 bio-shinka
+3 bio-keito
+4-5 bio-shinka
+6-10 bio-seitaikei
+11-12 bio-juyo
+13-14 bio-dobutsu-hassei
+15 bio-juyo
+16 bio-oto
+17 bio-chosetsu
+18-20 bio-oto
+21-25 bio-kotaigun
+@r8-tsui-earth
+1 earth-kozo
+2 earth-kobutsu
+3 earth-taiki
+4 earth-chishi
+5 earth-kosei
+6-7 earth-kozo
+8 earth-plate
+9-10 earth-henseki
+11 earth-plate
+12-13 earth-chishi
+14 earth-kobutsu
+15 earth-wakusei
+16 earth-chishi
+17 earth-koseibutsu
+18-20 earth-taiki
+21-22 earth-kaiyo
+23-25 earth-ginga
+26-27 earth-wakusei
+@r8-tsui-nihonshi
+1 hist-sogo-sangyo
+2-4 hist-sogo-teikoku
+5 hist-sogo-taishu
+6 hist-sogo-kodo
+7-8 hist-sogo-global
+9 hist-jp-kamakura
+10 hist-jp-shokuho
+11 hist-jp-muromachi
+12 hist-jp-meiji
+13 hist-jp-edo-seiritsu
+14 hist-jp-nara
+15 hist-jp-heian
+16-17 hist-jp-nara
+18 hist-jp-genshi
+19 hist-jp-nara
+20-21 hist-jp-kamakura
+22 hist-jp-muromachi
+23 hist-jp-shokuho
+24 hist-jp-edo-seiritsu
+25-26 hist-jp-edo-doyo
+27-28 hist-jp-bakumatsu
+29 hist-jp-edo-keizai
+30 hist-jp-meiji
+31 hist-jp-gendai
+32 hist-jp-kodo
+33 hist-jp-gendai
+@r8-tsui-sekaishi
+1-3 hist-sogo-kakumei
+4 hist-sogo-nisshin
+5-6 hist-sogo-ww2
+7-8 hist-sogo-reisen
+9 hist-w-tou
+10-12 hist-w-sougen
+13 hist-w-orient
+14 hist-w-gendai
+15-16 hist-w-greece
+17 hist-w-daikokai
+18 hist-w-chusei
+19-20 hist-w-teikokushugi
+21-27 hist-w-islam
+28-29 hist-w-minshin
+30 hist-w-19c
+31 hist-w-daikokai
+32 hist-w-19c
+@r8-tsui-rinri
+1-2 civ-kokyo-shiso
+3 civ-kokyo-jinken
+4 civ-kokyo-tosei
+5 civ-kokyo-shiso
+6 civ-kokyo-jizoku
+7 civ-kokyo-rodo
+8 civ-kokyo-jizoku
+9 civ-rinri-china
+10-11 civ-rinri-greece
+12 civ-rinri-renaissance
+13 civ-rinri-greece
+14 civ-rinri-kant
+15-17 civ-rinri-gendai
+18-20 civ-rinri-nihon
+21-22 civ-rinri-kindai-nihon
+23-24 civ-rinri-seinen
+25-27 civ-rinri-seimei
+28-29 civ-rinri-gendai
+30 civ-kokyo-jizoku
+31-32 civ-rinri-gendai
+@r8-tsui-seikei
+1-2 civ-kokyo-shiso
+3 civ-kokyo-jinken
+4 civ-kokyo-tosei
+5 civ-kokyo-shiso
+6 civ-kokyo-jizoku
+7 civ-kokyo-rodo
+8 civ-kokyo-jizoku
+9-10 civ-seikei-genri
+11 civ-seikei-shijo
+12-14 civ-seikei-genri
+15 civ-seikei-togo
+16 civ-seikei-kinyu
+17 civ-seikei-heiwa
+18 civ-seikei-kokuren
+19 civ-seikei-jinken
+20 civ-seikei-saiban
+21 civ-seikei-kokuren
+22 civ-seikei-boeki
+23-24 civ-seikei-shijo
+25-26 civ-seikei-kokuren
+27-29 civ-seikei-shakaihosho
+30 civ-seikei-saiban
+31 civ-kokyo-keiyaku
+32 civ-seikei-senkyo
+@r8-tsui-geo
+1 geo-sogo-shukyo
+2 geo-sogo-musubi
+3-4 geo-tankyu-kotsu
+5 geo-tankyu-chikei
+6 geo-sogo-chosa
+7 geo-tankyu-kogyo
+8 geo-sogo-chosa
+9 geo-tankyu-chikei
+10-11 geo-tankyu-kiko
+12-13 geo-sogo-kankyo
+14 geo-sogo-bosai
+15-16 geo-tankyu-nogyo
+17-18 geo-sogo-musubi
+19 geo-tankyu-kogyo
+20-21 geo-tankyu-toshi
+22-23 geo-tankyu-jinko
+24 geo-tankyu-toshi
+25 geo-tankyu-jinko
+26-30 geo-tankyu-oceania
+@r8-tsui-math1a
+1 アイウエオカキクケコ math-1-jissu
+1 サシスセソタチツテトナニヌネノ math-1-teiri
+2 アイウエオカキクケコサシスセ math-1-saidai
+2 ソタチツテトナニヌネノ math-1-data
+3 アイウエオカ math-a-sankakukei
+3 キクケコサシス math-a-en
+4 アイウエオカキクケコサシスセソタチツテトナ math-a-kakuritsu
+@r8-tsui-math2bc
+1 アイウエオカキクケコサシスセソタチ math-2-fukuso
+2 アイウエオカキクコサシ math-2-taisu
+2 ケ math-2-kiseki
+3 アイウエオカキクケコサシスセソタチツテ math-2-sekibun
+3 ト math-2-bibun
+4 アイウオカキクケコサシス math-b-zenka
+4 エ math-b-kino
+5 アイウエオカキクケ math-b-nikou
+5 コサ math-b-kentei
+5 シス math-b-suitei
+6 アイウエオカキクケコサシスセソタチツテトナニヌ math-c-heimen
+7 アイウエオカキクケコサシスセソタチツ math-c-baikai
+@r8-tsui-joho1
+1 ア info-1-digital
+1 イ info-1-network
+1 ウエ info-1-assyuku
+1 オカキクケ info-1-design
+1 コサシ info-1-data
+2 アイウエオカキクケ info-1-moral
+2 コサシスセソタチツテ info-1-hyogen
+3 アイウエオカキクケコサシス info-1-program
+4 アイウエオカキクケコサシ info-1-data
+@r8-tsui-kokugo
+1-5 jpn-gen-kanji
+6-11 jpn-ronri-hyoron
+12-13 jpn-gen-goi
+14-20 jpn-bungaku-shosetsu
+21-25 jpn-ronri-shiryo
+26-28 jpn-bunka-kobun-tango
+29-32 jpn-koten-monogatari
+33-36 jpn-bunka-kundoku
+37-40 jpn-koten-shiso
+@r8-tsui-eng-r
+1-44 eng-skill-chobun
+@r8-tsui-eng-l
+1-37 eng-skill-listening
