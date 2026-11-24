@@ -1,0 +1,243 @@
+@r7-tsui-math1a
+1 アイウエオカキクケコサシスセソ math-1-shiki
+1 タチツテトナニヌネノ math-1-keiryo
+2 アイウエオカキクケコサシ math-1-nijikansu
+2 スセソタチツテト math-1-data
+3 アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモ math-a-sankakukei
+4 アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモ math-a-kakuritsu
+@r7-tsui-math2bc
+1 アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモ math-2-shomei
+2 アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモ math-2-en
+3 アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモ math-2-sekibun
+4 アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモ math-b-zenka
+5 アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモ math-b-suitei
+6 アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモ math-c-kukan
+7 アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモ math-c-nijikyokusen
+@r7-tsui-joho1
+1 アイ info-1-chizai
+1 ウエ info-1-network
+1 オカキク info-1-digital
+1 ケコ info-1-system
+2 アイウエオカキ info-1-moral
+2 クケコサシスセソ info-1-algorithm
+3 アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモ info-1-program
+4 アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモ info-1-data
+@r7-tsui-eng-r
+1-44 eng-skill-chobun
+@r7-tsui-eng-l
+1-37 eng-skill-listening
+@r7-tsui-kokugo
+1-5 jpn-gen-kanji
+6-10 jpn-ronri-hyoron
+11-13 jpn-gen-goi
+14-19 jpn-bungaku-shosetsu
+20-24 jpn-ronri-shiryo
+25-27 jpn-bunka-kobun-tango
+28-31 jpn-koten-monogatari
+32-33 jpn-bunka-kundoku
+34-38 jpn-koten-shiso
+@r7-tsui-geo
+1 geo-tankyu-nogyo
+2 geo-sogo-shukyo
+3 geo-tankyu-nogyo
+4 geo-sogo-jinko
+5 geo-sogo-chosa
+6 geo-tankyu-kotsu
+7 geo-sogo-chosa
+8 geo-tankyu-kogyo
+9 geo-tankyu-chikei
+10 geo-sogo-bosai
+11 geo-tankyu-kiko
+12-13 geo-sogo-kankyo
+14 geo-sogo-bosai
+15-16 geo-tankyu-nogyo
+17 geo-tankyu-shigen
+18 geo-tankyu-kogyo
+19 geo-tankyu-kotsu
+20 geo-tankyu-nihon
+21-25 geo-tankyu-toshi
+26 geo-tankyu-america
+27 geo-tankyu-kokka
+28-30 geo-tankyu-america
+@r7-tsui-nihonshi
+1 hist-sogo-sangyo
+2 hist-sogo-kodo
+3 hist-sogo-meiji
+4-5 hist-sogo-teikoku
+6-8 hist-sogo-ww2
+9 hist-jp-kamakura
+10 hist-jp-muromachi
+11 hist-jp-edo-keizai
+12 hist-jp-meiji
+13 hist-jp-edo-keizai
+14 hist-jp-asuka
+15-17 hist-jp-nara
+18 hist-jp-heian
+19 hist-jp-insei
+20 hist-jp-kamakura
+21 hist-jp-insei
+22-23 hist-jp-muromachi
+24-25 hist-jp-edo-seiritsu
+26 hist-jp-edo-keizai
+27 hist-jp-edo-doyo
+28 hist-jp-meiji
+29 hist-jp-taisho
+30-33 hist-jp-senso
+@r7-tsui-sekaishi
+1 hist-sogo-sangyo
+2-3 hist-sogo-teikoku
+4 hist-sogo-ww1
+5 hist-sogo-ww2
+6-7 hist-sogo-kodo
+8 hist-sogo-global
+9-13 hist-w-chusei
+14 hist-w-shuken
+15 hist-w-india
+16 hist-w-chusei
+17 hist-w-daikokai
+18-19 hist-w-india
+20-21 hist-w-19c
+22-23 hist-w-china-kodai
+24 hist-w-islam
+25 hist-w-19c
+26-27 hist-w-minshin
+28 hist-w-shuken
+29 hist-w-minshin
+30 hist-w-19c
+31 hist-w-reisen
+32 hist-w-gendai
+@r7-tsui-rinri
+1-2 civ-kokyo-kenpo
+3 civ-kokyo-chiho
+4 civ-kokyo-keiyaku
+5-8 civ-kokyo-rodo
+9 civ-rinri-greece
+10 civ-rinri-christ
+11 civ-rinri-renaissance
+12 civ-rinri-china
+13 civ-rinri-kant
+14 civ-rinri-gendai
+15 civ-rinri-keiken
+16-17 civ-rinri-gendai
+18-22 civ-rinri-nihon
+23 civ-rinri-seimei
+24-28 civ-rinri-joho
+29-33 civ-rinri-gendai
+@r7-tsui-seikei
+1-2 civ-kokyo-kenpo
+3 civ-kokyo-chiho
+4 civ-kokyo-keiyaku
+5-8 civ-kokyo-rodo
+9-10 civ-seikei-kokkai
+11 civ-seikei-saiban
+12 civ-seikei-genri
+13 civ-seikei-kokkai
+14 civ-seikei-shakaihosho
+15 civ-seikei-shotoku
+16-17 civ-seikei-kinyu
+18 civ-seikei-rodo
+19 civ-seikei-chiho
+20 civ-seikei-kokkai
+21 civ-seikei-shakaihosho
+22 civ-seikei-rodo
+23 civ-seikei-shakaihosho
+24-25 civ-seikei-jinken
+26 civ-seikei-senkyo
+27 civ-seikei-boeki
+28 civ-seikei-heiwa
+29-30 civ-seikei-boeki
+31-32 civ-seikei-togo
+@r7-tsui-phyb
+101-103 phyb-riyo
+104 phyb-undo
+105 phyb-netsu
+106-107 phyb-hosoku
+108-109 phyb-undo
+110 phyb-hosoku
+111-115 phyb-denryu
+@r7-tsui-chemb
+101 chemb-bunri
+102 chemb-genshi
+103-105 chemb-kyoyu
+106 chemb-mol
+107 chemb-hannoshiki
+108 chemb-san
+109 chemb-denchi
+110 chemb-hannoshiki
+111-112 chemb-san
+113 chemb-mol
+114-115 chemb-chuwa
+116-119 chemb-sanka
+@r7-tsui-biob
+101 biob-saibo
+102-103 biob-taisha
+104 biob-dna
+105-106 biob-hatsugen
+107-109 biob-shinkei
+110-112 biob-meneki
+113-115 biob-sento
+116-117 biob-seitaikei
+@r7-tsui-earthb
+101-102 earthb-plate
+103-104 earthb-naibu
+105 earthb-taiki
+106-109 earthb-junkan
+110 earthb-uchu
+111-112 earthb-taiyokei
+113-115 earthb-saigai
+@r7-tsui-phy
+1-2 phy-undoryo
+3 phy-hoshabutsu
+4 phy-doppler
+5 phy-denba
+6 phy-genshi
+7-11 phy-undoryo
+12-17 phy-hikari
+18-23 phy-denshi
+@r7-tsui-chem
+1-2 chem-kesho
+3 chem-kitai
+4-6 chem-yoeki
+7-8 chem-hikinzoku
+9-12 chem-kinzoku
+13 chem-shibo
+14 chem-yuki
+15 chem-gosei
+16-18 chem-shibo
+19-23 chem-kinzoku
+24-26 chem-hokozoku
+27 chem-shibo
+28 chem-denri
+29 chem-heiko
+30-32 chem-denki
+@r7-tsui-bio
+1-2 bio-tanpaku
+3-5 bio-chosetsu
+6-10 bio-seitaikei
+11-12 bio-juyo
+13-14 bio-dobutsu-hassei
+15-16 bio-juyo
+17-18 bio-kodo
+19-20 bio-kotaigun
+21-22 bio-shinka
+23-24 bio-keito
+25 bio-kotaigun
+@r7-tsui-earth
+1 earth-kobutsu
+2 earth-taiki
+3 earth-wakusei
+4 earth-plate
+5 earth-ginga
+6-7 earth-kozo
+8 earth-henseki
+9 earth-plate
+10 earth-chishi
+11 earth-koseibutsu
+12 earth-chishi
+13 earth-henseki
+14-15 earth-kobutsu
+16 earth-chishi
+17-20 earth-taiki
+21 earth-kaiyo
+22-24 earth-kosei
+25-27 earth-ginga
