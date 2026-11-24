@@ -20,7 +20,8 @@ export const TEAM_METADATA_KIND = "team_pass";
 
 export type TeamPass = {
   code: string;
-  plan: TeamPlanKey;
+  /** trial ＝ 管理画面から出した無料お試し用（支払いなし） */
+  plan: TeamPlanKey | "trial";
   /** 使える人数（生徒＋指導者） */
   seats: number;
   users: string[];
@@ -28,6 +29,10 @@ export type TeamPass = {
   sessionId: string;
   email: string | null;
   createdAt: string;
+  /** 無料お試しの発行先（塾・学校の名前）。管理画面の一覧に出す */
+  org?: string;
+  /** 発行した社内アカウント */
+  issuedBy?: string;
 };
 
 const ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // 0/O・1/I を除く
@@ -72,6 +77,68 @@ export async function ensureTeamPassForSession(sessionId: string): Promise<TeamP
   await setSetting(`team_pass_session:${sessionId}`, pass.code);
   await sendCodeMail(pass).catch((e) => console.error("[team-pass] mail", e instanceof Error ? e.message : e));
   return pass;
+}
+
+// ---- 無料お試し用の招待コード（法人営業のメールで「試す」と返信をくれた塾・学校へ） ----
+// 支払いを通さずに、管理画面 (/admin/team-pass) から1つずつ出す。使い方は有料のコードと同じ (/juku/code)。
+// 出したコードの一覧は app_settings の team_pass_trials（コードの配列）に持つ。
+
+/** お試しで出せる生徒の人数の上限（コードが広まっても、費用がふくらまないように） */
+export const TRIAL_MAX_STUDENTS = 40;
+const TRIALS_KEY = "team_pass_trials";
+
+export async function createTrialTeamPass(input: {
+  org: string;
+  students: number;
+  /** 期限の日付 (YYYY-MM-DD)。その日の終わり（日本時間）まで使える */
+  endsOn: string;
+  issuedBy: string | null;
+}): Promise<TeamPass> {
+  const org = input.org.trim().slice(0, 80);
+  if (!org) throw new Error("発行先の名前を入れてください");
+  const students = Math.floor(input.students);
+  if (!(students >= 1 && students <= TRIAL_MAX_STUDENTS)) throw new Error(`人数は1〜${TRIAL_MAX_STUDENTS}人で入れてください`);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(input.endsOn)) throw new Error("期限の日付を入れてください");
+  const endsAt = new Date(`${input.endsOn}T23:59:59+09:00`);
+  if (Number.isNaN(endsAt.getTime()) || endsAt.getTime() < Date.now()) throw new Error("期限は今日より後の日付にしてください");
+  if (endsAt.getTime() > Date.parse(SEASON_PASS.endsAt)) throw new Error(`期限は ${SEASON_PASS.endsLabel} までにしてください`);
+  let code = newCode();
+  while (await getTeamPass(code)) code = newCode();
+  const now = new Date().toISOString();
+  const pass: TeamPass = {
+    code,
+    plan: "trial",
+    seats: students + TEACHER_SEATS,
+    users: [],
+    endsAt: endsAt.toISOString(),
+    sessionId: `trial:${now}`,
+    email: null,
+    createdAt: now,
+    org,
+    ...(input.issuedBy ? { issuedBy: input.issuedBy } : {}),
+  };
+  await saveTeamPass(pass);
+  const list = await listTrialCodes();
+  await setSetting(TRIALS_KEY, JSON.stringify([code, ...list]));
+  return pass;
+}
+
+async function listTrialCodes(): Promise<string[]> {
+  const v = await getSetting(TRIALS_KEY);
+  if (!v) return [];
+  try {
+    const a = JSON.parse(v);
+    return Array.isArray(a) ? a.filter((x): x is string => typeof x === "string") : [];
+  } catch {
+    return [];
+  }
+}
+
+/** 管理画面の一覧用：これまでに出したお試しコード（新しい順） */
+export async function listTrialTeamPasses(): Promise<TeamPass[]> {
+  const codes = await listTrialCodes();
+  const all = await Promise.all(codes.slice(0, 100).map((c) => getTeamPass(c)));
+  return all.filter((p): p is TeamPass => !!p);
 }
 
 export type RedeemResult =

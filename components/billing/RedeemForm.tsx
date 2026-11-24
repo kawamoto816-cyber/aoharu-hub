@@ -22,14 +22,18 @@ export function RedeemForm({ initialCode }: { initialCode: string }) {
   const [code, setCode] = useState(initialCode);
   const [state, setState] = useState<"idle" | "sending" | "done">("idle");
   const [error, setError] = useState<string | null>(null);
+  const [until, setUntil] = useState("2027年3月31日");
 
   async function submit() {
     setState("sending");
     setError(null);
     try {
       const res = await fetch("/api/team-pass/redeem", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ code }) });
-      const j = (await res.json().catch(() => ({}))) as { ok?: boolean; reason?: string };
+      const j = (await res.json().catch(() => ({}))) as { ok?: boolean; reason?: string; endsAt?: string };
       if (j.ok) {
+        // お試し用のコードは期限が短いことがあるので、コードの期限をそのまま出す
+        const d = j.endsAt ? new Date(j.endsAt) : null;
+        if (d && !Number.isNaN(d.getTime())) setUntil(d.toLocaleDateString("ja-JP", { timeZone: "Asia/Tokyo", year: "numeric", month: "long", day: "numeric" }));
         setState("done");
         trackEvent("team_pass_redeem", {});
         return;
@@ -45,7 +49,7 @@ export function RedeemForm({ initialCode }: { initialCode: string }) {
     return (
       <div className="mt-6 rounded-2xl border-2 border-[#15172B] bg-[#E7F6EC] p-5">
         <p className="m-0 text-base font-black">使えるようになりました</p>
-        <p className="mb-0 mt-1 text-sm leading-relaxed">2027年3月31日まで、全機能を回数の制限なく使えます。反映まで数分かかることがあります。</p>
+        <p className="mb-0 mt-1 text-sm leading-relaxed">{until}まで、全機能を回数の制限なく使えます。反映まで数分かかることがあります。</p>
         <Link href="/tensaku" className="mt-4 inline-flex min-h-[44px] items-center rounded-xl bg-[#15172B] px-5 text-sm font-bold text-white no-underline">
           さっそく添削する
         </Link>

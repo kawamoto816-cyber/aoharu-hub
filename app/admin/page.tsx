@@ -164,6 +164,12 @@ export default async function AdminPage({
             法人営業ダッシュボード →
           </Link>
           <Link
+            href="/admin/team-pass"
+            className="rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1 font-bold text-indigo-700"
+          >
+            お試し用の招待コード →
+          </Link>
+          <Link
             href="/admin/voices"
             className="rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1 font-bold text-indigo-700"
           >
