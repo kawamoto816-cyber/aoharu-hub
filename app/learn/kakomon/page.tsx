@@ -1,20 +1,58 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { LearnShell } from "@/components/learn/LearnShell";
-import { KAKOMON } from "@/lib/kakomon/data";
+import {
+  KakomonPicker,
+  type PickerExam,
+} from "@/components/kakomon/KakomonPicker";
+import {
+  DNC_KAKOMON_PAGE,
+  KAKOMON,
+  KAKOMON_KINDS,
+  KAKOMON_YEARS,
+} from "@/lib/kakomon/data";
 
-// /learn/kakomon: 過去問チャレンジの一覧。手元の過去問を解いて、マークシートに入れて採点する。
-// 大学入試センターに確かめるまでは検索に出さない (noindex・サイトマップに入れない)。docs/kakomon-challenge.md
+// /learn/kakomon: 過去問チャレンジ。年度・試験・科目をえらび、大学入試センターの問題を見て解き、マークシートに入れて採点する。
+// 大学入試センターへのリンクと、正解・配点の利用は、2026-11-24 に代表がセンターに確認ずみ。docs/kakomon-challenge.md
+
+const URL = "https://app.bluespring.co.jp/learn/kakomon";
+const TITLE =
+  "共通テスト 過去問マークシート（令和6〜8年度）｜時間を計って解き、公式の配点で採点｜アオハルラーン｜アオハルOS";
+const DESC =
+  "大学入学共通テストの過去問（令和6〜8年度の本試験・追・再試験）を、大学入試センターの問題を見ながら時間を計って解き、マークシートに答えを入れると、公式の正解と配点で採点します。国語・数学・英語（リーディング・リスニング）・情報Ⅰ・理科・地理歴史・公民。";
 
 export const metadata: Metadata = {
-  title:
-    "過去問チャレンジ（共通テスト）｜マークシートに入れて採点｜アオハルラーン｜アオハルOS",
-  description:
-    "共通テストの過去問を、時間を計って解き、マークシートに答えを入れると、公式の配点で採点します。問題は手元の過去問を使います（このページには載せていません）。",
-  robots: { index: false, follow: false },
+  title: TITLE,
+  description: DESC,
+  alternates: { canonical: URL },
+  openGraph: { title: TITLE, description: DESC, url: URL },
 };
 
-export default function KakomonHomePage() {
+export default async function KakomonHomePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+  const id = (await searchParams).id;
+  const exams: PickerExam[] = KAKOMON.map((e) => ({
+    id: e.id,
+    year: e.year,
+    kind: e.kind,
+    subject: e.subject,
+    minutes: e.minutes,
+    total: e.total,
+    daimon: e.daimon.length,
+    pdf: e.pdf,
+    ...(e.audio ? { audio: e.audio } : {}),
+    note: [
+      e.select
+        ? `第${e.select.from[0]}問〜第${e.select.from[e.select.from.length - 1]}問は${e.select.count}問を選んで解きます。`
+        : "",
+      e.minutes === 30 && e.moshi.endsWith("b")
+        ? "本番は基礎の2科目を合わせて60分です。ここでは1科目を30分で解きます。"
+        : "",
+    ].join(""),
+  }));
   return (
     <LearnShell
       narrow
@@ -27,29 +65,27 @@ export default function KakomonHomePage() {
         高校向け・共通テスト
       </p>
       <h1 className="m-0 mt-1 text-[26px] font-black">過去問チャレンジ</h1>
-      <p className="mb-0 mt-2 text-[15px] leading-relaxed text-[#3A3D55]">
-        本物の過去問を、本番と同じ時間で解くためのマークシートです。問題は手元の過去問（大学入試センターのサイトで公開されているもの、市販の過去問集）を使い、ここには答えだけを入れます。提出すると、公式の配点で採点し、大問ごとの得点が出ます。
+      <p className="mb-4 mt-2 text-[15px] leading-relaxed text-[#3A3D55]">
+        本物の共通テストを、本番と同じ時間で解くためのマークシートです。令和6〜8年度の本試験と追・再試験、
+        {exams.length}の試験に対応しています。
       </p>
-      <ul className="m-0 mt-5 grid list-none gap-3 p-0">
-        {KAKOMON.map((e) => (
-          <li key={e.id}>
-            <Link
-              href={`/learn/kakomon/${e.id}`}
-              className="block rounded-[14px] border-[1.5px] border-[#15172B] bg-white p-4 text-[#15172B] no-underline shadow-[0_3px_0_#15172B]"
-            >
-              <span className="text-[12px] font-black text-[#1533B8]">
-                {e.year} {e.kind}
-              </span>
-              <b className="block text-[17px]">{e.subject}</b>
-              <span className="text-[13px] text-[#3A3D55]">
-                {e.minutes}分・{e.total}点・大問{e.daimon.length}題
-              </span>
-            </Link>
-          </li>
-        ))}
-      </ul>
+      <KakomonPicker
+        exams={exams}
+        years={KAKOMON_YEARS}
+        kinds={KAKOMON_KINDS}
+        initial={typeof id === "string" ? id : undefined}
+      />
       <p className="m-0 mt-5 text-[13px] leading-relaxed text-[#3A3D55]">
-        ほかの年度・科目は、順に増やします。過去問ではない練習は、
+        問題・正解は
+        <a
+          href={DNC_KAKOMON_PAGE}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-bold text-[#1533B8]"
+        >
+          大学入試センターウェブサイト「過去3年分の試験問題」
+        </a>
+        で公開されているものです。過去問ではない練習は、
         <Link href="/learn/kyotsu-moshi" className="font-bold text-[#1533B8]">
           共通テスト模試
         </Link>

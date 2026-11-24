@@ -3,9 +3,11 @@ import { notFound } from "next/navigation";
 import { LearnShell } from "@/components/learn/LearnShell";
 import { Challenge } from "@/components/kakomon/Challenge";
 import { examPlayHref } from "@/lib/exam";
-import { DNC_LINK_OK, getKakomon, KAKOMON } from "@/lib/kakomon/data";
+import { getKakomon, KAKOMON } from "@/lib/kakomon/data";
 
-// /learn/kakomon/<id>: 過去問チャレンジ。問題は載せず、マークシートの入力と採点だけをする。
+// /learn/kakomon/<id>: 過去問チャレンジのマークシート。問題は載せず、入力と採点だけをする。?start=1 で開くとすぐに時計が動く。
+
+const SITE = "https://app.bluespring.co.jp";
 
 export function generateStaticParams() {
   return KAKOMON.map((e) => ({ id: e.id }));
@@ -18,20 +20,27 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const e = getKakomon((await params).id);
   if (!e) return {};
+  const title = `共通テスト ${e.year} ${e.kind} ${e.subject}｜過去問マークシートで採点｜アオハルラーン｜アオハルOS`;
+  const description = `大学入学共通テスト ${e.year} ${e.kind}「${e.subject}」を、大学入試センターの問題を見ながら${e.minutes}分で解き、マークシートに答えを入れると、公式の正解と配点で採点します。大問ごとの得点も出ます。`;
+  const url = `${SITE}/learn/kakomon/${e.id}`;
   return {
-    title: `共通テスト ${e.year} ${e.kind} ${e.subject}｜過去問チャレンジ（マークシートで採点）｜アオハルラーン｜アオハルOS`,
-    description: `共通テスト ${e.year} ${e.kind}「${e.subject}」を、手元の過去問を見ながら${e.minutes}分で解き、マークシートに答えを入れると、公式の配点で採点します。問題文はこのページには載せていません。`,
-    robots: { index: false, follow: false },
+    title,
+    description,
+    alternates: { canonical: url },
+    openGraph: { title, description, url },
   };
 }
 
 export default async function KakomonPlayPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const e = getKakomon((await params).id);
   if (!e) notFound();
+  const autoStart = (await searchParams).start === "1";
   return (
     <LearnShell
       narrow
@@ -53,7 +62,7 @@ export default async function KakomonPlayPage({
       <Challenge
         exam={e}
         moshiHref={examPlayHref("kyotsu", { subject: e.moshi })}
-        sourceLinkOk={DNC_LINK_OK}
+        autoStart={autoStart}
       />
     </LearnShell>
   );

@@ -28,7 +28,7 @@ export default function KyotsuMoshiPage() {
           >
             <p className="m-0 text-[15px] font-black">過去問チャレンジ</p>
             <p className="m-0 mt-1 text-[13px] leading-relaxed text-[#3A3D55]">
-              手元の過去問を時間を計って解き、マークシートに答えを入れると、公式の配点で採点します。まずは令和8年度の英語リーディングから。
+              令和6〜8年度の本物の共通テストを、大学入試センターの問題を見ながら時間を計って解き、マークシートに答えを入れると、公式の正解と配点で採点します。
             </p>
             <Link
               href="/learn/kakomon"

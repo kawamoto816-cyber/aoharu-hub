@@ -1,3 +1,4 @@
+import { KAKOMON } from "@/lib/kakomon/data";
 import type { MetadataRoute } from "next";
 import { loadGuideArticles } from "@/lib/guide";
 import { SHORONBUN } from "@/lib/learn/shoronbun";
@@ -27,7 +28,11 @@ import { TSUKKOMI_HOME, TSUKKOMI_UNITS, tsukkomiHref } from "@/lib/tsukkomi";
 import { isLockedCard } from "@/lib/learn/lock";
 import { JUGYO_HOME, UNITS as JUGYO_UNITS, jugyoHref } from "@/lib/jugyo";
 import { uzJugyoPublicPaths } from "@/lib/jugyo/uz/lessons";
-import { TSUMAZUKI_HOME, TSUMAZUKI_UNITS, tsumazukiHref } from "@/lib/tsumazuki";
+import {
+  TSUMAZUKI_HOME,
+  TSUMAZUKI_UNITS,
+  tsumazukiHref,
+} from "@/lib/tsumazuki";
 import { OSHIERU_HOME, OSHIERU_UNITS, oshieruHref } from "@/lib/oshieru";
 import { OSHIERU_AI_HOME } from "@/lib/oshieru/ai-lesson-home";
 
@@ -40,112 +45,602 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
   const articles = await loadGuideArticles();
   return [
-    { url: `${base}/`, lastModified: now, changeFrequency: "weekly", priority: 1 },
-    { url: `${base}/try`, lastModified: now, changeFrequency: "weekly", priority: 0.9 },
-    { url: `${base}/try?for=highschool`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
-    { url: `${base}/try?for=student`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
-    { url: `${base}/try?for=career`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
-    { url: `${base}/tensaku`, lastModified: now, changeFrequency: "weekly", priority: 0.95 },
-    { url: `${base}/parents`, lastModified: now, changeFrequency: "weekly", priority: 0.9 },
-    { url: `${base}/season`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
-    { url: `${base}/juku`, lastModified: now, changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/guide`, lastModified: now, changeFrequency: "daily", priority: 0.8 },
-    { url: `${base}/learn`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
-    { url: `${base}/learn/gakko`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
-    { url: `${base}/learn/gakko/dashboard`, lastModified: now, changeFrequency: "monthly", priority: 0.6 },
-    { url: `${base}/learn/shoronbun`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
-    ...SHORONBUN.cards.filter((c) => !isLockedCard(SHORONBUN, c)).map((c) => ({ url: `${base}/learn/shoronbun/${c.no}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
-    { url: `${base}/learn/jibun`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
-    ...JIBUN.cards.filter((c) => !isLockedCard(JIBUN, c)).map((c) => ({ url: `${base}/learn/jibun/${c.no}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
-    { url: `${base}/learn/daigaku`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
-    ...DAIGAKU.cards.filter((c) => !isLockedCard(DAIGAKU, c)).map((c) => ({ url: `${base}/learn/daigaku/${c.no}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
-    { url: `${base}/learn/kyoyo`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
-    ...KYOYO.cards.filter((c) => !isLockedCard(KYOYO, c)).map((c) => ({ url: `${base}/learn/kyoyo/${c.no}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
-    { url: `${base}/learn/paradigm`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
-    ...PARADIGM.cards.filter((c) => !isLockedCard(PARADIGM, c)).map((c) => ({ url: `${base}/learn/paradigm/${c.no}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
-    { url: `${base}/learn/kindai`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
-    ...KINDAI.cards.filter((c) => !isLockedCard(KINDAI, c)).map((c) => ({ url: `${base}/learn/kindai/${c.no}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
-    { url: `${base}/learn/chiseigaku`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
-    ...CHISEIGAKU.cards.filter((c) => !isLockedCard(CHISEIGAKU, c)).map((c) => ({ url: `${base}/learn/chiseigaku/${c.no}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
-    { url: `${base}/learn/kokusai`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
-    ...KOKUSAI.cards.filter((c) => !isLockedCard(KOKUSAI, c)).map((c) => ({ url: `${base}/learn/kokusai/${c.no}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
-    { url: `${base}/learn/gendai`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
-    ...GENDAI.cards.filter((c) => !isLockedCard(GENDAI, c)).map((c) => ({ url: `${base}/learn/gendai/${c.no}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
-    { url: `${base}/learn/library`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
-    { url: `${base}/learn/apply`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
-    { url: `${base}/learn/school`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
-    { url: `${base}/learn/math`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
-    ...STEPS.map((st) => ({ url: `${base}/learn/math/${st.no}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
-    { url: `${base}/learn/kanji`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
-    ...[1, 2, 3, 4, 5, 6].map((g) => ({ url: `${base}/learn/kanji/${g}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
-    { url: `${base}/learn/todofuken`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
-    ...LECTURES.map((l) => ({ url: `${base}/learn/lecture/${l.unit}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.7 })),
-    { url: `${base}${TSUKKOMI_HOME}`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
-    ...TSUKKOMI_UNITS.map((u) => ({ url: `${base}${tsukkomiHref(u)}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
+    {
+      url: `${base}/`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 1,
+    },
+    {
+      url: `${base}/try`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.9,
+    },
+    {
+      url: `${base}/try?for=highschool`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.8,
+    },
+    {
+      url: `${base}/try?for=student`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.8,
+    },
+    {
+      url: `${base}/try?for=career`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.8,
+    },
+    {
+      url: `${base}/tensaku`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.95,
+    },
+    {
+      url: `${base}/parents`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.9,
+    },
+    {
+      url: `${base}/season`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.8,
+    },
+    {
+      url: `${base}/juku`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.6,
+    },
+    {
+      url: `${base}/guide`,
+      lastModified: now,
+      changeFrequency: "daily",
+      priority: 0.8,
+    },
+    {
+      url: `${base}/learn`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.8,
+    },
+    {
+      url: `${base}/learn/gakko`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.8,
+    },
+    {
+      url: `${base}/learn/gakko/dashboard`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.6,
+    },
+    {
+      url: `${base}/learn/shoronbun`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.8,
+    },
+    ...SHORONBUN.cards
+      .filter((c) => !isLockedCard(SHORONBUN, c))
+      .map((c) => ({
+        url: `${base}/learn/shoronbun/${c.no}`,
+        lastModified: now,
+        changeFrequency: "monthly" as const,
+        priority: 0.6,
+      })),
+    {
+      url: `${base}/learn/jibun`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.8,
+    },
+    ...JIBUN.cards
+      .filter((c) => !isLockedCard(JIBUN, c))
+      .map((c) => ({
+        url: `${base}/learn/jibun/${c.no}`,
+        lastModified: now,
+        changeFrequency: "monthly" as const,
+        priority: 0.6,
+      })),
+    {
+      url: `${base}/learn/daigaku`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.8,
+    },
+    ...DAIGAKU.cards
+      .filter((c) => !isLockedCard(DAIGAKU, c))
+      .map((c) => ({
+        url: `${base}/learn/daigaku/${c.no}`,
+        lastModified: now,
+        changeFrequency: "monthly" as const,
+        priority: 0.6,
+      })),
+    {
+      url: `${base}/learn/kyoyo`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.8,
+    },
+    ...KYOYO.cards
+      .filter((c) => !isLockedCard(KYOYO, c))
+      .map((c) => ({
+        url: `${base}/learn/kyoyo/${c.no}`,
+        lastModified: now,
+        changeFrequency: "monthly" as const,
+        priority: 0.6,
+      })),
+    {
+      url: `${base}/learn/paradigm`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.7,
+    },
+    ...PARADIGM.cards
+      .filter((c) => !isLockedCard(PARADIGM, c))
+      .map((c) => ({
+        url: `${base}/learn/paradigm/${c.no}`,
+        lastModified: now,
+        changeFrequency: "monthly" as const,
+        priority: 0.6,
+      })),
+    {
+      url: `${base}/learn/kindai`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.7,
+    },
+    ...KINDAI.cards
+      .filter((c) => !isLockedCard(KINDAI, c))
+      .map((c) => ({
+        url: `${base}/learn/kindai/${c.no}`,
+        lastModified: now,
+        changeFrequency: "monthly" as const,
+        priority: 0.6,
+      })),
+    {
+      url: `${base}/learn/chiseigaku`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.7,
+    },
+    ...CHISEIGAKU.cards
+      .filter((c) => !isLockedCard(CHISEIGAKU, c))
+      .map((c) => ({
+        url: `${base}/learn/chiseigaku/${c.no}`,
+        lastModified: now,
+        changeFrequency: "monthly" as const,
+        priority: 0.6,
+      })),
+    {
+      url: `${base}/learn/kokusai`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.7,
+    },
+    ...KOKUSAI.cards
+      .filter((c) => !isLockedCard(KOKUSAI, c))
+      .map((c) => ({
+        url: `${base}/learn/kokusai/${c.no}`,
+        lastModified: now,
+        changeFrequency: "monthly" as const,
+        priority: 0.6,
+      })),
+    {
+      url: `${base}/learn/gendai`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.7,
+    },
+    ...GENDAI.cards
+      .filter((c) => !isLockedCard(GENDAI, c))
+      .map((c) => ({
+        url: `${base}/learn/gendai/${c.no}`,
+        lastModified: now,
+        changeFrequency: "monthly" as const,
+        priority: 0.6,
+      })),
+    {
+      url: `${base}/learn/library`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.7,
+    },
+    {
+      url: `${base}/learn/apply`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.8,
+    },
+    {
+      url: `${base}/learn/school`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.7,
+    },
+    {
+      url: `${base}/learn/math`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.8,
+    },
+    ...STEPS.map((st) => ({
+      url: `${base}/learn/math/${st.no}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    })),
+    {
+      url: `${base}/learn/kanji`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.8,
+    },
+    ...[1, 2, 3, 4, 5, 6].map((g) => ({
+      url: `${base}/learn/kanji/${g}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    })),
+    {
+      url: `${base}/learn/todofuken`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.7,
+    },
+    ...LECTURES.map((l) => ({
+      url: `${base}/learn/lecture/${l.unit}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+    })),
+    {
+      url: `${base}${TSUKKOMI_HOME}`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.7,
+    },
+    ...TSUKKOMI_UNITS.map((u) => ({
+      url: `${base}${tsukkomiHref(u)}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    })),
     // つまずきの原因（単元ごとのよくあるまちがい・原因の単元・前に必要な単元）
-    { url: `${base}${TSUMAZUKI_HOME}`, lastModified: now, changeFrequency: "weekly" as const, priority: 0.7 },
-    ...TSUMAZUKI_UNITS.map((u) => ({ url: `${base}${tsumazukiHref(u)}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
+    {
+      url: `${base}${TSUMAZUKI_HOME}`,
+      lastModified: now,
+      changeFrequency: "weekly" as const,
+      priority: 0.7,
+    },
+    ...TSUMAZUKI_UNITS.map((u) => ({
+      url: `${base}${tsumazukiHref(u)}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    })),
     // オシエル（AIの生徒ハルに教える。2026-11-23 公開）
-    { url: `${base}${OSHIERU_HOME}`, lastModified: now, changeFrequency: "weekly" as const, priority: 0.6 },
-    ...OSHIERU_UNITS.map((u) => ({ url: `${base}${oshieruHref(u)}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.5 })),
-    { url: `${base}${OSHIERU_AI_HOME}`, lastModified: now, changeFrequency: "weekly" as const, priority: 0.6 },
+    {
+      url: `${base}${OSHIERU_HOME}`,
+      lastModified: now,
+      changeFrequency: "weekly" as const,
+      priority: 0.6,
+    },
+    ...OSHIERU_UNITS.map((u) => ({
+      url: `${base}${oshieruHref(u)}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.5,
+    })),
+    {
+      url: `${base}${OSHIERU_AI_HOME}`,
+      lastModified: now,
+      changeFrequency: "weekly" as const,
+      priority: 0.6,
+    },
     // 直前コース（共通テスト・大学入試・公立高校入試・私立高校入試。2026-11-23 販売。駅のほかのページは入れない）
     // ラーニングステーションの入口・学習便のご案内・アオハルーム（2026-11-23 代表の公開OK。実験室などの試作は入れない）
-    { url: `${base}/station`, lastModified: now, changeFrequency: "weekly" as const, priority: 0.8 },
-    { url: `${base}/station/gakushubin`, lastModified: now, changeFrequency: "weekly" as const, priority: 0.8 },
-    { url: `${base}/station/room`, lastModified: now, changeFrequency: "weekly" as const, priority: 0.6 },
-    { url: `${base}/station/course`, lastModified: now, changeFrequency: "weekly" as const, priority: 0.7 },
-    { url: `${base}/station/course/shikoko`, lastModified: now, changeFrequency: "weekly" as const, priority: 0.7 },
-    { url: `${base}/station/course/kyotsu`, lastModified: now, changeFrequency: "weekly" as const, priority: 0.7 },
-    { url: `${base}/station/course/koko`, lastModified: now, changeFrequency: "weekly" as const, priority: 0.7 },
+    {
+      url: `${base}/station`,
+      lastModified: now,
+      changeFrequency: "weekly" as const,
+      priority: 0.8,
+    },
+    {
+      url: `${base}/station/gakushubin`,
+      lastModified: now,
+      changeFrequency: "weekly" as const,
+      priority: 0.8,
+    },
+    {
+      url: `${base}/station/room`,
+      lastModified: now,
+      changeFrequency: "weekly" as const,
+      priority: 0.6,
+    },
+    {
+      url: `${base}/station/course`,
+      lastModified: now,
+      changeFrequency: "weekly" as const,
+      priority: 0.7,
+    },
+    {
+      url: `${base}/station/course/shikoko`,
+      lastModified: now,
+      changeFrequency: "weekly" as const,
+      priority: 0.7,
+    },
+    {
+      url: `${base}/station/course/kyotsu`,
+      lastModified: now,
+      changeFrequency: "weekly" as const,
+      priority: 0.7,
+    },
+    {
+      url: `${base}/station/course/koko`,
+      lastModified: now,
+      changeFrequency: "weekly" as const,
+      priority: 0.7,
+    },
     // ちょっと待った授業（?cast= は入れない。canonical は cast なし）
-    { url: `${base}${JUGYO_HOME}`, lastModified: now, changeFrequency: "weekly" as const, priority: 0.7 },
-    ...JUGYO_UNITS.map((u) => ({ url: `${base}${jugyoHref(u)}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
+    {
+      url: `${base}${JUGYO_HOME}`,
+      lastModified: now,
+      changeFrequency: "weekly" as const,
+      priority: 0.7,
+    },
+    ...JUGYO_UNITS.map((u) => ({
+      url: `${base}${jugyoHref(u)}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    })),
     // ゼロワンOSユース版の授業は Lv1〜3 だけ（Lv4 以降は Pro・Max 限定）
-    ...uzJugyoPublicPaths().map((p) => ({ url: `${base}${p}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.5 })),
-    ...["", "/koritsu", "/kyotsu", "/shiritsu", "/teiki"].map((m) => ({ url: `${base}/learn/exam${m}`, lastModified: now, changeFrequency: "weekly" as const, priority: 0.7 })),
-    ...["/start", "/learn/koko-moshi", "/learn/kyotsu-moshi", "/learn/daigaku-moshi", "/learn/tokubetsu/shoin"].map((p) => ({ url: `${base}${p}`, lastModified: now, changeFrequency: "weekly" as const, priority: 0.8 })),
-    ...UNIT_MOSHI_IDS.map((u) => ({ url: `${base}/learn/moshi/${u}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
+    ...uzJugyoPublicPaths().map((p) => ({
+      url: `${base}${p}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.5,
+    })),
+    ...["", "/koritsu", "/kyotsu", "/shiritsu", "/teiki"].map((m) => ({
+      url: `${base}/learn/exam${m}`,
+      lastModified: now,
+      changeFrequency: "weekly" as const,
+      priority: 0.7,
+    })),
+    ...[
+      "/start",
+      "/learn/koko-moshi",
+      "/learn/kyotsu-moshi",
+      "/learn/kakomon",
+      "/learn/daigaku-moshi",
+      "/learn/tokubetsu/shoin",
+    ].map((p) => ({
+      url: `${base}${p}`,
+      lastModified: now,
+      changeFrequency: "weekly" as const,
+      priority: 0.8,
+    })),
+    ...KAKOMON.map((e) => ({
+      url: `${base}/learn/kakomon/${e.id}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.5,
+    })),
+    ...UNIT_MOSHI_IDS.map((u) => ({
+      url: `${base}/learn/moshi/${u}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    })),
     // 選ばれる力の図解の教科書（小論文・面接・総合型選抜）。書いた単元だけ
-    { url: `${base}/learn/apply/lec`, lastModified: now, changeFrequency: "weekly" as const, priority: 0.7 },
-    ...APL_LECTURES.map((l) => ({ url: `${base}/learn/apply/lec/${l.unit}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
+    {
+      url: `${base}/learn/apply/lec`,
+      lastModified: now,
+      changeFrequency: "weekly" as const,
+      priority: 0.7,
+    },
+    ...APL_LECTURES.map((l) => ({
+      url: `${base}/learn/apply/lec/${l.unit}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    })),
     // ゼロワンOSユース版（起業の棚）。カード・ボード・アセット・演習は個人の画面なので入れない
-    { url: `${base}/learn/unizeb`, lastModified: now, changeFrequency: "weekly" as const, priority: 0.7 },
-    { url: `${base}/learn/unizeb/shiryo`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 },
-    ...UZ_LECTURES.map((l) => ({ url: `${base}/learn/unizeb/lec/${l.unit.replace(/^unizeb-/, "")}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
-    ...UZ_DEN.map((d) => ({ url: `${base}/learn/unizeb/den/${d.id}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
-    ...UZ_CASES.map((c) => ({ url: `${base}/learn/unizeb/case/${c.id}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
-    ...UZ_EP.map((e) => ({ url: `${base}/learn/unizeb/ep/${e.id}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
-    ...UZ_ENSHU.map((e) => ({ url: `${base}/learn/unizeb/enshu/${e.id}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.5 })),
-    ...KYOKA.map((k) => ({ url: `${base}/learn/kyoka/${k.key}`, lastModified: now, changeFrequency: "weekly" as const, priority: 0.8 })),
-    ...TERM_SET_KEYS.map((k) => ({ url: `${base}/learn/${k}`, lastModified: now, changeFrequency: "weekly" as const, priority: 0.7 })),
+    {
+      url: `${base}/learn/unizeb`,
+      lastModified: now,
+      changeFrequency: "weekly" as const,
+      priority: 0.7,
+    },
+    {
+      url: `${base}/learn/unizeb/shiryo`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    },
+    ...UZ_LECTURES.map((l) => ({
+      url: `${base}/learn/unizeb/lec/${l.unit.replace(/^unizeb-/, "")}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    })),
+    ...UZ_DEN.map((d) => ({
+      url: `${base}/learn/unizeb/den/${d.id}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    })),
+    ...UZ_CASES.map((c) => ({
+      url: `${base}/learn/unizeb/case/${c.id}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    })),
+    ...UZ_EP.map((e) => ({
+      url: `${base}/learn/unizeb/ep/${e.id}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    })),
+    ...UZ_ENSHU.map((e) => ({
+      url: `${base}/learn/unizeb/enshu/${e.id}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.5,
+    })),
+    ...KYOKA.map((k) => ({
+      url: `${base}/learn/kyoka/${k.key}`,
+      lastModified: now,
+      changeFrequency: "weekly" as const,
+      priority: 0.8,
+    })),
+    ...TERM_SET_KEYS.map((k) => ({
+      url: `${base}/learn/${k}`,
+      lastModified: now,
+      changeFrequency: "weekly" as const,
+      priority: 0.7,
+    })),
     ...Object.values(DRILL_SETS).flatMap((s) => [
-      { url: `${base}/learn/${s.key}`, lastModified: now, changeFrequency: "weekly" as const, priority: 0.7 },
-      ...s.units.map((u) => ({ url: `${base}/learn/${s.key}/${u.unit}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
+      {
+        url: `${base}/learn/${s.key}`,
+        lastModified: now,
+        changeFrequency: "weekly" as const,
+        priority: 0.7,
+      },
+      ...s.units.map((u) => ({
+        url: `${base}/learn/${s.key}/${u.unit}`,
+        lastModified: now,
+        changeFrequency: "monthly" as const,
+        priority: 0.6,
+      })),
     ]),
-    { url: `${base}/learn/kotowaza`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
-    { url: `${base}/learn/kobun-tango`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
-    { url: `${base}/learn/chu-tango`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
-    { url: `${base}/learn/jukugo`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
-    { url: `${base}/learn/kousuu`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
-    ...KOUSUU_STEPS.map((st) => ({ url: `${base}/learn/kousuu/${st.no}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
-    { url: `${base}/learn/sansu`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
-    ...SANSU_STEPS.map((st) => ({ url: `${base}/learn/sansu/${st.no}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
-    { url: `${base}/learn/eitango`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
-    { url: `${base}/learn/eitango/kitaeru`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
-    ...WORD_STAGES.filter((s) => s.open).map((s) => ({ url: `${base}/learn/eitango/${s.no}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
-    ...BOOKS.map((b) => ({ url: `${base}/learn/library/${b.id}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.5 })),
-    { url: `${base}/learn/shiboriyusho`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
-    ...SHIBORIYUSHO.cards.filter((c) => !isLockedCard(SHIBORIYUSHO, c)).map((c) => ({ url: `${base}/learn/shiboriyusho/${c.no}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
-    { url: `${base}/learn/mensetsu`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
-    ...MENSETSU.cards.filter((c) => !isLockedCard(MENSETSU, c)).map((c) => ({ url: `${base}/learn/mensetsu/${c.no}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
-    ...["shiboriyu", "tensakun", "mensatsu"].map((k) => ({ url: `${base}/tutorial/${k}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.8 })),
+    {
+      url: `${base}/learn/kotowaza`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.7,
+    },
+    {
+      url: `${base}/learn/kobun-tango`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.7,
+    },
+    {
+      url: `${base}/learn/chu-tango`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.7,
+    },
+    {
+      url: `${base}/learn/jukugo`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.7,
+    },
+    {
+      url: `${base}/learn/kousuu`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.8,
+    },
+    ...KOUSUU_STEPS.map((st) => ({
+      url: `${base}/learn/kousuu/${st.no}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    })),
+    {
+      url: `${base}/learn/sansu`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.8,
+    },
+    ...SANSU_STEPS.map((st) => ({
+      url: `${base}/learn/sansu/${st.no}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    })),
+    {
+      url: `${base}/learn/eitango`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.8,
+    },
+    {
+      url: `${base}/learn/eitango/kitaeru`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.7,
+    },
+    ...WORD_STAGES.filter((s) => s.open).map((s) => ({
+      url: `${base}/learn/eitango/${s.no}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    })),
+    ...BOOKS.map((b) => ({
+      url: `${base}/learn/library/${b.id}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.5,
+    })),
+    {
+      url: `${base}/learn/shiboriyusho`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.8,
+    },
+    ...SHIBORIYUSHO.cards
+      .filter((c) => !isLockedCard(SHIBORIYUSHO, c))
+      .map((c) => ({
+        url: `${base}/learn/shiboriyusho/${c.no}`,
+        lastModified: now,
+        changeFrequency: "monthly" as const,
+        priority: 0.6,
+      })),
+    {
+      url: `${base}/learn/mensetsu`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.8,
+    },
+    ...MENSETSU.cards
+      .filter((c) => !isLockedCard(MENSETSU, c))
+      .map((c) => ({
+        url: `${base}/learn/mensetsu/${c.no}`,
+        lastModified: now,
+        changeFrequency: "monthly" as const,
+        priority: 0.6,
+      })),
+    ...["shiboriyu", "tensakun", "mensatsu"].map((k) => ({
+      url: `${base}/tutorial/${k}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.8,
+    })),
     ...articles.map((a) => ({
       url: `${base}/guide/${a.slug}`,
       lastModified: new Date(a.updatedAt),
       changeFrequency: "weekly" as const,
       priority: 0.7,
     })),
-    { url: `${base}/legal/tokushoho`, lastModified: now, changeFrequency: "yearly", priority: 0.2 },
+    {
+      url: `${base}/legal/tokushoho`,
+      lastModified: now,
+      changeFrequency: "yearly",
+      priority: 0.2,
+    },
   ];
 }

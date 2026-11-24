@@ -3,10 +3,10 @@
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { trackEvent } from "@/lib/analytics";
-import { answerNos, gradeKakomon } from "@/lib/kakomon/grade";
+import { gradeKakomon, markOptions, sheetRows } from "@/lib/kakomon/grade";
 import type { KakomonExam, KakomonResult, Marks } from "@/lib/kakomon/types";
 
-// 過去問チャレンジの本体。問題は載せない。手元の過去問を見て、解答番号ごとにマーク → 公式の配点で採点。
+// 過去問チャレンジの本体。問題は載せない。大学入試センターの問題を見て解き、解答欄ごとにマーク → 公式の配点で採点。
 // 途中の状態 (マーク・始めた時刻) は、この端末に残す (読みこみ直しても続きから)。提出すると結果だけを残す。
 
 type Saved = {
@@ -16,7 +16,7 @@ type Saved = {
   usedSec?: number;
 };
 
-const key = (id: string) => `kakomon:${id}`;
+const key = (id: string) => `kakomon:v2:${id}`;
 function load(id: string): Saved | null {
   try {
     const raw = window.localStorage.getItem(key(id));
@@ -40,20 +40,73 @@ const card =
   "rounded-[14px] border-[1.5px] border-[#15172B] bg-white p-4 sm:p-5";
 const bigBtn =
   "inline-flex min-h-[48px] items-center justify-center rounded-[12px] border-[1.5px] border-[#15172B] px-5 text-[15px] font-black";
+const smallLink =
+  "inline-flex min-h-[40px] items-center rounded-[10px] border-[1.5px] border-[#15172B] bg-white px-3 text-[13px] font-black text-[#15172B] no-underline";
+
+/** 大学入試センターへのリンク (リンク先がセンターのサイトだと分かるように書く) */
+export function DncLinks({
+  exam,
+}: {
+  exam: Pick<KakomonExam, "id" | "pdf" | "audio">;
+}) {
+  return (
+    <span className="flex flex-wrap gap-2">
+      <a
+        href={exam.pdf}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={smallLink}
+        onClick={() => trackEvent("kakomon_open_pdf", { exam: exam.id })}
+      >
+        問題のPDFを開く（大学入試センター）
+      </a>
+      {exam.audio && (
+        <a
+          href={exam.audio}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={smallLink}
+          onClick={() => trackEvent("kakomon_open_audio", { exam: exam.id })}
+        >
+          音声を開く（大学入試センター）
+        </a>
+      )}
+    </span>
+  );
+}
+
+export function KakomonSource({ exam }: { exam: KakomonExam }) {
+  return (
+    <p className="m-0 mt-1 break-all text-[12px] leading-relaxed text-[#5A5D75]">
+      出典：
+      <a
+        href={exam.source}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-[#1533B8]"
+      >
+        大学入試センターウェブサイト
+      </a>
+      （{exam.source}
+      ）の正解と配点をもとに、アオハルOSが採点のしくみを作成。問題文はこのページに載せていません。
+    </p>
+  );
+}
 
 export function Challenge({
   exam,
   moshiHref,
-  sourceLinkOk,
+  autoStart = false,
 }: {
   exam: KakomonExam;
   moshiHref: string;
-  sourceLinkOk: boolean;
+  autoStart?: boolean;
 }) {
-  const groups = useMemo(() => answerNos(exam), [exam]);
+  const rows = useMemo(() => sheetRows(exam), [exam]);
+  const opts = useMemo(() => markOptions(exam), [exam]);
   const cellCount = useMemo(
-    () => groups.reduce((a, g) => a + g.nos.length, 0),
-    [groups],
+    () => rows.reduce((a, g) => a + g.cells.length, 0),
+    [rows],
   );
   const [phase, setPhase] = useState<"ready" | "run" | "done">("ready");
   const [marks, setMarks] = useState<Marks>({});
@@ -63,22 +116,34 @@ export function Challenge({
   const [confirm, setConfirm] = useState(false);
   const submitted = useRef(false);
 
-  // 前回の続き
+  const start = useCallback(() => {
+    const t = Date.now();
+    submitted.current = false;
+    setMarks({});
+    setStartedAt(t);
+    setNow(t);
+    setPhase("run");
+    save(exam.id, { startedAt: t, marks: {} });
+    trackEvent("kakomon_start", { exam: exam.id });
+    window.scrollTo(0, 0);
+  }, [exam.id]);
+
+  // 前回の続き。なければ、選ぶ画面の「始める」から来たときはそのまま始める
   useEffect(() => {
     const s = load(exam.id);
-    if (!s) return;
     /* eslint-disable react-hooks/set-state-in-effect -- 初回だけ、この端末に残した続きから復元する */
-    setMarks(s.marks ?? {});
-    if (s.doneAt) {
+    if (s?.doneAt) {
+      setMarks(s.marks ?? {});
       setUsedSec(s.usedSec ?? 0);
       setPhase("done");
-    } else if (s.startedAt) {
+    } else if (s?.startedAt) {
+      setMarks(s.marks ?? {});
       setStartedAt(s.startedAt);
       setNow(Date.now());
       setPhase("run");
-    }
+    } else if (autoStart) start();
     /* eslint-enable react-hooks/set-state-in-effect */
-  }, [exam.id]);
+  }, [exam.id, autoStart, start]);
 
   const limit = exam.minutes * 60;
   const elapsed = startedAt
@@ -120,20 +185,9 @@ export function Challenge({
     if (phase === "run" && startedAt && left === 0) submit(true);
   }, [phase, startedAt, left, submit]);
 
-  const start = () => {
-    const t = Date.now();
-    submitted.current = false;
-    setMarks({});
-    setStartedAt(t);
-    setNow(t);
-    setPhase("run");
-    save(exam.id, { startedAt: t, marks: {} });
-    trackEvent("kakomon_start", { exam: exam.id });
-    window.scrollTo(0, 0);
-  };
-  const mark = (no: number, v: number) => {
+  const mark = (k: string, v: string) => {
     setMarks((m) => {
-      const next = { ...m, [no]: m[no] === v ? undefined : v };
+      const next = { ...m, [k]: m[k] === v ? undefined : v };
       if (startedAt) save(exam.id, { startedAt, marks: next });
       return next;
     });
@@ -147,25 +201,13 @@ export function Challenge({
     window.scrollTo(0, 0);
   };
 
-  const source = (
-    <p className="m-0 mt-3 break-all text-[12px] leading-relaxed text-[#5A5D75]">
-      正解と配点の出典：
-      {sourceLinkOk ? (
-        <a
-          href={exam.source}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-[#1533B8]"
-        >
-          大学入試センターウェブサイト
-        </a>
-      ) : (
-        "大学入試センターウェブサイト"
-      )}
-      （{exam.source}）をもとにアオハルOSが作成（{exam.checked}{" "}
-      に確認）。問題文はこのページに載せていません。
-    </p>
-  );
+  const selectNote = exam.select
+    ? `第${exam.select.from[0]}問〜第${exam.select.from[exam.select.from.length - 1]}問は${exam.select.count}問を選んで解きます。選んだ大問だけマークしてください（${exam.select.count}問より多くマークしたときは、得点の高い${exam.select.count}問を数えます）。`
+    : "";
+  const kisoNote =
+    exam.moshi.endsWith("b") && exam.minutes === 30
+      ? "本番は基礎の2科目を合わせて60分です。ここでは1科目を30分で解きます。"
+      : "";
 
   if (phase === "ready") {
     return (
@@ -175,45 +217,37 @@ export function Challenge({
           <ol className="m-0 mt-3 grid list-none gap-3 p-0">
             {[
               {
-                t: "問題を用意する",
-                b: sourceLinkOk
-                  ? `${exam.year} ${exam.kind}「${exam.subject}」の問題を、大学入試センターのサイトで開きます（別のタブで開きます）。市販の過去問集でもかまいません。`
-                  : `${exam.year} ${exam.kind}「${exam.subject}」の問題を手元に用意します。大学入試センターのサイトの「過去3年分の試験問題」で公開されています。市販の過去問集でもかまいません。印刷するか、別の端末で開くと解きやすくなります。`,
+                t: "問題を開く",
+                b: `大学入試センターのページが別のタブで開きます。印刷しても、タブレットで見てもかまいません。${exam.audio ? "音声も大学入試センターのページで流します。" : ""}`,
+                links: true,
               },
               {
                 t: "時間を計って解く",
-                b: `制限時間は${exam.minutes}分。「始める」を押すと時計が動き、時間になると自動で提出します。`,
+                b: `${exam.subject}は${exam.minutes}分。時間になると自動で提出します。${kisoNote}${selectNote}`,
               },
               {
                 t: "答えをマークして採点",
-                b: "解答番号の横の数字を押してマークします。提出すると、公式の配点で採点し、大問ごとの得点が出ます。",
+                b: "大問ごとの得点と、次にやる類題が出ます。",
               },
             ].map((x, i) => (
               <li key={x.t} className="flex gap-3">
                 <span className="flex h-7 w-7 flex-none items-center justify-center rounded-full bg-[#1533B8] text-[13px] font-black text-white">
                   {i + 1}
                 </span>
-                <span>
+                <span className="min-w-0">
                   <b className="block text-[15px]">{x.t}</b>
                   <span className="text-[13px] leading-relaxed text-[#3A3D55]">
                     {x.b}
                   </span>
+                  {x.links && (
+                    <span className="mt-2 block">
+                      <DncLinks exam={exam} />
+                    </span>
+                  )}
                 </span>
               </li>
             ))}
           </ol>
-          {sourceLinkOk && (
-            <p className="m-0 mt-3">
-              <a
-                href="https://www.dnc.ac.jp/kyotsu/kakomondai/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`${bigBtn} bg-white text-[#15172B] no-underline`}
-              >
-                問題を開く（大学入試センターのサイト）
-              </a>
-            </p>
-          )}
           <p className="m-0 mt-4">
             <button
               type="button"
@@ -224,10 +258,10 @@ export function Challenge({
             </button>
           </p>
           <p className="m-0 mt-3 text-[12px] leading-relaxed text-[#5A5D75]">
-            解説は出ません（正誤と正解の番号まで）。見直しのあとに、同じ形のアオハルの類題（解説つき）へ進めます。
+            解説は出ません（正誤と正解まで）。見直しのあとに、同じ形のアオハルの類題（解説つき）へ進めます。
           </p>
         </section>
-        {source}
+        <KakomonSource exam={exam} />
       </div>
     );
   }
@@ -258,45 +292,51 @@ export function Challenge({
         </div>
         <section className={card}>
           <p className="m-0 text-[13px] leading-relaxed text-[#3A3D55]">
-            解答番号の横の数字を押してマークします。もう一度押すと消えます。
+            {exam.type === "kana"
+              ? "解答記号の横の数字・符号を押してマークします。"
+              : "解答番号の横の数字を押してマークします。"}
+            もう一度押すと消えます。{selectNote}
           </p>
-          {groups.map((g) => (
+          <p className="m-0 mt-2">
+            <DncLinks exam={exam} />
+          </p>
+          {rows.map((g) => (
             <fieldset
               key={g.daimon}
               className="m-0 mt-4 border-0 border-t border-[#E4E2D8] p-0 pt-3"
             >
               <legend className="float-left mb-1 w-full p-0 text-[13px] font-black text-[#3A3D55]">
-                第{g.daimon}問（{g.points}点）
+                第{g.daimon}問（{g.points}点）{g.select ? "・選択" : ""}
               </legend>
-              {g.nos.map((no) => (
+              {g.cells.map((c) => (
                 <div
-                  key={no}
-                  className="clear-both flex items-center gap-1.5 py-1"
+                  key={c.key}
+                  className="clear-both flex items-start gap-1.5 py-1"
                   role="radiogroup"
-                  aria-label={`解答番号 ${no}`}
+                  aria-label={`${exam.type === "kana" ? `第${g.daimon}問 解答記号` : "解答番号"} ${c.label}`}
                 >
-                  <span className="w-7 flex-none text-right text-[15px] font-black tabular-nums">
-                    {no}
+                  <span className="w-7 flex-none pt-1.5 text-right text-[15px] font-black tabular-nums">
+                    {c.label}
                   </span>
-                  <span className="flex flex-wrap gap-[3px] sm:gap-1">
-                    {Array.from({ length: exam.max }, (_, i) => i + 1).map(
-                      (v) => {
-                        const on = marks[no] === v;
-                        return (
-                          <button
-                            key={v}
-                            type="button"
-                            role="radio"
-                            aria-checked={on}
-                            aria-label={`${v}`}
-                            onClick={() => mark(no, v)}
-                            className={`h-[34px] w-[27px] cursor-pointer rounded-full border-[1.5px] p-0 text-[13px] font-bold min-[400px]:w-[30px] sm:w-[34px] ${on ? "border-[#15172B] bg-[#15172B] text-white" : "border-[#8A8DA3] bg-white text-[#15172B]"}`}
-                          >
-                            {v}
-                          </button>
-                        );
-                      },
-                    )}
+                  <span
+                    className={`flex flex-wrap sm:gap-1 ${opts.length > 9 ? "gap-[2px]" : "gap-[3px]"}`}
+                  >
+                    {opts.map((v) => {
+                      const on = marks[c.key] === v;
+                      return (
+                        <button
+                          key={v}
+                          type="button"
+                          role="radio"
+                          aria-checked={on}
+                          aria-label={v === "－" ? "マイナス" : v}
+                          onClick={() => mark(c.key, v)}
+                          className={`h-[34px] cursor-pointer rounded-full border-[1.5px] p-0 text-[13px] font-bold sm:w-[34px] ${opts.length > 9 ? "w-[24px] min-[400px]:w-[26px]" : "w-[27px] min-[400px]:w-[30px]"} ${on ? "border-[#15172B] bg-[#15172B] text-white" : "border-[#8A8DA3] bg-white text-[#15172B]"}`}
+                        >
+                          {v}
+                        </button>
+                      );
+                    })}
                   </span>
                 </div>
               ))}
@@ -306,7 +346,7 @@ export function Challenge({
             {confirm ? (
               <div className="rounded-[12px] bg-[#FFF6D6] p-3">
                 <p className="m-0 text-[14px] font-bold">
-                  {marked < cellCount
+                  {marked < cellCount && !exam.select
                     ? `まだ ${cellCount - marked} か所マークしていません。`
                     : ""}
                   提出すると、やり直しはできません。提出しますか。
@@ -344,16 +384,15 @@ export function Challenge({
   }
 
   const r: KakomonResult = gradeKakomon(exam, marks);
-  const weak = exam.daimon
-    .map((d, i) => ({ d, rate: r.daimon[i].got / d.points }))
-    .filter((x) => x.rate < 0.7 && x.d.next)
-    .sort((a, b) => a.rate - b.rate)
-    .slice(0, 3);
+  const weak = r.daimon
+    .filter((d) => d.counted && d.got / d.points < 0.7)
+    .sort((a, b) => a.got / a.points - b.got / b.points);
   return (
     <div className="grid gap-4">
       <section className={card}>
         <p className="m-0 text-[13px] text-[#3A3D55]">
-          かかった時間 {Math.ceil(usedSec / 60)}分（制限 {exam.minutes}分）
+          {exam.year} {exam.kind}　{exam.subject}　かかった時間{" "}
+          {Math.ceil(usedSec / 60)}分（制限 {exam.minutes}分）
         </p>
         <p className="m-0 mt-1 text-[44px] font-black leading-none">
           {r.score}
@@ -373,7 +412,10 @@ export function Challenge({
             {r.daimon.map((d) => {
               const rate = d.got / d.points;
               return (
-                <tr key={d.no} className="border-b border-[#E4E2D8]">
+                <tr
+                  key={d.no}
+                  className={`border-b border-[#E4E2D8] ${d.counted ? "" : "text-[#8A8DA3]"}`}
+                >
                   <th
                     scope="row"
                     className="whitespace-nowrap py-2 pr-3 text-left font-bold"
@@ -381,18 +423,24 @@ export function Challenge({
                     第{d.no}問
                   </th>
                   <td className="w-full py-2">
-                    <div
-                      className="h-2 overflow-hidden rounded bg-[#E9E8E0]"
-                      aria-hidden
-                    >
+                    {d.counted ? (
                       <div
-                        className={`h-full ${rate < 0.6 ? "bg-[#C0392B]" : "bg-[#1533B8]"}`}
-                        style={{ width: `${Math.round(rate * 100)}%` }}
-                      />
-                    </div>
+                        className="h-2 overflow-hidden rounded bg-[#E9E8E0]"
+                        aria-hidden
+                      >
+                        <div
+                          className={`h-full ${rate < 0.6 ? "bg-[#C0392B]" : "bg-[#1533B8]"}`}
+                          style={{ width: `${Math.round(rate * 100)}%` }}
+                        />
+                      </div>
+                    ) : (
+                      <span className="text-[12px]">
+                        選ばなかった大問（数えていません）
+                      </span>
+                    )}
                   </td>
                   <td className="whitespace-nowrap py-2 pl-3 text-right tabular-nums">
-                    {d.got} / {d.points}
+                    {d.counted ? `${d.got} / ${d.points}` : "－"}
                   </td>
                 </tr>
               );
@@ -401,62 +449,58 @@ export function Challenge({
         </table>
       </section>
       <section className={card}>
-        <h2 className="m-0 text-[17px] font-black">解答番号ごとの正誤</h2>
+        <h2 className="m-0 text-[17px] font-black">
+          {exam.type === "kana" ? "解答記号" : "解答番号"}ごとの正誤
+        </h2>
         <p className="m-0 mt-1 text-[13px] leading-relaxed text-[#3A3D55]">
           「自分の答え →
-          正解」の順です。赤は不正解。「3・5」のように書いた正解は、順を問いません。いくつかの解答番号をまとめて採点する設問は、全部そろったときだけ点が入ります。
+          正解」の順です。赤は不正解。「3・5」のように書いた正解は、順を問いません。いくつかの解答欄をまとめて採点する設問は、全部そろったときだけ点が入ります（公式の注にある部分点は、点に入れてあります）。
         </p>
-        {r.daimon.map((d) => (
-          <div key={d.no} className="mt-3">
-            <p className="m-0 text-[13px] font-black text-[#3A3D55]">
-              第{d.no}問
-            </p>
-            <ul className="m-0 mt-1 grid list-none grid-cols-[repeat(auto-fill,minmax(104px,1fr))] gap-1.5 p-0 text-[13px]">
-              {d.items.flatMap((it) =>
-                it.cells.map((c) => (
-                  <li
-                    key={c.no}
-                    className={`rounded-[8px] border px-2 py-1 tabular-nums ${c.ok ? "border-[#E4E2D8] bg-white" : "border-[#C0392B] bg-[#FDECEA]"}`}
-                  >
-                    <b>{c.no}</b>：{c.mine ?? "－"} → {c.correct}
-                    <span className="sr-only">
-                      {c.ok ? "（正解）" : "（不正解）"}
-                    </span>
-                  </li>
-                )),
-              )}
-            </ul>
-          </div>
-        ))}
+        {r.daimon
+          .filter((d) => d.counted)
+          .map((d) => (
+            <div key={d.no} className="mt-3">
+              <p className="m-0 text-[13px] font-black text-[#3A3D55]">
+                第{d.no}問
+              </p>
+              <ul className="m-0 mt-1 grid list-none grid-cols-[repeat(auto-fill,minmax(104px,1fr))] gap-1.5 p-0 text-[13px]">
+                {d.items.flatMap((it) =>
+                  it.cells.map((c) => (
+                    <li
+                      key={c.key}
+                      className={`rounded-[8px] border px-2 py-1 tabular-nums ${c.ok ? "border-[#E4E2D8] bg-white" : "border-[#C0392B] bg-[#FDECEA]"}`}
+                    >
+                      <b>{c.label}</b>：{c.mine ?? "－"} →{" "}
+                      {c.correct || "（上と組）"}
+                      <span className="sr-only">
+                        {c.ok ? "（正解）" : "（不正解）"}
+                      </span>
+                    </li>
+                  )),
+                )}
+              </ul>
+            </div>
+          ))}
       </section>
       <section className={card}>
         <h2 className="m-0 text-[17px] font-black">次にやること</h2>
         <p className="m-0 mt-1 text-[13px] leading-relaxed text-[#3A3D55]">
           {weak.length > 0
-            ? "得点の低かった大問と同じ形の問題を、アオハルの共通テスト模試（オリジナルの問題・解説つき）で練習できます。"
-            : "どの大問も7割をこえました。別の問題で、同じ時間配分をもう一度ためせます。"}
+            ? `得点が7割に届かなかった大問：${weak.map((d) => `第${d.no}問（${d.got}/${d.points}）`).join("、")}。本文と照らして見直したあと、アオハルの共通テスト模試（オリジナルの問題・解説つき）で、同じ科目を練習できます。`
+            : "どの大問も7割をこえました。別の年度・追試験で、同じ時間配分をもう一度ためせます。"}
         </p>
-        {weak.length > 0 && (
-          <ul className="m-0 mt-3 grid list-none gap-2 p-0">
-            {weak.map(({ d }) => (
-              <li
-                key={d.no}
-                className="rounded-[10px] border border-[#E4E2D8] px-3 py-2"
-              >
-                <b className="block text-[14px]">{d.next!.label}</b>
-                <span className="text-[13px] text-[#3A3D55]">
-                  {d.next!.note}
-                </span>
-              </li>
-            ))}
-          </ul>
-        )}
         <p className="m-0 mt-3 flex flex-wrap gap-2">
           <Link
             href={moshiHref}
             className={`${bigBtn} bg-[#FFE45C] text-[#15172B] no-underline`}
           >
             共通テスト模試（{exam.subject}）を解く
+          </Link>
+          <Link
+            href="/learn/kakomon"
+            className={`${bigBtn} bg-white text-[#15172B] no-underline`}
+          >
+            別の過去問をえらぶ
           </Link>
           <button
             type="button"
@@ -467,7 +511,7 @@ export function Challenge({
           </button>
         </p>
       </section>
-      {source}
+      <KakomonSource exam={exam} />
     </div>
   );
 }
