@@ -1,4 +1,5 @@
 import { getSupabaseAdmin } from "@/lib/aoharu-entitlements/supabase/client";
+import { getSetting, setSetting } from "@/lib/social/store";
 import { isUsableEmail } from "./contact";
 import { getSalesControls, isResendConfigured, recordOutreach, sendEmail, type OutreachItem } from "./outreach";
 
@@ -17,6 +18,26 @@ export const CAMPAIGN = {
   subject: "個人塾の先生へ｜生徒の学習が一覧で見える「学びのOS」を、無料でお試しいただけます",
 } as const;
 const SOURCE = `campaign-${CAMPAIGN.id}`;
+// 管理画面で「この宛先には送らない」にした宛先（個別にやりとり中の塾など。返信の記録が無くても外せるように）
+const SKIP_KEY = `sales_campaign_skip:${CAMPAIGN.id}`;
+
+export async function getCampaignSkips(): Promise<string[]> {
+  try {
+    const v = JSON.parse((await getSetting(SKIP_KEY)) ?? "[]");
+    return Array.isArray(v) ? v.filter((x): x is string => typeof x === "string") : [];
+  } catch {
+    return [];
+  }
+}
+
+export async function setCampaignSkip(email: string, skip: boolean): Promise<void> {
+  const e = email.trim().toLowerCase();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)) throw new Error("メールアドレスの形ではありません");
+  const cur = new Set(await getCampaignSkips());
+  if (skip) cur.add(e);
+  else cur.delete(e);
+  await setSetting(SKIP_KEY, JSON.stringify([...cur]));
+}
 
 export const CAMPAIGN_BODY = `学習塾の先生へ
 
@@ -58,7 +79,9 @@ export interface CampaignStatus {
   eligible: CampaignTarget[];
   /** このご案内を送った数 */
   sent: number;
-  excluded: { suppressed: number; bounced: number; replied: number; unusable: number };
+  excluded: { suppressed: number; bounced: number; replied: number; unusable: number; skipped: number };
+  /** 「送らない」にした宛先 */
+  skips: CampaignTarget[];
 }
 
 const chunk = <T,>(a: T[], n: number) => Array.from({ length: Math.ceil(a.length / n) }, (_, i) => a.slice(i * n, i * n + n));
@@ -84,7 +107,9 @@ export async function campaignStatus(): Promise<CampaignStatus> {
     if ((data?.length ?? 0) < 1000) break;
   }
   const emails = [...leads.keys()];
-  const excluded = { suppressed: 0, bounced: 0, replied: 0, unusable: 0 };
+  const excluded = { suppressed: 0, bounced: 0, replied: 0, unusable: 0, skipped: 0 };
+  const skipSet = new Set(await getCampaignSkips());
+  const skips: CampaignTarget[] = [];
 
   // 2. これまでの送信の記録
   const sentBefore = new Set<string>();
@@ -122,13 +147,16 @@ export async function campaignStatus(): Promise<CampaignStatus> {
     if (!sentBefore.has(email) && !done.has(email)) continue; // 実際に届いた記録がない宛先には送らない
     base++;
     if (done.has(email)) continue;
-    if (!isUsableEmail(email)) excluded.unusable++;
+    if (skipSet.has(email)) {
+      excluded.skipped++;
+      skips.push({ email, company: leads.get(email) ?? "" });
+    } else if (!isUsableEmail(email)) excluded.unusable++;
     else if (hit.has(email) || hit.has(`@${email.split("@")[1]}`)) excluded.suppressed++;
     else if (bad.has(email)) excluded.bounced++;
     else if (replied.has(email)) excluded.replied++;
     else eligible.push({ email, company: leads.get(email) ?? "" });
   }
-  return { base, eligible, sent: done.size, excluded };
+  return { base, eligible, sent: done.size, excluded, skips };
 }
 
 const item = (to: string, company: string): OutreachItem => ({ method: "email", to, company, subject: CAMPAIGN.subject, body: CAMPAIGN_BODY });

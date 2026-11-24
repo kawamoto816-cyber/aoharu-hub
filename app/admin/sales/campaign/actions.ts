@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { isAdminUser } from "@/lib/metrics/admin-auth";
-import { runCampaign, sendCampaignTest } from "@/lib/sales/campaign";
+import { runCampaign, sendCampaignTest, setCampaignSkip } from "@/lib/sales/campaign";
 
 // /admin/sales/campaign のボタン。社内アカウント (@bluespring.co.jp) だけが実行できる。
 // 送るのは、ここでボタンを押したときだけ（自動では送らない）。
@@ -16,6 +16,21 @@ export async function sendCampaignTestAction(): Promise<void> {
     msg = `確認用の1通を ${admin.email} に送りました`;
   } catch (e) {
     msg = `確認用のメールを送れませんでした：${e instanceof Error ? e.message : String(e)}`;
+  }
+  redirect(`/admin/sales/campaign?msg=${encodeURIComponent(msg)}`);
+}
+
+export async function skipCampaignAction(formData: FormData): Promise<void> {
+  const admin = await isAdminUser();
+  if (!admin.ok) throw new Error("権限がありません");
+  const email = String(formData.get("email") ?? "");
+  const skip = formData.get("skip") === "1";
+  let msg: string;
+  try {
+    await setCampaignSkip(email, skip);
+    msg = skip ? `${email} には送らないようにしました` : `${email} を送る宛先にもどしました`;
+  } catch (e) {
+    msg = `変えられませんでした：${e instanceof Error ? e.message : String(e)}`;
   }
   redirect(`/admin/sales/campaign?msg=${encodeURIComponent(msg)}`);
 }

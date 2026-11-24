@@ -41,3 +41,4 @@
 - 資料は添付ではなくリンク：`public/docs/aoharu-os-juku-flyer.pdf`（元は作業メモの juku-flyer.html を Playwright で PDF にしたもの）。
 - 文面・PDF は代表が確認したもの。変えるときは `CAMPAIGN.id` も変える（同じ id だと「もう送った」と数える）。
 - このご案内を送った宛先は、90日ルール（`recentlyContacted`）により、ふだんの営業送信の対象から外れる。
+- 宛先ごとに「送らない」にできる（app_settings の sales_campaign_skip:<id>）。返信の記録が無い個別のやりとり中の塾（会津さくら学院など）を外すため。

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { isAdminUser } from "@/lib/metrics/admin-auth";
 import { CAMPAIGN, CAMPAIGN_BODY, campaignStatus } from "@/lib/sales/campaign";
 import { getSalesControls } from "@/lib/sales/outreach";
-import { runCampaignAction, sendCampaignTestAction } from "./actions";
+import { runCampaignAction, sendCampaignTestAction, skipCampaignAction } from "./actions";
 
 // /admin/sales/campaign: 塾向けのご案内を、過去に営業メールを送った学習塾へ、1通ずつ送る（@bluespring.co.jp でログインした人だけ）。
 // 送るのはボタンを押したときだけ。1回に送る数は、ふだんの営業送信と同じ上限 (sales_controls.max_per_run)。
@@ -59,7 +59,10 @@ export default async function CampaignPage({ searchParams }: { searchParams: Pro
             ))}
           </ul>
           <p className="mt-2 text-xs text-slate-500">
-            送らない宛先：送信停止 {st.excluded.suppressed}・届かなかった／苦情 {st.excluded.bounced}・返信あり {st.excluded.replied}・送れないアドレス {st.excluded.unusable}
+            送らない宛先：送信停止 {st.excluded.suppressed}・届かなかった／苦情 {st.excluded.bounced}・返信あり {st.excluded.replied}・送れないアドレス {st.excluded.unusable}・「送らない」にした {st.excluded.skipped}
+          </p>
+          <p className="mt-2 rounded-lg bg-amber-50 p-3 text-xs leading-relaxed text-amber-900">
+            「返信あり」は、返信の記録（営業エージェントへの報告）がある宛先だけです。お試しのコードを出した塾など、個別にやりとりしている宛先は、下の一覧の「送らない」で外してください。
           </p>
           {controls.paused && <p className="mt-3 rounded-lg bg-amber-50 p-3 text-sm font-bold text-amber-800">送信は止まっています：{controls.pausedReason ?? "理由の記録なし"}</p>}
 
@@ -82,12 +85,42 @@ export default async function CampaignPage({ searchParams }: { searchParams: Pro
           </p>
 
           {st.eligible.length > 0 && (
-            <details className="mt-6 rounded-xl border border-slate-200 bg-white p-4">
-              <summary className="cursor-pointer text-sm font-bold">次に送る宛先を見る（先頭 {Math.min(st.eligible.length, controls.maxPerRun)} 件）</summary>
-              <ul className="mt-2 text-xs leading-relaxed text-slate-600">
-                {st.eligible.slice(0, controls.maxPerRun).map((t) => (
-                  <li key={t.email}>
-                    {t.company}　<span className="font-mono">{t.email}</span>
+            <details open className="mt-6 rounded-xl border border-slate-200 bg-white p-4">
+              <summary className="cursor-pointer text-sm font-bold">これから送る宛先（全 {st.eligible.length} 件。上から {Math.min(st.eligible.length, controls.maxPerRun)} 件が次に送られます）</summary>
+              <ul className="mt-2 divide-y divide-slate-100 text-xs leading-relaxed text-slate-600">
+                {st.eligible.map((t, i) => (
+                  <li key={t.email} className={`flex items-center justify-between gap-2 py-1 ${i < controls.maxPerRun ? "" : "opacity-60"}`}>
+                    <span className="min-w-0">
+                      {t.company}　<span className="break-all font-mono">{t.email}</span>
+                    </span>
+                    <form action={skipCampaignAction}>
+                      <input type="hidden" name="email" value={t.email} />
+                      <input type="hidden" name="skip" value="1" />
+                      <button type="submit" className="shrink-0 rounded border border-slate-300 px-2 py-0.5 text-[11px] font-bold text-slate-700">
+                        送らない
+                      </button>
+                    </form>
+                  </li>
+                ))}
+              </ul>
+            </details>
+          )}
+          {st.skips.length > 0 && (
+            <details className="mt-3 rounded-xl border border-slate-200 bg-white p-4">
+              <summary className="cursor-pointer text-sm font-bold">「送らない」にした宛先（{st.skips.length} 件）</summary>
+              <ul className="mt-2 divide-y divide-slate-100 text-xs leading-relaxed text-slate-600">
+                {st.skips.map((t) => (
+                  <li key={t.email} className="flex items-center justify-between gap-2 py-1">
+                    <span className="min-w-0">
+                      {t.company}　<span className="break-all font-mono">{t.email}</span>
+                    </span>
+                    <form action={skipCampaignAction}>
+                      <input type="hidden" name="email" value={t.email} />
+                      <input type="hidden" name="skip" value="0" />
+                      <button type="submit" className="shrink-0 rounded border border-slate-300 px-2 py-0.5 text-[11px] font-bold text-slate-700">
+                        送る宛先にもどす
+                      </button>
+                    </form>
                   </li>
                 ))}
               </ul>
