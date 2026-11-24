@@ -8,10 +8,12 @@ import { useClerk } from "@clerk/nextjs";
 import { trackEvent } from "@/lib/analytics";
 
 const REASON: Record<string, string> = {
-  not_found: "このコードは見つかりませんでした。塾・教室から受け取ったコードをもう一度確かめてください。",
+  not_found:
+    "このコードは見つかりませんでした。塾・教室から受け取ったコードをもう一度確かめてください。",
   full: "このコードは、決まった人数まで使われています。塾・教室の先生にご相談ください。",
   expired: "このコードは期限が切れています。",
-  already_paid: "このアカウントは月額のプランをご利用中なので、コードは使えません（月額の契約のまま全部使えます）。",
+  already_paid:
+    "このアカウントは月額のプランをご利用中なので、コードは使えません（月額の契約のまま全部使えます）。",
   unauthenticated: "先にログインしてください。",
   failed: "うまくいきませんでした。少し時間をおいてもう一度お試しください。",
 };
@@ -29,12 +31,34 @@ export function RedeemForm({ initialCode }: { initialCode: string }) {
     setState("sending");
     setError(null);
     try {
-      const res = await fetch("/api/team-pass/redeem", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ code, name }) });
-      const j = (await res.json().catch(() => ({}))) as { ok?: boolean; reason?: string; endsAt?: string };
+      const res = await fetch("/api/team-pass/redeem", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code, name }),
+      });
+      const j = (await res.json().catch(() => ({}))) as {
+        ok?: boolean;
+        reason?: string;
+        endsAt?: string;
+      };
       if (j.ok) {
         // お試し用のコードは期限が短いことがあるので、コードの期限をそのまま出す
         const d = j.endsAt ? new Date(j.endsAt) : null;
-        if (d && !Number.isNaN(d.getTime())) setUntil(d.toLocaleDateString("ja-JP", { timeZone: "Asia/Tokyo", year: "numeric", month: "long", day: "numeric" }));
+        if (d && !Number.isNaN(d.getTime()))
+          setUntil(
+            d.toLocaleDateString("ja-JP", {
+              timeZone: "Asia/Tokyo",
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            }),
+          );
+        // 単元模試・模試の得点を、先生用ダッシュボードへ送り直す（components/juku/ScoreSync.tsx）
+        try {
+          window.localStorage.removeItem("aoharu.juku.scoresync.v1");
+        } catch {
+          // 消せなくても続ける
+        }
         setState("done");
         trackEvent("team_pass_redeem", {});
         return;
@@ -50,8 +74,14 @@ export function RedeemForm({ initialCode }: { initialCode: string }) {
     return (
       <div className="mt-6 rounded-2xl border-2 border-[#15172B] bg-[#E7F6EC] p-5">
         <p className="m-0 text-base font-black">使えるようになりました</p>
-        <p className="mb-0 mt-1 text-sm leading-relaxed">{until}まで、全機能を回数の制限なく使えます。反映まで数分かかることがあります。</p>
-        <Link href="/tensaku" className="mt-4 inline-flex min-h-[44px] items-center rounded-xl bg-[#15172B] px-5 text-sm font-bold text-white no-underline">
+        <p className="mb-0 mt-1 text-sm leading-relaxed">
+          {until}
+          まで、全機能を回数の制限なく使えます。反映まで数分かかることがあります。
+        </p>
+        <Link
+          href="/tensaku"
+          className="mt-4 inline-flex min-h-[44px] items-center rounded-xl bg-[#15172B] px-5 text-sm font-bold text-white no-underline"
+        >
           さっそく添削する
         </Link>
       </div>
@@ -63,7 +93,12 @@ export function RedeemForm({ initialCode }: { initialCode: string }) {
       {isLoaded && !isSignedIn ? (
         <button
           type="button"
-          onClick={() => openSignUpWithRecovery(clerk, typeof window !== "undefined" ? window.location.href : undefined)}
+          onClick={() =>
+            openSignUpWithRecovery(
+              clerk,
+              typeof window !== "undefined" ? window.location.href : undefined,
+            )
+          }
           className="min-h-[48px] w-full rounded-xl bg-[#1533B8] text-sm font-bold text-white"
         >
           まず無料登録・ログインする
@@ -87,19 +122,25 @@ export function RedeemForm({ initialCode }: { initialCode: string }) {
             />
           </label>
           <p className="m-0 mt-2 text-[12px] leading-relaxed text-[#5A5D75]">
-            コードを使うと、塾・教室の先生に、上の名前と、学習の回数（添削・面接練習・問題を解いた数など）が見えるようになります。書いた文章の中身や、メールアドレスは見えません。
+            コードを使うと、塾・教室の先生に、上の名前と、学習のようす（添削・面接練習の回数、単元ごとの解いた数と正解の割合、単元模試・模試の得点）が見えるようになります。書いた文章の中身や、メールアドレスは見えません。
           </p>
           <button
             type="button"
             onClick={submit}
-            disabled={state === "sending" || code.replace(/[^A-Z0-9]/gi, "").length < 8}
+            disabled={
+              state === "sending" || code.replace(/[^A-Z0-9]/gi, "").length < 8
+            }
             className="mt-3 min-h-[48px] w-full rounded-xl bg-[#1533B8] text-sm font-bold text-white disabled:opacity-50"
           >
             {state === "sending" ? "確かめています…" : "コードを使う"}
           </button>
         </>
       )}
-      {error && <p role="alert" className="mt-3 text-sm font-bold text-[#B42318]">{error}</p>}
+      {error && (
+        <p role="alert" className="mt-3 text-sm font-bold text-[#B42318]">
+          {error}
+        </p>
+      )}
     </div>
   );
 }
