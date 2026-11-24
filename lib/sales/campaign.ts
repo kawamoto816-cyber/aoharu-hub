@@ -1,13 +1,13 @@
 import { getSupabaseAdmin } from "@/lib/aoharu-entitlements/supabase/client";
 import { getSetting, setSetting } from "@/lib/social/store";
 import { isUsableEmail } from "./contact";
-import { getSalesControls, isResendConfigured, recordOutreach, sendEmail, type OutreachItem } from "./outreach";
+import { getSalesControls, isResendConfigured, markLeadContacted, recordOutreach, sendEmail, type OutreachItem } from "./outreach";
 
 // 塾向けのご案内（学びのOS・先生用ダッシュボード・無料お試し）を、過去に営業メールを送った学習塾へ、1通ずつ送る。
 // BCC の一斉送信ではなく、ふだんの営業送信と同じ道を通す（送信停止リスト・バウンス時の自動停止・開封とクリックの記録が効く）。
 // 送るのは、/admin/sales で「送る」を押したときだけ（1回に sales_controls.max_per_run 件まで）。自動では送らない。
 //
-// 対象：見込み先リスト (sales_leads) の「学習塾」で、送信済み・メールあての宛先。
+// 対象：見込み先リスト (sales_leads) の「学習塾」で、メールアドレスのある宛先。送信済みの塾に加えて、まだ送っていない塾（承認待ち・未着手）にも、書き出しを「はじめてご連絡します」に変えて送る（2026-11-24 じゅんさんの指示で広げた）。
 // 外す：送信停止の宛先、バウンス・苦情があった宛先、返信をくれた宛先（個別にやりとり中）、このご案内をもう送った宛先。
 // 文面とPDFは 2026-11-24 に代表が確認したもの（同日、スライドのリンクを足して id を 11b にした。11 では1通も送っていない）。変えるときは、id も変える（同じ id だと「もう送った」と数えるため）。
 
@@ -40,9 +40,13 @@ export async function setCampaignSkip(email: string, skip: boolean): Promise<voi
   await setSetting(SKIP_KEY, JSON.stringify([...cur]));
 }
 
+const OPEN_BEFORE = "以前、志望理由書の添削についてご連絡した、株式会社ブルースプリング「アオハルOS」の川本です。";
+// まだ一度もご連絡していない学習塾（見込み先リストで、承認待ち・未着手のもの）には、書き出しだけを変える
+export const OPEN_FIRST = "はじめてご連絡します。学習サービス「アオハルOS」を運営している、株式会社ブルースプリングの川本です。貴塾のホームページに掲載されている連絡先へ、ご案内をお送りしています。";
+
 export const CAMPAIGN_BODY = `学習塾の先生へ
 
-以前、志望理由書の添削についてご連絡した、株式会社ブルースプリング「アオハルOS」の川本です。
+${OPEN_BEFORE}
 
 先生お一人、または少ない人数で教室を回されている塾の助けになりたいと考え、アオハルOSを作ってきました。教材づくり、添削、生徒ひとりひとりの進み具合の確認。どれも大切ですが、全部を先生だけで担うのは大変です。その部分を引き受ける道具として、お使いいただけるところまで来ましたので、ご案内します。
 
@@ -72,16 +76,22 @@ ${CAMPAIGN.flyer}
 pr@bluespring.co.jp
 https://app.bluespring.co.jp/juku`;
 
+export const campaignBody = (first: boolean) => (first ? CAMPAIGN_BODY.replace(OPEN_BEFORE, OPEN_FIRST) : CAMPAIGN_BODY);
+
 export interface CampaignTarget {
   email: string;
   company: string;
+  /** まだ一度もご連絡していない宛先（書き出しが「はじめてご連絡します」になる） */
+  first?: boolean;
 }
 
 export interface CampaignStatus {
   /** 学習塾で、送信済み・メールあての宛先 */
   base: number;
-  /** これから送れる宛先 */
+  /** これから送れる宛先（以前に送った塾が先、はじめての塾があと） */
   eligible: CampaignTarget[];
+  /** eligible のうち、はじめてご連絡する宛先の数 */
+  firstCount: number;
   /** このご案内を送った数 */
   sent: number;
   excluded: { suppressed: number; bounced: number; replied: number; unusable: number; skipped: number };
@@ -93,21 +103,26 @@ const chunk = <T,>(a: T[], n: number) => Array.from({ length: Math.ceil(a.length
 
 export async function campaignStatus(): Promise<CampaignStatus> {
   const db = getSupabaseAdmin();
-  // 1. 学習塾・送信済み・メールあり
+  // 1. 学習塾・メールあり（送信済み。それに、まだ送っていない承認待ち・未着手）
   const leads = new Map<string, string>();
+  const fresh = new Set<string>();
+  const contactedLead = new Set<string>();
   for (let from = 0; from < 20000; from += 1000) {
     const { data, error } = await db
       .from("sales_leads")
-      .select("name,contact_email")
+      .select("name,contact_email,status")
       .eq("pattern_key", "juku")
-      .eq("status", "contacted")
+      .in("status", ["contacted", "queued", "new"])
       .not("contact_email", "is", null)
       .order("id", { ascending: true })
       .range(from, from + 999);
     if (error) throw new Error(`sales_leads select: ${error.message}`);
-    for (const r of (data ?? []) as { name: string; contact_email: string }[]) {
+    for (const r of (data ?? []) as { name: string; contact_email: string; status: string }[]) {
       const e = r.contact_email.trim().toLowerCase();
-      if (e && !leads.has(e)) leads.set(e, r.name);
+      if (!e) continue;
+      if (!leads.has(e)) leads.set(e, r.name);
+      if (r.status === "contacted") contactedLead.add(e);
+      else fresh.add(e);
     }
     if ((data?.length ?? 0) < 1000) break;
   }
@@ -149,7 +164,9 @@ export async function campaignStatus(): Promise<CampaignStatus> {
   const eligible: CampaignTarget[] = [];
   let base = 0;
   for (const email of emails) {
-    if (!sentBefore.has(email) && !done.has(email)) continue; // 実際に届いた記録がない宛先には送らない
+    // はじめての宛先：見込み先リストで「まだ送っていない」になっていて、メールを送った記録もない
+    const first = !sentBefore.has(email) && !done.has(email) && fresh.has(email) && !contactedLead.has(email);
+    if (!first && !sentBefore.has(email) && !done.has(email)) continue; // 「送信済み」なのにメールの記録がない宛先（フォームで送ったものなど）には送らない
     base++;
     if (done.has(email)) continue;
     if (skipSet.has(email)) {
@@ -159,12 +176,13 @@ export async function campaignStatus(): Promise<CampaignStatus> {
     else if (hit.has(email) || hit.has(`@${email.split("@")[1]}`)) excluded.suppressed++;
     else if (bad.has(email)) excluded.bounced++;
     else if (replied.has(email)) excluded.replied++;
-    else eligible.push({ email, company: leads.get(email) ?? "" });
+    else eligible.push({ email, company: leads.get(email) ?? "", ...(first ? { first: true } : {}) });
   }
-  return { base, eligible, sent: done.size, excluded, skips };
+  eligible.sort((a, b) => Number(!!a.first) - Number(!!b.first));
+  return { base, eligible, firstCount: eligible.filter((t) => t.first).length, sent: done.size, excluded, skips };
 }
 
-const item = (to: string, company: string): OutreachItem => ({ method: "email", to, company, subject: CAMPAIGN.subject, body: CAMPAIGN_BODY });
+const item = (to: string, company: string, first = false): OutreachItem => ({ method: "email", to, company, subject: CAMPAIGN.subject, body: campaignBody(first) });
 
 export interface CampaignRun {
   sent: number;
@@ -184,10 +202,12 @@ export async function runCampaign(): Promise<CampaignRun> {
   let failed = 0;
   for (const t of st.eligible.slice(0, controls.maxPerRun)) {
     if (Date.now() - started > 80_000) break; // 時間切れの前にやめる。残りは次に押したとき
-    const it = item(t.email, t.company);
+    const it = item(t.email, t.company, !!t.first);
     try {
       const r = await sendEmail(it);
       await recordOutreach({ ...it, recipient: it.to, status: "sent", external_id: r.id, source: SOURCE });
+      // はじめての宛先は、見込み先リストでも「送信済み」にする（ふだんの営業送信が、同じ塾へ別の文面を送らないように）
+      if (t.first) await markLeadContacted(it.to).catch(() => undefined);
       sent++;
     } catch (e) {
       failed++;

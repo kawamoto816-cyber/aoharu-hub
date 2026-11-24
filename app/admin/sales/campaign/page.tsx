@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { isAdminUser } from "@/lib/metrics/admin-auth";
-import { CAMPAIGN, CAMPAIGN_BODY, campaignStatus } from "@/lib/sales/campaign";
+import { CAMPAIGN, CAMPAIGN_BODY, OPEN_FIRST, campaignStatus } from "@/lib/sales/campaign";
 import { getSalesControls } from "@/lib/sales/outreach";
 import { runCampaignAction, sendCampaignTestAction, skipCampaignAction } from "./actions";
 
@@ -36,7 +36,7 @@ export default async function CampaignPage({ searchParams }: { searchParams: Pro
       </p>
       <h1 className="mt-2 text-2xl font-bold">{CAMPAIGN.name}</h1>
       <p className="mt-2 text-sm leading-relaxed text-slate-600">
-        これまでに営業メールを送った学習塾へ、1通ずつ送ります。送信停止の宛先、届かなかった宛先、返信をくださった宛先、このご案内をもう送った宛先には送りません。送るのは、下のボタンを押したときだけです。
+        見込み先リストの学習塾のうち、メールアドレスのある宛先へ、1通ずつ送ります。これまでに営業メールを送った塾が先で、そのあと、まだ一度も送っていない塾（書き出しが「はじめてご連絡します」になります）です。お問い合わせフォームしかない塾には、ここからは送れません。送信停止の宛先、届かなかった宛先、返信をくださった宛先、このご案内をもう送った宛先には送りません。送るのは、下のボタンを押したときだけです。
       </p>
 
       {msg && <p className="mt-4 rounded-lg bg-emerald-50 p-3 text-sm font-bold text-emerald-800">{msg}</p>}
@@ -49,7 +49,7 @@ export default async function CampaignPage({ searchParams }: { searchParams: Pro
             {[
               { l: "これから送れる", v: st.eligible.length },
               { l: "送った", v: st.sent },
-              { l: "対象（学習塾・送信済み）", v: st.base },
+              { l: "対象（学習塾・メールあり）", v: st.base },
               { l: "1回に送る上限", v: controls.maxPerRun },
             ].map((x) => (
               <li key={x.l} className="rounded-xl border border-slate-200 bg-white p-4">
@@ -58,6 +58,9 @@ export default async function CampaignPage({ searchParams }: { searchParams: Pro
               </li>
             ))}
           </ul>
+          <p className="mt-2 text-xs font-bold text-slate-700">
+            これから送れる {st.eligible.length} 件のうち、以前に送った塾 {st.eligible.length - st.firstCount} 件・はじめての塾 {st.firstCount} 件
+          </p>
           <p className="mt-2 text-xs text-slate-500">
             送らない宛先：送信停止 {st.excluded.suppressed}・届かなかった／苦情 {st.excluded.bounced}・返信あり {st.excluded.replied}・送れないアドレス {st.excluded.unusable}・「送らない」にした {st.excluded.skipped}
           </p>
@@ -91,6 +94,7 @@ export default async function CampaignPage({ searchParams }: { searchParams: Pro
                 {st.eligible.map((t, i) => (
                   <li key={t.email} className={`flex items-center justify-between gap-2 py-1 ${i < controls.maxPerRun ? "" : "opacity-60"}`}>
                     <span className="min-w-0">
+                      {t.first && <span className="mr-1 rounded bg-amber-100 px-1 text-[10px] font-bold text-amber-900">はじめて</span>}
                       {t.company}　<span className="break-all font-mono">{t.email}</span>
                     </span>
                     <form action={skipCampaignAction}>
@@ -135,6 +139,11 @@ export default async function CampaignPage({ searchParams }: { searchParams: Pro
         {CAMPAIGN.subject}
       </p>
       <pre className="mt-2 whitespace-pre-wrap rounded-xl border border-slate-200 bg-white p-4 text-[13px] leading-relaxed">{CAMPAIGN_BODY}</pre>
+      <p className="mt-2 rounded-lg bg-amber-50 p-3 text-xs leading-relaxed text-amber-900">
+        「はじめて」の宛先には、2段落目（「以前、志望理由書の添削について…」）だけを、次の文に変えて送ります：
+        <br />
+        {OPEN_FIRST}
+      </p>
       <p className="mt-2 text-xs text-slate-500">
         資料（PDF）は添付ではなく、文中のリンクで開きます：
         <a href={CAMPAIGN.flyer} target="_blank" rel="noopener noreferrer" className="ml-1 font-bold text-indigo-600 underline underline-offset-2">
