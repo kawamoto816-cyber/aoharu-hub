@@ -87,7 +87,7 @@
 8 civ-kokyo-jizoku
 9 civ-rinri-greece
 10 civ-rinri-christ
-11 civ-rinri-renaissance
+11 civ-rinri-christ
 12 civ-rinri-china
 13 civ-rinri-bukkyo
 14-17 civ-rinri-gendai
@@ -141,7 +141,7 @@
 101 phyb-riyo
 102 phyb-energy
 103 phyb-oto
-104 phyb-denryu
+104 phyb-nami
 105-108 phyb-hosoku
 109 phyb-undo
 110 phyb-netsu
@@ -157,7 +157,7 @@
 107 chemb-san
 108 chemb-sanka
 109-110 chemb-hannoshiki
-111-113 chemb-bunri
+111-113 chemb-genso
 114-117 chemb-hannoshiki
 118-119 chemb-mol
 @r7-hon-biob
@@ -172,7 +172,7 @@
 116-117 biob-biome
 @r7-hon-earthb
 101 earthb-taiyokei
-102 earthb-naibu
+102 earthb-plate
 103-104 earthb-kazan
 105-106 earthb-chiso
 107-109 earthb-junkan
@@ -180,7 +180,7 @@
 113-115 earthb-saigai
 @r7-hon-phy
 1 phy-kitai
-2 phy-hoshabutsu
+2 phy-baninryoku
 3 phy-goutai
 4 phy-denba
 5 phy-genshi
@@ -213,7 +213,7 @@
 4-5 bio-genbun
 6-7 bio-tanpaku
 8 bio-chosetsu
-9-10 bio-kotaigun
+9-10 bio-oto
 11 bio-kotaigun
 12-15 bio-kogosei
 16-19 bio-dobutsu-hassei
@@ -226,7 +226,8 @@
 3 earth-chishi
 4 earth-kobutsu
 5 earth-taiki
-6-7 earth-kozo
+6 earth-kozo
+7 earth-wakusei
 8 earth-henseki
 9 earth-plate
 10 earth-henseki
@@ -238,24 +239,33 @@
 23-25 earth-kosei
 26-27 earth-ginga
 @r7-hon-math1a
-1 アイウエオカキクケ math-1-jissu
-1 コサシスセソタチツテトナニヌネ math-1-keiryo
+1 アイ math-1-jissu
+1 ウエオカキクケ math-1-shugo
+1 コサシ math-1-sankakuhi
+1 スセソタチツテトナニヌネ math-1-keiryo
 2 アイウエオカキクケコサシスセソ math-1-nijikansu
 2 タチツテトナニヌネ math-1-data
-3 アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモ math-a-kukan
+3 アイ math-a-kukan
+3 ウエオカキク math-a-sankakukei
+3 ケコサシスセ math-a-kukan
 4 アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモ math-a-kakuritsu
 @r7-hon-math2bc
 1 アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモ math-2-sankaku
-2 アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモ math-2-taisu
-3 アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモ math-2-sekibun
-4 アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモ math-b-sigma
-5 アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモ math-b-suitei
+2 アイウエオカキクケ math-2-shisu
+2 コサシ math-2-taisu
+3 アイウエオカキクケコサシスセ math-2-bibun
+3 ソタチツテトナ math-2-sekibun
+4 アイウエオカキク math-b-tosa
+4 ケコサシスセソ math-b-sigma
+5 アイウエ math-b-nikou
+5 オカキクケコ math-b-suitei
+5 サシスセソタチツ math-b-kentei
 6 アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモ math-c-kukan
 7 アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモ math-c-fukuso
 @r7-hon-joho1
-1 アイ info-1-moral
-1 ウエオカ info-1-computer
-1 キク info-1-digital
+1 ア info-1-moral
+1 イ info-1-network
+1 ウエオカキク info-1-digital
 1 ケコサ info-1-design
 2 アイウエオカキクケ info-1-system
 2 コサシスセソタチ info-1-model

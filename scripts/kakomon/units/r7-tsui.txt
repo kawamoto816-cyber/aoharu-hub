@@ -1,25 +1,34 @@
 @r7-tsui-math1a
-1 アイウエオカキクケコサシスセソ math-1-shiki
-1 タチツテトナニヌネノ math-1-keiryo
+1 アイウエオカキクケコサシ math-1-jissu
+1 スセソタチツテトナニヌネノ math-1-keiryo
 2 アイウエオカキクケコサシ math-1-nijikansu
 2 スセソタチツテト math-1-data
-3 アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモ math-a-sankakukei
-4 アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモ math-a-kakuritsu
+3 アイウエオカキ math-a-sankakukei
+3 クケコサシスセ math-a-en
+4 アイウエオカキ math-a-baai
+4 クケコサシスセソタチツテトナニ math-a-kakuritsu
 @r7-tsui-math2bc
-1 アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモ math-2-shomei
+1 アイウ math-2-koji
+1 エオカキクケ math-2-shomei
 2 アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモ math-2-en
 3 アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモ math-2-sekibun
-4 アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモ math-b-zenka
-5 アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモ math-b-suitei
+4 アイウエオカキクケコサシスセソ math-b-zenka
+4 タチツ math-b-kino
+5 アイウエオカキクケコサシ math-b-bunpu
+5 ス math-b-nikou
+5 セ math-b-suitei
 6 アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモ math-c-kukan
-7 アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモ math-c-nijikyokusen
+7 アイウ math-c-fukuso
+7 エオ math-c-nijikyokusen
+7 カキクケ math-c-fukuso
 @r7-tsui-joho1
-1 アイ info-1-chizai
-1 ウエ info-1-network
-1 オカキク info-1-digital
-1 ケコ info-1-system
+1 ア info-1-chizai
+1 イウエ info-1-hyogen
+1 オカキク info-1-system
+1 ケコ info-1-digital
 2 アイウエオカキ info-1-moral
-2 クケコサシスセソ info-1-algorithm
+2 クケコサシ info-1-digital
+2 スセソ info-1-algorithm
 3 アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモ info-1-program
 4 アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモ info-1-data
 @r7-tsui-eng-r
@@ -91,8 +100,8 @@
 6-7 hist-sogo-kodo
 8 hist-sogo-global
 9-13 hist-w-chusei
-14 hist-w-shuken
-15 hist-w-india
+14 hist-w-gendai
+15 hist-w-gendai
 16 hist-w-chusei
 17 hist-w-daikokai
 18-19 hist-w-india
@@ -107,7 +116,7 @@
 31 hist-w-reisen
 32 hist-w-gendai
 @r7-tsui-rinri
-1-2 civ-kokyo-kenpo
+1-2 civ-kokyo-shiso
 3 civ-kokyo-chiho
 4 civ-kokyo-keiyaku
 5-8 civ-kokyo-rodo
@@ -118,13 +127,14 @@
 13 civ-rinri-kant
 14 civ-rinri-gendai
 15 civ-rinri-keiken
-16-17 civ-rinri-gendai
+16 civ-rinri-jitsuzon
+17 civ-rinri-gendai
 18-22 civ-rinri-nihon
 23 civ-rinri-seimei
 24-28 civ-rinri-joho
 29-33 civ-rinri-gendai
 @r7-tsui-seikei
-1-2 civ-kokyo-kenpo
+1-2 civ-kokyo-shiso
 3 civ-kokyo-chiho
 4 civ-kokyo-keiyaku
 5-8 civ-kokyo-rodo
@@ -148,13 +158,15 @@
 29-30 civ-seikei-boeki
 31-32 civ-seikei-togo
 @r7-tsui-phyb
-101-103 phyb-riyo
-104 phyb-undo
-105 phyb-netsu
+101 phyb-riyo
+102 phyb-hosoku
+103 phyb-undo
+104-105 phyb-netsu
 106-107 phyb-hosoku
 108-109 phyb-undo
 110 phyb-hosoku
-111-115 phyb-denryu
+111-113 phyb-denryu
+114-115 phyb-oto
 @r7-tsui-chemb
 101 chemb-bunri
 102 chemb-genshi
@@ -178,7 +190,8 @@
 113-115 biob-sento
 116-117 biob-seitaikei
 @r7-tsui-earthb
-101-102 earthb-plate
+101 earthb-plate
+102 earthb-jishin
 103-104 earthb-naibu
 105 earthb-taiki
 106-109 earthb-junkan
@@ -186,7 +199,7 @@
 111-112 earthb-taiyokei
 113-115 earthb-saigai
 @r7-tsui-phy
-1-2 phy-undoryo
+1-2 phy-enundo
 3 phy-hoshabutsu
 4 phy-doppler
 5 phy-denba
@@ -213,7 +226,8 @@
 @r7-tsui-bio
 1-2 bio-tanpaku
 3-5 bio-chosetsu
-6-10 bio-seitaikei
+6 bio-kogosei
+7-10 bio-seitaikei
 11-12 bio-juyo
 13-14 bio-dobutsu-hassei
 15-16 bio-juyo
@@ -226,7 +240,7 @@
 1 earth-kobutsu
 2 earth-taiki
 3 earth-wakusei
-4 earth-plate
+4 earth-koseibutsu
 5 earth-ginga
 6-7 earth-kozo
 8 earth-henseki
