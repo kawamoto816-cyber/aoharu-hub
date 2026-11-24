@@ -162,7 +162,14 @@ export function NijiChallenge({
   // 画面の解答用紙に答えを入れてから採点する形（マークは自動、語句は照合、記述はチェック表）。
   // 公立高校入試はいつもこの形。2次試験は、はじめるときにえらぶ（記述が中心の科目は画面、数学・理科は紙がはじめの設定）
   const [sheetPick, setSheetPick] = useState(isKoko || K);
-  const A = isKoko || (s ? !!s.sheet : sheetPick);
+  // 解答用紙ができる前（紙に解いて自己採点）に残した公立高校入試の記録は、前の形のまま見せて、やり直しを案内する
+  const legacy =
+    isKoko &&
+    !!s &&
+    s.sheet === undefined &&
+    s.phase !== "run" &&
+    !Object.values(s.marks).some((m) => m.text !== undefined);
+  const A = s ? (s.sheet ?? (isKoko && !legacy)) : isKoko || sheetPick;
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- 初回だけ、この端末に残した続きから復元する
@@ -714,6 +721,23 @@ export function NijiChallenge({
             {total}点
           </span>
         </div>
+        {legacy && (
+          <section className="mb-3 rounded-[14px] border-[1.5px] border-[#15172B] bg-[#FFF8E1] p-4">
+            <p className="m-0 text-[14px] font-black">
+              この記録は、前の形（紙に解いて自己採点）で残したものです
+            </p>
+            <p className="m-0 mt-1 text-[13px] leading-relaxed">
+              いまは、画面の解答用紙に答えを入れてから採点する形になりました。新しい形で解くには、この記録を消して、はじめからやり直してください。
+            </p>
+            <button
+              type="button"
+              onClick={reset}
+              className={`${smBtn} mt-2 cursor-pointer bg-white text-[#15172B]`}
+            >
+              記録を消して、解答用紙で解く
+            </button>
+          </section>
+        )}
         <section className={card}>
           <p className="m-0 text-[13px] leading-relaxed text-[#3A3D55]">
             {A
