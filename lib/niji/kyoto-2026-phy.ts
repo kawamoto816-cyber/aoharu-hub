@@ -18,8 +18,7 @@ export const KYOTO_2026_PHY: NijiExam = {
   page: "https://www.kyoto-u.ac.jp/ja/admissions/undergrad/past-eq/r8-eq",
   pageLabel:
     "京都大学 令和8年度「試験問題」及び「解答又は解答例等及び出題意図」",
-  checked:
-    "問題Ⅰは、ほかの解答例と答えが合うことを確かめました。問題Ⅱ・Ⅲは、アオハルが解いたままで、ほかの資料とはまだ照らしていません。",
+  checked: "問題Ⅰ〜Ⅲの全設問で、ほかの解答例と答えが合うことを確かめました。",
   daimon: [
     {
       no: "Ⅰ",
