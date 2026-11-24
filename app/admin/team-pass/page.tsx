@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { isAdminUser } from "@/lib/metrics/admin-auth";
-import { listTrialTeamPasses, TEACHER_SEATS, TRIAL_MAX_STUDENTS } from "@/lib/team-pass/store";
+import { dashboardUrl, ensureManagerKey, listTrialTeamPasses, TEACHER_SEATS, TRIAL_MAX_STUDENTS } from "@/lib/team-pass/store";
 import { issueTrialCodeAction } from "./actions";
 
 // /admin/team-pass: 無料お試し用の招待コードを出す（@bluespring.co.jp でログインした人だけ）。
@@ -30,6 +30,8 @@ export default async function AdminTeamPassPage({ searchParams }: { searchParams
   }
   const { issued, error } = await searchParams;
   const passes = await listTrialTeamPasses();
+  // 前に出したコードにも、先生用ダッシュボードの鍵を用意する
+  for (const p of passes) await ensureManagerKey(p).catch(() => "");
   const just = issued ? passes.find((p) => p.code === issued) : undefined;
   // 期限の初期値：今日から30日後（日本時間）
   const defEnds = defaultEndsOn();
@@ -60,7 +62,7 @@ export default async function AdminTeamPassPage({ searchParams }: { searchParams
           <p className="mt-2 text-xs text-slate-600">メールに貼る案内（コピーして使えます）</p>
           <textarea
             readOnly
-            rows={9}
+            rows={13}
             className="mt-1 block w-full rounded-lg border border-slate-300 bg-white p-3 font-mono text-xs leading-relaxed"
             defaultValue={[
               `招待コード：${just.code}`,
@@ -72,6 +74,13 @@ export default async function AdminTeamPassPage({ searchParams }: { searchParams
               `   ${codeUrl(just.code)}`,
               "2. 無料の会員登録（またはログイン）をします。",
               "3. 招待コードが入っていることを確かめて、ボタンを押します。",
+              ...(just.mgr
+                ? [
+                    "",
+                    "▼ 先生用のページ（コードを入れた生徒さんの学習状況が見られます。このURLは先生だけでお持ちください）",
+                    dashboardUrl(just.mgr),
+                  ]
+                : []),
             ].join("\n")}
           />
         </section>
@@ -105,14 +114,15 @@ export default async function AdminTeamPassPage({ searchParams }: { searchParams
         <p className="mt-2 text-sm text-slate-500">まだありません。</p>
       ) : (
         <div className="mt-2 overflow-x-auto">
-          <table className="w-full min-w-[560px] border-collapse text-left text-sm">
+          <table className="w-full min-w-[680px] border-collapse text-left text-sm">
             <thead>
               <tr className="border-b border-slate-300 text-xs text-slate-500">
                 <th className="py-2 pr-3">発行先</th>
                 <th className="py-2 pr-3">コード</th>
                 <th className="py-2 pr-3">使った人数</th>
                 <th className="py-2 pr-3">期限</th>
-                <th className="py-2">発行日</th>
+                <th className="py-2 pr-3">発行日</th>
+                <th className="py-2">先生用</th>
               </tr>
             </thead>
             <tbody>
@@ -124,7 +134,16 @@ export default async function AdminTeamPassPage({ searchParams }: { searchParams
                     {p.users.length} / {p.seats}
                   </td>
                   <td className="py-2 pr-3">{day(p.endsAt)}</td>
-                  <td className="py-2">{day(p.createdAt)}</td>
+                  <td className="py-2 pr-3">{day(p.createdAt)}</td>
+                  <td className="py-2">
+                    {p.mgr ? (
+                      <a href={dashboardUrl(p.mgr)} target="_blank" rel="noopener noreferrer" className="font-bold text-indigo-600 underline underline-offset-2">
+                        ダッシュボード
+                      </a>
+                    ) : (
+                      "—"
+                    )}
+                  </td>
                 </tr>
               ))}
             </tbody>

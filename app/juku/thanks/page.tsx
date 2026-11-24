@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { CheckoutSuccessTracker } from "@/components/CheckoutSuccessTracker";
-import { ensureTeamPassForSession, TEACHER_SEATS } from "@/lib/team-pass/store";
+import { dashboardUrl, ensureManagerKey, ensureTeamPassForSession, TEACHER_SEATS } from "@/lib/team-pass/store";
 
 // /juku/thanks：塾向けシーズンプランの支払いのあと。招待コードを見せる（メールでも送る）。
 export const metadata: Metadata = { title: "お申し込みありがとうございました｜アオハルOS", robots: { index: false, follow: false } };
@@ -10,6 +10,7 @@ export const dynamic = "force-dynamic";
 export default async function JukuThanks({ searchParams }: { searchParams: Promise<{ session_id?: string }> }) {
   const { session_id } = await searchParams;
   const pass = session_id ? await ensureTeamPassForSession(session_id).catch(() => null) : null;
+  const mgr = pass ? await ensureManagerKey(pass).catch(() => "") : "";
   const redeemUrl = pass ? `https://app.bluespring.co.jp/juku/code?c=${encodeURIComponent(pass.code)}` : "";
   return (
     <main className="mx-auto max-w-xl flex-1 px-5 py-16 text-slate-800">
@@ -33,6 +34,18 @@ export default async function JukuThanks({ searchParams }: { searchParams: Promi
             <li>次のページを開いて、招待コードを入れます：<br /><span className="break-all text-indigo-600">{redeemUrl}</span></li>
             <li>入れた人は、すぐに全機能が使えるようになります。先生ご自身も1人分使えます。</li>
           </ol>
+          {mgr && (
+            <>
+              <h2 className="mt-8 text-sm font-bold text-slate-900">先生用のページ</h2>
+              <p className="mt-2 text-sm leading-relaxed">
+                コードを入れた生徒さんの学習状況（最後に使った日、添削・面接練習の回数、解いた問題の数）が見られます。このURLは先生だけでお持ちください。
+                <br />
+                <a href={dashboardUrl(mgr)} className="break-all font-bold text-indigo-600 underline underline-offset-2">
+                  {dashboardUrl(mgr)}
+                </a>
+              </p>
+            </>
+          )}
           <p className="mt-6 text-xs leading-relaxed text-slate-500">自動更新はなく、期限後の請求はありません。領収書・請求書は Stripe からメールで届きます。</p>
         </>
       ) : (

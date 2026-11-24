@@ -20,6 +20,7 @@ export function RedeemForm({ initialCode }: { initialCode: string }) {
   const { isLoaded, isSignedIn } = useUser();
   const clerk = useClerk();
   const [code, setCode] = useState(initialCode);
+  const [name, setName] = useState("");
   const [state, setState] = useState<"idle" | "sending" | "done">("idle");
   const [error, setError] = useState<string | null>(null);
   const [until, setUntil] = useState("2027年3月31日");
@@ -28,7 +29,7 @@ export function RedeemForm({ initialCode }: { initialCode: string }) {
     setState("sending");
     setError(null);
     try {
-      const res = await fetch("/api/team-pass/redeem", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ code }) });
+      const res = await fetch("/api/team-pass/redeem", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ code, name }) });
       const j = (await res.json().catch(() => ({}))) as { ok?: boolean; reason?: string; endsAt?: string };
       if (j.ok) {
         // お試し用のコードは期限が短いことがあるので、コードの期限をそのまま出す
@@ -75,6 +76,19 @@ export function RedeemForm({ initialCode }: { initialCode: string }) {
             placeholder="JUKU-XXXX-XXXX"
             className="w-full rounded-xl border-[1.5px] border-[#C9C7BC] px-4 py-3 font-mono text-lg tracking-widest outline-none focus:border-[#1533B8]"
           />
+          <label className="mt-3 block text-[13px] font-bold">
+            先生に見せる名前（ニックネームでも）
+            <input
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              maxLength={20}
+              placeholder="例：たなか／たなT"
+              className="mt-1 w-full rounded-xl border-[1.5px] border-[#C9C7BC] px-4 py-2.5 text-base outline-none focus:border-[#1533B8]"
+            />
+          </label>
+          <p className="m-0 mt-2 text-[12px] leading-relaxed text-[#5A5D75]">
+            コードを使うと、塾・教室の先生に、上の名前と、学習の回数（添削・面接練習・問題を解いた数など）が見えるようになります。書いた文章の中身や、メールアドレスは見えません。
+          </p>
           <button
             type="button"
             onClick={submit}

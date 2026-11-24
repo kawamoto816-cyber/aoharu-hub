@@ -33,6 +33,10 @@ export type TeamPass = {
   org?: string;
   /** 発行した社内アカウント */
   issuedBy?: string;
+  /** 先生用ダッシュボード (/juku/dashboard?k=…) の鍵。知っている人だけが、この塾の生徒の学習状況を見られる */
+  mgr?: string;
+  /** コードを入れたときに本人が決めた、先生に見せる名前（userId → 名前） */
+  names?: Record<string, string>;
 };
 
 const ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // 0/O・1/I を除く
@@ -41,6 +45,29 @@ function newCode(): string {
   const part = () => Array.from({ length: 4 }, () => ALPHABET[randomInt(ALPHABET.length)]).join("");
   return `JUKU-${part()}-${part()}`;
 }
+
+function newManagerKey(): string {
+  return Array.from({ length: 28 }, () => ALPHABET[randomInt(ALPHABET.length)]).join("");
+}
+
+/** 先生用ダッシュボードの鍵を用意する（前に出したコードには無いので、はじめて見るときに作る） */
+export async function ensureManagerKey(pass: TeamPass): Promise<string> {
+  if (pass.mgr) return pass.mgr;
+  pass.mgr = newManagerKey();
+  await saveTeamPass(pass);
+  await setSetting(`team_pass_mgr:${pass.mgr}`, pass.code);
+  return pass.mgr;
+}
+
+export async function getTeamPassByManagerKey(key: string): Promise<TeamPass | null> {
+  if (!/^[A-Z0-9]{20,40}$/.test(key)) return null;
+  const code = await getSetting(`team_pass_mgr:${key}`);
+  if (!code) return null;
+  const pass = await getTeamPass(code);
+  return pass && pass.mgr === key ? pass : null;
+}
+
+export const dashboardUrl = (key: string) => `https://app.bluespring.co.jp/juku/dashboard?k=${encodeURIComponent(key)}`;
 
 export function normalizeCode(raw: string): string {
   return raw.toUpperCase().replace(/[^A-Z0-9]/g, "").replace(/^JUKU/, "").replace(/^(.{4})(.{4})$/, "JUKU-$1-$2");
@@ -75,6 +102,7 @@ export async function ensureTeamPassForSession(sessionId: string): Promise<TeamP
   };
   await saveTeamPass(pass);
   await setSetting(`team_pass_session:${sessionId}`, pass.code);
+  await ensureManagerKey(pass);
   await sendCodeMail(pass).catch((e) => console.error("[team-pass] mail", e instanceof Error ? e.message : e));
   return pass;
 }
@@ -118,6 +146,7 @@ export async function createTrialTeamPass(input: {
     ...(input.issuedBy ? { issuedBy: input.issuedBy } : {}),
   };
   await saveTeamPass(pass);
+  await ensureManagerKey(pass);
   const list = await listTrialCodes();
   await setSetting(TRIALS_KEY, JSON.stringify([code, ...list]));
   return pass;
@@ -146,7 +175,7 @@ export type RedeemResult =
   | { ok: false; reason: "not_found" | "full" | "expired" | "already_paid" };
 
 /** 生徒（または指導者）がコードを入れたとき。同じ人が2回入れても1人分しか数えない */
-export async function redeemTeamPass(rawCode: string, userId: string): Promise<RedeemResult> {
+export async function redeemTeamPass(rawCode: string, userId: string, name = ""): Promise<RedeemResult> {
   const pass = await getTeamPass(normalizeCode(rawCode));
   if (!pass) return { ok: false, reason: "not_found" };
   if (Date.parse(pass.endsAt) < Date.now()) return { ok: false, reason: "expired" };
@@ -156,6 +185,12 @@ export async function redeemTeamPass(rawCode: string, userId: string): Promise<R
     // 月額の契約中の人には付けない（二重に数えない・月額の請求と混ざらないように）
     if (row.plan !== "free" && row.status === "active" && row.stripe_subscription_id) return { ok: false, reason: "already_paid" };
     pass.users.push(userId);
+    await saveTeamPass(pass);
+  }
+  // 先生に見せる名前（本人が決めたもの）。あとから入れ直したら上書きする
+  const shown = name.replace(/[\u0000-\u001f]/g, "").trim().slice(0, 20);
+  if (shown && pass.names?.[userId] !== shown) {
+    pass.names = { ...(pass.names ?? {}), [userId]: shown };
     await saveTeamPass(pass);
   }
   await grantSeasonPass({ userId, stripePriceId: `${TEAM_METADATA_KIND}:${pass.code}`, endsAt: pass.endsAt });
@@ -176,6 +211,13 @@ async function sendCodeMail(p: TeamPass): Promise<void> {
     "▼ 生徒さん・先生ご自身がコードを入れるページ（各自のアカウントで登録・ログインしてから入れてください）",
     `https://app.bluespring.co.jp/juku/code?c=${encodeURIComponent(p.code)}`,
     "",
+    ...(p.mgr
+      ? [
+          "▼ 先生用のページ（コードを入れた生徒さんの学習状況が見られます。このURLは先生だけでお持ちください）",
+          dashboardUrl(p.mgr),
+          "",
+        ]
+      : []),
     "コードを入れた人は、期限まで志望理由書・小論文の添削、面接練習など、アオハルOSの全機能を回数の制限なく使えます。",
     "自動更新はなく、期限後の請求はありません。領収書は Stripe から別にお送りしています。",
     "",
