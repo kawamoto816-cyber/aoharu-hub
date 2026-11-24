@@ -30,14 +30,14 @@ export async function listPendingForms(limit = 30): Promise<PendingForm[]> {
   const supabase = getSupabaseAdmin();
   const { data, error } = await supabase
     .from("sales_outreach")
-    .select("id,recipient,company,subject,body")
+    .select("id,recipient,company,subject,body,source")
     .eq("method", "form")
     .eq("status", "manual")
     .order("created_at", { ascending: true })
     .order("id", { ascending: true })
     .limit(Math.max(limit * 3, 100));
   if (error) throw new Error(`sales_outreach select: ${error.message}`);
-  const rows = (data ?? []) as { id: number; recipient: string; company: string | null; subject: string | null; body: string | null }[];
+  const rows = (data ?? []) as { id: number; recipient: string; company: string | null; subject: string | null; body: string | null; source: string | null }[];
   if (rows.length === 0) return [];
 
   // 90日以内に同じフォームへ送信済みのもの
@@ -45,11 +45,15 @@ export async function listPendingForms(limit = 30): Promise<PendingForm[]> {
   const urls = [...new Set(rows.map((r) => r.recipient))];
   const { data: sentRows } = await supabase
     .from("sales_outreach")
-    .select("recipient")
+    .select("recipient,source")
     .in("recipient", urls)
     .in("status", ["sent", "manual_sent"])
     .gte("sent_at", since);
   const alreadySent = new Set(((sentRows ?? []) as { recipient: string }[]).map((r) => r.recipient));
+  // 塾向けご案内（source が campaign-form-…）は、以前に送ったフォームへも、代表がボタンで並べたものだけ改めて送る（2026-11-24 じゅんさんの判断）。
+  // そのご案内そのものを同じフォームへ二度送ることはしない
+  const isCampaign = (source: string | null) => !!source && source.startsWith("campaign-form-");
+  const sentBySource = new Set(((sentRows ?? []) as { recipient: string; source: string | null }[]).map((r) => `${r.source ?? ""}\n${r.recipient}`));
   // 以前に自動送信で「見送り・失敗」にした宛先 (同じフォームに何度も送ろうとしない。失敗には押した可能性のあるものも含む)
   const { data: doneRows } = await supabase.from("sales_outreach").select("recipient").in("recipient", urls).in("status", ["skipped", "failed"]);
   const alreadyTried = new Set(((doneRows ?? []) as { recipient: string }[]).map((r) => r.recipient));
@@ -73,7 +77,7 @@ export async function listPendingForms(limit = 30): Promise<PendingForm[]> {
     const company = r.company ?? "";
     let skip: string | null = null;
     if (seen.has(r.recipient)) skip = "同じフォームが重複して承認されていたため";
-    else if (alreadySent.has(r.recipient)) skip = "90日以内に同じフォームへ送信済み";
+    else if (isCampaign(r.source) ? sentBySource.has(`${r.source}\n${r.recipient}`) : alreadySent.has(r.recipient)) skip = "90日以内に同じフォームへ送信済み";
     else if (alreadyTried.has(r.recipient)) skip = "以前に見送り・失敗になったフォーム (同じフォームに繰り返し送らない)";
     else if (suppressed.has(r.recipient) || suppressed.has(`@${hostOf(r.recipient)}`)) skip = "送信停止リストにある宛先";
     else if (paused.has(r.recipient.toLowerCase())) skip = "送るのを止めているパターン（習い事教室）";

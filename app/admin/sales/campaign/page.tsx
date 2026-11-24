@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { isAdminUser } from "@/lib/metrics/admin-auth";
-import { CAMPAIGN, CAMPAIGN_BODY, CAMPAIGN_FORM_BODY, FORM_BATCH, OPEN_FIRST, campaignFormStatus, campaignStatus } from "@/lib/sales/campaign";
+import { CAMPAIGN, CAMPAIGN_BODY, CAMPAIGN_FORM_BODY, FORM_BATCH, FORM_OPEN_AGAIN, OPEN_FIRST, campaignFormStatus, campaignStatus } from "@/lib/sales/campaign";
 import { getSalesControls } from "@/lib/sales/outreach";
 import { enqueueCampaignFormsAction, runCampaignAction, sendCampaignTestAction, skipCampaignAction } from "./actions";
 
@@ -137,15 +137,16 @@ export default async function CampaignPage({ searchParams }: { searchParams: Pro
       <h2 className="mt-10 text-lg font-bold">フォーム宛て（メールアドレスの無い学習塾）</h2>
       <p className="mt-2 text-sm leading-relaxed text-slate-600">
         お問い合わせフォームしか連絡先の無い学習塾のうち、まだ一度も送っていない先へ、同じご案内を出します。ここで「並べる」を押すと送信待ちの列に入り、平日12:30
-        の自動送信（GitHub 上のブラウザ）が、古い順に1日30件まで入力・送信します。営業お断り・画像認証・答えられない必須項目のあるフォームは、自動で見送ります。以前にフォームで送った塾には並べません（同じフォームへは90日あけるきまりのため）。
+        の自動送信（GitHub 上のブラウザ）が、古い順に1日30件まで入力・送信します。営業お断り・画像認証・答えられない必須項目のあるフォームは、自動で見送ります。以前にフォームで送った塾にも、返信・苦情・送信停止の記録が無ければ、下の別のボタンで改めて並べられます（書き出しが「以前、お問い合わせフォームよりご連絡した…」になります）。
       </p>
       {typeof fs === "string" ? (
         <p className="mt-4 rounded-lg bg-red-50 p-3 text-sm font-bold text-red-700">フォーム宛てを読みこめませんでした：{fs}</p>
       ) : (
         <>
-          <ul className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-5">
+          <ul className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
             {[
-              { l: "これから並べられる", v: fs.eligible.length },
+              { l: "並べられる（はじめての塾）", v: fs.eligible.length },
+              { l: "並べられる（以前に送った塾）", v: fs.again.length },
               { l: "送信待ち（このご案内）", v: fs.waiting },
               { l: "送信済み", v: fs.sent },
               { l: "見送り", v: fs.skipped },
@@ -172,6 +173,22 @@ export default async function CampaignPage({ searchParams }: { searchParams: Pro
               ))}
             </div>
           )}
+          {fs.again.length > 0 && !controls.paused && (
+            <div className="mt-3 flex flex-wrap items-center gap-3">
+              {[FORM_BATCH, FORM_BATCH * 5].map((n) => (
+                <form key={n} action={enqueueCampaignFormsAction}>
+                  <input type="hidden" name="n" value={n} />
+                  <input type="hidden" name="again" value="1" />
+                  <button type="submit" className={`${btn} border border-slate-300 bg-white text-slate-800`}>
+                    以前に送った塾：次の {Math.min(fs.again.length, n)} 件を並べる
+                  </button>
+                </form>
+              ))}
+            </div>
+          )}
+          <p className="mt-2 text-xs text-slate-500">
+            以前に送った塾のうち、外した先：返信・苦情の記録あり {fs.againExcluded.replied}・送信停止 {fs.againExcluded.suppressed}
+          </p>
           <p className="mt-2 text-xs leading-relaxed text-slate-500">押すと、列に入ります（取り消すときは、Claude に伝えてください）。実際に送られるのは、次の平日12:30 からです。</p>
           {fs.eligible.length > 0 && (
             <details className="mt-4 rounded-xl border border-slate-200 bg-white p-4">
@@ -190,6 +207,11 @@ export default async function CampaignPage({ searchParams }: { searchParams: Pro
             <summary className="cursor-pointer text-sm font-bold">フォームに入れる文面</summary>
             <p className="mt-2 text-xs text-slate-500">件名の欄があるフォームには、メールと同じ件名を入れます。</p>
             <pre className="mt-2 whitespace-pre-wrap text-[13px] leading-relaxed">{CAMPAIGN_FORM_BODY}</pre>
+            <p className="mt-2 rounded-lg bg-amber-50 p-3 text-xs leading-relaxed text-amber-900">
+              以前に送った塾には、2段落目（「はじめてご連絡します…」）だけを、次の文に変えます：
+              <br />
+              {FORM_OPEN_AGAIN}
+            </p>
           </details>
         </>
       )}

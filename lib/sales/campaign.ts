@@ -230,15 +230,20 @@ export async function sendCampaignTest(to: string): Promise<void> {
 // sales-forms ワークフロー（GitHub 上のブラウザ）が、古い順に1日 30 件まで入力・送信する（lib/sales/forms.ts）。
 // 営業お断り・画像認証・答えられない必須項目のあるフォームは、そこで見送りになる。
 // 対象：学習塾で、まだ一度も送っていない見込み先（承認待ち・未着手）のうち、フォームしか連絡先が無いもの。
-// 以前にフォームで送った塾には並べない（同じフォームへは 90 日あけるきまり。見送り・失敗にしたフォームにも送り直さない）。
+// 以前にフォームで送った塾にも、返信・苦情・送信停止の記録が無ければ、別のボタンで改めて並べられる（書き出しを変える。2026-11-24 じゅんさんの判断）。
+// 見送り・失敗にしたフォームには送り直さない。
 // 並べるのは、/admin/sales/campaign でボタンを押したときだけ。
 
 const FORM_SOURCE = `campaign-form-${CAMPAIGN.id}`;
 export const FORM_BATCH = 30;
 
+const FORM_OPEN_FIRST = "はじめてご連絡します。学習サービス「アオハルOS」を運営している、株式会社ブルースプリングの川本と申します。";
+// 以前にフォームからご連絡した学習塾へ、改めて送るときの書き出し
+export const FORM_OPEN_AGAIN = "以前、お問い合わせフォームよりご連絡した、株式会社ブルースプリング「アオハルOS」の川本です。たびたびのご連絡、失礼いたします。";
+
 export const CAMPAIGN_FORM_BODY = `学習塾の先生へ
 
-はじめてご連絡します。学習サービス「アオハルOS」を運営している、株式会社ブルースプリングの川本と申します。
+${FORM_OPEN_FIRST}
 
 先生お一人、または少ない人数で教室を回されている塾の助けになりたいと考え、アオハルOSを作ってきました。
 
@@ -265,9 +270,15 @@ export interface CampaignFormTarget {
   company: string;
 }
 
+export const campaignFormBody = (again: boolean) => (again ? CAMPAIGN_FORM_BODY.replace(FORM_OPEN_FIRST, FORM_OPEN_AGAIN) : CAMPAIGN_FORM_BODY);
+
 export interface CampaignFormStatus {
-  /** これから並べられるフォーム */
+  /** これから並べられるフォーム（まだ一度も送っていない塾） */
   eligible: CampaignFormTarget[];
+  /** これから並べられるフォーム（以前にフォームで送った塾。返信・苦情・送信停止の先は外してある） */
+  again: CampaignFormTarget[];
+  /** again から外した数 */
+  againExcluded: { replied: number; suppressed: number };
   /** このご案内で並べたもののいま：送信待ち・送信済み・見送り・失敗 */
   waiting: number;
   sent: number;
@@ -328,6 +339,53 @@ export async function campaignFormStatus(): Promise<CampaignFormStatus> {
 
   const eligible = urls.filter((u) => !touched.has(u) && !hit.has(u) && !hit.has(`@${hostOf(u)}`)).map((u) => ({ url: u, company: leads.get(u) ?? "" }));
 
+  // 3'. 以前にフォームで送った塾（送信済み・メールなし・フォームあり）。返信や苦情の記録がある先、送信停止の先は外す
+  const old = new Map<string, string>();
+  for (let from = 0; from < 20000; from += 1000) {
+    const { data, error } = await db
+      .from("sales_leads")
+      .select("name,contact_form_url")
+      .eq("pattern_key", "juku")
+      .eq("status", "contacted")
+      .is("contact_email", null)
+      .not("contact_form_url", "is", null)
+      .order("id", { ascending: true })
+      .range(from, from + 999);
+    if (error) throw new Error(`sales_leads select: ${error.message}`);
+    for (const r of (data ?? []) as { name: string; contact_form_url: string }[]) {
+      const u = r.contact_form_url.trim().toLowerCase();
+      if (isUsableFormUrl(u) && !old.has(u) && !leads.has(u)) old.set(u, r.name);
+    }
+    if ((data?.length ?? 0) < 1000) break;
+  }
+  const oldUrls = [...old.keys()];
+  const sentOk = new Set<string>(); // 実際にフォームで送れた記録がある
+  const inCampaign = new Set<string>(); // このご案内で、もう並べた・送った
+  const answered = new Set<string>(); // 返信・苦情の記録がある
+  for (const part of chunk(oldUrls, 50)) {
+    const { data, error } = await db.from("sales_outreach").select("recipient,status,source,replied_at,complained_at").eq("method", "form").in("recipient", part);
+    if (error) throw new Error(`sales_outreach select: ${error.message}`);
+    for (const r of (data ?? []) as { recipient: string; status: string; source: string | null; replied_at: string | null; complained_at: string | null }[]) {
+      if (r.source === FORM_SOURCE) inCampaign.add(r.recipient);
+      else if (r.status === "manual_sent") sentOk.add(r.recipient);
+      if (r.replied_at || r.complained_at) answered.add(r.recipient);
+    }
+  }
+  const oldHit = new Set<string>();
+  for (const part of chunk([...new Set(oldUrls.flatMap((u) => [u, `@${hostOf(u)}`]))], 50)) {
+    const { data, error } = await db.from("sales_suppression").select("pattern").in("pattern", part);
+    if (error) throw new Error(`sales_suppression select: ${error.message}`);
+    for (const r of (data ?? []) as { pattern: string }[]) oldHit.add(r.pattern);
+  }
+  const again: CampaignFormTarget[] = [];
+  const againExcluded = { replied: 0, suppressed: 0 };
+  for (const u of oldUrls) {
+    if (!sentOk.has(u) || inCampaign.has(u)) continue;
+    if (oldHit.has(u) || oldHit.has(`@${hostOf(u)}`)) againExcluded.suppressed++;
+    else if (answered.has(u)) againExcluded.replied++;
+    else again.push({ url: u, company: old.get(u) ?? "" });
+  }
+
   // 4. このご案内で並べたもののいま
   const count = async (status: string[], source?: string) => {
     let q = db.from("sales_outreach").select("id", { count: "exact", head: true }).eq("method", "form").in("status", status);
@@ -343,18 +401,19 @@ export async function campaignFormStatus(): Promise<CampaignFormStatus> {
     count(["failed"], FORM_SOURCE),
     count(["manual"]),
   ]);
-  return { eligible, waiting, sent, skipped, failed, queueAll };
+  return { eligible, again, againExcluded, waiting, sent, skipped, failed, queueAll };
 }
 
 /** フォーム宛てのご案内を、送信待ちの列に並べる（1回に FORM_BATCH 件まで）。送るのは、平日12:30 の自動送信 */
-export async function enqueueCampaignForms(n = FORM_BATCH): Promise<{ queued: number; left: number; note?: string }> {
+export async function enqueueCampaignForms(n = FORM_BATCH, again = false): Promise<{ queued: number; left: number; note?: string }> {
   const controls = await getSalesControls();
   const st = await campaignFormStatus();
-  if (controls.paused) return { queued: 0, left: st.eligible.length, note: `送信は止まっています：${controls.pausedReason ?? "理由の記録なし"}` };
+  const list = again ? st.again : st.eligible;
+  if (controls.paused) return { queued: 0, left: list.length, note: `送信は止まっています：${controls.pausedReason ?? "理由の記録なし"}` };
   let queued = 0;
-  for (const t of st.eligible.slice(0, Math.max(1, Math.min(n, 150)))) {
-    await recordOutreach({ method: "form", recipient: t.url, company: t.company, subject: CAMPAIGN.subject, body: CAMPAIGN_FORM_BODY, status: "manual", source: FORM_SOURCE });
+  for (const t of list.slice(0, Math.max(1, Math.min(n, 150)))) {
+    await recordOutreach({ method: "form", recipient: t.url, company: t.company, subject: CAMPAIGN.subject, body: campaignFormBody(again), status: "manual", source: FORM_SOURCE });
     queued++;
   }
-  return { queued, left: st.eligible.length - queued };
+  return { queued, left: list.length - queued };
 }

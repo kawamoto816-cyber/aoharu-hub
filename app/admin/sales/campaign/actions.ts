@@ -55,7 +55,7 @@ export async function enqueueCampaignFormsAction(formData: FormData): Promise<vo
   const n = Number(formData.get("n")) || undefined;
   let msg: string;
   try {
-    const r = await enqueueCampaignForms(n);
+    const r = await enqueueCampaignForms(n, formData.get("again") === "1");
     console.log(`[sales] campaign forms queued by ${admin.email}: queued=${r.queued} left=${r.left}`);
     msg = r.note ?? `フォーム宛て ${r.queued}件を、送信待ちの列に並べました（残り ${r.left}件）。平日12:30 の自動送信が、古い順に送ります`;
   } catch (e) {

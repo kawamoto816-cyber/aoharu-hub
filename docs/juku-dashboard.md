@@ -62,5 +62,5 @@
 - `/admin/sales/campaign` の下半分。学習塾で、まだ送っていない見込み先（queued・new）のうち、メールが無くフォームだけの先が対象（`campaignFormStatus`）。フォームの記録（送信待ち・送信済み・見送り・失敗）がすでにある先と、送信停止の先は外す。
 - 「並べる」を押すと、`sales_outreach` に method=form・status=manual・source=`campaign-form-<id>` で入る（`enqueueCampaignForms`。1回30件、または150件）。あとは、ふだんと同じ平日12:30 の sales-forms ワークフローが古い順に1日30件まで送り、結果を書き戻す（`lib/sales/forms.ts`）。送れたら見込み先は「送信済み」になる。
 - 文面は `CAMPAIGN_FORM_BODY`（はじめての連絡用の短い版。返信先はメール）。
-- 以前にフォームで送った塾には並べない（`listPendingForms` が、90日以内に送信済み・以前に見送り／失敗のフォームを自動で見送るため）。
+- 以前にフォームで送った塾（`again`）にも、別のボタンで改めて並べられる（同日、じゅんさんの判断）。フォームで送れた記録があり、返信・苦情（replied_at・complained_at）と送信停止の記録が無い先だけ。書き出しは `FORM_OPEN_AGAIN`。`listPendingForms` の「90日以内に送信済みなら見送り」は、source が `campaign-form-` で始まる行では、同じご案内を送ったかどうかだけを見るようにした。以前に見送り／失敗のフォームには送り直さない。
 - 並べたものを取り消すときは、`sales_outreach` の該当行（source と status=manual）を skipped にする。画面にはまだ無い。
