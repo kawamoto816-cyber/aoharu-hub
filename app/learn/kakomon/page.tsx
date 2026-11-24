@@ -142,6 +142,13 @@ export default async function KakomonHomePage({
         </Link>
         （オリジナルの問題・解説つき）へ。
       </p>
+      <p className="m-0 mt-3 text-[13px] leading-relaxed text-[#3A3D55]">
+        国公立の2次試験は、
+        <Link href="/learn/niji" className="font-bold text-[#1533B8]">
+          2次試験の過去問チャレンジ
+        </Link>
+        （試し：京都大学 2026年度 物理）へ。
+      </p>
     </LearnShell>
   );
 }
