@@ -168,7 +168,7 @@ export const H_CIV_KOKYO_KOKUSAI_KEIZAI: Lecture = {
           credit: { author: "Barry Livingstone", license: "CC BY-SA 3.0", licenseUrl: "https://creativecommons.org/licenses/by-sa/3.0", source: "https://commons.wikimedia.org/wiki/File:The_Gold_Room_-_Bretton_Woods_Mount_Washington_Hotel.jpg" },
         },
         {
-          src: "/media/commons/h-civ-kokyo-kokusai-keizai/wto-hq.jpg",
+          src: "/media/commons/h-civ-kokyo-kokusai-keizai/wto-hq.webp",
           width: 960,
           height: 720,
           alt: "芝生と刈りこまれた植木の奥に建つ、窓の多い石造りの大きな建物",

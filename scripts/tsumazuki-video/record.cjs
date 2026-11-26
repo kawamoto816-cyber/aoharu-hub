@@ -32,8 +32,27 @@ const files = {
   "/p-tsumazuki.html": () => [fs.readFileSync(path.join(WORK, "p-tsumazuki.html")), "text/html; charset=utf-8"],
   "/p-lecture.html": () => [fs.readFileSync(path.join(WORK, "p-lecture.html")), "text/html; charset=utf-8"],
 };
+// 図解レクチャーの写真・図（public/media など）。以前はこれを返しておらず、動画の中で写真が空白になっていた（2026-11-26 じゅんさんの指摘：デカルトの肖像）
+const PUBLIC = path.resolve(__dirname, "../../public");
+const MIME = { ".webp": "image/webp", ".png": "image/png", ".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".gif": "image/gif", ".svg": "image/svg+xml", ".avif": "image/avif" };
+function servePublic(u, res) {
+  const f = path.resolve(PUBLIC, "." + u);
+  if (!f.startsWith(PUBLIC + path.sep) || !fs.existsSync(f) || !fs.statSync(f).isFile()) return false;
+  const type = MIME[path.extname(f).toLowerCase()];
+  if (!type) return false;
+  res.writeHead(200, { "Content-Type": type });
+  res.end(fs.readFileSync(f));
+  return true;
+}
 const server = http.createServer((req, res) => {
-  const u = decodeURIComponent((req.url || "/").split("?")[0]);
+  const raw = req.url || "/";
+  // next/image の最適化 URL（/_next/image?url=/media/...）は、元の画像をそのまま返す
+  if (raw.startsWith("/_next/image")) {
+    const q = new URL(raw, "http://x").searchParams.get("url") || "";
+    if (q.startsWith("/") && servePublic(decodeURIComponent(q), res)) return;
+  }
+  const u = decodeURIComponent(raw.split("?")[0]);
+  if (/^\/(media|images|img)\//.test(u) && servePublic(u, res)) return;
   const m = u.match(/^\/audio\/jugyo\/([^/]+)\.mp3$/);
   if (m && audio.has(m[1])) {
     const buf = fs.readFileSync(audio.get(m[1]));
@@ -161,6 +180,13 @@ async function shootPages(browser, base) {
   for (const name of ["tsumazuki", "lecture"]) {
     await p.goto(`${base}/p-${name}.html`);
     await p.evaluate(() => document.fonts.ready);
+    // 写真を全部読みこんでから撮る（loading="lazy" だと、画面の外の写真が読まれないまま全体のスクショになる）
+    await p.evaluate(() => document.querySelectorAll("img").forEach((i) => { i.loading = "eager"; i.decoding = "sync"; }));
+    await p
+      .waitForFunction(() => [...document.images].every((i) => i.complete && i.naturalWidth > 0), null, { timeout: 15000 })
+      .catch(() => undefined);
+    const broken = await p.evaluate(() => [...document.images].filter((i) => !i.complete || i.naturalWidth === 0).map((i) => i.getAttribute("src")));
+    if (broken.length) throw new Error(`page ${name}: 画像が読みこめません（動画を作りません）: ${broken.join(", ")}`);
     await sleep(800);
     const r = await p.evaluate(
       ({ name, re, mi, sec, H }) => {
