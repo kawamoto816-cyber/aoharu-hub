@@ -120,6 +120,7 @@ const norm = (x: string) =>
   x
     .normalize("NFKC")
     .replace(/[−‐‑–—ー－]/g, "-")
+    .replace(/[’‘`´]/g, "'")
     .replace(/[\s、,，。.・]/g, "")
     .toLowerCase();
 const sameAnswer = (text: string, ans: string) => {
