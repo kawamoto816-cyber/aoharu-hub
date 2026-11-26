@@ -185,3 +185,23 @@ export const kokoExam = (p: KokoPref, s: KokoSubject): NijiExam => ({
   checked: s.checked,
   daimon: s.daimon,
 });
+
+const DIGITS = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+/** 数字をマークする欄（あ＝1、い＝1 など）。全部そろって正解。ans は答えの見せ方 */
+export const marks = (
+  id: string,
+  name: string,
+  pt: number,
+  unit: string,
+  pairs: [string, string][],
+  ans: string,
+  o: Omit<Opt, "opts"> = {},
+): NijiItem => ({
+  id,
+  name,
+  pt,
+  unit,
+  ans,
+  sel: pairs.map(([label, ok]) => ({ label, opts: DIGITS, ok })),
+  ...extra(o),
+});
