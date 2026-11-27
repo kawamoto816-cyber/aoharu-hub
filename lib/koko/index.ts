@@ -1,4 +1,5 @@
 import type { NijiExam } from "@/lib/niji/types";
+import { AKITA_2026 } from "./akita-2026";
 import { AOMORI_2026 } from "./aomori-2026";
 import { KANAGAWA_2026 } from "./kanagawa-2026";
 import { TOKYO_2026 } from "./tokyo-2026";
@@ -7,6 +8,7 @@ import { TOKYO_2026 } from "./tokyo-2026";
 export const KOKO: NijiExam[] = [
   ...TOKYO_2026,
   ...AOMORI_2026,
+  ...AKITA_2026,
   ...KANAGAWA_2026,
 ];
 export const getKoko = (id: string) => KOKO.find((e) => e.id === id);
